@@ -66,6 +66,28 @@ export const Timestamp = (timestamp: any) => {
   }
 }
 
+export const TimestampYMD = (timestamp: any) => {
+  const change = (t: any) => {
+    if (t < 10) {
+      return '0' + t
+    } else {
+      return t
+    }
+  }
+  if (timestamp) {
+    var date = new Date(timestamp)
+    const Y = date.getFullYear() + '-'
+    const M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+    const D = change(date.getDate()) + ' '
+    const h = change(date.getHours()) + ':'
+    const m = change(date.getMinutes()) + ':'
+    const s = change(date.getSeconds())
+    return Y + M + D
+  } else {
+    return '暂无数据'
+  }
+}
+
 /* 过滤是否为空 */
 export const DataIsNull = (value: any) => {
   if (value === 0) {

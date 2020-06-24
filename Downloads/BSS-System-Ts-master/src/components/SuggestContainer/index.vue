@@ -32,7 +32,16 @@
     <el-collapse accordion>
       <el-collapse-item>
         <template slot="title">
-          点击塞选
+          <span v-if="tags.length"><el-tag
+            v-for="(tag, index) in tags"
+            :key="tag.name"
+            closable
+            :type="tag.type"
+            @close="closeTags(index)"
+          >
+            {{ tag.name }}
+          </el-tag></span>
+          <span v-else>点击筛选</span>
         </template>
         <slot />
       </el-collapse-item>
@@ -52,6 +61,7 @@ export default class extends Vue {
   @Prop({ default: '功能栏' }) private title: any // 默认无法识别tab显示
   @Prop({ default: '0' }) private activeName: any // 默认为0 选择第一个
   @Prop({ default: [] }) private tab: any
+  @Prop({ default: [] }) private tags: any
 
   private TitleName: any
   private activeValue: any
@@ -78,7 +88,17 @@ export default class extends Vue {
   }
 
   private handleClick(tab:any, event:any) {
-    this.$emit('handle-query', tab.name)
+    this.$emit('handle-query', tab.name, 'state')
+  }
+
+  private closeTags(i:number) {
+    let key = this.tags[i].key
+    this.tags.splice(i, 1)
+    if (key === 'endDate') {
+      this.$emit('handle-query', '', 'startDate')
+      this.$emit('handle-date', [])
+    }
+    this.$emit('handle-query', '', key)
   }
 
   private handleReset() {
@@ -102,6 +122,9 @@ export default class extends Vue {
 <style lang="scss">
 .SuggestContainer-m{
   padding: 0;
+  .el-collapse-item__header{
+    height: auto;
+  }
 }
 .SuggestContainer{
     width: 100%;
@@ -109,6 +132,9 @@ export default class extends Vue {
     box-shadow: 4px 4px 10px 0 rgba(218,218,218,0.50);
     margin-bottom: 10px;
     box-sizing: border-box;
+    .el-collapse-item__header{
+      height: auto;
+    }
     .title{
         width: 100%;
         border-bottom: 2px solid #F8F9FA;
@@ -150,6 +176,9 @@ export default class extends Vue {
     }
     .el-collapse{
       border-top: none;
+    }
+    .el-tag{
+      margin: 0 10px;
     }
 }
 </style>
