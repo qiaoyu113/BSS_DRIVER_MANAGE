@@ -17,7 +17,7 @@
 
 ```bash
 # 克隆项目
-git clone http://firmiana-gitlab.yunniao.cn/firmiana/firmiana_wx_web.git
+git clone http://firmiana-gitlab.yunniao.cn/firmiana/szjw_bss_h5
 
 # 安装依赖
 npm install
