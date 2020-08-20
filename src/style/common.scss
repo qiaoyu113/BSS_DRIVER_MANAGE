@@ -1,0 +1,99 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.clearfix:after {
+  display: block;
+  clear: both;
+  content: '';
+  visibility: hidden;
+  height: 0;
+}
+input,
+button,
+select,
+textarea {
+  outline: none;
+}
+
+/* page change */
+$--transition-time: 300ms;
+.back-enter-active,
+.back-leave-active,
+.forward-enter-active,
+.forward-leave-active {
+  will-change: transform;
+  transition: transform $--transition-time;
+  position: absolute;
+  height: 100%;
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+.back-enter {
+  opacity: 0.75;
+  transform: translate3d(-50%, 0, 0) !important;
+}
+.back-enter-active {
+  z-index: -1 !important;
+  transition: transform $--transition-time;
+}
+.back-leave-active {
+  transform: translate3d(100%, 0, 0) !important;
+  transition: transform $--transition-time;
+}
+.forward-enter {
+  transform: translate3d(100%, 0, 0) !important;
+}
+.forward-enter-active {
+  transition: transform $--transition-time;
+}
+.forward-leave-active {
+  z-index: -1;
+  opacity: 0.65;
+  transform: translate3d(-50%, 0, 0) !important;
+  transition: transform $--transition-time;
+}
+
+.van-tab--active{
+  font-weight: 400 !important;
+  color: #2F7DCD !important;
+}
+.van-tabs__line{
+  width: 86px !important;
+}
+.vant-tab{
+  font-size: 17px !important;
+  color: #000000 !important;
+}
+.van-tabs__nav--line{
+  box-shadow: 0 0 0 0 #D4D4D4;
+}
+// 全局底部按钮样式
+.btn_bottom{
+  width:100%;
+  height: 46px;
+  line-height: 46px;
+  position: fixed;
+  bottom: 0;
+  left:0;
+  right:0;
+  background:#2F7DCD;
+  font-size: 16px;
+  color:#fff;
+  border:none;
+  z-index:98;
+}
+
+.van-title{
+  margin: 0;
+  padding: 32px 16px 16px;
+  color: rgba(69, 90, 100, 0.6);
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+}
