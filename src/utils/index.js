@@ -291,3 +291,6 @@ export function createUniqueString() {
   const randomNum = parseInt((1 + Math.random()) * 65536) + ''
   return (+(randomNum + timestamp)).toString(32)
 }
+
+// 手机号
+export const phoneRegExp = /^[1][3-9][0-9]{9}$/

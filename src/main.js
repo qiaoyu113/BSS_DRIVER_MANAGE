@@ -12,6 +12,9 @@ import { Lazyload } from 'vant'
 import defaultSettings from '@/settings'
 import * as filters from '@/filters'
 import global_ from 'components/Global'
+import { Toast } from 'vant'
+
+Vue.prototype.$toast = Toast
 
 /**
  * If you don't want to use mock-server
