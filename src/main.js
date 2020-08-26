@@ -9,7 +9,7 @@ import 'utils/permission'
 import SvgIcon from 'components/SvgIcon'
 import '@/icons' // icon
 import '@/style/common.scss'
-import 'vant/lib/index.css';// 全局引入Vant
+import 'vant/lib/index.less';// 全局引入Vant 样式
 import defaultSettings from '@/settings'
 import * as filters from '@/filters'
 import global_ from 'components/Global'
