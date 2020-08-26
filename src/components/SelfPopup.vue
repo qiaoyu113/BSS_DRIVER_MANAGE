@@ -3,26 +3,24 @@
     <van-popup
       v-model="showPopup"
       :position="position"
-      :style="{
-        width: '80%',
-        height: '100vh'
-      }"
     >
       <van-form
-        style="position: relative;"
-        @submit="onSubmit"
+        :ref="formRef"
+        v-bind="$attrs"
+        v-on="$listeners"
       >
-        <slot />
+        <div class="top">
+          <slot />
+        </div>
+        <div class="bottom">
+          <van-button block plain type="primary" native-type="button" @click="onReset">
+            重置
+          </van-button>
+          <van-button block type="primary" native-type="submit">
+            提交
+          </van-button>
+        </div>
       </van-form>
-
-      <div class="bottom">
-        <van-button block type="primary" size="normal">
-          小型按钮
-        </van-button>
-        <van-button block type="primary" size="normal">
-          小型按钮
-        </van-button>
-      </div>
     </van-popup>
   </div>
 </template>
@@ -38,6 +36,10 @@ export default {
     position: {
       type: String,
       default: 'right'
+    },
+    formRef: {
+      type: String,
+      default: 'form'
     }
   },
   computed: {
@@ -51,29 +53,38 @@ export default {
     }
   },
   methods: {
-    onSubmit(values) {
-      console.log('submit', values);
+    onReset() {
+      this.$emit('reset', this.$refs[this.formRef])
     },
-    onReset(values) {
-      console.log(values);
+    onSubmit() {
+      this.$emit('submit', this.$refs[this.formRef])
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.SelfPopup .van-form{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.SelfPopup .top{
+  flex: 1;
+  overflow: auto;
+}
 .SelfPopup .bottom{
-  position: sticky;
-  bottom: 0;
-  padding: 10px 18px;
+  padding: 10px 8px;
   display: flex;
   background-color: #fff;
 }
 .SelfPopup .van-button + .van-button{
-  margin-left: 20px;
+  margin-left: 5px;
 }
 </style>
 <style scoped>
 .SelfPopup >>> .van-popup{
+  width: 80%;
+  height: 100vh;
   box-sizing: border-box;
 }
 </style>
