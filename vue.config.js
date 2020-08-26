@@ -220,6 +220,16 @@ module.exports = {
     loaderOptions: {
       sass: {
         data: '@import "style/_mixin.scss";@import "style/_variables.scss";@import "style/common.scss";' // 全局引入
+      },
+      less: {
+        // 若使用 less-loader@5，请移除 lessOptions 这一级，直接配置选项。
+        lessOptions: {
+          modifyVars: {
+            // 或者可以通过 less 文件覆盖（文件路径为绝对路径）
+            // eslint-disable-next-line quotes
+            hack: `true; @import "style/vant_variable.less";`
+          }
+        }
       }
     }
   }

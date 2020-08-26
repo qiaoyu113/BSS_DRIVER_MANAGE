@@ -11,6 +11,17 @@ export default [
     }
   },
   {
+    path: '/demo',
+    name: 'demo',
+    // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
+    component: resolve => require(['@/views/demo'], resolve),
+    meta: {
+      title: '梧桐综合业务支撑平台'
+      // auth: true,
+      // keepAlive: true
+    }
+  },
+  {
     path: '/',
     name: 'index',
     // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Vant from 'vant';
 import 'lib-flexible'
 import App from './App.vue'
 import router from '@/router'
@@ -8,7 +9,7 @@ import 'utils/permission'
 import SvgIcon from 'components/SvgIcon'
 import '@/icons' // icon
 import '@/style/common.scss'
-import { Lazyload } from 'vant'
+import 'vant/lib/index.less';// 全局引入Vant 样式
 import defaultSettings from '@/settings'
 import * as filters from '@/filters'
 import global_ from 'components/Global'
@@ -33,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
 FastClick.attach(document.body)
 
 // options 为可选参数，无则不传
-Vue.use(Lazyload)
+Vue.use(Vant)
 
 Vue.component('svg-icon', SvgIcon)
 
