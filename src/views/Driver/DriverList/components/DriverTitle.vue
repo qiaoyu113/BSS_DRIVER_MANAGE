@@ -1,0 +1,78 @@
+<template>
+  <div class="DriverTitle">
+    <van-sticky :offset-top="0">
+      <van-nav-bar title="司机管理" left-text="返回" left-arrow @click-left="$router.go(-1)">
+        <template #right>
+          <div style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
+            新建
+          </div>
+          <div style="color: #fff; font-size: 12px;">
+            更换加盟经理
+          </div>
+        </template>
+      </van-nav-bar>
+      <van-search disabled show-action placeholder="请输入搜索关键词" @click="searchClick">
+        <template #action>
+          <div class="search" @click.stop="screenOut ">
+            <span>筛选</span>
+            <van-icon class="play" name="play" />
+          </div>
+        </template>
+      </van-search>
+    </van-sticky>
+    <van-popup v-model="showCreate" position="top">
+      <div class="createBox">
+        123
+      </div>
+    </van-popup>
+  </div>
+</template>
+<script>
+import { Icon } from 'vant';
+export default {
+  name: 'DriverTitle',
+  components: {
+    [Icon.name]: Icon
+  },
+  data() {
+    return {
+      showCreate: false
+    };
+  },
+  mounted() {},
+  methods: {
+    screenOut() {
+      this.$emit('screen', { show: true })
+    },
+    searchClick() {
+      this.$router.push('/driversearch')
+    }
+  }
+};
+</script>
+<style lang="scss" scoped>
+.DriverTitle{
+  .createBox{
+    width: 100%;
+  }
+  .search{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    .play{
+      transform:rotate(90deg);
+      -ms-transform:rotate(90deg); 	/* IE 9 */
+      -moz-transform:rotate(90deg); 	/* Firefox */
+      -webkit-transform:rotate(90deg); /* Safari 和 Chrome */
+      -o-transform:rotate(90deg);
+    }
+  }
+}
+
+</style>
+<style scoped>
+.van-search{
+  padding: 5px 10px 5px 15px;
+  box-sizing: border-box;
+}
+</style>
