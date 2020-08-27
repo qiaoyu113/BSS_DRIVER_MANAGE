@@ -1,7 +1,7 @@
 <template>
   <div class="SuggestContainer">
     <van-popup
-      v-model="suggestShow"
+      v-bind="$attrs"
       round
       position="bottom"
       :style="{ height: '90%',width: '100%' }"
@@ -31,11 +31,6 @@ export default {
       type: Array,
       default: () => []
     },
-    show: {
-      required: true,
-      type: Boolean,
-      default: false
-    },
     type: {
       type: String,
       default: ''
@@ -50,25 +45,18 @@ export default {
   },
   data() {
     return {
-      value: '',
-      keyWord: '',
-      suggestShow: false
-    }
-  },
-  watch: {
-    show(val) {
-      this.keyWord = ''
-      this.value = ''
-      this.suggestShow = val
+      keyWord: ''
     }
   },
   methods: {
     onSearch: debounce(function() {
+      if (!this.keyWord) {
+        return false
+      }
       this.$emit('keyWordValue', this.keyWord)
     }, 200),
 
     onCancel() {
-      this.keyWord = ''
       this.closed()
     },
     handleItemClick(item) {
@@ -79,6 +67,7 @@ export default {
       this.closed()
     },
     closed() {
+      this.keyWord = ''
       this.$emit('closed')
     }
   }
