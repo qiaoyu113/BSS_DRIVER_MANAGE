@@ -275,14 +275,28 @@
         :rules="[{required: true, message: '请填写密码'}]"
       />
     </SelfPopup>
+
+    <van-button type="primary" block @click="showModal=true">
+      点击
+    </van-button>
+    <Suggest
+      :show="showModal"
+      :options="options"
+      type="selectName"
+      @keyWordValue="handleSearchChange"
+      @finish="handleValueClick"
+      @closed="showModal=false"
+    />
   </div>
 </template>
 
 <script>
 import SelfPopup from '@/components/SelfPopup';
+import Suggest from '@/components/SuggestSearch.vue'
 export default {
   components: {
-    SelfPopup
+    SelfPopup,
+    Suggest
   },
   data() {
     return {
@@ -297,7 +311,22 @@ export default {
         username: '123',
         password: ''
       },
-      popup: ''
+      popup: '',
+      showModal: false,
+      options: [
+        {
+          label: 'tom',
+          value: 1
+        },
+        {
+          label: 'jack',
+          value: 2
+        },
+        {
+          label: 'lily',
+          value: 3
+        }
+      ]
     };
   },
   mounted() {
@@ -322,6 +351,19 @@ export default {
     },
     onCancel() {
       this.suggestShow = false;
+    },
+
+    /**
+     * 模糊查询
+     */
+    handleSearchChange(value) {
+      console.log('这里面接口请求模糊查询:', value)
+    },
+    /**
+     *点击某一项
+     */
+    handleValueClick(obj) {
+      console.log('xxx:', obj)
     }
   }
 };
