@@ -78,6 +78,7 @@
 import { login } from '@/api/user';
 import { Form, Field, Icon, Button } from 'vant';
 import { phoneRegExp } from '@/utils/index'
+import { setToken } from '@/utils/auth'
 export default {
   name: 'Login',
   components: {
@@ -119,13 +120,15 @@ export default {
           forbidClick: true,
           loadingType: 'spinner'
         })
+        setToken(121)
         let { data: res } = await login()
         if (res.success) {
-          this.$store.commit('LOGIN', res.data)
-          this.$router.replace({
-            path: this.redirect || '/',
-            query: this.otherQuery
-          })
+
+          // this.$store.commit('LOGIN', res.data)
+          // this.$router.replace({
+          //   path: this.redirect || '/',
+          //   query: this.otherQuery
+          // })
         }
       } catch (err) {
         console.log(`login error:${err}`,)
