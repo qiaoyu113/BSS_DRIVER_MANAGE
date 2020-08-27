@@ -1,14 +1,24 @@
 <template>
   <div class="TryRun">
     <div class="top">
-      <van-nav-bar :title="title" left-text="返回" left-arrow>
+      <van-nav-bar
+        :title="title"
+        left-text="返回"
+        left-arrow
+        @click-left="onClickLeft"
+      >
         <template #right>
           <div class="navBarTit">
             创建试跑
           </div>
         </template>
       </van-nav-bar>
-      <van-search readonly show-action placeholder="请输入线路名称/编号">
+      <van-search
+        readonly
+        show-action
+        placeholder="请输入线路名称/编号"
+        @click="search"
+      >
         <template #action>
           <div class="search" @click="showPopup = true">
             筛选
@@ -142,23 +152,18 @@
         @confirm="onConfirmPicker"
       />
     </van-popup>
-    <Suggest
-      :show.sync="showSuggest"
-    ></Suggest>
   </div>
 </template>
 
 <script>
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
-import Suggest from '@/components/Suggest';
 import { parseTime } from '@/utils'
 export default {
   name: 'TryRun',
   components: {
     SelfPopup,
-    ListItem,
-    Suggest
+    ListItem
   },
   data() {
     return {
@@ -259,6 +264,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * 初始化数据
+     */
     onLoad() {
       setTimeout(() => {
         if (this.refreshing) {
@@ -276,6 +284,9 @@ export default {
         }
       }, 1000);
     },
+    /**
+     * 下拉刷新
+     */
     onRefresh() {
       // 清空列表数据
       this.finished = false;
@@ -285,9 +296,9 @@ export default {
       this.loading = true;
       this.onLoad();
     },
-    formatDate(date) {
-      return `${date.getMonth() + 1}/${date.getDate()}`;
-    },
+    /**
+     * 日期选择
+     */
     onConfirm(date) {
       const [start, end] = date;
       this.showCalendar = false;
@@ -297,22 +308,34 @@ export default {
       this.listQuery.startDate = startDate;
       this.listQuery.endDate = endDate;
     },
+    /**
+     * 提交查询
+     */
     onSubmit(value) {
       this.showPopup = false;
       this.refreshing = true;
       this.onRefresh();
       console.log('submit', value);
     },
+    /**
+     * 重置form
+     */
     onReset(form) {
       this.listQuery = this.$options.data().listQuery;
       this.pickerNames = this.$options.data().pickerNames;
       form.resetValidation();
     },
+    /**
+     * picker 选择
+     */
     onConfirmPicker(value) {
       this.pickerNames[this.pickerKey] = value.name;
       this.listQuery[this.pickerKey] = value.code;
       this.showPicker = false;
     },
+    /**
+     * 显示picker
+     */
     showPickerFn(key) {
       this.pickerKey = key;
       if (key === 'name4') {
@@ -321,6 +344,18 @@ export default {
         this.columns = this.whyList;
       }
       this.showPicker = true;
+    },
+    /**
+     * 跳转查询页面
+     */
+    search() {
+      this.$router.push('/try-run/search');
+    },
+    /**
+     *返回按钮
+     */
+    onClickLeft() {
+      this.$router.go(-1)
     }
   }
 };
