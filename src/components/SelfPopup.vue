@@ -10,14 +10,16 @@
         v-on="$listeners"
       >
         <div class="top">
-          <slot />
+          <van-cell-group>
+            <slot />
+          </van-cell-group>
         </div>
         <div class="bottom">
-          <van-button block plain type="primary" native-type="button" @click="onReset">
+          <van-button block plain type="primary" size="normal" native-type="button" @click="onReset">
             重置
           </van-button>
-          <van-button block type="primary" native-type="submit">
-            提交
+          <van-button block type="primary" size="normal" native-type="submit">
+            查询
           </van-button>
         </div>
       </van-form>
