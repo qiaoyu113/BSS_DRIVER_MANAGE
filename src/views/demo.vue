@@ -280,7 +280,7 @@
       点击
     </van-button>
     <Suggest
-      :show="showModal"
+      v-model="showModal"
       :options="options"
       type="selectName"
       @keyWordValue="handleSearchChange"
