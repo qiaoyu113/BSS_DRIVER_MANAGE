@@ -82,6 +82,17 @@
           required
           name="picker"
           :value="value"
+          label="意向驾驶车型"
+          placeholder="请选择"
+          :rules="[{ required: true, message: '请选择' }]"
+          @click="showCityPicker = true"
+        />
+        <van-field
+          readonly
+          clickable
+          required
+          name="picker"
+          :value="value"
           label="现居住地址"
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
@@ -233,7 +244,7 @@
           </template>
         </van-field>
         <div style="margin: 16px;">
-          <van-button round block type="info" native-type="submit">
+          <van-button block type="primary" native-type="submit">
             提交
           </van-button>
         </div>

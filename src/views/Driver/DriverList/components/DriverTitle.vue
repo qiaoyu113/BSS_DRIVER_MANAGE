@@ -1,12 +1,12 @@
 <template>
   <div class="DriverTitle">
     <van-sticky :offset-top="0">
-      <van-nav-bar title="司机管理" left-text="返回" left-arrow @click-left="$router.go(-1)">
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-1)">
         <template #right>
           <div style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
             新建
           </div>
-          <div style="color: #fff; font-size: 12px;">
+          <div style="color: #fff; font-size: 12px;" @click="changeManager">
             更换加盟经理
           </div>
         </template>
@@ -39,6 +39,11 @@ export default {
       showCreate: false
     };
   },
+  computed: {
+    title() {
+      return this.$route.meta.title;
+    }
+  },
   mounted() {},
   methods: {
     screenOut() {
@@ -46,6 +51,9 @@ export default {
     },
     searchClick() {
       this.$router.push('/driversearch')
+    },
+    changeManager() {
+      this.$emit('changeManager', { show: true })
     }
   }
 };
