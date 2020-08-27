@@ -57,6 +57,8 @@ export default {
   },
   watch: {
     show(val) {
+      this.keyWord = ''
+      this.value = ''
       this.suggestShow = val
     }
   },
