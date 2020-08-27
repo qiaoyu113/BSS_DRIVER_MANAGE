@@ -132,11 +132,11 @@
     </van-collapse>
     <div class="btn">
       <!-- 线路状态为已上架、已开跑状态时显示此按钮 -->
-      <van-button type="plain" hairline block class="distance">
+      <van-button type="plain" hairline block class="distance" @click="handleLinkClick('copy')">
         复制线路
       </van-button>
       <!-- 线路状态为已上架状态时显示此按钮 -->
-      <van-button type="primary" hairline block>
+      <van-button type="primary" hairline block @click="handleLinkClick('edit')">
         编辑
       </van-button>
     </div>
@@ -157,7 +157,7 @@
         下架
       </van-button>
       <!-- 所有线路状态下显示此按钮 -->
-      <van-button type="primary" hairline block>
+      <van-button type="primary" hairline block @click="handleLinkClick('active')">
         激活线路
       </van-button>
     </div>
@@ -236,6 +236,15 @@ export default {
           break;
         case 'record':
           path = '/recordLine'
+          break;
+        case 'copy':
+          path = '/copyLine'
+          break;
+        case 'edit':
+          path = '/editLine'
+          break;
+        case 'active':
+          path = '/activeLine'
           break;
         default:
           path = '/'
