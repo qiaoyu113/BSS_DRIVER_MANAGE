@@ -1,5 +1,14 @@
 <template>
   <div class="index">
+    <van-nav-bar :title="title">
+      <template #right>
+        <div class="navBarTit">
+          <van-dropdown-menu>
+            <van-dropdown-item v-model="value" :options="option" />
+          </van-dropdown-menu>
+        </div>
+      </template>
+    </van-nav-bar>
     <div class="list-wrap">
       <div class="van-title">
         工作台
@@ -56,7 +65,18 @@ export default {
       list: [],
       total: 0,
       page: 1,
-      loadedAll: false
+      loadedAll: false,
+      option: [
+        { text: '线路云', value: 0 },
+        { text: '司机云', value: 1 },
+        { text: '试跑', value: 2 }
+      ],
+      value: 0
+    }
+  },
+  computed: {
+    title() {
+      return this.$route.meta.title;
     }
   },
   mounted() {
@@ -201,8 +221,19 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .index {
+  ::v-deep .van-dropdown-menu{
+    .van-ellipsis{
+      color: @white;
+    }
+    .van-dropdown-menu__bar{
+      background-color: rgba(0,0,0,0);
+    }
+    .van-dropdown-menu__title::after{
+      border-color: transparent transparent @white @white;
+    }
+  }
   p{
     margin-block-start: 0;
     margin-block-end: 0;
