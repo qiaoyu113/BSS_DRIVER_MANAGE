@@ -3,120 +3,212 @@
     <div
       class="logo"
     />
-    <div class="van-title">
-      账号
-    </div>
-    <van-field
-      v-model="loginForm.username"
-      class="field-input"
-      placeholder="请输入账号"
-      :error-message="message.username"
-      clearable
-    />
-    <div class="van-title">
-      密码
-    </div>
-    <van-field
-      v-model.trim="loginForm.password"
-      class="field-input"
-      placeholder="请输入密码"
-      :error-message="message.password"
-      clearable
-    />
-    <van-button type="info" @click="handleLogin">
-      登陆
-    </van-button>
+    <van-form ref="loginForm" :show-error="false" class="form" @submit="onSubmit">
+      <template v-if="loginWay === 'account'">
+        <van-field
+          v-model="loginForm.account"
+          name="validatorAccount"
+          placeholder="请输入账号"
+          :rules="[
+            { required: true, message: '请输入账号' },
+            { validator: validatorAccount, message: '请输入正确的账号' }
+          ]"
+        >
+          <div slot="left-icon">
+            <img src="./imgs/phone.svg" alt="" class="phoneIcon">
+          </div>
+        </van-field>
+        <van-field
+          v-model="loginForm.password"
+          left-icon="smile-o"
+          type="password"
+          name="validatorPassword"
+          placeholder="密码"
+          :rules="[
+            { required: true, message: '请输入密码' },
+            { validator: validatorPassword, message: '请输入正确的密码' }
+          ]"
+        >
+          <div slot="left-icon">
+            <img src="./imgs/lock.png" alt="" class="lockIcon">
+          </div>
+        </van-field>
+      </template>
+      <template v-else>
+        <van-field
+          v-model="loginForm.phone"
+          left-icon="smile-o"
+          placeholder="请输入手机号"
+          :rules="[
+            { required: true, message: '请输入手机号' },
+            {pattern:phonePattern, message: '请输入正确的手机号'}
+          ]"
+        >
+          <div slot="left-icon">
+            <img src="./imgs/phone.svg" alt="" class="phoneIcon">
+          </div>
+        </van-field>
+        <van-field
+          v-model="loginForm.code"
+          left-icon="smile-o"
+          name="validatorCode"
+          placeholder="验证码"
+          :rules="[
+            { required: true, message: '请输入验证码' },
+            { validator: validatorCode, message: '请输入正确的验证码' },
+          ]"
+        >
+          <div slot="left-icon">
+            <img src="./imgs/lock.png" alt="" class="lockIcon">
+          </div>
+          <div slot="right-icon" class="code" @click="handleGetCodeClick">
+            {{ isSendCode ? `${count} s` :'获取验证码' }}
+          </div>
+        </van-field>
+      </template>
+
+      <van-button type="info" block class="loginBtn" color="#2F448A">
+        登陆
+      </van-button>
+      <span class="loginWay" @click="handleChangeLoginWay">{{ loginWay === 'account' ? '使用手机登陆' :'使用账号登陆' }}</span>
+    </van-form>
   </div>
 </template>
 <script>
 import { login } from '@/api/user';
-import { Field, Icon, Button, Loading, NavBar } from 'vant';
-// import { validator } from '../../utils/validator'
-import AsyncValidator from 'async-validator'
-import { mapActions } from 'vuex'
+import { Form, Field, Icon, Button } from 'vant';
+import { phoneRegExp } from '@/utils/index'
+import { setToken } from '@/utils/auth'
 export default {
   name: 'Login',
   components: {
+    [Form.name]: Form,
     [Field.name]: Field,
-    [NavBar.name]: NavBar,
     [Icon.name]: Icon,
-    [Button.name]: Button,
-    [Loading.name]: Loading
+    [Button.name]: Button
+
   },
   data() {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        account: '', // 账号
+        password: '', // 密码
+        phone: '', // 手机号
+        code: '' // 手机验证码
       },
-      message: {
-        username: '',
-        password: ''
-      },
-      loginRules: {
-        username: [
-          { required: true, message: '请输入名称' }
-        ],
-        password: [
-          { required: true, message: '请输入密码' }
-        ]
-      },
-      passwordType: 'password',
-      loading: false,
-      showDialog: false
+      loginWay: 'account', // 登录方式
+      isSendCode: false, // 发送验证码是否正在倒计时
+      count: 60 // 倒计时的秒数
     };
   },
-  created: function() {
-    this.validator = new AsyncValidator(this.loginRules)
+  created() {
+    this.phonePattern = phoneRegExp
   },
   mounted() {},
+  beforeDestroy() {
+    this.clearTimer()
+  },
   methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    },
-    handleLogin() {
-      this.clearMessage()
-      this.validator.validate(this.loginForm, {
-        firstFields: true
-      }).then(() => {
-        this.loading = true
-        login(this.loginForm).then((res) => {
-          setTimeout(() => {
-            this.loading = false
-          }, 0.6 * 1000)
-          if (res) {
-            this.token = res.token
-            return
-          }
-          this.$router.replace({
-            path: this.redirect || '/',
-            query: this.otherQuery
-          })
+    /**
+     * 登录
+     */
+    async onSubmit() {
+      try {
+        this.$toast.loading({
+          duration: 0,
+          message: '加载中...',
+          forbidClick: true,
+          loadingType: 'spinner'
         })
-      }).catch(({ errors }) => {
-        // 校验未通过
-        for (let { field, message } of errors) this.message[field] = message
-      })
+        setToken(121)
+        let { data: res } = await login()
+        if (res.success) {
+
+          // this.$store.commit('LOGIN', res.data)
+          // this.$router.replace({
+          //   path: this.redirect || '/',
+          //   query: this.otherQuery
+          // })
+        }
+      } catch (err) {
+        console.log(`login error:${err}`,)
+      } finally {
+        this.$toast.clear()
+      }
     },
-    // 清空校验错误提示
-    clearMessage() {
-      for (let key in this.message) this.message[key] = ''
+    /**
+     * 切换登录方式
+     */
+    handleChangeLoginWay() {
+      this.$refs.loginForm.resetValidation()
+      if (this.loginWay === 'account') {
+        this.loginWay = 'code'
+      } else {
+        this.loginWay = 'account'
+      }
     },
-    ...mapActions({
-      login: 'user/login'
-    })
+    /**
+     *获取验证码
+     */
+    handleGetCodeClick() {
+      // 正在倒计时或者手机号不合法
+      if (this.isSendCode || !phoneRegExp.test(this.loginForm.phone)) {
+        return false
+      } else {
+        // 调方法获取手机验证码
+        this.getPhoneCode()
+      }
+    },
+    /**
+     * 获取手机验证码
+     */
+    getPhoneCode() {
+      try {
+        this.isSendCode = true
+        this.timer = setInterval(() => {
+          if (this.count > 1) {
+            this.count--
+          } else {
+            this.clearTimer()
+          }
+        }, 1000)
+      } catch (err) {
+        this.clearTimer()
+      }
+    },
+    /**
+     * 清除定时器
+     */
+    clearTimer() {
+      clearInterval(this.timer)
+      this.timer = null
+      this.count = 60
+      this.isSendCode = false
+    },
+    /**
+     * 手机验证码校验
+     */
+    validatorCode(val) {
+      return val.length === 4
+    },
+    /**
+     * 校验密码
+     */
+    validatorPassword(val) {
+      return true
+    },
+    /**
+     * 校验账号
+     */
+    validatorAccount(val) {
+      return true
+    }
   }
 };
 </script>
 <style lang="scss" scoped>
 .login {
+  font-family: PingFangSC-Regular;
   width: 100%;
   height: 100vh;
   -webkit-background-size: cover;
@@ -130,88 +222,42 @@ export default {
     -webkit-background-size: cover;
     background-size: cover;
   }
-  .login-form {
-    padding: 0 20px;
-    box-sizing: border-box;
-    .wrapper {
-      display: block;
-      position: relative;
-      width: 100%;
-      text-align: center;
-      margin: auto;
+  .form {
+    margin:37.5px;
+    .loginBtn {
+     margin-top:55.5px;
+     button {
+       color:#D4DAE9;
+     }
     }
-    .button {
-      height: 40px;
-      text-align: center;
-      text-decoration: none;
-      color: #abcefb;
-      font-size: 16px;
+    .loginWay {
       display: inline-block;
-      overflow: hidden;
-      position: relative;
-      margin: auto;
-      background: #2f448a;
-      border-radius: 10px;
+      margin-top:6.5px;
+      font-size: 11px;
+      color: #838A9D;
     }
-    .login-form {
-      width: 100%;
-      margin: auto;
-      z-index: 100;
-      padding: 10px 20px;
-      box-sizing: border-box;
+    .code {
+      font-size: 13px;
+      color: #649CEE;
     }
-    .el-form-item__content {
-      background: #fff !important;
-    }
-    .tips {
-      font-size: 14px;
-      color: #fff;
-      margin-bottom: 10px;
-      span {
-        &:first-of-type {
-          margin-right: 16px;
-        }
-      }
-    }
-    .svg-container {
-      padding: 6px 5px 6px 15px;
-      /*color: $dark_gray;*/
-      color: #4ca2cc !important;
+    .phoneIcon {
+      width: 10px;
+      height:15px;
       vertical-align: middle;
-      width: 30px;
-      display: inline-block;
     }
-    .title-container {
-      display: none;
-      .title {
-        font-size: 32px;
-        color: #ffffff;
-        text-align: center;
-        margin-top: 60px;
-      }
-      .set-language {
-        color: #fff;
-        position: absolute;
-        top: 3px;
-        font-size: 18px;
-        right: 0px;
-        cursor: pointer;
-      }
-    }
-    .show-pwd {
-      position: absolute;
-      right: 10px;
-      top: 7px;
-      font-size: 16px;
-      color: #4ca2cc !important;
-      cursor: pointer;
-      user-select: none;
-    }
-    .thirdparty-button {
-      position: absolute;
-      right: 0;
-      bottom: 6px;
+    .lockIcon {
+     object-fit: contain;
+      width: 12px;
+      height:15px;
+      vertical-align: middle;
     }
   }
+
 }
+</style>
+
+<style scoped>
+  .login >>> .van-cell::after {
+    border-color: #2F448A;
+  }
 </style>
