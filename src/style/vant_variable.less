@@ -22,11 +22,16 @@
 @gray-11: #F6F7F9;
 @gray-12: #E5E9EF;
 @gray-13: #838A9D;
+@body-bg: #f9f9f9;
 // Font
 @font-size-xs: 10px;
+@font-size-xs-1: 11px;
 @font-size-sm: 12px;
+@font-size-sm-1: 13px;
 @font-size-md: 14px;
+@font-size-md-1: 15px;
 @font-size-lg: 16px;
+@font-size-lg-1: 17px;
 @font-weight-bold: 500;
 @line-height-xs: 14px;
 @line-height-sm: 18px;
@@ -58,7 +63,11 @@
 @cell-label-color: @gray-9;
 @cell-border-color: @gray-5;
 @cell-required-color: @gray-9;
+@cell-font-size: @font-size-sm-1;
 // button
+@button-normal-font-size: @font-size-md-1;
+@button-default-height: 40px;
+@button-default-line-height: 1.2;
 @button-default-color: @gray-13;
 @button-default-background-color: @gray-12;
 @button-default-border-color: @gray-12;
@@ -76,6 +85,9 @@
 @nav-bar-icon-color: @white;
 @nav-bar-text-color: @white;
 @nav-bar-title-text-color: @white;
+@nav-bar-title-font-size: @font-size-lg-1;
+@nav-bar-z-index: 100;
+
 // Tab
 @tab-text-color: @text-color;
 @tab-active-text-color: @tab-active-color;
@@ -91,7 +103,7 @@
 @checkbox-checked-icon-color: @deepBlue;
 
 // Search
-@search-background-color: rgba(0, 0, 0, 0);
+@search-background-color: @body-bg;
 @search-content-background-color: @white;
 @search-label-color: @text-color;
 @search-left-icon-color: @gray-13;

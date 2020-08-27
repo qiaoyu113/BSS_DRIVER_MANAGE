@@ -8,6 +8,7 @@ import FastClick from 'fastclick'
 import 'utils/permission'
 import SvgIcon from 'components/SvgIcon'
 import '@/icons' // icon
+import '@/style/reset.less' // 常用样式
 import '@/style/common.scss'
 import 'vant/lib/index.less';// 全局引入Vant 样式
 import defaultSettings from '@/settings'
