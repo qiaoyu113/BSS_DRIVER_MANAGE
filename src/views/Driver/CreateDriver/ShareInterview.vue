@@ -9,7 +9,7 @@
       />
     </van-sticky>
     <div class="formBox">
-      <van-form :show-error="false" @submit="onSubmit">
+      <van-form :show-error="false" label-width="120px" @submit="onSubmit">
         <van-field
           v-model="username"
           name="面试地址"
@@ -88,14 +88,150 @@
           @click="showAddressPicker = true"
         />
         <van-field
-          v-model="password"
-          type="password"
-          name="密码"
+          v-model="username"
+          name="货物运输经验（月）"
+          label="货物运输经验（月）"
           required
-          label="密码"
-          placeholder="密码"
-          :rules="[{ required: true, message: '请填写密码' }]"
+          placeholder="请填写0-500的数字'"
+          :rules="[{ required: true, message: '请填写0-500的数字' }]"
         />
+        <van-field name="radio" required label="当前是否无业">
+          <template #input>
+            <van-radio-group v-model="radio" direction="horizontal">
+              <van-radio name="1">
+                有
+              </van-radio>
+              <van-radio name="2">
+                无
+              </van-radio>
+            </van-radio-group>
+          </template>
+        </van-field>
+        <van-field
+          readonly
+          clickable
+          required
+          name="意向货物类型"
+          :value="value"
+          label="意向货物类型"
+          placeholder="请选择"
+          :rules="[{ required: true, message: '请选择' }]"
+          @click="showCityPicker = true"
+        />
+        <van-field
+          readonly
+          clickable
+          required
+          name="意向工作时间段"
+          :value="value"
+          label="意向工作时间段"
+          placeholder="请选择"
+          :rules="[{ required: true, message: '请选择' }]"
+          @click="showCityPicker = true"
+        />
+        <van-field name="radio" required label="是否能承担较重搬运">
+          <template #input>
+            <van-radio-group v-model="radio" direction="horizontal">
+              <van-radio name="1">
+                是
+              </van-radio>
+              <van-radio name="2">
+                否
+              </van-radio>
+            </van-radio-group>
+          </template>
+        </van-field>
+        <van-field
+          readonly
+          clickable
+          required
+          name="邀约渠道"
+          :value="value"
+          label="邀约渠道"
+          placeholder="请选择"
+          :rules="[{ required: true, message: '请选择' }]"
+          @click="showCityPicker = true"
+        />
+        <van-field
+          readonly
+          clickable
+          required
+          name="驾照类型"
+          :value="value"
+          label="驾照类型"
+          placeholder="请选择"
+          :rules="[{ required: true, message: '请选择' }]"
+          @click="showCityPicker = true"
+        />
+        <van-field name="radio" required label="是否本地工作车牌">
+          <template #input>
+            <van-radio-group v-model="radio" direction="horizontal">
+              <van-radio name="1">
+                是
+              </van-radio>
+              <van-radio name="2">
+                否
+              </van-radio>
+            </van-radio-group>
+          </template>
+        </van-field>
+        <van-field
+          readonly
+          clickable
+          required
+          name="高意向工作区域"
+          :value="value"
+          label="高意向工作区域"
+          placeholder="请选择"
+          :rules="[{ required: true, message: '请选择' }]"
+          @click="showCityPicker = true"
+        />
+        <van-field
+          v-model="username"
+          label-width="160px"
+          name="原收入（去油）（元/月）"
+          label="原收入（去油）（元/月）"
+          required
+          placeholder="请填写0-25000的数字'"
+          :rules="[{ required: true, message: '请填写0-25000的数字' }]"
+        />
+        <van-field
+          v-model="username"
+          label-width="160px"
+          name="期望收入（去油）（元/月）"
+          label="期望收入（去油）（元/月）"
+          required
+          placeholder="请填写0-25000的数字'"
+          :rules="[{ required: true, message: '请填写0-25000的数字' }]"
+        />
+        <van-field
+          v-model="username"
+          name="从业时间（月）"
+          label="从业时间（月）"
+          required
+          placeholder="请填写0-500的数字'"
+          :rules="[{ required: true, message: '请填写0-500的数字' }]"
+        />
+        <van-field
+          v-model="username"
+          name="零散活占比（%）"
+          label="零散活占比（%）"
+          required
+          placeholder="请填写0-100的数字'"
+          :rules="[{ required: true, message: '请填写0-100的数字' }]"
+        />
+        <van-field name="radio" required label="是否新能源">
+          <template #input>
+            <van-radio-group v-model="radio" direction="horizontal">
+              <van-radio name="1">
+                是
+              </van-radio>
+              <van-radio name="2">
+                否
+              </van-radio>
+            </van-radio-group>
+          </template>
+        </van-field>
         <div style="margin: 16px;">
           <van-button round block type="info" native-type="submit">
             提交
@@ -111,7 +247,9 @@
         @cancel="showCityPicker = false"
       />
     </van-popup>
-    <!-- showhasCarPicker -->
+    <van-popup v-model="showAddressPicker" position="bottom">
+      <van-area title="标题" :area-list="areaList" />
+    </van-popup>
   </div>
 </template>
 <script>
