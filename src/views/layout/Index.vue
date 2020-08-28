@@ -14,9 +14,9 @@
         工作台
       </div>
       <van-grid>
-        <van-grid-item icon="user-o" text="客户管理" @click="handleCustomClick" />
-        <van-grid-item icon="notes-o" text="项目管理" />
-        <van-grid-item icon="cluster-o" text="线路管理" />
+        <van-grid-item icon="user-o" text="客户管理" />
+        <van-grid-item icon="notes-o" text="项目管理" @click="handleProjectClick" />
+        <van-grid-item icon="cluster-o" text="线路管理" @click="handleLineClick" />
         <van-grid-item icon="logistics" text="拼线" />
       </van-grid>
       <div class="van-title">
@@ -218,9 +218,16 @@ export default {
       //   Toast.error(error)
       // })
     },
-    handleCustomClick() {
+    // 线路跳转
+    handleLineClick() {
       this.$router.push({
         path: '/line'
+      })
+    },
+    // 项目跳转
+    handleProjectClick() {
+      this.$router.push({
+        path: '/project'
       })
     }
   }
