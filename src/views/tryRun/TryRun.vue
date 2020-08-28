@@ -17,7 +17,7 @@
         readonly
         show-action
         placeholder="请输入线路名称/编号"
-        @click="search"
+        @click="onSearch"
       >
         <template #action>
           <div class="search" @click="showPopup = true">
@@ -348,7 +348,7 @@ export default {
     /**
      * 跳转查询页面
      */
-    search() {
+    onSearch() {
       this.$router.push('/try-run/search');
     },
     /**
