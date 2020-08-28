@@ -1,8 +1,11 @@
 <template>
   <div class="CopyLineContainer">
-    <StepOne v-show="step === 1" :form="stepOneForm" />
-    <StepTwo v-show="step === 2" :form="stepTwoForm"/>
-    <StepThree v-show="step === 3" :form="stepThreeForm"/>
+    <van-sticky :offset-top="0">
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
+    </van-sticky>
+    <StepOne v-show="step === 1" :form="stepOneForm" @stepTwo="step =2" />
+    <StepTwo v-show="step === 2" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepThree v-show="step === 3" :form="stepThreeForm" @step-two="step=2" />
   </div>
 </template>
 
@@ -18,7 +21,8 @@ export default {
   },
   data() {
     return {
-      step: 3,
+      step: 1,
+      title: '',
       isStable: true,
       stepOneForm: {
         i: [
@@ -37,10 +41,18 @@ export default {
     }
   },
   mounted() {
+    let title = ''
     if (this.isStable) {
-      document.title = '激活稳定线路'
+      title = '复制稳定线路'
     } else {
-      document.title = '激活临时线路'
+      title = '复制临时线路'
+    }
+    this.title = title
+    document.title = title
+  },
+  methods: {
+    onClickLeft() {
+      this.$router.go(-1)
     }
   }
 }

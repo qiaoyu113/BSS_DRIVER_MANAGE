@@ -144,6 +144,7 @@
         <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
         <van-field
           v-model="form.i"
+          v-only-number="{min: 1, max: 999999.99, precision: 2}"
           required
           label="单趟报价(元)"
           placeholder="请输入"
@@ -156,6 +157,7 @@
         <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
         <van-field
           v-model="form.m"
+          v-only-number="{min: 1, max: 999999.99, precision: 2}"
           required
           label="每趟保底(元)"
           placeholder="请输入"
@@ -165,6 +167,7 @@
         <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
         <van-field
           v-model="form.n"
+          v-only-number="{min: 1, max: 999999.99, precision: 2}"
           required
           label="每趟提成单价(元)"
           placeholder="请输入"
@@ -175,14 +178,15 @@
       <!-- 输入数字限制精确到小数点后两位，小数点前8位 -->
       <van-field
         v-model="form.j"
+        v-only-number="{min: 1, max: 99999999.99, precision: 2}"
         required
         label="预计月报价(元)"
         placeholder="请输入"
-        maxlength="10"
+        label-width="100"
         :rules="[{ required: true, message: '请输入线路名称' }]"
       />
       <div class="btn">
-        <van-button type="default" block class="lastStep" native-type="button">
+        <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-one')">
           返回上一步
         </van-button>
         <van-button type="primary" block>
@@ -311,6 +315,7 @@ export default {
     // 提交
     onSubmit(values) {
       console.log('submit', values);
+      this.$emit('stepThree')
     },
     // 司机上岗时间
     onConfirm1(date) {

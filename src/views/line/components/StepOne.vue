@@ -39,6 +39,7 @@
       />
       <van-popup v-model="showPicker1" position="bottom">
         <van-picker
+          :default-index="1"
           value-key="label"
           show-toolbar
           :columns="columns1"
@@ -282,7 +283,16 @@ export default {
           value: 0
         }
       ],
-      columns6: [],
+      columns6: [
+        {
+          label: '金杯',
+          value: 1
+        },
+        {
+          label: '小面',
+          value: 2
+        }
+      ],
       columns7: {
         province_list: {
           110000: '北京市',
@@ -319,6 +329,7 @@ export default {
     // 提交
     onSubmit(values) {
       console.log('submit', values);
+      this.$emit('stepTwo')
     },
     // 线路数量校验
     lineNumValidator(val) {

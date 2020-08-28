@@ -25,30 +25,21 @@
       <!-- 精确小数点后一位 -->
       <van-field
         v-model="form.c"
+        v-only-number="{min: 1, max: 999999, precision: 1}"
         required
         label="货物体积"
-        name="numValidator"
         type="number"
+        name="numValidator"
         placeholder="请输入"
         :rules="[
           { required: true, message: '请输入' },
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
+      <!-- 精确小数点后一位 -->
       <van-field
         v-model="form.d"
-        required
-        label="货物重量"
-        name="numValidator"
-        placeholder="请输入"
-        maxlength="10"
-        :rules="[
-          { required: true, message: '请输入' },
-          { validator: numValidator, message: '请输入1~999999' }
-        ]"
-      />
-      <van-field
-        v-model="form.e"
+        v-only-number="{min: 1, max: 999999, precision: 1}"
         required
         label="货物重量"
         name="numValidator"
@@ -95,7 +86,7 @@
         class="textarea"
       />
       <div class="btn">
-        <van-button type="default" block class="lastStep" native-type="button">
+        <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-two')">
           返回上一步
         </van-button>
         <van-button type="primary" block>

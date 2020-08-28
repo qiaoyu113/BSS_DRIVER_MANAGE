@@ -81,7 +81,8 @@ module.exports = {
         'router': resolve('src/router'), // 路由
         'style': resolve('src/style'), // 通用样式
         'store': resolve('src/store'), // vuex
-        'filters': resolve('src/filters') // 过滤器
+        'filters': resolve('src/filters'), // 过滤器
+        'directives': resolve('src/directives') // 指令
       }
     }
   },
