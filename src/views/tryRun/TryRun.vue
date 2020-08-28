@@ -8,7 +8,7 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div class="navBarTit">
+          <div class="navBarTit" @click="onCreateRun">
             创建试跑
           </div>
         </template>
@@ -17,7 +17,7 @@
         readonly
         show-action
         placeholder="请输入线路名称/编号"
-        @click="search"
+        @click="onSearch"
       >
         <template #action>
           <div class="search" @click="showPopup = true">
@@ -348,7 +348,7 @@ export default {
     /**
      * 跳转查询页面
      */
-    search() {
+    onSearch() {
       this.$router.push('/try-run/search');
     },
     /**
@@ -356,6 +356,12 @@ export default {
      */
     onClickLeft() {
       this.$router.go(-1)
+    },
+    /**
+     * 创建试跑
+     */
+    onCreateRun() {
+      this.$router.push('/try-run/createrun');
     }
   }
 };
