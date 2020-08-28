@@ -8,7 +8,7 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div class="navBarTit">
+          <div class="navBarTit" @click="onCreateRun">
             创建试跑
           </div>
         </template>
@@ -356,6 +356,12 @@ export default {
      */
     onClickLeft() {
       this.$router.go(-1)
+    },
+    /**
+     * 创建试跑
+     */
+    onCreateRun() {
+      this.$router.push('/try-run/createrun');
     }
   }
 };
