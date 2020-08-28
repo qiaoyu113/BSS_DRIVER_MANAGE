@@ -70,6 +70,15 @@ export default [
       title: '激活稳定线路',
       keepAlive: false
     }
+  },
+  {
+    path: '/lineSearch',
+    name: 'LineSearch',
+    component: resolve => require(['@/views/line/Search'], resolve),
+    meta: {
+      title: '搜索线路',
+      keepAlive: false
+    }
   }
 ]
 
