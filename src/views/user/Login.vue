@@ -121,6 +121,9 @@ export default {
           loadingType: 'spinner'
         })
         setToken(121)
+        this.$router.push({
+          path: '/'
+        })
         let { data: res } = await login()
         if (res.success) {
 

@@ -10,7 +10,7 @@
       {{ obj.line }}
     </p>
     <p class="text ellipsis">
-      配送类型{{ obj.carType }}
+      配送类型:{{ obj.carType }}
     </p>
     <p class="text ellipsis">
       试跑状态:{{ obj.status }}
