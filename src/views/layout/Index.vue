@@ -14,7 +14,7 @@
         工作台
       </div>
       <van-grid>
-        <van-grid-item icon="user-o" text="客户管理" />
+        <van-grid-item icon="user-o" text="客户管理" @click="handleCustomerClick" />
         <van-grid-item icon="notes-o" text="项目管理" @click="handleProjectClick" />
         <van-grid-item icon="cluster-o" text="线路管理" @click="handleLineClick" />
         <van-grid-item icon="logistics" text="拼线" />
@@ -228,6 +228,12 @@ export default {
     handleProjectClick() {
       this.$router.push({
         path: '/project'
+      })
+    },
+    // 客户跳转
+    handleCustomerClick() {
+      this.$router.push({
+        path: '/client'
       })
     }
   }
