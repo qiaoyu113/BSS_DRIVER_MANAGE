@@ -63,12 +63,12 @@ module.exports = {
       //     // ['^' + process.env.VUE_APP_BASE_API]: ''
       //   }
       // },
-      '/mock/28': {
-        target: 'http://127.0.0.1:3000',
+      '/mock/18': {
+        target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true
       },
-      '/mock/35': {
-        target: 'http://127.0.0.1:3000',
+      '/mock/25': {
+        target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true
       }
     },

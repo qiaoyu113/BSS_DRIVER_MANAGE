@@ -61,7 +61,7 @@ export function getUserInfo(data) {
 }
 // -------------------------szjw 2.1-----------------------
 // 获取开通城市列表
-let prefix = '/mock/35'
+let prefix = '/mock/25'
 export function getOpenCitys(params) {
   return request({
     url: `${prefix}/api/base/v1/base/area/getOpenCityData`,

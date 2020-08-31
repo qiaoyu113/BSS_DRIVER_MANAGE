@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-let prefix = '/mock/28'
+let prefix = '/mock/18'
 // 获客户路列表
 export function getClientList(data) {
   return request({
