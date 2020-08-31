@@ -59,7 +59,7 @@ export default {
         [
           {
             title: '客户管理',
-            url: '',
+            url: '/client',
             icon: require('../../assets/Home/line_1.png')
           },
           {
