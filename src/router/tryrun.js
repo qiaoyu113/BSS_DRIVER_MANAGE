@@ -25,7 +25,7 @@ export default [
   },
   {
     path: '/try-run/createrun',
-    name: 'TryRunList',
+    name: 'CreateRun',
     component: resolve => require(['@/views/tryRun/CreateRun'], resolve),
     meta: {
       title: '创建试跑'
@@ -33,7 +33,7 @@ export default [
   },
   {
     path: '/try-run/detail',
-    name: 'TryRunList',
+    name: 'TryRunDetail',
     component: resolve => require(['@/views/tryRun/TryRunDetail'], resolve),
     meta: {
       title: '详情页'
