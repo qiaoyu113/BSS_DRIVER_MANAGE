@@ -75,7 +75,7 @@ export default {
           {
             title: '拼线',
             url: '',
-            icon: ''
+            icon: require('../../assets/Home/line_4.png')
           }
         ],
         // 司机云

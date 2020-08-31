@@ -9,25 +9,34 @@
       />
     </div>
     <div class="bottom">
-      <div class="step">
-        <van-steps :active="step">
-          <van-step>创建试跑意向</van-step>
-          <van-step>创建试跑</van-step>
-        </van-steps>
+      <div class="step-container flex align-center justify-between">
+        <div class="step-item flex align-center flex-direction">
+          <div class="top active">
+            1
+          </div>
+          <div class="tit">
+            创建试跑意向
+          </div>
+        </div>
+        <div class="line van-hairline--top"></div>
+        <div class="step-item flex align-center flex-direction">
+          <div class="top">
+            2
+          </div>
+          <div class="tit">
+            创建试跑
+          </div>
+        </div>
       </div>
-      <StepOne
-        v-show="step === 0"
-      />
-      <StepTwo
-        v-show="step === 1"
-      />
+      <StepOne v-show="step === 0" />
+      <StepTwo v-show="step === 1" />
     </div>
   </div>
 </template>
 
 <script>
-import StepOne from './components/StepOne'
-import StepTwo from './components/StepTwo'
+import StepOne from './components/StepOne';
+import StepTwo from './components/StepTwo';
 export default {
   name: 'CreateRun',
   components: {
@@ -37,7 +46,7 @@ export default {
   data() {
     return {
       step: 0
-    }
+    };
   },
   computed: {
     title() {
@@ -55,11 +64,42 @@ export default {
       this.$router.go(-1);
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
-.CreateRun{
+.CreateRun {
+  .step-container {
+    position: relative;
+    margin: 0 77px;
+    height: 86px;
+    .line {
+      position: absolute;
+      left: 58px;
+      right: 45px;
+      top: 30px;
+    }
+    .step-item {
+      background-color: @white;
+      .top {
+        margin-bottom: 8px;
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+        font-size: 15px;
+        color: #ffffff;
+        background: #dde2ee;
+        border-radius: 50%;
+        text-align: center;
+      }
+      .tit {
+        font-size: 12px;
+        color: #dde2ee;
+      }
+      .active{
 
+      }
+    }
+  }
 }
 </style>
