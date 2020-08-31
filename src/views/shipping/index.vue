@@ -37,164 +37,6 @@
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
-    <!-- 右侧筛选抽屉 -->
-    <SelfPopup
-      ref="lineLineForm"
-      :show.sync="show"
-      form-ref="form"
-      @submit="onQuery"
-      @reset="onReset"
-    >
-      <van-field
-        :value="text1"
-        readonly
-        clickable
-        label="线路类型"
-        placeholder="请选择"
-        @click="showPicker1 = true"
-      />
-      <van-field
-        :value="text2"
-        readonly
-        clickable
-        label-width="100"
-        label="是否有线路余额"
-        placeholder="请选择"
-        @click="showPicker2 = true"
-      />
-      <van-field
-        :value="text3"
-        readonly
-        clickable
-        label="线路分类"
-        placeholder="请选择"
-        @click="showPicker3 = true"
-      />
-      <van-field
-        :value="text4"
-        readonly
-        clickable
-        label-width="100"
-        label="是否为城配线"
-        placeholder="请选择"
-        @click="showPicker4 = true"
-      />
-      <van-field
-        :value="text5"
-        readonly
-        clickable
-        label="上岗经理"
-        placeholder="请选择"
-        @click="handleShowModal('manager')"
-      />
-      <van-field
-        :value="text6"
-        readonly
-        clickable
-        label="外线销售"
-        placeholder="请选择"
-        @click="handleShowModal('sell')"
-      />
-      <van-field
-        :value="text7"
-        readonly
-        clickable
-        label="配送车型"
-        placeholder="请选择"
-        @click="handleShowModal('carType')"
-      />
-      <van-field
-        :value="text8"
-        readonly
-        clickable
-        label-width="100"
-        label="上架截止日期"
-        placeholder="请选择"
-        @click="showPicker8 = true"
-      />
-      <van-field
-        :value="text9"
-        readonly
-        clickable
-        label-width="100"
-        label="司机上岗时间"
-        placeholder="请选择"
-        @click="showPicker9 = true"
-      />
-      <van-field
-        :value="text10"
-        readonly
-        clickable
-        label="创建时间"
-        placeholder="开始日期"
-        :min-date="minDate"
-        @click="showPicker10 = true"
-      />
-      <van-field
-        :value="text11"
-        readonly
-        clickable
-        input-align="center"
-        placeholder="结束日期"
-        @click="showPicker11 = true"
-      />
-    </SelfPopup>
-    <van-popup v-model="showPicker1" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns1"
-        @confirm="onConfirm1"
-        @cancel="showPicker1 = false"
-      />
-    </van-popup>
-    <van-popup v-model="showPicker2" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns2"
-        @confirm="onConfirm2"
-        @cancel="showPicker2 = false"
-      />
-    </van-popup>
-    <van-popup v-model="showPicker3" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns3"
-        @confirm="onConfirm3"
-        @cancel="showPicker3 = false"
-      />
-    </van-popup>
-    <van-popup v-model="showPicker4" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns4"
-        @confirm="onConfirm4"
-        @cancel="showPicker4 = false"
-      />
-    </van-popup>
-    <Suggest
-      v-model="showModal"
-      :options="options"
-      :type="type"
-      @keyWordValue="handleSearchChange"
-      @finish="handleValueClick"
-      @closed="showModal=false"
-    />
-    <van-popup v-model="showPicker8" position="bottom">
-      <van-calendar v-model="showPicker8" @confirm="onConfirm8" />
-    </van-popup>
-    <van-popup v-model="showPicker9" position="bottom">
-      <van-calendar v-model="showPicker9" @confirm="onConfirm9" />
-    </van-popup>
-    <van-popup v-model="showPicker10" position="bottom">
-      <van-calendar v-model="showPicker10" @confirm="onConfirm10" />
-    </van-popup>
-    <van-popup v-model="showPicker11" position="bottom">
-      <van-calendar v-model="showPicker11" @confirm="onConfirm11" />
-    </van-popup>
   </div>
 </template>
 
@@ -211,6 +53,7 @@ export default {
       value: '', // 搜索框
       active: '', // 当前激活的tab,
       show: false,
+
       ruleForm: {
         username: '',
         password: ''
@@ -305,23 +148,8 @@ export default {
     // 查询
     onQuery() {
       console.log('submit', this.form);
-    },
-    // 重置
-    onReset(form) {
-      this.text1 = ''
-      this.text2 = ''
-      this.text3 = ''
-      this.text4 = ''
-      this.text5 = ''
-      this.text6 = ''
-      this.text7 = ''
-      this.text8 = ''
-      this.text9 = ''
-      this.text10 = ''
-      this.text11 = ''
-      this.form = {}
-      console.log('reset');
     }
+    // 重置
 
   }
 }
