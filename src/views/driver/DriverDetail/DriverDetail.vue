@@ -174,10 +174,10 @@ export default {
       ],
       showOrder: false,
       orderActions: [
-        { name: '录入订单', url: '' },
-        { name: '审核', url: '' },
-        { name: '详情', url: '' },
-        { name: '重新提交', url: '' }
+        { name: '录入订单', url: '/createOrder' },
+        { name: '审核', url: '/orderAudit' },
+        { name: '详情', url: '/orderDetail' },
+        { name: '重新提交', url: '/resetOrder' }
       ],
       showDothing: false,
       dothingActions: [
@@ -195,6 +195,7 @@ export default {
       // 可以通过 close-on-click-action 属性开启自动收起
       this.showOrder = false;
       Toast(item.name);
+      this.$router.push({ path: item.url, query: { id: '132' }})
     },
     onSelectDothing(item) {
       this.showDothing = false;
