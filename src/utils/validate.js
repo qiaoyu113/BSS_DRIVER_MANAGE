@@ -86,3 +86,14 @@ export function isArray(arg) {
   }
   return Array.isArray(arg)
 }
+
+/**
+ * @param {Number}
+ * @returns {Boolean}
+ */
+export function validatorNum(min, max) {
+  return function(val) {
+    let vad = Number(val) >= min && Number(val) <= max
+    return vad
+  }
+}
