@@ -69,7 +69,8 @@ export default {
       option: [
         { text: '线路云', value: 0 },
         { text: '司机云', value: 1 },
-        { text: '试跑', value: 2 }
+        { text: '试跑', value: 2 },
+        { text: '运费管理', value: 3 }
       ],
       value: 0
     }
