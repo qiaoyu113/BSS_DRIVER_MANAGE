@@ -1,10 +1,10 @@
 <template>
-  <div class="projectListContainer">
+  <div class="customerListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="项目管理" left-text="返回" left-arrow @click-left="onClickLeft" />
+      <van-nav-bar title="客户管理" left-text="返回" left-arrow @click-left="onClickLeft" />
       <!-- 搜索 -->
-      <van-search show-action placeholder="项目名称/项目编号/项目联系人手机号搜索" readonly @click="handleSearchClick">
+      <van-search show-action placeholder="客户名称/客户编号/客户联系人手机号搜索" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="show=true">
             筛选
@@ -50,52 +50,31 @@
       @reset="onReset"
     >
       <van-field
-        label-width="100"
-        :value="pickerNames['a']"
+        :value="pickerNames['city']"
         readonly
         clickable
-        label="收货点类型"
+        label="所属城市"
         placeholder="请选择"
-        @click="showPickerFn('a')"
+        @click="handleShowModal('city')"
       />
       <van-field
-        label-width="100"
         :value="pickerNames['b']"
         readonly
         clickable
-        label="配送经验"
+        label="客户类型"
         placeholder="请选择"
         @click="showPickerFn('b')"
       />
       <van-field
-        label-width="100"
         :value="pickerNames['c']"
         readonly
         clickable
-        label="是否需要回单"
+        label="客户属性"
         placeholder="请选择"
         @click="showPickerFn('c')"
       />
+
       <van-field
-        label-width="100"
-        :value="pickerNames['d']"
-        readonly
-        clickable
-        label="上岗经理"
-        placeholder="请选择"
-        @click="handleShowModal('manager')"
-      />
-      <van-field
-        label-width="100"
-        :value="pickerNames['e']"
-        readonly
-        clickable
-        label="外线销售"
-        placeholder="请选择"
-        @click="handleShowModal('sell')"
-      />
-      <van-field
-        label-width="100"
         :value="pickerNames['date']"
         readonly
         clickable
@@ -105,9 +84,10 @@
         @click="showPickerFn('date')"
       />
     </SelfPopup>
+    <!-- 底部弹出框 -->
     <van-popup v-model="showPicker" position="bottom">
       <template v-if="isDateRange">
-        <!-- 选择日期区间 -->
+        <!-- 选择日期 -->
         <van-calendar v-model="showPicker" type="range" @confirm="onConfirm" />
       </template>
       <template v-else>
@@ -121,7 +101,7 @@
         />
       </template>
     </van-popup>
-
+    <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
       :options="options"
@@ -165,50 +145,31 @@ export default {
         }
       ],
       lists: [],
-
       form: { // 查询表单
         date: ''
       },
-      columns1: [
-        {
-          label: '仓库',
-          value: 1
-        },
-        {
-          label: '门店',
-          value: 2
-        },
-        {
-          label: '宅配',
-          value: 3
-        },
-        {
-          label: '指定位置',
-          value: 4
-        },
-        {
-          label: '无人货架',
-          value: 5
-        }
-      ],
       columns2: [
         {
-          label: '有需求',
+          label: '公司',
           value: 1
         },
         {
-          label: '无需求',
+          label: '个体',
           value: 0
         }
       ],
       columns3: [
         {
-          label: '是',
+          label: '外线客户',
           value: 1
         },
         {
-          label: '否',
-          value: 0
+          label: '自承运',
+          value: 2
+        },
+        {
+          label: '集团客户',
+          value: 3
         }
       ],
       showModal: false,
@@ -224,7 +185,7 @@ export default {
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
       showPicker: false, // 是否打开picker
-      dateLists: ['date'] // 显示日历区间控件
+      dateLists: ['date'] // 显示日历控件的字段集合
     }
   },
   computed: {
@@ -239,15 +200,16 @@ export default {
     }
   },
   methods: {
+    // 返回
     onClickLeft() {
       this.$router.go(-1)
     },
+    // 加载列表
     onLoad(isInit = false) {
       if (isInit === true) {
         this.lists = []
       }
       setTimeout(() => {
-        console.log('xxxx')
         let id = this.lists.length
         for (let i = 0; i < 5; i++) {
           let obj = {
@@ -255,10 +217,8 @@ export default {
             title: '京东城配线(xs200808)',
             contacts: '小小悠',
             phone: '15021578693',
-            carType: '小面',
-            warehouseName: '近的顺义仓',
-            lineCount: 20,
-            worktime: '10小时',
+            clientProperty: '外线客户',
+            createDate: Date.now(),
             tag: i % 2 === 0 ? '已启用' : '已禁用'
           }
           this.lists.push(obj)
@@ -277,7 +237,7 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/projectSearch'
+        path: '/clientSearch'
       })
     },
     // 查询
@@ -286,8 +246,8 @@ export default {
     },
     // 重置
     onReset(form) {
-      this.form = {}
       this.pickerNames = {}
+      this.form = {}
       console.log('reset');
     },
     // 模糊搜索
@@ -295,7 +255,7 @@ export default {
       console.log('这里面接口请求模糊查询:', value)
     },
     /**
-     *点击某一项
+     *点击模糊查询框某一项
      */
     handleValueClick(obj) {
       console.log('xxx:', obj)
@@ -312,9 +272,7 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'a') {
-        this.columns.push(...this.columns1);
-      } else if (key === 'b') {
+      if (key === 'b') {
         this.columns.push(...this.columns2);
       } else if (key === 'c') {
         this.columns.push(...this.columns3);
@@ -342,7 +300,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.projectListContainer {
+.customerListContainer {
   font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
@@ -374,7 +332,7 @@ export default {
 </style>
 
 <style scoped>
-  .projectListContainer >>> .van-tab__text {
+  .customerListContainer >>> .van-tab__text {
     font-size: 12px;
     color: #3C4353;
   }
