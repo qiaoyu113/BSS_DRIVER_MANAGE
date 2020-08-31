@@ -5,16 +5,26 @@
     </P>
     <div v-for="item in obj" :key="item.id" class="CardItemcontainer">
       <h4 class="title ellipsis">
-        {{ item.title }} <i v-if="item.yicahng != ''">{{ item.yicahng }}</i>
-        <span>{{ item.statust }} <input v-model="item.all" type="checkbox" @change="checkboxall(item.all)"></span>
-
-        <p class="text ellipsis">
-          出车单号:{{ item.update }}
-        </p>
-        <p class="text ellipsis">
-          加盟经理:{{ item.carType }}
-        </p>
+        {{ item.title }}
+        <span>{{ item.statust }} <input v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
       </h4>
+      <p class="text ellipsis">
+        出车单号:{{ item.update }}
+      </p>
+      <p class="text ellipsis">
+        线路名称:{{ item.carType }}
+      </p>
+      <p v-if="item.yicahng != ''" class="Pink">
+        {{ item.yicahng }}
+      </p>
+    </div>
+    <div class="Bulk">
+      <button @click="cancel()">
+        取消批量上传
+      </button>
+      <button @click="Add_to">
+        批量上报运费
+      </button>
     </div>
   </div>
 </template>
@@ -33,6 +43,9 @@ export default {
       checkedall: ''
     }
   },
+  computed: {
+
+  },
 
   methods: {
     /**
@@ -44,13 +57,31 @@ export default {
       })
     },
     quanxian() {
-      console.log(this.checkedo)
       this.obj.forEach(item => {
         item.all = this.checkedo
       });
     },
     checkboxall(v) {
-      console.log(v)
+      this.obj.filter(res => {
+        if (res.all == true) {
+          this.checkedo = true
+        } else {
+          this.checkedo = false
+        }
+      })
+      this.obj.forEach(res => {
+        if (res.all == false) {
+          this.checkedo = false
+        }
+      })
+    },
+    cancel() {
+      this.$router.go(-1)
+    },
+    Add_to() {
+      this.$router.push({
+        name: 'Report'
+      })
     }
   }
 }
@@ -114,7 +145,36 @@ export default {
 .all{
   margin-left: 30px;
 }
+.Bulk{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
 
+  position: fixed;
+  bottom: 0;
+}
+.Bulk>button{
+  border: none;
+  border-radius: 5px;
+}
+.Bulk>button:nth-child(1){
+  width: 50%;
+    background: #ddd;
+}
+.Bulk>button:nth-child(2){
+  width: 50%;
+  color: #fff;;
+  background: #0000ff75;
+}
+.Pink{
+  width: 50px;
+  line-height: 25px;
+  text-align: center;
+  border-radius:6px ;
+  background: #ff00008a;
+  color: #fff;
+}
 </style>
 
 <style scoped>
