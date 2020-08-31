@@ -26,7 +26,7 @@ export default {
       isStable: true,
       stepOneForm: {
         c: 2,
-        i: [
+        h: [
           '110000',
           '110100',
           '110101'

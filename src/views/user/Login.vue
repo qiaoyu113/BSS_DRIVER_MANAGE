@@ -114,12 +114,7 @@ export default {
      */
     async onSubmit() {
       try {
-        this.$toast.loading({
-          duration: 0,
-          message: '加载中...',
-          forbidClick: true,
-          loadingType: 'spinner'
-        })
+        this.$loading(true)
         setToken(121)
         this.$router.push({
           path: '/'
@@ -136,7 +131,7 @@ export default {
       } catch (err) {
         console.log(`login error:${err}`,)
       } finally {
-        this.$toast.clear()
+        this.$loading(false)
       }
     },
     /**
