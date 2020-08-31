@@ -143,10 +143,10 @@
 </template>
 
 <script>
-import SelfPopup from '@/components/SelfPopup';
+import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
-import { Toast } from 'vant';
+import { Toast } from 'vant'
 export default {
   components: {
     CardItem,

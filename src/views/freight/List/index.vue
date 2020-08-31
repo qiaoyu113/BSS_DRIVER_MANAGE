@@ -54,18 +54,16 @@
         @click="showPicker1 = true"
       />
       <van-field
-         v-model="text2"
+        v-model="text2"
         name="username"
         label="用户名"
         placeholder="请输入"
       />
       <van-field
-         v-model="text3"
+        v-model="text3"
         name="username"
         label="线路"
         placeholder="请输入"
-
-      
       />
       <van-field
         :value="text4"
@@ -75,7 +73,7 @@
         placeholder="请选择"
         @click="handleShowModal('manager')"
       />
- 
+
       <van-field
         :value="text10"
         readonly
@@ -165,16 +163,16 @@ export default {
         username: '',
         password: ''
       },
-        form: { // 查询表单
+      form: { // 查询表单
 
       },
-      //筛选
-      text1: '',  //城市选择
-      text2: '',  //用户名
-      text3: '',  //线路
-      text4: '',  //加盟经理
-      text10: '',  //开始时间
-      text11: '',  //结束时间
+      // 筛选
+      text1: '', // 城市选择
+      text2: '', // 用户名
+      text3: '', // 线路
+      text4: '', // 加盟经理
+      text10: '', // 开始时间
+      text11: '', // 结束时间
       showPicker1: false,
       showPicker2: false,
       showPicker3: false,
@@ -459,7 +457,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.19);
-    
+
 }
 .lineListContainer>>>.van-cell {
     position: relative;
@@ -476,7 +474,7 @@ export default {
     background-color: #fff;
 }
 /* .lineListContainer>>>.van-cell-group{
- 
+
   width: 80%;
   margin: auto;
    margin-top: 100px;
