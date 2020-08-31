@@ -69,6 +69,7 @@ html,body{ margin:0px; height:100%;}
   bottom:0;
   left:0;
   z-index:100;
+  height: 100px;
 }
 
 .router {

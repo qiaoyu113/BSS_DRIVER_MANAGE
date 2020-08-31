@@ -22,7 +22,8 @@
     </van-sticky>
     <van-popup v-model="showCreate" position="top">
       <div class="createBox">
-        123
+        <van-cell value="共享面试司机" clickable @click="goRouter('shareinterview')" />
+        <van-cell value="专车面试司机" clickable @click="goRouter('tailoredinterview')" />
       </div>
     </van-popup>
   </div>
@@ -54,6 +55,9 @@ export default {
     },
     changeManager() {
       this.$emit('changeManager', { show: true })
+    },
+    goRouter(url) {
+      this.$router.push(`/${url}`)
     }
   }
 };
@@ -62,6 +66,15 @@ export default {
 .DriverTitle{
   .createBox{
     width: 100%;
+    .van-cell__value--alone{
+      font-size: 17px;
+      color: #4A4A4A;
+      letter-spacing: 0;
+      text-align: center;
+    }
+    .van-cell--clickable{
+      color: #7F8FBD!important;
+    }
   }
   .search{
     display: flex;
