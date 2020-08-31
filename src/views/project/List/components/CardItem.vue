@@ -4,28 +4,41 @@
       {{ obj.title }}
     </h4>
     <p class="text van-ellipsis">
-      上架有效期:{{ obj.update }}
+      联系人:{{ obj.contacts }}
     </p>
     <p class="text van-ellipsis">
-      {{ obj.line }}
+      手机:{{ obj.phone }}
     </p>
     <p class="text van-ellipsis">
-      配送类型:{{ obj.carType }}
+      配送车型:{{ obj.carType }}
     </p>
     <p class="text van-ellipsis">
-      试跑状态:{{ obj.status }}
+      仓名称:{{ obj.warehouseName }}
+    </p>
+    <p class="text van-ellipsis">
+      线路数:{{ obj.lineCount }}条线
     </p>
     <div class="footer">
-      <p class="time">
-        到仓时间:{{ obj.rearchDate }}
-      </p>
       <div class="right">
         <p class="time">
           预计工作时间:{{ obj.worktime }}
         </p>
         <div>
-          <van-tag v-for="tag in obj.tags" :key="tag" type="primary" color="#EFF5FE" text-color="#7F8FBD" class="tag">
-            {{ tag }}
+          <van-tag
+            v-if="obj.tag ==='已启用'"
+            class="tag"
+            color="#3acb8d1a"
+            text-color="#3ACB8D"
+          >
+            {{ obj.tag }}
+          </van-tag>
+          <van-tag
+            v-if="obj.tag ==='已禁用'"
+            class="tag"
+            color="#ffa0001a"
+            text-color="#FFA000"
+          >
+            {{ obj.tag }}
           </van-tag>
         </div>
       </div>
@@ -48,11 +61,11 @@ export default {
   },
   methods: {
     /**
-     * 线路详情
+     * 项目详情
      */
     handleDetailClick() {
       this.$router.push({
-        path: '/lineDetail'
+        path: '/projectDetail'
       })
     }
   }

@@ -5,6 +5,7 @@
       round
       position="bottom"
       :style="{ height: '90%',width: '100%' }"
+      @click-overlay="closed"
     >
       <van-search
         v-model="keyWord"
@@ -49,16 +50,24 @@ export default {
     }
   },
   methods: {
+    /**
+     * input发生变化
+     */
     onSearch: debounce(function() {
       if (!this.keyWord) {
         return false
       }
       this.$emit('keyWordValue', this.keyWord)
     }, 200),
-
+    /**
+     * 点击取消
+     */
     onCancel() {
       this.closed()
     },
+    /**
+     * 点击每一项
+     */
     handleItemClick(item) {
       if (this.type) {
         item.type = this.type
@@ -66,6 +75,9 @@ export default {
       this.$emit('finish', item)
       this.closed()
     },
+    /**
+     * 关闭popup
+     */
     closed() {
       this.keyWord = ''
       this.$emit('closed')

@@ -16,11 +16,11 @@
       <van-field label="其他图片" colon>
         <van-uploader slot="input" v-model="form.otherPics" :after-read="afterRead" multiple :max-count="6" @before-delete="handleDeletePics" />
       </van-field>
-      <van-field label="装货视频" colon>
+      <van-field label="装货视频" colon class="video">
         <van-uploader slot="input" v-model="form.videoUrl" :after-read="afterRead" :before-read="beforeRead" :max-count="1" :preview-full-image="false">
         </van-uploader>
       </van-field>
-      <p class="tips">
+      <p class="tips van-hairline--bottom">
         提示:上传视频限制50M
       </p>
 
@@ -35,6 +35,7 @@
         type="textarea"
         maxlength="300"
         show-word-limit
+        class="textarea"
       />
       <van-button type="primary" block class="btn">
         提交
@@ -120,9 +121,16 @@ export default {
     width: 345px;
   }
   .tips {
-    margin:10px 0px 15px 15px;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    margin-top:10px;
     font-size: 11px;
     color: #FFA000;
+  }
+  .video {
+    &.van-cell::after {
+      border-bottom:none;
+    }
   }
 }
 
@@ -131,5 +139,18 @@ export default {
 <style scoped>
   .RecordLineContainer >>> .van-image__img {
     border-radius: 8px;
+  }
+  .RecordLineContainer >>> .van-cell {
+    display: flex;
+    flex-direction: column;
+  }
+  .RecordLineContainer >>> .van-field__label {
+    margin-bottom: 10px;
+  }
+  .textarea >>> .van-field__value {
+    padding: 3px;
+    background: #FAFBFC;
+    border: 1px solid #DDE2EE;
+    border-radius: 6px;
   }
 </style>

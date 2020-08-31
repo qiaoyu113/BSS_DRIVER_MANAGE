@@ -15,8 +15,14 @@ import defaultSettings from '@/settings'
 import * as filters from '@/filters'
 import global_ from 'components/Global'
 import { Toast } from 'vant'
+import * as directives from '@/directives'
 
 Vue.prototype.$toast = Toast
+
+// Register global directives
+Object.keys(directives).forEach(key => {
+  Vue.directive(key, (directives)[key])
+})
 
 /**
  * If you don't want to use mock-server
