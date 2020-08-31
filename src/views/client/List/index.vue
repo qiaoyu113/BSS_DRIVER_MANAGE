@@ -50,7 +50,7 @@
       @reset="onReset"
     >
       <van-field
-        :value="text1"
+        :value="pickerNames['city']"
         readonly
         clickable
         label="所属城市"
@@ -58,74 +58,58 @@
         @click="handleShowModal('city')"
       />
       <van-field
-        :value="text2"
+        :value="pickerNames['b']"
         readonly
         clickable
         label="客户类型"
         placeholder="请选择"
-        @click="showPicker2 = true"
+        @click="showPickerFn('b')"
       />
       <van-field
-        :value="text3"
+        :value="pickerNames['c']"
         readonly
         clickable
         label="客户属性"
         placeholder="请选择"
-        @click="showPicker3 = true"
+        @click="showPickerFn('c')"
       />
 
       <van-field
-        :value="text10"
+        :value="pickerNames['date']"
         readonly
         clickable
         label="创建时间"
         placeholder="开始日期"
         :min-date="minDate"
-        @click="showPicker10 = true"
-      />
-      <van-field
-        :value="text11"
-        readonly
-        clickable
-        input-align="center"
-        placeholder="结束日期"
-        @click="showPicker11 = true"
+        @click="showPickerFn('date')"
       />
     </SelfPopup>
-    <van-popup v-model="showPicker2" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns2"
-        @confirm="onConfirm2"
-        @cancel="showPicker2 = false"
-      />
+    <!-- 底部弹出框 -->
+    <van-popup v-model="showPicker" position="bottom">
+      <template v-if="isDateRange">
+        <!-- 选择日期 -->
+        <van-calendar v-model="showPicker" type="range" @confirm="onConfirm" />
+      </template>
+      <template v-else>
+        <!-- picker选择器 -->
+        <van-picker
+          value-key="label"
+          show-toolbar
+          :columns="columns"
+          @confirm="onConfirm"
+          @cancel="showPicker = false"
+        />
+      </template>
     </van-popup>
-    <van-popup v-model="showPicker3" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns3"
-        @confirm="onConfirm3"
-        @cancel="showPicker3 = false"
-      />
-    </van-popup>
-
+    <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
       :options="options"
-      :type="type"
+      :type="modalKey"
       @keyWordValue="handleSearchChange"
       @finish="handleValueClick"
       @closed="showModal=false"
     />
-
-    <van-popup v-model="showPicker10" position="bottom">
-      <van-calendar v-model="showPicker10" @confirm="onConfirm10" />
-    </van-popup>
-    <van-popup v-model="showPicker11" position="bottom">
-      <van-calendar v-model="showPicker11" @confirm="onConfirm11" />
-    </van-popup>
   </div>
 </template>
 
@@ -161,19 +145,9 @@ export default {
         }
       ],
       lists: [],
-
       form: { // 查询表单
-
+        date: ''
       },
-      text1: '',
-      text2: '',
-      text3: '',
-      text10: '',
-      text11: '',
-      showPicker2: false,
-      showPicker3: false,
-      showPicker10: false,
-      showPicker11: false,
       columns2: [
         {
           label: '公司',
@@ -200,7 +174,18 @@ export default {
       ],
       showModal: false,
       options: [],
-      type: ''
+      modalKey: '',
+      pickerNames: { // picker选中显示的名字
+        city: '',
+        b: '',
+        c: '',
+        startDate: '',
+        endDate: ''
+      },
+      pickerKey: '', // 显示picker的key
+      columns: [], // picker的列表
+      showPicker: false, // 是否打开picker
+      dateLists: ['date'] // 显示日历控件的字段集合
     }
   },
   computed: {
@@ -209,18 +194,22 @@ export default {
         return new Date(this.form.r)
       }
       return new Date()
+    },
+    isDateRange() {
+      return this.dateLists.includes(this.pickerKey)
     }
   },
   methods: {
+    // 返回
     onClickLeft() {
       this.$router.go(-1)
     },
+    // 加载列表
     onLoad(isInit = false) {
       if (isInit === true) {
         this.lists = []
       }
       setTimeout(() => {
-        console.log('xxxx')
         let id = this.lists.length
         for (let i = 0; i < 5; i++) {
           let obj = {
@@ -257,56 +246,53 @@ export default {
     },
     // 重置
     onReset(form) {
-      this.text1 = ''
-      this.text2 = ''
-      this.text3 = ''
-      this.text10 = ''
-      this.text11 = ''
+      this.pickerNames = {}
       this.form = {}
       console.log('reset');
     },
-
-    // 客户类型 ----右侧pop选中关闭
-    onConfirm2(obj) {
-      this.form.b = obj.value
-      this.text2 = obj.label
-      this.showPicker2 = false
-    },
-    // 客户属性 ----右侧pop选中关闭
-    onConfirm3(obj) {
-      this.form.c = obj.value
-      this.text3 = obj.label
-      this.showPicker3 = false
-    },
-
     // 模糊搜索
     handleSearchChange(value) {
       console.log('这里面接口请求模糊查询:', value)
     },
     /**
-     *点击某一项
+     *点击模糊查询框某一项
      */
     handleValueClick(obj) {
       console.log('xxx:', obj)
     },
-    handleShowModal(text) {
-      if (text === 'city') {
+    // 打开模糊查询框
+    handleShowModal(key) {
+      this.modalKey = key
+      if (key === 'city') {
         this.options = []
       }
-      this.type = text
       this.showModal = true
     },
-    // 创建时间开始日期 ----右侧pop选中关闭
-    onConfirm10(date) {
-      this.text10 = `${date.getMonth() + 1}/${date.getDate()}`;
-      this.form.r = date
-      this.showPicker10 = false;
+    // 显示picker
+    showPickerFn(key) {
+      this.columns = []
+      this.pickerKey = key;
+      if (key === 'b') {
+        this.columns.push(...this.columns2);
+      } else if (key === 'c') {
+        this.columns.push(...this.columns3);
+      }
+      this.showPicker = true;
     },
-    // 创建时间结束日期 ----右侧pop选中关闭
-    onConfirm11(date) {
-      this.text11 = `${date.getMonth() + 1}/${date.getDate()}`;
-      this.form.s = date
-      this.showPicker11 = false;
+    // picker选择器
+    onConfirm(obj) {
+      // 如果是日期选择器
+      if (this.isDateRange) {
+        if (obj.length === 2) {
+          let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+          let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+          this.pickerNames[this.pickerKey] = `${startName}-${endName}`
+        }
+      } else {
+        this.pickerNames[this.pickerKey] = obj.label
+      }
+      this.form[this.pickerKey] = obj
+      this.showPicker = false;
     }
   }
 }
