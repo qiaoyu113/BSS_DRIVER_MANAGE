@@ -1,8 +1,8 @@
 <template>
-  <div class="lineSearchContainer">
+  <div class="projectSearchContainer">
     <!-- nav-bar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="搜索线路" left-text="返回" left-arrow @click-left="onClickLeft" />
+      <van-nav-bar title="搜索项目" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <!-- 搜索 -->
     <van-search
@@ -90,13 +90,13 @@ export default {
           {
             id: 1,
             title: '京东城配线(xs200808)',
-            update: '2020-080-09',
-            line: '稳定线路/无线路余额/支线',
+            contacts: '小小悠',
+            phone: '15021578693',
             carType: '小面',
-            status: '已试跑',
-            rearchDate: '2020-08-09',
+            warehouseName: '近的顺义仓',
+            lineCount: 20,
             worktime: '10小时',
-            tags: ['已上架', '共享', '已采线']
+            tag: '已启用'
           }
         ]
       }
@@ -115,7 +115,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.lineSearchContainer {
+.projectSearchContainer {
   font-family: PingFangSC-Regular;
   .lineHeight {
     background: #F9F9F9;
@@ -149,14 +149,14 @@ export default {
 </style>
 
 <style scoped>
-  .lineSearchContainer >>> .van-hairline--top::after {
+  .projectSearchContainer >>> .van-hairline--top::after {
     border-color: #649CEE;
   }
-  .lineSearchContainer >>> .van-search__content {
+  .projectSearchContainer >>> .van-search__content {
     display: flex;
     flex-direction: column-reverse;
   }
-  .lineSearchContainer >>> .van-search {
+  .projectSearchContainer >>> .van-search {
     display: flex;
     align-items: flex-start;
   }

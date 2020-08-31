@@ -1,17 +1,10 @@
 <template>
-  <div class="lineListContainer">
+  <div class="projectListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="线路管理" left-text="返回" left-arrow @click-left="onClickLeft">
-        <template #right>
-          <div class="headerRight" @click="showPicker = true">
-            新建
-            <van-icon name="add-o" />
-          </div>
-        </template>
-      </van-nav-bar>
+      <van-nav-bar title="项目管理" left-text="返回" left-arrow @click-left="onClickLeft" />
       <!-- 搜索 -->
-      <van-search show-action placeholder="请输入线路名称/线路编号" readonly @click="handleSearchClick">
+      <van-search show-action placeholder="项目名称/项目编号/项目联系人手机号搜索" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="show=true">
             筛选
@@ -48,17 +41,6 @@
       </van-list>
     </van-pull-refresh>
 
-    <!-- 选择临时线路or稳定线路 -->
-    <van-popup v-model="showPicker" position="bottom">
-      <van-picker
-        show-toolbar
-        value-key="label"
-        :columns="columns"
-        @confirm="onConfirm"
-        @cancel="showPicker = false"
-      />
-    </van-popup>
-
     <!-- 右侧筛选抽屉 -->
     <SelfPopup
       ref="lineLineForm"
@@ -71,7 +53,7 @@
         :value="text1"
         readonly
         clickable
-        label="线路类型"
+        label="收货点类型"
         placeholder="请选择"
         @click="showPicker1 = true"
       />
@@ -79,8 +61,7 @@
         :value="text2"
         readonly
         clickable
-        label-width="100"
-        label="是否有线路余额"
+        label="配送经验"
         placeholder="请选择"
         @click="showPicker2 = true"
       />
@@ -88,7 +69,8 @@
         :value="text3"
         readonly
         clickable
-        label="线路分类"
+        label-width="100"
+        label="是否需要回单"
         placeholder="请选择"
         @click="showPicker3 = true"
       />
@@ -96,53 +78,19 @@
         :value="text4"
         readonly
         clickable
-        label-width="100"
-        label="是否为城配线"
-        placeholder="请选择"
-        @click="showPicker4 = true"
-      />
-      <van-field
-        :value="text5"
-        readonly
-        clickable
         label="上岗经理"
         placeholder="请选择"
         @click="handleShowModal('manager')"
       />
       <van-field
-        :value="text6"
+        :value="text5"
         readonly
         clickable
         label="外线销售"
         placeholder="请选择"
         @click="handleShowModal('sell')"
       />
-      <van-field
-        :value="text7"
-        readonly
-        clickable
-        label="配送车型"
-        placeholder="请选择"
-        @click="handleShowModal('carType')"
-      />
-      <van-field
-        :value="text8"
-        readonly
-        clickable
-        label-width="100"
-        label="上架截止日期"
-        placeholder="请选择"
-        @click="showPicker8 = true"
-      />
-      <van-field
-        :value="text9"
-        readonly
-        clickable
-        label-width="100"
-        label="司机上岗时间"
-        placeholder="请选择"
-        @click="showPicker9 = true"
-      />
+
       <van-field
         :value="text10"
         readonly
@@ -188,15 +136,7 @@
         @cancel="showPicker3 = false"
       />
     </van-popup>
-    <van-popup v-model="showPicker4" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns4"
-        @confirm="onConfirm4"
-        @cancel="showPicker4 = false"
-      />
-    </van-popup>
+
     <Suggest
       v-model="showModal"
       :options="options"
@@ -205,12 +145,7 @@
       @finish="handleValueClick"
       @closed="showModal=false"
     />
-    <van-popup v-model="showPicker8" position="bottom">
-      <van-calendar v-model="showPicker8" @confirm="onConfirm8" />
-    </van-popup>
-    <van-popup v-model="showPicker9" position="bottom">
-      <van-calendar v-model="showPicker9" @confirm="onConfirm9" />
-    </van-popup>
+
     <van-popup v-model="showPicker10" position="bottom">
       <van-calendar v-model="showPicker10" @confirm="onConfirm10" />
     </van-popup>
@@ -243,34 +178,16 @@ export default {
           num: 100
         },
         {
-          text: '已上架',
+          text: '已启用',
           num: 0
         },
         {
-          text: '已售罄',
-          num: 0
-        },
-        {
-          text: '未开跑已下架',
-          num: 0
-        },
-        {
-          text: '已开跑下架',
+          text: '已禁用',
           num: 0
         }
       ],
       lists: [],
-      showPicker: false,
-      columns: [
-        {
-          label: '稳定线路',
-          value: 1
-        },
-        {
-          label: '临时线路',
-          value: 0
-        }
-      ],
+
       form: { // 查询表单
 
       },
@@ -279,57 +196,52 @@ export default {
       text3: '',
       text4: '',
       text5: '',
-      text6: '',
-      text7: '',
-      text8: '',
-      text9: '',
       text10: '',
       text11: '',
       showPicker1: false,
       showPicker2: false,
       showPicker3: false,
-      showPicker4: false,
-      showPicker8: false,
-      showPicker9: false,
       showPicker10: false,
       showPicker11: false,
       columns1: [
         {
-          label: '专车',
+          label: '仓库',
           value: 1
         },
         {
-          label: '共享',
-          value: 0
+          label: '门店',
+          value: 2
+        },
+        {
+          label: '宅配',
+          value: 3
+        },
+        {
+          label: '指定位置',
+          value: 4
+        },
+        {
+          label: '无人货架',
+          value: 5
         }
       ],
       columns2: [
         {
-          label: '有线路余额',
+          label: '有需求',
           value: 1
         },
         {
-          label: '无线路余额',
+          label: '无需求',
           value: 0
         }
       ],
       columns3: [
         {
-          label: '稳定线路',
+          label: '是',
           value: 1
         },
         {
-          label: '临时线路',
-          value: 0
-        }
-      ],
-      columns4: [
-        {
-          label: '城配线',
-          value: 1
-        },
-        {
-          label: '支线',
+          label: '否',
           value: 0
         }
       ],
@@ -350,16 +262,6 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
-    // 选择线路
-    onConfirm(obj) {
-      this.showPicker = false;
-      this.$router.push({
-        path: '/createLine',
-        query: {
-          isStable: obj.value
-        }
-      })
-    },
     onLoad(isInit = false) {
       if (isInit === true) {
         this.lists = []
@@ -371,13 +273,13 @@ export default {
           let obj = {
             id: id + i,
             title: '京东城配线(xs200808)',
-            update: '2020-080-09',
-            line: '稳定线路/无线路余额/支线',
+            contacts: '小小悠',
+            phone: '15021578693',
             carType: '小面',
-            status: '已试跑',
-            rearchDate: '2020-08-09',
+            warehouseName: '近的顺义仓',
+            lineCount: 20,
             worktime: '10小时',
-            tags: ['已上架', '共享', '已采线']
+            tag: i % 2 === 0 ? '已启用' : '已禁用'
           }
           this.lists.push(obj)
         }
@@ -395,7 +297,7 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/lineSearch'
+        path: '/projectSearch'
       })
     },
     // 查询
@@ -409,39 +311,30 @@ export default {
       this.text3 = ''
       this.text4 = ''
       this.text5 = ''
-      this.text6 = ''
-      this.text7 = ''
-      this.text8 = ''
-      this.text9 = ''
       this.text10 = ''
       this.text11 = ''
       this.form = {}
       console.log('reset');
     },
-    // 线路类型 ----右侧pop选中关闭
+    // 收货点类型 ----右侧pop选中关闭
     onConfirm1(obj) {
       this.form.a = obj.value
       this.text1 = obj.label
       this.showPicker1 = false
     },
-    // 是否有线路余额 ----右侧pop选中关闭
+    // 配送经验 ----右侧pop选中关闭
     onConfirm2(obj) {
       this.form.b = obj.value
       this.text2 = obj.label
       this.showPicker2 = false
     },
-    // 线路分类 ----右侧pop选中关闭
+    // 是否需要回单 ----右侧pop选中关闭
     onConfirm3(obj) {
       this.form.c = obj.value
       this.text3 = obj.label
       this.showPicker3 = false
     },
-    // 是否为城配线 ----右侧pop选中关闭
-    onConfirm4(obj) {
-      this.form.d = obj.value
-      this.text4 = obj.label
-      this.showPicker4 = false
-    },
+
     // 模糊搜索
     handleSearchChange(value) {
       console.log('这里面接口请求模糊查询:', value)
@@ -457,23 +350,9 @@ export default {
         this.options = []
       } else if (text === 'sell') {
         this.options = []
-      } else if (text === 'carType') {
-        this.options = []
       }
       this.type = text
       this.showModal = true
-    },
-    // 上架截止日期 ----右侧pop选中关闭
-    onConfirm8(date) {
-      this.text8 = `${date.getMonth() + 1}/${date.getDate()}`;
-      this.form.o = date
-      this.showPicker8 = false;
-    },
-    // 上架截止日期 ----右侧pop选中关闭
-    onConfirm9(date) {
-      this.text9 = `${date.getMonth() + 1}/${date.getDate()}`;
-      this.form.p = date
-      this.showPicker9 = false;
     },
     // 创建时间开始日期 ----右侧pop选中关闭
     onConfirm10(date) {
@@ -493,7 +372,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.lineListContainer {
+.projectListContainer {
   font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
@@ -525,7 +404,7 @@ export default {
 </style>
 
 <style scoped>
-  .ListContainer >>> .van-tab__text {
+  .projectListContainer >>> .van-tab__text {
     font-size: 12px;
     color: #3C4353;
   }
