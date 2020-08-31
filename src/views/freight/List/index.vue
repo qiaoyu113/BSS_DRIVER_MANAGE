@@ -145,13 +145,13 @@
 
 <script>
 import CardItem from './components/Cardltem'
-import SelfPopup from '@/components/SelfPopup';
+// import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { Toast } from 'vant';
 export default {
   components: {
     CardItem,
-    SelfPopup,
+    // SelfPopup,
     Suggest
   },
   data() {
