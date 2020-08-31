@@ -49,22 +49,23 @@
 <script>
 import CardItem from '../List/components/CardItem'
 import { debounce } from '@/utils/index'
+import { getClientList } from '@/api/client'
 export default {
   components: {
     CardItem
   },
   data() {
     return {
-      keyWord: '',
-      lists: [],
-      historyItems: [
-        '京东',
-        '顺丰',
-        '中国邮政配送中心',
-        '启恒物流',
-        '德邦物流'
-      ],
-      options: []
+      keyWord: '', // 关键字
+      lists: [], // 查询出来的数据
+      historyItems: [], // 历史搜索
+      options: []// 关键字查出来的关键字
+    }
+  },
+  mounted() {
+    let historyData = this.getHistory()
+    if (historyData) {
+      this.historyItems = JSON.parse(historyData)
     }
   },
   methods: {
@@ -77,37 +78,59 @@ export default {
       if (!this.keyWord) {
         return false
       }
-
-      console.log(this.keyWord)
-      if (this.keyWord === 'd') {
-        this.options = [
-          '京东',
-          '京东12121',
-          '京东121212ddasddasd'
-        ]
-      } else {
-        this.lists = [
-          {
-            id: 1,
-            title: '京东城配线(xs200808)',
-            contacts: '小小悠',
-            phone: '15021578693',
-            clientProperty: '外线客户',
-            createDate: Date.now(),
-            tag: '已启用'
-          }
-        ]
-      }
+      this.getLists(this.keyWord)
     }, 200),
     // 取消
     onCancel() {
       this.keyWord = ''
       this.lists = []
     },
+    // 搜索历史关键字
     handleItemClick(value) {
       this.keyWord = value
+    },
+    // 搜索
+    async getLists(keyword = '') {
+      try {
+        let params = {
+          page: 1,
+          pageNumber: 9999
+        }
+        keyword && (params.key = keyword)
+        let { data: res } = await getClientList(params)
+        if (res.success) {
+          this.lists = res.data
+          if (this.keyword) {
+            this.setHistory(keyword)
+          }
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
+    },
+    // 存localStorage
+    setHistory(keyword) {
+      let index = this.historyItems.findIndex(item => item === keyword)
+      if (index > -1) {
+        this.historyItems.splice(index, 1)
+      }
+      if (this.historyItems.length > 5) {
+        this.historyItems.pop()
+      }
+      this.historyItems.push(keyword)
+      localStorage.setItem(JSON.stringify(keyword))
+    },
+    // 获取从localStorage
+    getHistory() {
+      let history = localStorage.getItem('clent')
+      if (history) {
+        return history
+      }
     }
   }
+
 }
 
 </script>
