@@ -63,7 +63,9 @@ export default {
     return {}
   },
   methods: {
-    goRouter() {}
+    goRouter() {
+      this.$router.push({ path: '/lineDetail', id: '' })
+    }
   }
 }
 </script>

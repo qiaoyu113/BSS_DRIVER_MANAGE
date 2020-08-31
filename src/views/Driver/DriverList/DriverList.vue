@@ -96,56 +96,24 @@
         @click="showPickerFn('status')"
       />
       <van-field
-        v-model="formText.startDate"
+        v-model="formText.dateArr"
         readonly
-        name="startDate"
+        name="status"
         label="创建时间"
-        placeholder="开始日期"
+        placeholder="请选择"
         @click="dateShow = true"
-      />
-      <van-field
-        v-model="formText.endDate"
-        readonly
-        name="endDate"
-        label=" "
-        placeholder="结束日期"
-        @click="dateShowEnd = true"
       />
     </SelfPopup>
 
-    <!-- 开始时间 -->
-    <van-popup
+    <!-- :show-confirm="false" -->
+    <van-calendar
       v-model="dateShow"
-      round
-      position="bottom"
-    >
-      <van-datetime-picker
-        v-model="startDate"
-        type="date"
-        title="选择年月日"
-        :min-date="minDate"
-        :max-date="maxDate"
-        @confirm="confirmStart"
-        @cancel="dateShow = false"
-      />
-    </van-popup>
-
-    <!-- 结束时间 -->
-    <van-popup
-      v-model="dateShowEnd"
-      round
-      position="bottom"
-    >
-      <van-datetime-picker
-        v-model="endDate"
-        type="date"
-        title="选择年月日"
-        :min-date="minDate"
-        :max-date="maxDate"
-        @confirm="confirmEnd"
-        @cancel="dateShowEnd = false"
-      />
-    </van-popup>
+      type="range"
+      :min-date="minDate"
+      :max-data="maxDate"
+      :allow-same-day="true"
+      @confirm="onConfirm"
+    />
 
     <!-- picker -->
     <van-popup v-model="showPicker" round position="bottom">
@@ -169,6 +137,7 @@
   </div>
 </template>
 <script>
+import { parseTime } from '@/utils'
 import ListItem from './components/ListItem'
 import DriverTitle from './components/DriverTitle'
 import SelfPopup from '@/components/SelfPopup';
@@ -230,12 +199,9 @@ export default {
       }],
       showPicker: false,
       showScreen: false,
+      minDate: new Date(+new Date() - 86400000 * 365),
+      maxDate: new Date(+new Date() + 86400000 * 365),
       dateShow: false,
-      dateShowEnd: false,
-      startDate: '',
-      endDate: '',
-      minDate: new Date(2020, 0, 1),
-      maxDate: new Date(2025, 10, 1),
       active: 0,
       formText: {
         workCity: '',
@@ -244,8 +210,7 @@ export default {
         GmManager: '',
         carType: '',
         status: '',
-        startDate: '',
-        endDate: ''
+        dateArr: ''
       },
       ruleForm: {
         workCity: '',
@@ -376,23 +341,17 @@ export default {
       }
       this.showPicker = true;
     },
-    confirmStart(value) {
-      this.formText.startDate = this.formatDateTime(value)
-      this.ruleForm.startDate = value.getTime()
-      this.dateShow = false
+    formatDate(date) {
+      return `${date.getMonth() + 1}/${date.getDate()}`;
     },
-    confirmEnd(value) {
-      this.formText.endDate = this.formatDateTime(value)
-      this.ruleForm.endDate = value.getTime()
-      this.dateShowEnd = false
-    },
-    formatDateTime(date) {
-      var y = date.getFullYear();
-      var m = date.getMonth() + 1;
-      m = m < 10 ? ('0' + m) : m;
-      var d = date.getDate();
-      d = d < 10 ? ('0' + d) : d;
-      return y + '-' + m + '-' + d;
+    onConfirm(date) {
+      const [start, end] = date;
+      this.dateShow = false;
+      let startDate = parseTime(start, '{y}-{m}-{d}');
+      let endDate = parseTime(end, '{y}-{m}-{d}');
+      this.formText.dateArr = `${startDate} - ${endDate}`;
+      this.ruleForm.startDate = startDate;
+      this.ruleForm.endDate = endDate;
     },
     /**
      * 取消选择加盟经理
