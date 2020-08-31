@@ -6,6 +6,8 @@
       </h4>
       <van-field
         v-model="form.a"
+        label-width="100"
+        colon
         required
         label="货物类型"
         placeholder="请输入"
@@ -13,6 +15,8 @@
       />
       <van-field
         v-model="form.b"
+        label-width="100"
+        colon
         label="货物件数"
         type="digit"
         name="numValidator"
@@ -26,6 +30,8 @@
       <van-field
         v-model="form.c"
         v-only-number="{min: 1, max: 999999, precision: 1}"
+        label-width="100"
+        colon
         required
         label="货物体积"
         type="number"
@@ -40,6 +46,8 @@
       <van-field
         v-model="form.d"
         v-only-number="{min: 1, max: 999999, precision: 1}"
+        label-width="100"
+        colon
         required
         label="货物重量"
         name="numValidator"
@@ -51,31 +59,23 @@
         ]"
       />
       <van-field
-        :value="text1"
+        label-width="100"
+        colon
+        :value="pickerNames['o']"
         readonly
         clickable
         required
-        label-width="100"
         label="是否需要搬运"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPicker1 = true"
+        @click="showPickerFn('o')"
       />
-      <van-popup v-model="showPicker1" position="bottom">
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns1"
-          @confirm="onConfirm1"
-          @cancel="showPicker1 = false"
-        />
-      </van-popup>
       <van-field
         v-model="form.remark"
-        label-width="100"
         colon
+        label-width="100"
         rows="2"
         autosize
         label="其他上岗要求"
@@ -94,6 +94,16 @@
         </van-button>
       </div>
     </van-form>
+    <van-popup v-model="showPicker" position="bottom">
+      <!-- picker选择器 -->
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+      />
+    </van-popup>
   </div>
 </template>
 
@@ -118,7 +128,12 @@ export default {
           value: 2
         }
       ],
-      showPicker1: false
+      pickerNames: { // picker选中显示的名字
+
+      },
+      pickerKey: '', // 显示picker的key
+      columns: [], // picker的列表
+      showPicker: false // 是否打开picker
     }
   },
   methods: {
@@ -133,11 +148,20 @@ export default {
       }
       return false
     },
-    // 是否需要搬运
-    onConfirm1(obj) {
-      this.form.f = obj.value
-      this.text1 = obj.label
-      this.showPicker1 = false
+    // 显示picker
+    showPickerFn(key) {
+      this.columns = []
+      this.pickerKey = key;
+      if (key === 'o') {
+        this.columns.push(...this.columns1);
+      }
+      this.showPicker = true;
+    },
+    // picker选择器
+    onConfirm(obj) {
+      this.pickerNames[this.pickerKey] = obj.label
+      this.form[this.pickerKey] = obj
+      this.showPicker = false;
     }
   }
 }

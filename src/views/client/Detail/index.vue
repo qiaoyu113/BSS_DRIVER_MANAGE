@@ -6,38 +6,39 @@
       </van-nav-bar>
     </van-sticky>
 
-    <van-field label="客户名称" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="客户类型" readonly :value="form.lineName" :border="false" colon />
+    <van-field label="客户名称" label-width="100" readonly :value="form.customerCompanyName" :border="false" colon />
+    <van-field label="客户类型" label-width="100" readonly :value="form.customerTypeName" :border="false" colon />
     <!-- 公司 -->
-    <van-field label="公司主体" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="客户编号" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="创建人" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="审核状态" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="客户状态" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="客户渠道" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="客户分类" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="所属城市" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="联系人" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="联系电话" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="职务" label-width="100" readonly :value="form.lineName" :border="false" colon />
+    <van-field v-if="form.customerCompanyMain" label="公司主体" label-width="100" readonly :value="form.customerCompanyMain" :border="false" colon />
+    <van-field label="客户编号" label-width="100" readonly :value="form.customerId" :border="false" colon />
+    <van-field label="创建人" label-width="100" readonly :value="form.createName" :border="false" colon />
+    <van-field label="审核状态" label-width="100" readonly :value="form.reviewStateName" :border="false" colon />
+    <van-field label="客户状态" label-width="100" readonly :value="form.customerStateName" :border="false" colon />
+    <van-field label="客户渠道" label-width="100" readonly :value="form.customerChannelsName" :border="false" colon />
+    <van-field label="客户分类" label-width="100" readonly :value="form.classificationName" :border="false" colon />
+    <van-field label="所属城市" label-width="100" readonly :value="form.cityName" :border="false" colon />
+    <van-field label="联系人" label-width="100" readonly :value="form.bussinessName" :border="false" colon />
+    <van-field label="联系电话" label-width="100" readonly :value="form.bussinessPhone" :border="false" colon />
+    <van-field label="职务" label-width="100" readonly :value="form.bussinessPosition" :border="false" colon />
 
-    <van-field label="身份证号" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="客户意向度" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="客户体量" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="合同止期" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="创建日期" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="所在区域" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="详细地址" readonly :value="form.lineName" :border="false" colon />
-    <van-field label="备注" readonly :value="form.lineName" colon />
+    <van-field label="身份证号" label-width="100" readonly :value="form.bussinessCard" :border="false" colon />
+    <van-field label="客户意向度" label-width="100" readonly :value="form.customerIntentionName" :border="false" colon />
+    <van-field label="客户体量" label-width="100" readonly :value="form.customerSize" :border="false" colon />
+    <van-field label="合同止期" label-width="100" readonly :value="form.contractEnd | parseTime('{y}-{m}-{d}')" :border="false" colon />
+    <van-field label="创建日期" label-width="100" readonly :value="form.createDate | parseTime('{y}-{m}-{d}')" :border="false" colon />
+    <van-field label="所在区域" label-width="100" readonly :value="region" :border="false" colon />
+    <van-field label="详细地址" label-width="100" readonly :value="form.address" :border="false" colon />
+    <van-field label="备注" label-width="100" readonly :value="form.remark" colon />
 
     <van-cell-group title="营业执照" class="busiLicense">
-      <ImagePreview :image-arrs="form.pics" />
+      <ImagePreview :image-arrs="form.businessLicenseUrl" />
     </van-cell-group>
   </div>
 </template>
 
 <script>
 import ImagePreview from '../../line/Detail/components/ImagePreview'
+import { getClientDetail } from '@/api/client'
 export default {
   components: {
     ImagePreview
@@ -45,17 +46,21 @@ export default {
   data() {
     return {
       form: {
-        lineName: '祥云物流项目',
-        pics: [
-          'https://img.yzcdn.cn/vant/leaf.jpg',
-          'https://img.yzcdn.cn/vant/cat.jpeg'
-        ]
-      }
-
+        lineName: '祥云物流项目'
+      },
+      customerId: '' // 客户详情
+    }
+  },
+  computed: {
+    region() {
+      return this.form.areaProvinceName + '/' + this.form.areaCityName + '/' + this.form.areaCountyName
     }
   },
   mounted() {
-
+    this.customerId = this.$route.query.customerId
+    if (this.customerId) {
+      this.getClientDetail()
+    }
   },
   methods: {
     /**
@@ -75,6 +80,26 @@ export default {
           isStable: text
         }
       })
+    },
+    // 获取客户详情
+    async getClientDetail() {
+      try {
+        this.$loading(true)
+        let params = {
+          customerId: this.customerId
+        }
+        let { data: res } = await getClientDetail(params)
+        if (res.success) {
+          this.form = res.data
+          this.form.businessLicenseUrl = this.form.businessLicenseUrl.split(',')
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get client detail fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     }
 
   }

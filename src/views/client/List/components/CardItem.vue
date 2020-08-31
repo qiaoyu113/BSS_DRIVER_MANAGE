@@ -1,16 +1,16 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title van-ellipsis">
-      {{ obj.title }}
+      {{ obj.customerCompanyName }} ({{ obj.customerId }}) {{ obj.customerTypeName }}
     </h4>
     <p class="text van-ellipsis">
-      联系人:{{ obj.contacts }}
+      联系人:{{ obj.bussinessName }}
     </p>
     <p class="text van-ellipsis">
-      手机:{{ obj.phone }}
+      手机:{{ obj.bussinessPhone }}
     </p>
     <p class="text van-ellipsis">
-      客户属性:{{ obj.clientProperty }}
+      客户属性:{{ obj.customerTypeName }}
     </p>
     <div class="footer">
       <div class="right">
@@ -19,20 +19,20 @@
         </p>
         <div>
           <van-tag
-            v-if="obj.tag ==='已启用'"
+            v-if="obj.customerState ===1"
             class="tag"
             color="#3acb8d1a"
             text-color="#3ACB8D"
           >
-            {{ obj.tag }}
+            已启用
           </van-tag>
           <van-tag
-            v-if="obj.tag ==='已禁用'"
+            v-if="obj.customerState ===2"
             class="tag"
             color="#ffa0001a"
             text-color="#FFA000"
           >
-            {{ obj.tag }}
+            已禁用
           </van-tag>
         </div>
       </div>
@@ -59,7 +59,10 @@ export default {
      */
     handleDetailClick() {
       this.$router.push({
-        path: '/clientDetail'
+        path: '/clientDetail',
+        query: {
+          customerId: this.obj.customerId
+        }
       })
     }
   }
