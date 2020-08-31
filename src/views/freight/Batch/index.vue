@@ -36,15 +36,122 @@
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
+    <!-- 右侧筛选抽屉 -->
+    <SelfPopup
+      ref="lineLineForm"
+      :show.sync="show"
+      form-ref="form"
+      @submit="onQuery"
+      @reset="onReset"
+    >
+      <van-field
+        :value="text1"
+        readonly
+        clickable
+        label="城市"
+        placeholder="请选择"
+        @click="showPicker1 = true"
+      />
+      <van-field
+        v-model="text2"
+        name="username"
+        label="用户名"
+        placeholder="请输入"
+      />
+      <van-field
+        v-model="text3"
+        name="username"
+        label="线路"
+        placeholder="请输入"
+      />
+      <van-field
+        :value="text4"
+        readonly
+        clickable
+        label="加盟经理"
+        placeholder="请选择"
+        @click="handleShowModal('manager')"
+      />
+
+      <van-field
+        :value="text10"
+        readonly
+        clickable
+        label="创建时间"
+        placeholder="开始日期"
+        :min-date="minDate"
+        @click="showPicker10 = true"
+      />
+      <van-field
+        :value="text11"
+        readonly
+        clickable
+        input-align="center"
+        placeholder="结束日期"
+        @click="showPicker11 = true"
+      />
+    </SelfPopup>
+    <van-popup v-model="showPicker1" position="bottom">
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns1"
+        @confirm="onConfirm1"
+        @cancel="showPicker1 = false"
+      />
+    </van-popup>
+
+    <van-popup v-model="showPicker3" position="bottom">
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns3"
+        @confirm="onConfirm3"
+        @cancel="showPicker3 = false"
+      />
+    </van-popup>
+    <van-popup v-model="showPicker4" position="bottom">
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns4"
+        @confirm="onConfirm4"
+        @cancel="showPicker4 = false"
+      />
+    </van-popup>
+    <Suggest
+      v-model="showModal"
+      :options="options"
+      :type="type"
+      @keyWordValue="handleSearchChange"
+      @finish="handleValueClick"
+      @closed="showModal=false"
+    />
+    <van-popup v-model="showPicker8" position="bottom">
+      <van-calendar v-model="showPicker8" @confirm="onConfirm8" />
+    </van-popup>
+    <van-popup v-model="showPicker9" position="bottom">
+      <van-calendar v-model="showPicker9" @confirm="onConfirm9" />
+    </van-popup>
+    <van-popup v-model="showPicker10" position="bottom">
+      <van-calendar v-model="showPicker10" @confirm="onConfirm10" />
+    </van-popup>
+    <van-popup v-model="showPicker11" position="bottom">
+      <van-calendar v-model="showPicker11" @confirm="onConfirm11" />
+    </van-popup>
   </div>
 </template>
 
 <script>
-import CardItem from './components/list'
+import SelfPopup from '@/components/SelfPopup';
+import Suggest from '@/components/SuggestSearch.vue'
+import CardItem from './components/List'
 import { Toast } from 'vant';
 export default {
   components: {
-    CardItem
+    CardItem,
+    SelfPopup,
+    Suggest
 
   },
   data() {
@@ -73,6 +180,67 @@ export default {
         }
 
       ],
+      form: { // 查询表单
+
+      },
+      // 筛选
+      text1: '', // 城市选择
+      text2: '', // 用户名
+      text3: '', // 线路
+      text4: '', // 加盟经理
+      text10: '', // 开始时间
+      text11: '', // 结束时间
+      showPicker1: false,
+      showPicker2: false,
+      showPicker3: false,
+      showPicker4: false,
+      showPicker8: false,
+      showPicker9: false,
+      showPicker10: false,
+      showPicker11: false,
+      columns1: [
+        {
+          label: '专车',
+          value: 1
+        },
+        {
+          label: '共享',
+          value: 0
+        }
+      ],
+      columns2: [
+        {
+          label: '有线路余额',
+          value: 1
+        },
+        {
+          label: '无线路余额',
+          value: 0
+        }
+      ],
+      columns3: [
+        {
+          label: '稳定线路',
+          value: 1
+        },
+        {
+          label: '临时线路',
+          value: 0
+        }
+      ],
+      columns4: [
+        {
+          label: '城配线',
+          value: 1
+        },
+        {
+          label: '支线',
+          value: 0
+        }
+      ],
+      showModal: false,
+      options: [],
+      type: '',
       lists: [
         {
           id: 1,
@@ -87,7 +255,8 @@ export default {
         {
           id: 2,
           title: '2020/09/08  张三 / 18888888888',
-          statust: '未出车',
+          statust: '待上报',
+          yicahng: '有差异',
           update: '12233344',
           carType: '张三',
           status: '北京线路',
@@ -97,29 +266,34 @@ export default {
         {
           id: 3,
           title: '2020/09/08  张三 / 18888888888',
+          yicahng: '有差异',
           statust: '3000.00',
           update: '12233344',
           carType: '张三',
-          status: '北京线路',
-          all: false
-
+          status: '北京线路'
         },
         {
           id: 4,
           title: '2020/09/08  张三 / 18888888888',
-          yicahng: '异常',
-          statust: '未出车',
+          yicahng: '',
+          statust: '300.00',
           update: '12233344',
           carType: '张三',
-          status: '北京线路',
-          all: false
-
+          status: '北京线路'
         }
       ]
     }
   },
+  computed: {
+    minDate() {
+      if (this.form.r) {
+        return new Date(this.form.r)
+      }
+      return new Date()
+    }
+  },
   mounted() {
-
+    console.log(typeof this.lists[3].all)
   },
   methods: {
     onClickLeft() {
@@ -137,14 +311,95 @@ export default {
         this.isLoading = false;
         this.count++;
       }, 1000);
-    }
+    },
+    onQuery() {
+      console.log('submit', this.form);
+    },
     // 重置
+    onReset(form) {
+      this.text1 = ''
+      this.text2 = ''
+      this.text3 = ''
+      this.text4 = ''
+      this.text10 = ''
+      this.text11 = ''
+      this.form = {}
+      console.log('reset');
+    },
+    // 线路类型 ----右侧pop选中关闭
+    onConfirm1(obj) {
+      this.form.a = obj.value
+      this.text1 = obj.label
+      this.showPicker1 = false
+    },
+    // 是否有线路余额 ----右侧pop选中关闭
+    onConfirm2(obj) {
+      this.form.b = obj.value
+      this.text2 = obj.label
+      this.showPicker2 = false
+    },
+    // 线路分类 ----右侧pop选中关闭
+    onConfirm3(obj) {
+      this.form.c = obj.value
+      this.text3 = obj.label
+      this.showPicker3 = false
+    },
+    // 是否为城配线 ----右侧pop选中关闭
+    onConfirm4(obj) {
+      this.form.d = obj.value
+      this.text4 = obj.label
+      this.showPicker4 = false
+    },
+    // 模糊搜索
+    handleSearchChange(value) {
+      console.log('这里面接口请求模糊查询:', value)
+    },
+    /**
+     *点击某一项
+     */
+    handleValueClick(obj) {
+      console.log('xxx:', obj)
+    },
+    handleShowModal(text) {
+      if (text === 'manager') {
+        this.options = []
+      } else if (text === 'sell') {
+        this.options = []
+      } else if (text === 'carType') {
+        this.options = []
+      }
+      this.type = text
+      this.showModal = true
+    },
+    // 上架截止日期 ----右侧pop选中关闭
+    onConfirm8(date) {
+      this.text8 = `${date.getMonth() + 1}/${date.getDate()}`;
+      this.form.o = date
+      this.showPicker8 = false;
+    },
+    // 上架截止日期 ----右侧pop选中关闭
+    onConfirm9(date) {
+      this.text9 = `${date.getMonth() + 1}/${date.getDate()}`;
+      this.form.p = date
+      this.showPicker9 = false;
+    },
+    // 创建时间开始日期 ----右侧pop选中关闭
+    onConfirm10(date) {
+      this.text10 = `${date.getMonth() + 1}/${date.getDate()}`;
+      this.form.r = date
+      this.showPicker10 = false;
+    },
+    // 创建时间结束日期 ----右侧pop选中关闭
+    onConfirm11(date) {
+      this.text11 = `${date.getMonth() + 1}/${date.getDate()}`;
+      this.form.s = date
+      this.showPicker11 = false;
+    }
 
   }
 }
 
 </script>
-
 <style lang='scss' scoped>
 .lineListContainer {
   font-family: PingFangSC-Medium;
@@ -256,6 +511,20 @@ export default {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.19);
+}
+.lineListContainer>>>.van-cell {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    box-sizing: border-box;
+    width: 90%;
+    padding: 0.26667rem 0.42667rem;
+    overflow: hidden;
+    color: #3C4353;
+    font-size: 0.34667rem;
+    line-height: 0.64rem;
+    background-color: #fff;
 }
 </style>
 
