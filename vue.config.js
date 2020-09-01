@@ -71,6 +71,10 @@ module.exports = {
         target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true
       },
+      '/mock/67': {
+        target: 'http://yapi.ynimg.cn:8888',
+        changeOrigin: true
+      },
       '/mock/39': {
         target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true

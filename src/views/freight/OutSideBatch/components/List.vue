@@ -1,34 +1,28 @@
 <template>
   <div>
-    <P class="all">
-      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkbox }} 个出车单位</span>
+    <P v-show="batchShow" class="all">
+      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkLength }} 个出车单位</span>
     </P>
     <div v-for="item in obj" :key="item.id" class="CardItemcontainer">
       <h4 class="title ellipsis">
         {{ item.title }}
-        <span><input v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
+        <span>{{ item.statust }} <input v-show="batchShow" v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
       </h4>
-      <p class="Pink">
-        {{ item.yicahng }}
-      </p>
       <p class="text ellipsis">
         出车单号:{{ item.update }}
       </p>
       <p class="text ellipsis">
         线路名称:{{ item.carType }}
       </p>
-
-      <div class="detail van-hairline--top">
-        <van-button type="default" round hairline @click="handleDetailClick">
-          详情
-        </van-button>
-      </div>
+      <p v-if="item.yicahng != ''" class="Pink">
+        {{ item.yicahng }}
+      </p>
     </div>
-    <div class="Bulk">
+    <div v-show="batchShow" class="Bulk">
       <button @click="cancel()">
         取消批量上传
       </button>
-      <button @click="Add_to">
+      <button @click="upBatchFreight">
         批量上报运费
       </button>
     </div>
@@ -42,19 +36,28 @@ export default {
     obj: {
       type: Array,
       default: () => {}
+    },
+    batchshow: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       checkedo: '',
       checkedall: '',
-      checkbox: ''
+      batchShow: this.batchshow,
+      checkLength: 0
     }
   },
   computed: {
 
   },
-
+  watch: {
+    batchshow(val) {
+      this.batchShow = val
+    }
+  },
   methods: {
     /**
      * 线路详情
@@ -65,26 +68,12 @@ export default {
       })
     },
     quanxian() {
-      if (this.checkedo === true) {
-        this.checkbox = this.obj
-      } else {
-        this.checkbox = 0
-      }
       this.obj.forEach(item => {
         item.all = this.checkedo
       });
       this.getLength()
     },
     checkboxall(v) {
-      console.log(v.all)
-      var arr = []
-      if (v.all === true) {
-        arr.push(v)
-        this.checkbox = arr.length
-      } else {
-        console.log(this.checkbox - '1')
-      }
-
       this.obj.filter(res => {
         if (res.all === true) {
           this.checkedo = true
@@ -97,13 +86,17 @@ export default {
           this.checkedo = false
         }
       })
-
       this.getLength()
     },
     cancel() {
-      this.$router.go(-1)
+      this.obj.filter(res => {
+        res.all = false
+        this.checkedo = false
+      })
+      this.batchShow = false;
+      this.$emit('batch')
     },
-    Add_to() {
+    upBatchFreight() {
       let obje = []
       if (!this.checkLength) {
         Toast.fail('请选择上报运费');
@@ -114,21 +107,18 @@ export default {
           }
         })
         this.$router.push({
-          path: '/report',
+          path: '/outsidereport',
           query: {
             obj: JSON.stringify(obje)
           }
         })
       }
-
-      // this.$router.push({
-      //   name: 'report'
-      // })
     },
     // 获取选中数量
     getLength() {
       let num = 0;
       this.obj.forEach(res => {
+        console.log(res.all)
         if (res.all === true) {
           num = num + 1
         }
@@ -142,11 +132,9 @@ export default {
 
 <style lang='scss' scoped>
 .CardItemcontainer {
-  padding: 0px 30px;
+  padding: 0px 15px;
   margin-top: 20px;
-  margin-left:20px ;
   font-family: PingFangSC-Semibold;
-  position: relative;
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -155,19 +143,16 @@ export default {
   .title {
     margin: 10px 0px;
     font-size: 14px;
-    color: #3C4353 ;
+    color: #3C4353;
   }
   .title>span{
-   position: absolute;
-   left: 0px;
-   top: 60px;
-
+    float: right;
   }
   .text {
     margin-top:0px;
     margin-bottom:8px;
     font-size: 13px;
-    color: #3C4353 ;
+    color: #3C4353;
   }
   .text_xiang{
     float: right;
@@ -200,14 +185,12 @@ export default {
   }
 }
 .all{
-  margin-left: 20px;
+  margin-left: 30px;
 }
 .Bulk{
   width: 100%;
   height: 50px;
-  background: oldlace;
   display: flex;
-  z-index: 999;
   justify-content: space-between;
 
   position: fixed;
@@ -228,12 +211,11 @@ export default {
 }
 .Pink{
   width: 50px;
-  line-height: 20px;
+  line-height: 25px;
   text-align: center;
-  border-radius:10px ;
-
-  border: 1px solid #ff00008a;
-  color: #ff00008a;
+  border-radius:6px ;
+  background: #ff00008a;
+  color: #fff;
 }
 </style>
 
