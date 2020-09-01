@@ -100,7 +100,7 @@ export default {
         let { data: res } = await getClientList(params)
         if (res.success) {
           this.lists = res.data
-          if (this.keyword) {
+          if (keyword) {
             this.setHistory(keyword)
           }
         } else {
@@ -116,11 +116,11 @@ export default {
       if (index > -1) {
         this.historyItems.splice(index, 1)
       }
-      if (this.historyItems.length > 5) {
+      if (this.historyItems.length >= 5) {
         this.historyItems.pop()
       }
       this.historyItems.push(keyword)
-      localStorage.setItem(JSON.stringify(keyword))
+      localStorage.setItem('clent', JSON.stringify(this.historyItems))
     },
     // 获取从localStorage
     getHistory() {
