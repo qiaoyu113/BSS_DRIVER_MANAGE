@@ -11,7 +11,7 @@
       </van-nav-bar>
     </van-sticky>
     <!-- 搜索 -->
-    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly>
+    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly @click="handleSearchClick">
       <template #action>
         <div class="searchSelect" @click="showPopup">
           筛选
@@ -28,12 +28,20 @@
             {{ item.num }}
           </div>
         </template>
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-          <!-- <p>刷新次数: {{ count }}</p> -->
-          <div v-for="sub in lists" :key="sub.id">
-            <CardItem :obj="sub" />
-            <div class="lineHeight"></div>
-          </div>
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh(true)">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            error-text="请求失败，点击重新加载"
+            @load="onRefresh"
+          >
+            <!-- <p>刷新次数: {{ count }}</p> -->
+            <div v-for="sub in lists" :key="sub.id">
+              <CardItem :obj="sub" />
+              <div class="lineHeight"></div>
+            </div>
+          </van-list>
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
@@ -145,13 +153,13 @@
 
 <script>
 import CardItem from './components/Cardltem'
-// import SelfPopup from '@/components/SelfPopup';
+import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
-import { Toast } from 'vant';
+// import { Toast } from 'vant';
 export default {
   components: {
     CardItem,
-    // SelfPopup,
+    SelfPopup,
     Suggest
   },
   data() {
@@ -159,6 +167,9 @@ export default {
       value: '', // 搜索框
       active: '', // 当前激活的tab,
       show: false,
+      refreshing: false, // 下拉刷新
+      loading: false, // 上拉加载
+      finished: false, // 是否加载完成
       ruleForm: {
         username: '',
         password: ''
@@ -302,14 +313,39 @@ export default {
       this.show = true
     },
     batch() {
-      this.$router.push({ path: 'Batch' })
+      this.$router.push({ path: 'batch' })
     },
-    onRefresh() { // 下拉刷新
+    onRefresh(isInit = false) {
+      if (isInit === true) {
+        this.lists = []
+      }
       setTimeout(() => {
-        Toast('刷新成功');
-        this.isLoading = false;
-        this.count++;
-      }, 1000);
+        // console.log('xxxx')
+        // let id = this.lists.length
+        // for (let i = 0; i < 5; i++) {
+        //   let obj = {
+        //     id: id + i,
+        //     title: '京东城配线(xs200808)',
+        //     update: '2020-080-09',
+        //     line: '稳定线路/无线路余额/支线',
+        //     carType: '小面',
+        //     status: '已试跑',
+        //     rearchDate: '2020-08-09',
+        //     worktime: '10小时',
+        //     tags: ['已上架', '共享', '已采线']
+        //   }
+        //   this.lists.push(obj)
+        // }
+        if (isInit === true) {
+          this.refreshing = false
+          this.finished = false
+        }
+
+        this.loading = false;
+        if (this.lists.length > 15) {
+          this.finished = true
+        }
+      }, 500)
     },
     onQuery() {
       console.log('submit', this.form);
@@ -393,6 +429,11 @@ export default {
       this.text11 = `${date.getMonth() + 1}/${date.getDate()}`;
       this.form.s = date
       this.showPicker11 = false;
+    },
+    handleSearchClick() {
+      this.$router.push({
+        path: 'search'
+      })
     }
   }
 }

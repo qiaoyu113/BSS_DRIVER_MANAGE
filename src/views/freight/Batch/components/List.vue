@@ -80,7 +80,7 @@ export default {
     },
     Add_to() {
       this.$router.push({
-        name: 'Report'
+        name: 'report'
       })
     }
   }

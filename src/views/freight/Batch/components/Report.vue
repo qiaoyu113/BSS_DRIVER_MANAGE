@@ -60,8 +60,7 @@
     <div class="Remarks">
       <van-field
         v-model="message"
-
-        rows="4"
+        rows="3"
         autosize
         label="备注:"
         type="textarea"
@@ -136,7 +135,7 @@ export default {
 }
 .cont_ent>ul{
   width: 100%;
-     padding: 10px 10px 30px 10px;
+  padding: 10px 10px 20px 10px;
   box-sizing: border-box;
   background: #dddddd;
   height: 100%;
@@ -154,6 +153,7 @@ export default {
 }
 .Number{
   width: 80%;
+  height: 35px;
   display: flex;
   justify-content: space-between;
 }
@@ -166,13 +166,13 @@ export default {
     line-height: 25px;
 }
 .van-cell {
-    line-height: 0.5rem;
+line-height: 0.5rem;
 border-right: 1px solid #ccc;
 border-radius:5px  0px  0px  5px;
 
 }
 .Remarks{
-  margin: 10px 0 100px 0;
+  margin: 10px 0 80px 0;
 }
 .Bulk{
   width: 100%;
@@ -181,7 +181,6 @@ border-radius:5px  0px  0px  5px;
   background: #fff;
   display: flex;
   justify-content: space-between;
-
   position: fixed;
   bottom: 0;
 }
@@ -209,7 +208,7 @@ color:#0000ffa6;
   .Remarks >>> .van-field__body  {
     border: 1px solid #ddd;
   }
-  .Remarks >>>.van-cell[data-v-9567927c] {
+  .Remarks >>>.van-cell {
     line-height: 0.5rem;
     border: none;
 
@@ -221,8 +220,10 @@ color:#0000ffa6;
 
 }
 .Remarks >>>.van-cell {
+ width: 84%;
 
-    width: 84%;
-
+}
+.Number >>>.van-button{
+  height: 35px;
 }
 </style>

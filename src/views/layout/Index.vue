@@ -51,7 +51,8 @@ export default {
       actions: [
         { name: '线路云', index: 0 },
         { name: '司机云', index: 1 },
-        { name: '试跑-在跑', index: 2 }
+        { name: '试跑-在跑', index: 2 },
+        { name: '运费管理', index: 3 }
       ],
       show: false,
       list: [

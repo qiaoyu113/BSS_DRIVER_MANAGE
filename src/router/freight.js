@@ -17,8 +17,8 @@ export default [
     }
   },
   {
-    path: '/Detail',
-    name: 'Detail',
+    path: '/detail',
+    name: 'detail',
     // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
     component: resolve => require(['@/views/freight/Detail'], resolve),
     meta: {
@@ -26,23 +26,28 @@ export default [
     }
   },
   {
-    path: '/Batch',
-    name: 'Batch',
+    path: '/batch',
+    name: 'batch',
     component: resolve => require(['@/views/freight/Batch'], resolve),
     meta: {
       title: '运费管理'
     }
   },
   {
-    path: '/Report',
-    name: 'Report',
+    path: '/report',
+    name: 'report',
     component: resolve => require(['@/views/freight/Batch/components/Report'], resolve),
     meta: {
       title: '运费管理'
     }
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: resolve => require(['@/views/freight/Search'], resolve),
+    meta: {
+      title: '运费管理'
+    }
   }
-
- 
-
 
 ]
