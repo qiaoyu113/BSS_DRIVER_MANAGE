@@ -11,13 +11,13 @@
     <!-- form表单 -->
     <van-form ref="recordLine" @submit="onSubmit">
       <van-field label="库房装货图片" colon label-width="100">
-        <van-uploader slot="input" v-model="form.warehouseLoadingPictures" name="warehouseLoadingPictures" :after-read="afterRead" :max-count="6" :before-delete="handleDeleteFile" />
+        <van-uploader slot="input" v-model="showForm.warehouseLoadingPictures" name="warehouseLoadingPictures" :after-read="afterRead" :max-count="6" :before-delete="handleDeleteFile" />
       </van-field>
       <van-field label="其他图片" colon>
-        <van-uploader slot="input" v-model="form.otherPictures" name="otherPictures" :after-read="afterRead" :max-count="6" :before-delete="handleDeleteFile" />
+        <van-uploader slot="input" v-model="showForm.otherPictures" name="otherPictures" :after-read="afterRead" :max-count="6" :before-delete="handleDeleteFile" />
       </van-field>
       <van-field label="装货视频" colon class="video">
-        <van-uploader slot="input" v-model="form.loadingVideo" name="loadingVideo" :after-read="afterRead" :before-read="beforeRead" :max-count="1" :preview-full-image="false" :before-delete="handleDeleteFile">
+        <van-uploader slot="input" v-model="showForm.loadingVideo" name="loadingVideo" :after-read="afterRead" :before-read="beforeRead" :max-count="1" :preview-full-image="false" :before-delete="handleDeleteFile">
         </van-uploader>
       </van-field>
       <p class="tips van-hairline--bottom">
@@ -54,6 +54,11 @@ export default {
   },
   data() {
     return {
+      showForm: {
+        warehouseLoadingPictures: [], // 库房装货图片
+        otherPictures: [], // 其他图片
+        loadingVideo: [] // 装货视频
+      },
       form: {
         warehouseLoadingPictures: [], // 库房装货图片
         otherPictures: [], // 其他图片
@@ -76,13 +81,13 @@ export default {
       try {
         let params = {}
         if (this.form.warehouseLoadingPictures.length > 0) {
-          params.warehouseLoadingPictures = this.form.warehouseLoadingPictures.map(item => item.url).join(',')
+          params.warehouseLoadingPictures = this.form.warehouseLoadingPictures.join(',')
         }
         if (this.form.otherPictures.length > 0) {
-          params.otherPictures = this.form.otherPictures.map(item => item.url).join(',')
+          params.otherPictures = this.form.otherPictures.join(',')
         }
         if (this.form.loadingVideo.length > 0) {
-          params.loadingVideo = this.form.loadingVideo.map(item => item.url).join('')
+          params.loadingVideo = this.form.loadingVideo.join('')
         }
 
         this.form.informationDescription && (params.informationDescription = this.form.informationDescription)
@@ -131,14 +136,7 @@ export default {
         }
         let { data: res } = await upload(params, formData)
         if (res.success) {
-          this.form[key].forEach((item, idx) => {
-            if (!item.url) {
-              this.form[key].splice(idx, 1)
-            }
-            this.form[key].push({
-              url: res.data.url
-            })
-          })
+          this.form[key].push(res.data.url)
         } else {
           this.$toast.fail(res.errorMsg)
         }
@@ -151,6 +149,7 @@ export default {
      */
     handleDeleteFile(file, { index, name }) {
       this.form[name].splice(index, 1)
+      this.showForm[name].splice(index, 1)
     }
   }
 }
