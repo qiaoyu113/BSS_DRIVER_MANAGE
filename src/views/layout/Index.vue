@@ -47,12 +47,33 @@ export default {
   },
   data() {
     return {
-      activeIndex: 0,
-      actions: [
-        { name: '线路云', index: 0 },
-        { name: '司机云', index: 1 },
-        { name: '试跑-在跑', index: 2 }
+      listQuery: {
+        key: '',
+        page: 1,
+        limit: 100,
+        endDate: '',
+        appletSource: '',
+        startDate: '',
+        expandManager: '',
+        clueType: '',
+        carType: '',
+        isSettledIn: '',
+        workCity: '',
+        sourceType: '',
+        isPayDeposit: '',
+        state: '1'
+      },
+      active: 1,
+      total: 0,
+      page: 1,
+      loadedAll: false,
+      option: [
+        { text: '线路云', value: 0 },
+        { text: '司机云', value: 1 },
+        { text: '试跑', value: 2 }
+        // { text: '运费管理', value: 3 }
       ],
+      activeIndex: 0,
       show: false,
       list: [
         // 线路云

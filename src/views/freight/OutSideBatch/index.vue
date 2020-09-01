@@ -2,104 +2,50 @@
   <div class="lineListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="加盟运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <!-- <div class="headerRight" @click="batch">
+          <div v-show="!batchShow" class="headerRight" @click="batch">
             批量上报
-          </div> -->
+          </div>
         </template>
       </van-nav-bar>
     </van-sticky>
     <!-- 搜索 -->
-    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号">
+    <van-search v-model="value" show-action placeholder="搜索司机姓名/编号">
       <template #action>
-        <div class="searchSelect" @click="showPopup">
-          筛选
+        <div class="searchSelect" @click="datePicker = true">
+          日期
           <van-icon name="play" color="#3C4353" />
         </div>
       </template>
     </van-search>
-    <!-- 下拉刷新  上拉加载 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        error-text="请求失败，点击重新加载"
-        @load="onLoad"
-      >
-        <!-- tabs -->
-        <van-tabs v-model="active" swipeable>
-          <van-tab v-for="item in tabArrs" :key="item.text">
-            <template #title>
-              {{ item.text }}
-              <div v-if="item.num" class="van-info">
-                {{ item.num }}
-              </div>
-            </template>
+    <!-- tabs -->
+    <van-tabs v-model="active" swipeable>
+      <van-tab v-for="item in tabArrs" :key="item.text">
+        <template #title>
+          {{ item.text }}
+          <div v-if="item.num" class="van-info">
+            {{ item.num }}
+          </div>
+        </template>
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+          <!-- <p>刷新次数: {{ count }}</p> -->
 
-            <CardItem :obj="lists" />
-            <!-- <div class="lineHeight"></div> -->
-          </van-tab>
-        </van-tabs>
-      </van-list>
-    </van-pull-refresh>
-
-    <!-- 右侧筛选抽屉 -->
-    <SelfPopup
-      ref="lineLineForm"
-      :show.sync="show"
-      form-ref="form"
-      @submit="onQuery"
-      @reset="onReset"
-    >
-      <van-field
-        :value="text1"
-        readonly
-        clickable
-        label="城市"
-        placeholder="请选择"
-        @click="showPicker1 = true"
+          <CardItem :obj="lists" :batchshow="batchShow" @batch="batch" />
+          <!-- <div class="lineHeight"></div> -->
+        </van-pull-refresh>
+      </van-tab>
+    </van-tabs>
+    <van-popup v-model="datePicker" position="bottom">
+      <van-datetime-picker
+        v-model="currentDate"
+        title="选择日期"
+        type="date"
+        :max-date="maxDate"
+        @confirm="dateConfirm"
+        @cancel="datePicker = false"
       />
-      <van-field
-        v-model="text2"
-        name="username"
-        label="用户名"
-        placeholder="请输入"
-      />
-      <van-field
-        v-model="text3"
-        name="username"
-        label="线路"
-        placeholder="请输入"
-      />
-      <van-field
-        :value="text4"
-        readonly
-        clickable
-        label="加盟经理"
-        placeholder="请选择"
-        @click="handleShowModal('manager')"
-      />
-
-      <van-field
-        :value="text10"
-        readonly
-        clickable
-        label="创建时间"
-        placeholder="开始日期"
-        :min-date="minDate"
-        @click="showPicker10 = true"
-      />
-      <van-field
-        :value="text11"
-        readonly
-        clickable
-        input-align="center"
-        placeholder="结束日期"
-        @click="showPicker11 = true"
-      />
-    </SelfPopup>
+    </van-popup>
     <van-popup v-model="showPicker1" position="bottom">
       <van-picker
         value-key="label"
@@ -109,7 +55,6 @@
         @cancel="showPicker1 = false"
       />
     </van-popup>
-
     <van-popup v-model="showPicker3" position="bottom">
       <van-picker
         value-key="label"
@@ -152,25 +97,23 @@
 </template>
 
 <script>
-import SelfPopup from '@/components/SelfPopup'
-import Suggest from '@/components/SuggestSearch.vue'
+// import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
 import { Toast } from 'vant'
 export default {
   components: {
-    CardItem,
-    SelfPopup,
-    Suggest
-
+    CardItem
   },
   data() {
     return {
       value: '', // 搜索框
       active: '', // 当前激活的tab,
-      refreshing: false, // 下拉刷新
-      loading: false, // 上拉加载
-      finished: false, // 是否加载完成
       show: false,
+      batchShow: false,
+      currentDate: new Date(),
+      datePicker: false,
+      maxDate: this.getMaxDate(),
+      title: '项目运费',
       ruleForm: {
         username: '',
         password: ''
@@ -254,7 +197,45 @@ export default {
       options: [],
       type: '',
       lists: [
+        {
+          id: 1,
+          title: '2020/09/08  李斯 / 1666666',
+          statust: '待上报',
+          update: '12233344',
+          carType: '李斯',
+          status: '郑州线路',
+          all: false
 
+        },
+        {
+          id: 2,
+          title: '2020/09/08  张三 / 18888888888',
+          statust: '待上报',
+          yicahng: '有差异',
+          update: '12233344',
+          carType: '张三',
+          status: '北京线路',
+          all: false
+
+        },
+        {
+          id: 3,
+          title: '2020/09/08  张三 / 18888888888',
+          yicahng: '有差异',
+          statust: '3000.00',
+          update: '12233344',
+          carType: '张三',
+          status: '北京线路'
+        },
+        {
+          id: 4,
+          title: '2020/09/08  张三 / 18888888888',
+          yicahng: '',
+          statust: '300.00',
+          update: '12233344',
+          carType: '张三',
+          status: '北京线路'
+        }
       ]
     }
   },
@@ -267,61 +248,34 @@ export default {
     }
   },
   mounted() {
-
+    console.log(typeof this.lists[3].all)
+    this.title = this.$route.query.name
   },
   methods: {
     onClickLeft() {
       this.$router.go(-1)
     },
-    showPopup() {
-      this.show = true
+    batch(res) {
+      this.batchShow = !this.batchShow;
     },
-    batch() {
-      this.$router.push({ path: 'batch' })
+    getMaxDate() {
+      let y = new Date().getFullYear()
+      let m = new Date().getMonth()
+      let d = new Date().getDate()
+      return new Date(y, m, d)
     },
-    onLoad(isInit = false) {
-      if (isInit === true) {
-        this.lists = []
-      }
+    dateConfirm() {
+      console.log(this.currentDate)
+    },
+    onRefresh() { // 下拉刷新
       setTimeout(() => {
-        let id = this.lists.length
-        for (let i = 0; i < 5; i++) {
-          let obj = {
-            id: id + i,
-            title: '2020/09/08  李斯 / 1666666',
-            statust: '待上报',
-            update: '12233344',
-            carType: '李斯',
-            status: '郑州线路',
-            yicahng: '有差异',
-            all: false
-          }
-          this.lists.push(obj)
-        }
-        if (isInit === true) {
-          this.refreshing = false
-          this.finished = false
-        }
-
-        this.loading = false;
-        if (this.lists.length > 15) {
-          this.finished = true
-        }
-      }, 500)
+        Toast('刷新成功');
+        this.isLoading = false;
+        this.count++;
+      }, 1000);
     },
     onQuery() {
       console.log('submit', this.form);
-    },
-    // 重置
-    onReset(form) {
-      this.text1 = ''
-      this.text2 = ''
-      this.text3 = ''
-      this.text4 = ''
-      this.text10 = ''
-      this.text11 = ''
-      this.form = {}
-      console.log('reset');
     },
     // 线路类型 ----右侧pop选中关闭
     onConfirm1(obj) {
