@@ -64,7 +64,7 @@ export default {
     }
   },
   mounted() {
-    this.step = this.$route.query.step || 1;
+    this.step = this.$route.query.step || 0;
   },
   methods: {
     /**
