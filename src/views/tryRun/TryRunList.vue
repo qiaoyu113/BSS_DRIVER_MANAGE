@@ -64,7 +64,7 @@ export default {
      */
     onSearch() {
       this.$router.replace({
-        path: '/try-run/search',
+        path: '/try-search',
         query: {
           q: this.value
         }

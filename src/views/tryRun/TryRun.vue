@@ -349,7 +349,7 @@ export default {
      * 跳转查询页面
      */
     onSearch() {
-      this.$router.push('/try-run/search');
+      this.$router.push('/try-search');
     },
     /**
      *返回按钮
@@ -361,7 +361,7 @@ export default {
      * 创建试跑
      */
     onCreateRun() {
-      this.$router.push('/try-run/createrun');
+      this.$router.push('/create-run');
     }
   }
 };
