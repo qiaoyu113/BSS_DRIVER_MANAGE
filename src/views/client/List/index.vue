@@ -24,8 +24,8 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="active" swipeable>
-          <van-tab v-for="item in tabArrs" :key="item.text">
+        <van-tabs v-model="form.customerState" swipeable @change="handleTabChange">
+          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
               <div v-if="item.num" class="van-info">
@@ -58,20 +58,20 @@
         @click="handleShowModal('city')"
       />
       <van-field
-        :value="pickerNames['b']"
+        :value="pickerNames['customerType']"
         readonly
         clickable
         label="客户类型"
         placeholder="请选择"
-        @click="showPickerFn('b')"
+        @click="showPickerFn('customerType')"
       />
       <van-field
-        :value="pickerNames['c']"
+        :value="pickerNames['classification']"
         readonly
         clickable
         label="客户属性"
         placeholder="请选择"
-        @click="showPickerFn('c')"
+        @click="showPickerFn('classification')"
       />
 
       <van-field
@@ -104,8 +104,12 @@
     <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
-      :options="options"
+      :options="openCitys"
       :type="modalKey"
+      :props="{
+        label:'name',
+        value:'code'
+      }"
       @keyWordValue="handleSearchChange"
       @finish="handleValueClick"
       @closed="showModal=false"
@@ -117,6 +121,8 @@
 import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
+import { getClientList } from '@/api/client'
+import { getOpenCitys } from '@/api/common'
 export default {
   components: {
     CardItem,
@@ -129,25 +135,32 @@ export default {
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
-      active: '', // 当前激活的tab,
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 100
+          num: 100,
+          name: ''
         },
         {
           text: '已启用',
-          num: 0
+          num: 0,
+          name: 1
         },
         {
           text: '已禁用',
-          num: 0
+          num: 0,
+          name: 2
         }
       ],
       lists: [],
       form: { // 查询表单
+        customerState: '', // 当前激活的tab,
+        city: '', // 城市
+        customerType: '', // 客户类型
+        classification: '', // 客户属性
         date: ''
       },
+      openCitys: [], // 开通城市列表
       columns2: [
         {
           label: '公司',
@@ -155,7 +168,7 @@ export default {
         },
         {
           label: '个体',
-          value: 0
+          value: 2
         }
       ],
       columns3: [
@@ -164,7 +177,7 @@ export default {
           value: 1
         },
         {
-          label: '自承运',
+          label: '自承运客户',
           value: 2
         },
         {
@@ -173,7 +186,6 @@ export default {
         }
       ],
       showModal: false,
-      options: [],
       modalKey: '',
       pickerNames: { // picker选中显示的名字
         city: '',
@@ -185,7 +197,11 @@ export default {
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
       showPicker: false, // 是否打开picker
-      dateLists: ['date'] // 显示日历控件的字段集合
+      dateLists: ['date'], // 显示日历控件的字段集合
+      page: {
+        current: 0,
+        size: 10
+      }
     }
   },
   computed: {
@@ -199,40 +215,33 @@ export default {
       return this.dateLists.includes(this.pickerKey)
     }
   },
+  mounted() {
+
+  },
   methods: {
     // 返回
     onClickLeft() {
       this.$router.go(-1)
     },
     // 加载列表
-    onLoad(isInit = false) {
-      if (isInit === true) {
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
         this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
       }
-      setTimeout(() => {
-        let id = this.lists.length
-        for (let i = 0; i < 5; i++) {
-          let obj = {
-            id: id + i,
-            title: '京东城配线(xs200808)',
-            contacts: '小小悠',
-            phone: '15021578693',
-            clientProperty: '外线客户',
-            createDate: Date.now(),
-            tag: i % 2 === 0 ? '已启用' : '已禁用'
-          }
-          this.lists.push(obj)
-        }
-        if (isInit === true) {
-          this.refreshing = false
-          this.finished = false
-        }
-
+      let result = await this.getLists(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-        if (this.lists.length > 15) {
+        if (!result.hasMore) {
           this.finished = true
         }
-      }, 500)
+      }
     },
     // 搜索
     handleSearchClick() {
@@ -252,19 +261,23 @@ export default {
     },
     // 模糊搜索
     handleSearchChange(value) {
-      console.log('这里面接口请求模糊查询:', value)
+      let params = {
+        keyword: value
+      }
+      this.getOpenCityList(params)
     },
     /**
      *点击模糊查询框某一项
      */
     handleValueClick(obj) {
-      console.log('xxx:', obj)
+      this.form[obj.type] = obj.code
+      this.pickerNames[obj.type] = obj.name
     },
     // 打开模糊查询框
     handleShowModal(key) {
       this.modalKey = key
       if (key === 'city') {
-        this.options = []
+        this.getOpenCityList()
       }
       this.showModal = true
     },
@@ -293,6 +306,65 @@ export default {
       }
       this.form[this.pickerKey] = obj
       this.showPicker = false;
+    },
+    // 获取开通的城市列表
+    async getOpenCityList(params = {}) {
+      try {
+        let { data: res } = await getOpenCitys(params)
+        if (res.success) {
+          this.openCitys = []
+          this.openCitys.push(...res.data)
+        }
+      } catch (err) {
+        console.log(`get open city list fail:${err}`)
+      }
+    },
+    // 状态切换
+    handleTabChange(tab) {
+      this.getLists(true)
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          pageNumber: this.page.size
+        }
+        this.form.city && (params.city = this.form.city)
+        this.form.customerType && (params.customerType = this.form.customerType)
+        this.form.customerType && (params.customerType = this.form.customerType)
+        this.form.customerState && (params.customerState = this.form.customerState)
+        if (this.form.date && this.form.date.length > 1) {
+          params.startDate = new Date(this.form.date[0]).getTime()
+          params.endDate = new Date(this.form.date[1]).getTime()
+        }
+        let { data: res } = await getClientList(params)
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach(item => {
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
+            }
+          })
+          return result
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     }
   }
 }

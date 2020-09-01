@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     goRouter() {
-      this.$router.push({ path: '/orderdetail', id: '' });
+      this.$router.push({ path: '/orderDetail', query: { id: '' }});
     }
   }
 };

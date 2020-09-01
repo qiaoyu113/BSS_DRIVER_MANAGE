@@ -294,3 +294,9 @@ export function createUniqueString() {
 
 // 手机号
 export const phoneRegExp = /^[1][3-9][0-9]{9}$/
+
+// 身份证号校验
+export const IdPattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+
+// 车牌号
+export const carNoRegExp = /^([京津晋冀蒙辽吉黑沪苏浙皖闽赣鲁豫鄂湘粤桂琼渝川贵云藏陕甘青宁新][ABCDEFGHJKLMNPQRSTUVWXY][1-9DF][1-9ABCDEFGHJKLMNPQRSTUVWXYZ]\d{3}[1-9DF]|[京津晋冀蒙辽吉黑沪苏浙皖闽赣鲁豫鄂湘粤桂琼渝川贵云藏陕甘青宁新][ABCDEFGHJKLMNPQRSTUVWXY][\dABCDEFGHJKLNMxPQRSTUVWXYZ]{5})$/
