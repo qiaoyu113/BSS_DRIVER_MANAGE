@@ -16,7 +16,7 @@
     <div class="CardItemcontainer">
       <div>场景1</div>
       <h4 class="title ellipsis">
-        2020/09/02 张山 1888888333 <span style="color:red;">待上报</span>
+        2020/09/08  李斯 / 1666666 <span style="color:red;">待上报</span>
       </h4>
       <P class="text ellipsis">
         出车编号：111111111
@@ -94,8 +94,13 @@
 export default {
   data() {
     return {
-      show: false
+      show: false,
+      obj: ''
     }
+  },
+  mounted() {
+    console.log(this.$route.query.obj)
+    this.obj = this.$route.query.obj
   },
 
   methods: {

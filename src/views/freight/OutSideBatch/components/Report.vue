@@ -16,25 +16,21 @@
         <li><span>已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
-        <li class="Number_ong">
+        <li>
           <p>*趟数1:0:02 - 06:00</p>
           <div class="Number">
-            <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
+            <van-field v-model="value" placeholder="" />
             <van-button type="default">
-              <van-icon name="arrow" color="#A6AAB8" />
+              元
             </van-button>
           </div>
         </li>
-        <li class="Number_ong">
+        <li>
           <p>*趟数2:0:02 - 06:00</p>
           <div class="Number">
-            <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
+            <van-field v-model="value" placeholder="" />
             <van-button type="default">
-              <van-icon name="arrow" color="#A6AAB8" />
+              元
             </van-button>
           </div>
         </li>
@@ -45,16 +41,12 @@
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
         <li>
-          <div class="Number_ong">
-            <p>*趟数1:0:02 - 06:00</p>
-            <div class="Number">
-              <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
-              <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
-              <van-button type="default">
-                <van-icon name="arrow" color="#A6AAB8" />
-              </van-button>
-            </div>
+          <p>*趟数1:0:02 - 06:00</p>
+          <div class="Number">
+            <van-field v-model="value" placeholder="" />
+            <van-button type="default">
+              元
+            </van-button>
           </div>
         </li>
       </ul>
@@ -68,11 +60,13 @@
     <div class="Remarks">
       <van-field
         v-model="message"
-        rows="3"
+
+        rows="4"
         autosize
         label="备注:"
         type="textarea"
-        placeholder="请输入不超过150字"
+        maxlength="150"
+        placeholder="请输入备注"
         show-word-limit
       />
     </div>
@@ -91,12 +85,12 @@ export default {
       checked: true,
       value: '',
       message: '',
-      obj: ''
+      obj: []
     }
   },
   mounted() {
-    // this.obj = JSON.parse(this.$route.query.obj)
-    // console.log(this.obj)
+    this.obj = JSON.parse(this.$route.query.obj)
+    console.log(this.obj)
   },
   methods: {
     onClickLeft() {
@@ -147,9 +141,9 @@ export default {
 }
 .cont_ent>ul{
   width: 100%;
-  padding: 10px 10px 20px 10px;
+     padding: 10px 10px 30px 10px;
   box-sizing: border-box;
-  background: #fff;
+  background: #dddddd;
   height: 100%;
   margin-top: 10px;
 }
@@ -164,13 +158,9 @@ export default {
   color: yellowgreen;
 }
 .Number{
-  width: 50%;
-  height: 35px;
+  width: 80%;
   display: flex;
   justify-content: space-between;
-}
-.Number>input{
-  text-align: right;
 }
 .cont_ent>ul>li:nth-child(2){
   color: #666;
@@ -181,14 +171,13 @@ export default {
     line-height: 25px;
 }
 .van-cell {
-line-height: 0.5rem;
+    line-height: 0.5rem;
 border-right: 1px solid #ccc;
-border-bottom :none;
 border-radius:5px  0px  0px  5px;
 
 }
 .Remarks{
-  margin: 10px 0 80px 0;
+  margin: 10px 0 100px 0;
 }
 .Bulk{
   width: 100%;
@@ -197,6 +186,7 @@ border-radius:5px  0px  0px  5px;
   background: #fff;
   display: flex;
   justify-content: space-between;
+
   position: fixed;
   bottom: 0;
 }
@@ -218,18 +208,13 @@ border-radius:5px  0px  0px  5px;
 .blur_clor{
 color:#0000ffa6;
 }
-.Number_ong{
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
 
 </style>
 <style scoped>
   .Remarks >>> .van-field__body  {
     border: 1px solid #ddd;
   }
-  .Remarks >>>.van-cell {
+  .Remarks >>>.van-cell[data-v-9567927c] {
     line-height: 0.5rem;
     border: none;
 
@@ -241,16 +226,8 @@ color:#0000ffa6;
 
 }
 .Remarks >>>.van-cell {
- width: 84%;
 
-}
-.Number >>>.van-button{
-  height: 35px;
-}
-.van-button--default{
-  border: none;
-  background: #fff;
-  color: #A6AAB8;
-  font-size: ;
+    width: 84%;
+
 }
 </style>

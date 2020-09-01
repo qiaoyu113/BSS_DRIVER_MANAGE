@@ -1,131 +1,135 @@
 <template>
-  <div class="lineListContainer">
+  <div class="OutSideList">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="加盟运费上报" left-text="返回" right-text="按钮" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="加盟运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <div class="headerRight" @click="batch">
             批量上报
           </div>
         </template>
       </van-nav-bar>
-    </van-sticky>
-    <!-- 搜索 -->
-    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly @click="handleSearchClick">
-      <template #action>
-        <div class="searchSelect" @click="showPopup">
-          筛选
-          <van-icon name="play" color="#3C4353" />
-        </div>
-      </template>
-    </van-search>
-    <!-- tabs -->
-    <van-tabs v-model="active" swipeable>
-      <van-tab v-for="item in tabArrs" :key="item.text">
-        <template #title>
-          {{ item.text }}
-          <div v-if="item.num" class="van-info">
-            {{ item.num }}
+      <!-- 搜索 -->
+      <van-search show-action placeholder="请输入项目名称/编号" readonly @click="handleSearchClick">
+        <template #action>
+          <div class="searchSelect" @click="showPopup=true">
+            筛选
+            <van-icon name="play" color="#3C4353" />
           </div>
         </template>
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh(true)">
-          <van-list
-            v-model="loading"
-            :finished="finished"
-            finished-text="没有更多了"
-            error-text="请求失败，点击重新加载"
-            @load="onRefresh"
-          >
-            <!-- <p>刷新次数: {{ count }}</p> -->
+      </van-search>
+    </van-sticky>
+
+    <!-- 下拉刷新  上拉加载 -->
+    <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <!-- tabs -->
+        <van-tabs v-model="active" swipeable>
+          <van-tab v-for="item in tabArrs" :key="item.text">
+            <template #title>
+              {{ item.text }}
+              <div v-if="item.num" class="van-info">
+                {{ item.num }}
+              </div>
+            </template>
             <div v-for="sub in lists" :key="sub.id">
               <CardItem :obj="sub" />
               <div class="lineHeight"></div>
             </div>
-          </van-list>
-        </van-pull-refresh>
-      </van-tab>
-    </van-tabs>
+          </van-tab>
+        </van-tabs>
+      </van-list>
+    </van-pull-refresh>
+
+    <!-- 选择临时线路or稳定线路 -->
+    <van-popup v-model="showPicker" position="bottom">
+      <van-picker
+        show-toolbar
+        value-key="label"
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+      />
+    </van-popup>
+
     <!-- 右侧筛选抽屉 -->
     <SelfPopup
-      ref="lineLineForm"
-      :show.sync="show"
+      :show.sync="showPopup"
       form-ref="form"
-      @submit="onQuery"
+      @submit="onSubmit"
       @reset="onReset"
     >
       <van-field
-        :value="text1"
         readonly
         clickable
+        label-width="7em"
+        name="city"
+        :value="listQuery.city"
         label="城市"
-        placeholder="请选择"
-        @click="showPicker1 = true"
+        is-link
+        placeholder="请选择城市"
+        @click="showPickerFn('city')"
       />
       <van-field
-        v-model="text2"
-        name="username"
-        label="用户名"
-        placeholder="请输入"
+        v-model="listQuery.name1"
+        colon
+        name="name1"
+        label-width="7em"
+        label="客户"
+        placeholder="请输入客户"
       />
       <van-field
-        v-model="text3"
-        name="username"
-        label="线路"
-        placeholder="请输入"
+        v-model="listQuery.name5"
+        name="name5"
+        colon
+        label-width="7em"
+        label="项目"
+        placeholder="请输入项目"
       />
       <van-field
-        :value="text4"
+        v-model="listQuery.name5"
+        name="name5"
+        colon
+        label-width="7em"
+        label="上岗经理"
+        placeholder="请输入上岗经理"
+      />
+      <van-field
         readonly
+        colon
         clickable
-        label="加盟经理"
-        placeholder="请选择"
-        @click="handleShowModal('manager')"
-      />
-
-      <van-field
-        :value="text10"
-        readonly
-        clickable
-        label="创建时间"
-        placeholder="开始日期"
-        :min-date="minDate"
-        @click="showPicker10 = true"
-      />
-      <van-field
-        :value="text11"
-        readonly
-        clickable
-        input-align="center"
-        placeholder="结束日期"
-        @click="showPicker11 = true"
+        label="出车时间"
+        label-width="7em"
+        is-link
+        name="date"
+        :value="pickerNames.date"
+        placeholder="请选择出车时间"
+        @click="showCalendar = true"
       />
     </SelfPopup>
-    <van-popup v-model="showPicker1" position="bottom">
+    <!-- 日历 -->
+    <van-calendar
+      v-model="showCalendar"
+      type="range"
+      :min-date="minDate"
+      :max-data="maxDate"
+      :allow-same-day="true"
+      @confirm="onConfirmDate"
+    />
+    <!-- picker -->
+    <van-popup v-model="showPicker" round position="bottom">
       <van-picker
-        value-key="label"
         show-toolbar
-        :columns="columns1"
-        @confirm="onConfirm1"
-        @cancel="showPicker1 = false"
-      />
-    </van-popup>
-
-    <van-popup v-model="showPicker3" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns3"
-        @confirm="onConfirm3"
-        @cancel="showPicker3 = false"
-      />
-    </van-popup>
-    <van-popup v-model="showPicker4" position="bottom">
-      <van-picker
-        value-key="label"
-        show-toolbar
-        :columns="columns4"
+        value-key="name"
+        :columns="columns"
+        @cancel="showPicker = false"
         @confirm="onConfirm4"
-        @cancel="showPicker4 = false"
       />
     </van-popup>
     <Suggest
@@ -155,7 +159,7 @@
 import CardItem from './components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
-// import { Toast } from 'vant';
+import { parseTime } from '@/utils'
 export default {
   components: {
     CardItem,
@@ -164,26 +168,59 @@ export default {
   },
   data() {
     return {
-      value: '', // 搜索框
-      active: '', // 当前激活的tab,
-      show: false,
+      showPopup: false, // 打开查询抽屉
+      showCalendar: false, // 打开日历
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
-      ruleForm: {
-        username: '',
-        password: ''
-      },
+      active: '', // 当前激活的tab,
+      // picker
+      minDate: new Date(+new Date() - 86400000 * 365),
+      maxDate: new Date(+new Date() + 86400000 * 365),
+      tabArrs: [ // tabs数组
+        {
+          text: '全部',
+          num: 100
+        },
+        {
+          text: '待上报',
+          num: 0
+        },
+        {
+          text: '已上报',
+          num: 0
+        }
+      ],
+      lists: [],
+      showPicker: false,
+      columns: [
+        {
+          label: '稳定线路',
+          value: 1
+        },
+        {
+          label: '临时线路',
+          value: 0
+        }
+      ],
       form: { // 查询表单
 
       },
-      // 筛选
-      text1: '', // 城市选择
-      text2: '', // 用户名
-      text3: '', // 线路
-      text4: '', // 加盟经理
-      text10: '', // 开始时间
-      text11: '', // 结束时间
+      // search
+      listQuery: {
+        name1: '',
+        name2: '',
+        name3: '',
+        name4: '',
+        name5: '',
+        name6: '',
+        name7: ''
+      },
+      pickerNames: {
+        name4: '',
+        name7: '',
+        date: ''
+      },
       showPicker1: false,
       showPicker2: false,
       showPicker3: false,
@@ -235,107 +272,69 @@ export default {
       showModal: false,
       options: [],
       type: '',
-      count: 0, // 下拉刷新次数
-      isLoading: false, // 下拉刷新状态
-      tabArrs: [ // tabs数组
+      cityList: [
         {
-          text: '全部',
-          num: 100
+          name: '北京市',
+          code: 1
         },
         {
-          text: '待上报',
-          num: 0
-        },
-        {
-          text: '已上报',
-          num: 0
-        }
-
-      ],
-      lists: [
-        {
-          id: 1,
-          title: '2020/09/08  李斯 / 1666666',
-          statust: '待上报',
-          update: '12233344',
-          carType: '李斯',
-          status: '郑州线路'
-
-        },
-        {
-          id: 2,
-          title: '2020/09/08  张三 / 18888888888',
-          statust: '未出车',
-          update: '12233344',
-          carType: '张三',
-          status: '北京线路'
-
-        },
-        {
-          id: 3,
-          title: '2020/09/08  张三 / 18888888888',
-          statust: '3000.00',
-          update: '12233344',
-          carType: '张三',
-          status: '北京线路'
-
-        },
-        {
-          id: 4,
-          title: '2020/09/08  张三 / 18888888888',
-          yicahng: '异常',
-          statust: '未出车',
-          update: '12233344',
-          carType: '张三',
-          status: '北京线路'
-
+          name: '上海市',
+          code: 0
         }
       ]
     }
   },
   computed: {
-    minDate() {
-      if (this.form.r) {
-        return new Date(this.form.r)
-      }
-      return new Date()
-    }
-  },
-  mounted() {
-
   },
   methods: {
     onClickLeft() {
       this.$router.go(-1)
     },
-    showPopup() {
-      console.log(this.show)
-      this.show = true
-    },
     batch() {
-      this.$router.push({ path: 'batch' })
+      this.$router.push({
+        path: 'batch'
+      })
     },
-    onRefresh(isInit = false) {
+    // 选择线路
+    onConfirm(obj) {
+      this.showPicker = false;
+      this.$router.push({
+        path: '/createLine',
+        query: {
+          isStable: obj.value
+        }
+      })
+    },
+    /**
+     * 日期选择
+     */
+    onConfirmDate(date) {
+      const [start, end] = date;
+      this.showCalendar = false;
+      let startDate = parseTime(start, '{y}-{m}-{d}');
+      let endDate = parseTime(end, '{y}-{m}-{d}');
+      this.pickerNames.date = `${startDate} - ${endDate}`;
+      this.listQuery.startDate = startDate;
+      this.listQuery.endDate = endDate;
+    },
+    onLoad(isInit = false) {
       if (isInit === true) {
         this.lists = []
       }
       setTimeout(() => {
-        // console.log('xxxx')
-        // let id = this.lists.length
-        // for (let i = 0; i < 5; i++) {
-        //   let obj = {
-        //     id: id + i,
-        //     title: '京东城配线(xs200808)',
-        //     update: '2020-080-09',
-        //     line: '稳定线路/无线路余额/支线',
-        //     carType: '小面',
-        //     status: '已试跑',
-        //     rearchDate: '2020-08-09',
-        //     worktime: '10小时',
-        //     tags: ['已上架', '共享', '已采线']
-        //   }
-        //   this.lists.push(obj)
-        // }
+        let id = this.lists.length
+        for (let i = 0; i < 5; i++) {
+          let obj = {
+            id: id + i,
+            title: '2020/09/08  张三 / 18888888888',
+            yicahng: '异常',
+            statust: '未出车',
+            update: '12233344',
+            carType: '张三',
+            status: '北京线路'
+          }
+          this.lists.push(obj)
+        }
         if (isInit === true) {
           this.refreshing = false
           this.finished = false
@@ -347,19 +346,40 @@ export default {
         }
       }, 500)
     },
-    onQuery() {
-      console.log('submit', this.form);
+    // 搜索
+    handleSearchClick() {
+      this.$router.push({
+        path: '/outlineSearch'
+      })
     },
-    // 重置
+    /**
+     * 提交查询
+     */
+    onSubmit(value) {
+      this.showPopup = false;
+      this.refreshing = true;
+      this.onRefresh();
+      console.log('submit', value);
+    },
+    /**
+     * 重置form
+     */
     onReset(form) {
-      this.text1 = ''
-      this.text2 = ''
-      this.text3 = ''
-      this.text4 = ''
-      this.text10 = ''
-      this.text11 = ''
-      this.form = {}
-      console.log('reset');
+      this.listQuery = this.$options.data().listQuery;
+      this.pickerNames = this.$options.data().pickerNames;
+      form.resetValidation();
+    },
+    /**
+     * 显示picker
+     */
+    showPickerFn(key) {
+      this.pickerKey = key;
+      if (key === 'city') {
+        this.columns = this.cityList;
+      } else {
+        this.columns = this.whyList;
+      }
+      this.showPicker = true;
     },
     // 线路类型 ----右侧pop选中关闭
     onConfirm1(obj) {
@@ -429,11 +449,6 @@ export default {
       this.text11 = `${date.getMonth() + 1}/${date.getDate()}`;
       this.form.s = date
       this.showPicker11 = false;
-    },
-    handleSearchClick() {
-      this.$router.push({
-        path: 'search'
-      })
     }
   }
 }
@@ -441,7 +456,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.lineListContainer {
+.OutSideList {
   font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
@@ -477,48 +492,10 @@ export default {
     font-size: 12px;
     color: #3C4353;
   }
-</style>
-<style scoped>
-  .lineListContainer >>>.SelfPopup[data-v-7aa3f8c0] .van-popup {
+  .OutSideList >>> .SelfPopup[data-v-7aa3f8c0] .van-popup {
     width: 80%;
     height: 94vh;
+    margin-top: 26px;
     box-sizing: border-box;
 }
-.lineListContainer >>>.van-popup--right {
-    top: 54%;
-    right: 0;
-    /* -webkit-transform: translate3d(0, -50%, 0); */
-    transform: translate3d(0, -50%, 0);
-}
-.lineListContainer >>>.van-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.19);
-
-}
-.lineListContainer>>>.van-cell {
-    position: relative;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    box-sizing: border-box;
-    width: 90%;
-    padding: 0.26667rem 0.42667rem;
-    overflow: hidden;
-    color: #3C4353;
-    font-size: 0.34667rem;
-    line-height: 0.64rem;
-    background-color: #fff;
-}
-/* .lineListContainer>>>.van-cell-group{
-
-  width: 80%;
-  margin: auto;
-   margin-top: 100px;
-} */
 </style>
-
