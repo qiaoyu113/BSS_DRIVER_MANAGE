@@ -17,7 +17,18 @@ import global_ from 'components/Global'
 import { Toast } from 'vant'
 import * as directives from '@/directives'
 
-Vue.prototype.$toast = Toast
+Vue.prototype.$loading = (status) => {
+  if (status) {
+    Toast.loading({
+      duration: 0,
+      message: '加载中...',
+      forbidClick: true,
+      loadingType: 'spinner'
+    })
+  } else {
+    Toast.clear()
+  }
+}
 
 // Register global directives
 Object.keys(directives).forEach(key => {

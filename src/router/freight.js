@@ -14,5 +14,63 @@ export default [
     meta: {
       title: '外线运费上报'
     }
+  },
+  {
+    path: '/cardltem',
+    name: 'cardltem',
+    // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
+    component: resolve => require(['@/views/freight/List/components/Cardltem'], resolve),
+    meta: {
+      title: '运费'
+    }
+  },
+  {
+    path: '/Detail',
+    name: 'Detail',
+    // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
+    component: resolve => require(['@/views/freight/Detail'], resolve),
+    meta: {
+      title: '运费'
+    }
+  },
+  {
+    path: '/Batch',
+    name: 'Batch',
+    component: resolve => require(['@/views/freight/Batch'], resolve),
+    meta: {
+      title: '运费管理'
+    }
+  },
+  {
+    path: '/Report',
+    name: 'Report',
+    component: resolve => require(['@/views/freight/Batch/components/Report'], resolve),
+    meta: {
+      title: '运费管理'
+    }
+  },
+  {
+    path: '/outlineSearch',
+    name: 'outlineSearch',
+    component: resolve => require(['@/views/freight/OutSideSearch'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
+  },
+  {
+    path: '/outsidebatch',
+    name: 'outsidebatch',
+    component: resolve => require(['@/views/freight/OutSideBatch'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
+  },
+  {
+    path: '/outsidereport',
+    name: 'outsidereport',
+    component: resolve => require(['@/views/freight/OutSideBatch/components/Report'], resolve),
+    meta: {
+      title: '批量上报运费'
+    }
   }
 ]

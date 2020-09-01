@@ -50,10 +50,10 @@ export default {
       projectId: '',
       projectName: '',
       title: '',
-      step: 0,
+      step: 1,
       isStable: true,
       stepOneForm: {
-        i: [
+        h: [
           '110000',
           '110100',
           '110101'

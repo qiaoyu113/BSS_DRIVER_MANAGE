@@ -6,6 +6,8 @@
       </h4>
       <van-field
         v-model="form.a"
+        label-width="100"
+        colon
         required
         label="线路名称"
         placeholder="请输入"
@@ -14,6 +16,8 @@
       />
       <van-field
         v-model="form.b"
+        label-width="100"
+        colon
         required
         label="线路数量"
         placeholder="请输入"
@@ -25,30 +29,22 @@
         ]"
       />
       <van-field
-        :value="text1"
+        label-width="100"
+        colon
+        :value="pickerNames['c']"
         readonly
         clickable
         required
-        label-width="100"
         label="是否有线路余额"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPicker1 = true"
+        @click="showPickerFn('c')"
       />
-      <van-popup v-model="showPicker1" position="bottom">
-        <van-picker
-          :default-index="1"
-          value-key="label"
-          show-toolbar
-          :columns="columns1"
-          @confirm="onConfirm1"
-          @cancel="showPicker1 = false"
-        />
-      </van-popup>
-
       <van-field
+        label-width="100"
+        colon
         readonly
         clickable
         required
@@ -56,62 +52,45 @@
           { required: true, message: '请选择' },
         ]"
         name="calendar"
-        :value="text2"
+        :value="pickerNames['d']"
         label="上架截止日期"
         placeholder="点击选择日期"
-        @click="showPicker2 = true"
+        @click="showPickerFn('d')"
       />
-      <van-calendar v-model="showPicker2" @confirm="onConfirm2" />
-
       <van-field
-        :value="text3"
+        label-width="100"
+        colon
+        :value="pickerNames['e']"
         readonly
         clickable
         required
-        label-width="100"
         label="线路稳定性"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPicker3 = true"
+        @click="showPickerFn('e')"
       />
-      <van-popup v-model="showPicker3" position="bottom">
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns3"
-          @confirm="onConfirm3"
-          @cancel="showPicker3 = false"
-        />
-      </van-popup>
       <h4 class="title van-hairline--bottom">
         配送信息
       </h4>
       <van-field
-        :value="text4"
+        label-width="100"
+        colon
+        :value="pickerNames['f']"
         readonly
         clickable
         required
-        label-width="100"
         label="是否走高速"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPicker4 = true"
+        @click="showPickerFn('f')"
       />
-      <van-popup v-model="showPicker4" position="bottom">
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns4"
-          @confirm="onConfirm4"
-          @cancel="showPicker4 = false"
-        />
-      </van-popup>
       <van-field
-        :value="text5"
+        colon
+        :value="pickerNames['g']"
         readonly
         clickable
         required
@@ -121,19 +100,12 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPicker5 = true"
+        @click="showPickerFn('g')"
       />
-      <van-popup v-model="showPicker5" position="bottom">
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns5"
-          @confirm="onConfirm5"
-          @cancel="showPicker5 = false"
-        />
-      </van-popup>
       <van-field
-        :value="text6"
+        label-width="100"
+        colon
+        :value="pickerNames['carType']"
         readonly
         clickable
         required
@@ -142,19 +114,13 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPicker6 = true"
+        @click="handleShowModal('carType')"
       />
-      <van-popup v-model="showPicker6" position="bottom">
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns6"
-          @confirm="onConfirm6"
-          @cancel="showPicker6 = false"
-        />
-      </van-popup>
+
       <van-field
-        :value="text7"
+        label-width="100"
+        colon
+        :value="pickerNames['h']"
         readonly
         clickable
         required
@@ -163,19 +129,12 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPicker7 = true"
+        @click="showPickerFn('h')"
       />
-      <van-popup v-model="showPicker7" position="bottom">
-        <van-area
-          :value="form.i[2]"
-          :area-list="columns7"
-          :columns-placeholder="['请选择', '请选择', '请选择']"
-          @confirm="onConfirm7"
-          @cancel="showPicker7 = false"
-        />
-      </van-popup>
       <van-field
         v-model="form.j"
+        label-width="100"
+        colon
         required
         label="配送点数量"
         placeholder="请输入"
@@ -188,6 +147,8 @@
       />
       <van-field
         v-model="form.k"
+        label-width="100"
+        colon
         required
         label="配送总里程数"
         placeholder="请输入"
@@ -215,11 +176,58 @@
         下一步
       </van-button>
     </van-form>
+    <!-- 底部弹出框 -->
+    <van-popup v-model="showPicker" position="bottom">
+      <template v-if="isArea">
+        <!-- 配送区域 -->
+        <van-area
+          :value="form[pickerKey].length > 1 ?form[pickerKey][2]+'' : ''"
+          :area-list="columns"
+          :columns-placeholder="['请选择', '请选择', '请选择']"
+          @confirm="onConfirm"
+          @cancel="showPicker = false"
+        />
+      </template>
+      <template v-else-if="isDate">
+        <van-datetime-picker
+          v-model="form[pickerKey]"
+          type="date"
+          title="选择年月日"
+          :min-date="minTime"
+          :max-date="maxTime"
+          @confirm="onConfirm"
+          @cancel="showPicker = false"
+        />
+      </template>
+      <template v-else>
+        <!-- picker选择器 -->
+        <van-picker
+          value-key="label"
+          show-toolbar
+          :columns="columns"
+          @confirm="onConfirm"
+          @cancel="showPicker = false"
+        />
+      </template>
+    </van-popup>
+    <!-- 模糊搜索组件 -->
+    <Suggest
+      v-model="showModal"
+      :options="options"
+      :type="modalKey"
+      @keyWordValue="handleSearchChange"
+      @finish="handleValueClick"
+      @closed="showModal=false"
+    />
   </div>
 </template>
 
 <script>
+import Suggest from '@/components/SuggestSearch.vue'
 export default {
+  components: {
+    Suggest
+  },
   props: {
     form: {
       type: Object,
@@ -228,13 +236,6 @@ export default {
   },
   data() {
     return {
-      showPicker1: false,
-      showPicker2: false,
-      showPicker3: false,
-      showPicker4: false,
-      showPicker5: false,
-      showPicker6: false,
-      showPicker7: false,
       columns1: [
         {
           label: '有余额线路',
@@ -245,7 +246,7 @@ export default {
           value: 0
         }
       ],
-      columns3: [
+      columns2: [
         {
           label: '一个月内（不稳定)',
           value: 1
@@ -263,6 +264,16 @@ export default {
           value: 4
         }
       ],
+      columns3: [
+        {
+          label: '是',
+          value: 1
+        },
+        {
+          label: '否',
+          value: 0
+        }
+      ],
       columns4: [
         {
           label: '是',
@@ -273,27 +284,7 @@ export default {
           value: 0
         }
       ],
-      columns5: [
-        {
-          label: '是',
-          value: 1
-        },
-        {
-          label: '否',
-          value: 0
-        }
-      ],
-      columns6: [
-        {
-          label: '金杯',
-          value: 1
-        },
-        {
-          label: '小面',
-          value: 2
-        }
-      ],
-      columns7: {
+      columns5: {
         province_list: {
           110000: '北京市',
           120000: '天津市'
@@ -316,13 +307,31 @@ export default {
           120105: '河北区'
         }
       },
-      text1: '',
-      text2: '',
-      text3: '',
-      text4: '',
-      text5: '',
-      text6: '',
-      text7: ''
+      showModal: false,
+      options: [],
+      modalKey: '',
+      pickerNames: { // picker选中显示的名字
+        city: '',
+        b: '',
+        c: '',
+        startDate: '',
+        endDate: ''
+      },
+      pickerKey: '', // 显示picker的key
+      columns: [], // picker的列表
+      showPicker: false, // 是否打开picker
+      areaLists: ['h'], // 显示日历控件的字段集合
+      timeLists: ['d'],
+      minTime: new Date(),
+      maxTime: new Date(2125, 12, 31)
+    }
+  },
+  computed: {
+    isArea() {
+      return this.areaLists.includes(this.pickerKey)
+    },
+    isDate() {
+      return this.timeLists.includes(this.pickerKey)
     }
   },
   methods: {
@@ -345,50 +354,58 @@ export default {
       }
       return false
     },
-    // 是否有线路余额 ----底部pop选中关闭
-    onConfirm1(obj) {
-      this.form.c = obj.value
-      this.text1 = obj.label
-      this.showPicker1 = false
+    // 模糊搜索
+    handleSearchChange(value) {
+      console.log('这里面接口请求模糊查询:', value)
     },
-    // 是否有线路余额 ----底部pop选中关闭
-    onConfirm2(date) {
-      this.text2 = `${date.getMonth() + 1}/${date.getDate()}`;
-      this.form.d = date
-      this.showPicker2 = false;
+    /**
+     *点击某一项
+     */
+    handleValueClick(obj) {
+      console.log('xxx:', obj)
     },
-    // 线路稳定性 ----底部pop选中关闭
-    onConfirm3(obj) {
-      this.form.e = obj.value
-      this.text3 = obj.label
-      this.showPicker3 = false
+    // 打开模糊查询框
+    handleShowModal(key) {
+      this.modalKey = key
+      if (key === 'carType') {
+        this.options = []
+      }
+      this.showModal = true
     },
-    // 是否走高速 ----底部pop选中关闭
-    onConfirm4(obj) {
-      this.form.f = obj.value
-      this.text4 = obj.label
-      this.showPicker4 = false
+    // 显示picker
+    showPickerFn(key) {
+      this.columns = []
+      this.pickerKey = key;
+      if (key === 'c') {
+        this.columns.push(...this.columns1);
+      } else if (key === 'e') {
+        this.columns.push(...this.columns2);
+      } else if (key === 'f') {
+        this.columns.push(...this.columns3);
+      } else if (key === 'g') {
+        this.columns.push(...this.columns4);
+      } else if (key === 'h') {
+        this.columns = this.columns5
+      }
+
+      this.showPicker = true;
     },
-    // 是否需要回单 ----底部pop选中关闭
-    onConfirm5(obj) {
-      this.form.g = obj.value
-      this.text5 = obj.label
-      this.showPicker5 = false
-    },
-    // 配送车型 ----底部pop选中关闭
-    onConfirm6(obj) {
-      this.form.h = obj.value
-      this.text6 = obj.label
-      this.showPicker6 = false
-    },
-    // 主要配送区域 ----底部pop选中关闭
-    onConfirm7(values) {
-      this.form.i = this.value = values.map((item) => item.code)
-      this.text7 = this.value = values.map((item) => item.name).join('/');
-      this.showPicker7 = false
+    // picker选择器
+    onConfirm(obj) {
+      if (this.isDate) {
+        this.pickerNames[this.pickerKey] = `${obj.getMonth() + 1}/${obj.getDate()}`;
+      } else if (this.isArea) {
+        this.form[this.pickerKey] = obj.map((item) => item.code)
+        this.pickerNames[this.pickerKey] = obj.map((item) => item.name).join('/');
+      } else {
+        this.pickerNames[this.pickerKey] = obj.label
+      }
+      this.form[this.pickerKey] = obj
+      this.showPicker = false;
     },
     // 重置表单
     reset() {
+      this.pickerNames = {}
       this.$refs.stepOne.resetValidation()
     }
   }

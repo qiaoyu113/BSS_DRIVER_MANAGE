@@ -47,21 +47,33 @@ module.exports = {
     proxy: {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
-        // target: 'http://firmiana-open-api-d2.yunniao.cn/',
-        changeOrigin: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
+      // [process.env.VUE_APP_BASE_API]: {
+      //   target: `http://127.0.0.1:${port}/mock`,
+      //   // target: 'http://firmiana-open-api-d2.yunniao.cn/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     ['^' + process.env.VUE_APP_BASE_API]: ''
+      //   }
+      // },
+      // '/api': {
+      //   target: 'http://firmiana-open-api-m2.yunniao.cn/',
+      //   // target: 'http://firmiana-wechat.m1.yunniao.cn/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     // ['^' + process.env.VUE_APP_BASE_API]: ''
+      //   }
+      // },
+      '/mock/18': {
+        target: 'http://yapi.ynimg.cn:8888',
+        changeOrigin: true
       },
-      '/api': {
-        target: 'http://firmiana-open-api-m2.yunniao.cn/',
-        // target: 'http://firmiana-wechat.m1.yunniao.cn/',
-        changeOrigin: true,
-        pathRewrite: {
-          // ['^' + process.env.VUE_APP_BASE_API]: ''
-        }
+      '/mock/25': {
+        target: 'http://yapi.ynimg.cn:8888',
+        changeOrigin: true
+      },
+      '/mock/67': {
+        target: 'http://yapi.ynimg.cn:8888',
+        changeOrigin: true
       }
     },
     after: require('./mock/mock-server.js')

@@ -1,0 +1,411 @@
+<template>
+  <div class="customerListContainer">
+    <!-- navbar -->
+    <van-sticky :offset-top="0">
+      <van-nav-bar title="客户管理" left-text="返回" left-arrow @click-left="onClickLeft" />
+      <!-- 搜索 -->
+      <van-search show-action placeholder="客户名称/客户编号/客户联系人手机号搜索" readonly @click="handleSearchClick">
+        <template #action>
+          <div class="searchSelect" @click="show=true">
+            筛选
+            <van-icon name="play" color="#3C4353" />
+          </div>
+        </template>
+      </van-search>
+    </van-sticky>
+
+    <!-- 下拉刷新  上拉加载 -->
+    <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <!-- tabs -->
+        <van-tabs v-model="form.customerState" swipeable @change="handleTabChange">
+          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
+            <template #title>
+              {{ item.text }}
+              <div v-if="item.num" class="van-info">
+                {{ item.num }}
+              </div>
+            </template>
+            <div v-for="sub in lists" :key="sub.id">
+              <CardItem :obj="sub" />
+              <div class="lineHeight"></div>
+            </div>
+          </van-tab>
+        </van-tabs>
+      </van-list>
+    </van-pull-refresh>
+
+    <!-- 右侧筛选抽屉 -->
+    <SelfPopup
+      ref="lineLineForm"
+      :show.sync="show"
+      form-ref="form"
+      @submit="onQuery"
+      @reset="onReset"
+    >
+      <van-field
+        :value="pickerNames['city']"
+        readonly
+        clickable
+        label="所属城市"
+        placeholder="请选择"
+        @click="handleShowModal('city')"
+      />
+      <van-field
+        :value="pickerNames['customerType']"
+        readonly
+        clickable
+        label="客户类型"
+        placeholder="请选择"
+        @click="showPickerFn('customerType')"
+      />
+      <van-field
+        :value="pickerNames['classification']"
+        readonly
+        clickable
+        label="客户属性"
+        placeholder="请选择"
+        @click="showPickerFn('classification')"
+      />
+
+      <van-field
+        :value="pickerNames['date']"
+        readonly
+        clickable
+        label="创建时间"
+        placeholder="开始日期"
+        :min-date="minDate"
+        @click="showPickerFn('date')"
+      />
+    </SelfPopup>
+    <!-- 底部弹出框 -->
+    <van-popup v-model="showPicker" position="bottom">
+      <template v-if="isDateRange">
+        <!-- 选择日期 -->
+        <van-calendar v-model="showPicker" type="range" @confirm="onConfirm" />
+      </template>
+      <template v-else>
+        <!-- picker选择器 -->
+        <van-picker
+          value-key="label"
+          show-toolbar
+          :columns="columns"
+          @confirm="onConfirm"
+          @cancel="showPicker = false"
+        />
+      </template>
+    </van-popup>
+    <!-- 模糊搜索组件 -->
+    <Suggest
+      v-model="showModal"
+      :options="openCitys"
+      :type="modalKey"
+      :props="{
+        label:'name',
+        value:'code'
+      }"
+      @keyWordValue="handleSearchChange"
+      @finish="handleValueClick"
+      @closed="showModal=false"
+    />
+  </div>
+</template>
+
+<script>
+import CardItem from './components/CardItem'
+import SelfPopup from '@/components/SelfPopup';
+import Suggest from '@/components/SuggestSearch.vue'
+import { getClientList } from '@/api/client'
+import { getOpenCitys } from '@/api/common'
+export default {
+  components: {
+    CardItem,
+    SelfPopup,
+    Suggest
+  },
+  data() {
+    return {
+      show: false, // 打开查询抽屉
+      refreshing: false, // 下拉刷新
+      loading: false, // 上拉加载
+      finished: false, // 是否加载完成
+      tabArrs: [ // tabs数组
+        {
+          text: '全部',
+          num: 100,
+          name: ''
+        },
+        {
+          text: '已启用',
+          num: 0,
+          name: 1
+        },
+        {
+          text: '已禁用',
+          num: 0,
+          name: 2
+        }
+      ],
+      lists: [],
+      form: { // 查询表单
+        customerState: '', // 当前激活的tab,
+        city: '', // 城市
+        customerType: '', // 客户类型
+        classification: '', // 客户属性
+        date: ''
+      },
+      openCitys: [], // 开通城市列表
+      columns2: [
+        {
+          label: '公司',
+          value: 1
+        },
+        {
+          label: '个体',
+          value: 2
+        }
+      ],
+      columns3: [
+        {
+          label: '外线客户',
+          value: 1
+        },
+        {
+          label: '自承运客户',
+          value: 2
+        },
+        {
+          label: '集团客户',
+          value: 3
+        }
+      ],
+      showModal: false,
+      modalKey: '',
+      pickerNames: { // picker选中显示的名字
+        city: '',
+        b: '',
+        c: '',
+        startDate: '',
+        endDate: ''
+      },
+      pickerKey: '', // 显示picker的key
+      columns: [], // picker的列表
+      showPicker: false, // 是否打开picker
+      dateLists: ['date'], // 显示日历控件的字段集合
+      page: {
+        current: 0,
+        size: 10
+      }
+    }
+  },
+  computed: {
+    minDate() {
+      if (this.form.r) {
+        return new Date(this.form.r)
+      }
+      return new Date()
+    },
+    isDateRange() {
+      return this.dateLists.includes(this.pickerKey)
+    }
+  },
+  mounted() {
+
+  },
+  methods: {
+    // 返回
+    onClickLeft() {
+      this.$router.go(-1)
+    },
+    // 加载列表
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
+      }
+      let result = await this.getLists(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
+        this.loading = false;
+        if (!result.hasMore) {
+          this.finished = true
+        }
+      }
+    },
+    // 搜索
+    handleSearchClick() {
+      this.$router.push({
+        path: '/clientSearch'
+      })
+    },
+    // 查询
+    onQuery() {
+      console.log('submit', this.form);
+    },
+    // 重置
+    onReset(form) {
+      this.pickerNames = {}
+      this.form = {}
+      console.log('reset');
+    },
+    // 模糊搜索
+    handleSearchChange(value) {
+      let params = {
+        keyword: value
+      }
+      this.getOpenCityList(params)
+    },
+    /**
+     *点击模糊查询框某一项
+     */
+    handleValueClick(obj) {
+      this.form[obj.type] = obj.code
+      this.pickerNames[obj.type] = obj.name
+    },
+    // 打开模糊查询框
+    handleShowModal(key) {
+      this.modalKey = key
+      if (key === 'city') {
+        this.getOpenCityList()
+      }
+      this.showModal = true
+    },
+    // 显示picker
+    showPickerFn(key) {
+      this.columns = []
+      this.pickerKey = key;
+      if (key === 'b') {
+        this.columns.push(...this.columns2);
+      } else if (key === 'c') {
+        this.columns.push(...this.columns3);
+      }
+      this.showPicker = true;
+    },
+    // picker选择器
+    onConfirm(obj) {
+      // 如果是日期选择器
+      if (this.isDateRange) {
+        if (obj.length === 2) {
+          let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+          let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+          this.pickerNames[this.pickerKey] = `${startName}-${endName}`
+        }
+      } else {
+        this.pickerNames[this.pickerKey] = obj.label
+      }
+      this.form[this.pickerKey] = obj
+      this.showPicker = false;
+    },
+    // 获取开通的城市列表
+    async getOpenCityList(params = {}) {
+      try {
+        let { data: res } = await getOpenCitys(params)
+        if (res.success) {
+          this.openCitys = []
+          this.openCitys.push(...res.data)
+        }
+      } catch (err) {
+        console.log(`get open city list fail:${err}`)
+      }
+    },
+    // 状态切换
+    handleTabChange(tab) {
+      this.getLists(true)
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          pageNumber: this.page.size
+        }
+        this.form.city && (params.city = this.form.city)
+        this.form.customerType && (params.customerType = this.form.customerType)
+        this.form.customerType && (params.customerType = this.form.customerType)
+        this.form.customerState && (params.customerState = this.form.customerState)
+        if (this.form.date && this.form.date.length > 1) {
+          params.startDate = new Date(this.form.date[0]).getTime()
+          params.endDate = new Date(this.form.date[1]).getTime()
+        }
+        let { data: res } = await getClientList(params)
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach(item => {
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
+            }
+          })
+          return result
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    }
+  }
+}
+
+</script>
+
+<style lang='scss' scoped>
+.customerListContainer {
+  font-family: PingFangSC-Medium;
+  .headerRight {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 14px;
+    color: #FFFFFF;
+    i {
+      margin-left:5px;
+    }
+  }
+  .searchSelect {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 14px;
+    color: #3C4353;
+    i {
+      transform: rotate(90deg);
+    }
+  }
+  .lineHeight {
+    background: #F9F9F9;
+    height:10px;
+    width:100%;
+  }
+}
+
+</style>
+
+<style scoped>
+  .customerListContainer >>> .van-tab__text {
+    font-size: 12px;
+    color: #3C4353;
+  }
+</style>

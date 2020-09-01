@@ -3,15 +3,15 @@
     <!-- navbar -->
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
-        <template #right>
+        <!-- <template #right>
           <div class="headerRight" @click="showPicker = true">
             新建
             <van-icon name="add-o" />
           </div>
-        </template>
+        </template> -->
       </van-nav-bar>
       <!-- 搜索 -->
-      <van-search show-action placeholder="请输入线路名称/线路编号" readonly @click="handleSearchClick">
+      <van-search show-action placeholder="请输入项目名称/编号" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="showPopup=true">
             筛选
@@ -347,7 +347,7 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/lineSearch'
+        path: '/outlineSearch'
       })
     },
     /**

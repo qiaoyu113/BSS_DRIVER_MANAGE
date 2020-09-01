@@ -8,44 +8,44 @@
 
     <van-collapse v-model="activeNames">
       <van-collapse-item title="基本信息" name="1">
-        <van-field label="项目名称" readonly :value="form.lineName" />
-        <van-field label="项目编号" readonly :value="form.lineName" />
-        <van-field label="客户名称" readonly :value="form.lineName" />
-        <van-field label="客户编号" readonly :value="form.lineName" />
-        <van-field label="线索名称" readonly :value="form.lineName" />
-        <van-field label="线索编号" readonly :value="form.lineName" />
-        <van-field label="审核状态" readonly :value="form.lineName" />
-        <van-field label="客户状态" readonly :value="form.lineName" />
-        <van-field label="客户渠道" readonly :value="form.lineName" />
-        <van-field label="客户属性" readonly :value="form.lineName" />
-        <van-field label="所属城市" readonly :value="form.lineName" />
-        <van-field label="联系人" readonly :value="form.lineName" />
-        <van-field label="联系电话" readonly :value="form.lineName" />
-        <van-field label="收货点类型" label-width="100" readonly :value="form.lineName" />
+        <van-field label="项目名称" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="项目编号" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="客户名称" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="客户编号" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="线索名称" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="线索编号" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="审核状态" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="客户状态" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="客户渠道" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="客户属性" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="所属城市" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="联系人" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="联系电话" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="收货点类型" label-width="100" readonly :value="form.lineName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="仓信息" name="2">
-        <van-field label="仓名称" readonly :value="form.lineName" />
-        <van-field label="仓联系人" readonly :value="form.lineName" />
-        <van-field label="仓联系电话" readonly :value="form.lineName" />
-        <van-field label="开放时间" readonly :value="form.lineName" />
-        <van-field label="所在区域" readonly :value="form.lineName" />
-        <van-field label="详细地址" readonly :value="form.lineName" />
-        <van-field label="备注" readonly :value="form.lineName" />
+        <van-field label="仓名称" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="仓联系人" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="仓联系电话" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="开放时间" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="所在区域" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="详细地址" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="备注" label-width="100" readonly :value="form.lineName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送信息" name="3">
-        <van-field label="是否走高速" readonly :value="form.lineName" />
-        <van-field label="是否需要回单" readonly :value="form.lineName" />
-        <van-field label="配送车型" readonly :value="form.lineName" />
-        <van-field label="配送点数量" readonly :value="form.lineName" />
-        <van-field label="配送总里程" readonly :value="form.lineName" />
-        <van-field label="预计工作时间" readonly :value="form.lineName" />
-        <van-field label="限行区域说明" readonly :value="form.lineName" />
+        <van-field label="是否走高速" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="是否需要回单" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="配送车型" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="配送点数量" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="配送总里程" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="预计工作时间" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="限行区域说明" label-width="100" readonly :value="form.lineName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="货物信息" name="4">
-        <van-field label="货物类型" readonly :value="form.lineName" />
-        <van-field label="货物件数" readonly :value="form.lineName" />
-        <van-field label="是否需要搬运" readonly :value="form.lineName" />
-        <van-field label="其他上岗要求" readonly :value="form.lineName" />
+        <van-field label="货物类型" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="货物件数" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="是否需要搬运" label-width="100" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="其他上岗要求" label-width="100" readonly :value="form.lineName" :border="false" colon />
       </van-collapse-item>
     </van-collapse>
     <div class="btn">

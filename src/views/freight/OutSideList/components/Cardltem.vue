@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick">
+      <van-button type="default" round hairline @click="handleDetailClick(obj)">
         详情
       </van-button>
     </div>
@@ -50,9 +50,12 @@ export default {
     /**
      * 线路详情
      */
-    handleDetailClick() {
+    handleDetailClick(item) {
       this.$router.push({
-        path: '/lineDetail'
+        path: '/outsidebatch',
+        query: {
+          name: item.title
+        }
       })
     }
   }

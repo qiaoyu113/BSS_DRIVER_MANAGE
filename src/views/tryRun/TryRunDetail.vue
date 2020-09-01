@@ -8,89 +8,256 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div class="navBarTit">
+          <div class="navBarTit" @click="onClickRight">
             操作
           </div>
         </template>
       </van-nav-bar>
+      <div class="detail-type">
+        待试跑
+      </div>
     </div>
     <div class="container">
-      <van-collapse v-model="activeNames">
-        <van-collapse-item title="标题1" name="1">
-          内容
-        </van-collapse-item>
-        <van-collapse-item title="标题2" name="2">
-          内容
-        </van-collapse-item>
-        <van-collapse-item title="标题3" name="3">
-          内容
-        </van-collapse-item>
-      </van-collapse>
-
-      <br>
-      <van-collapse v-model="activeNames">
-        <van-collapse-item title="标题1" name="1">
-          内容
-        </van-collapse-item>
-        <van-collapse-item title="标题2" name="2">
-          内容
-        </van-collapse-item>
-        <van-collapse-item title="标题3" name="3">
-          内容
-        </van-collapse-item>
-      </van-collapse>
-      <br>
-      <van-collapse v-model="activeNames">
-        <van-collapse-item title="标题1" name="1">
-          内容
-        </van-collapse-item>
-        <van-collapse-item title="标题2" name="2">
-          内容
-        </van-collapse-item>
-        <van-collapse-item title="标题3" name="3">
-          内容
-        </van-collapse-item>
-      </van-collapse>
+      <DetailsItem
+        :list="list"
+      />
     </div>
+    <van-action-sheet
+      v-model="show"
+      :actions="actions"
+      cancel-text="取消"
+      close-on-click-action
+      @select="onSelect"
+    />
   </div>
 </template>
 
 <script>
+import DetailsItem from './components/DetailsItem'
 export default {
   name: 'TryRunDetail',
+  components: {
+    DetailsItem
+  },
   data() {
     return {
-      activeNames: []
+      list: [
+        {
+          title: '客户信息',
+          children: [
+            {
+              title: '客户名称',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '项目名称',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '线路名称',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '上岗经理',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '外线销售',
+              value: (a, b) => `${a}/${b}`
+            }
+          ],
+          detail: '/' // 详情地址
+        },
+        {
+          title: '线路信息',
+          children: [
+            {
+              title: '上岗时间',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '到仓时间',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '仓库位置',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '配送车型',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '配送区域',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '里程时间',
+              value: (a, b) => `${a}/${b}`
+            }
+          ],
+          tags: ['稳线', '共享'],
+          detail: '/' // 详情地址
+        },
+        {
+          title: '司机信息',
+          children: [
+            {
+              title: '司机信息',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '车型',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '车牌号',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '现住址',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '加盟经理',
+              value: (a, b) => `${a}/${b}`
+            }
+          ],
+          detail: '/' // 详情地址
+        },
+        {
+          title: '试跑意向记录',
+          children: [
+            {
+              title: '操作人',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '操作时间',
+              value: (a, b) => `${a}/${b}`
+            }
+          ]
+        },
+        {
+          title: '上岗记录',
+          children: [
+            {
+              title: '操作人',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '操作时间',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '到仓接待人',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '到仓时间',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '岗前叮嘱',
+              value: (a, b) => `${a}/${b}`
+            }
+          ]
+        },
+        {
+          title: '转跑记录',
+          children: [
+            {
+              title: '操作人',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '操作时间',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '到仓接待人',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '到仓时间',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '岗前叮嘱',
+              value: (a, b) => `${a}/${b}`
+            }
+          ],
+          hide: true
+        },
+        {
+          title: '掉线记录',
+          children: [
+            {
+              title: '操作人',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '操作时间',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '掉线原因',
+              value: (a, b) => `${a}/${b}`
+            },
+            {
+              title: '其他原因',
+              value: (a, b) => `${a}/${b}`
+            }
+          ]
+        }
+      ],
+      show: false,
+      actions: [
+        { name: '创建试跑', index: 0 },
+        { name: '转试跑', index: 1 },
+        { name: '转掉线', index: 2 }
+      ]
     };
   },
   computed: {
     title() {
-      return this.$route.meta.title
+      return this.$route.meta.title;
     }
   },
   methods: {
     onClickLeft() {
-      this.$router.go(-1)
-    }
+      this.$router.go(-1);
+    },
+    onClickRight() {
+      this.show = true;
+    },
+    onSelect() {}
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 .TryRunDetail {
-  display: flex;
   flex-direction: column;
   background: @body-bg;
-  .top{
-    margin-bottom: 5px;
+  .top {
     background-color: @body-bg;
   }
-  .list{
+  .container {
     flex: 1;
     overflow: auto;
   }
-  .navBarTit{
-    color: @white;
+  .navBarTit {
+    color: #649cee;
   }
+  .detail-type {
+    height: 25px;
+    line-height: 25px;
+    font-size: @font-size-sm-1;
+    color: @tab-active-color;
+    background-color: #fdeed7;
+    text-align: center;
+  }
+
 }
 </style>
