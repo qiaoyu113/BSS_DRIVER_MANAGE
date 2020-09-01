@@ -17,6 +17,7 @@ import global_ from 'components/Global'
 import { Toast } from 'vant'
 import * as directives from '@/directives'
 
+Vue.prototype.$toast = Toast
 Vue.prototype.$loading = (status) => {
   if (status) {
     Toast.loading({
