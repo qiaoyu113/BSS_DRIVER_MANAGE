@@ -2,7 +2,7 @@
   <div class="ShareInterview">
     <van-sticky :offset-top="0">
       <van-nav-bar
-        title="填写面试表单"
+        :title="title"
         left-text="返回"
         left-arrow
         @click-left="$router.go(-1)"
@@ -476,6 +476,11 @@ export default {
         }
       }
     };
+  },
+  computed: {
+    title() {
+      return this.$route.meta.title;
+    }
   },
   created() {
     this.phonePattern = phoneRegExp;

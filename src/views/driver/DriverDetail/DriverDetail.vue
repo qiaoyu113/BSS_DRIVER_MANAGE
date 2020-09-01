@@ -181,8 +181,9 @@ export default {
       ],
       showDothing: false,
       dothingActions: [
-        { name: '编辑面试', url: '' },
-        { name: '打标签', url: '' },
+        { name: '编辑面试', url: '/editTailored' },
+        { name: '编辑面试', url: '/editShare' },
+        { name: '打标签', url: '/tagView' },
         { name: '标记退出', url: '' },
         { name: '标记成交', url: '' }
       ]
@@ -200,6 +201,7 @@ export default {
     onSelectDothing(item) {
       this.showDothing = false;
       Toast(item.name);
+      this.$router.push({ path: item.url, query: { id: '132' }})
     }
   }
 };

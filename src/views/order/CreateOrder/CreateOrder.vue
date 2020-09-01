@@ -114,7 +114,7 @@
               required
               placeholder="请填写0-999999.99的数字'"
               type="number"
-              :rules="[{ required: true, message: '请填写合作期限' },
+              :rules="[{ required: true, message: '请填写收入保障' },
                        {validator:moneyCheck, message: '请填写正确的数字'}]"
             />
             <van-field
@@ -126,7 +126,7 @@
               placeholder="请填写0-100的数字'"
               type="number"
               maxlength="5"
-              :rules="[{ required: true, message: '请填写合作期限' },
+              :rules="[{ required: true, message: '请填写抽佣比例' },
                        {validator:checkPercent, message: '请填写正确的数字'}]"
             />
             <van-field
@@ -262,7 +262,7 @@
             下一步
           </van-button>
 
-          <van-button v-if="formStatus === 3" type="primary" native-type="button">
+          <van-button v-if="formStatus === 3" type="primary" native-type="button" @click="realSubmit">
             提交
           </van-button>
         </div>
@@ -362,9 +362,11 @@ export default {
     goRouter() {
       this.$router.push({ path: '/addPay', query: { id: '123' }})
     },
-    onSubmit1(values) {
+    realSubmit() {
       let params = { ...this.formData };
       console.log(params);
+    },
+    onSubmit1(values) {
       this.formStatus++
     },
     onConfirm1(time) {
@@ -467,7 +469,7 @@ export default {
     width: 50px;
     height: 50px;
     border: 1px solid black;
-    position: absolute;
+    position: fixed;
     right: 50px;
     bottom: 100px;
     text-align: center;

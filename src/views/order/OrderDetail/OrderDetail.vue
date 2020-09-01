@@ -1,5 +1,5 @@
 <template>
-  <div class="OrderDetail">
+  <div :class="title === '订单审核' ? 'pm-72 OrderDetail' : 'OrderDetail'">
     <van-sticky :offset-top="0">
       <van-nav-bar
         :title="title"
@@ -11,7 +11,10 @@
     </van-sticky>
     <div class="detailInfo">
       <van-cell-group>
-        <van-cell value="司机信息" is-link />
+        <van-cell
+          value="司机信息"
+          is-link
+        />
         <van-field
           label="司机姓名："
           value="李威山（SJ19980822651）"
@@ -38,7 +41,10 @@
         />
       </van-cell-group>
       <van-cell-group>
-        <van-cell value="商品信息" is-link />
+        <van-cell
+          value="商品信息"
+          is-link
+        />
         <van-field
           label="商品信息："
           value="梧桐专车"
@@ -77,7 +83,10 @@
         />
       </van-cell-group>
       <van-cell-group>
-        <van-cell value="商品附加信息" is-link />
+        <van-cell
+          value="商品附加信息"
+          is-link
+        />
         <van-field
           label="年检有效期："
           value="2020-09-09"
@@ -127,7 +136,10 @@
         />
       </van-cell-group>
       <van-cell-group>
-        <van-cell title="支付记录" value="总支付金额：4600.00元" />
+        <van-cell
+          title="支付记录"
+          value="总支付金额：4600.00元"
+        />
         <van-field
           label="支付金额："
           value="2300.00元"
@@ -143,9 +155,18 @@
           value="微信小程序"
           readonly
         />
-        <van-field name="uploader" label="支付图片：" readonly @click="lookPic">
+        <van-field
+          name="uploader"
+          label="支付图片："
+          readonly
+          @click="lookPic"
+        >
           <template #input>
-            <van-image width="100" height="100" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+            <van-image
+              width="100"
+              height="100"
+              src="https://img.yzcdn.cn/vant/cat.jpeg"
+            />
           </template>
         </van-field>
         <van-field
@@ -160,7 +181,10 @@
         />
       </van-cell-group>
       <van-cell-group>
-        <van-cell value="操作记录" is-link />
+        <van-cell
+          value="操作记录"
+          is-link
+        />
         <van-field
           label="订单状态："
           value="2020-09-09（方圆）"
@@ -184,17 +208,29 @@
         />
       </van-cell-group>
     </div>
-    <div v-if="routeName === '/orderAudit'" class="btnGroup">
-      <van-button color="#2F448A" plain @click="cancelform">
-        取消
+    <div
+      v-if="routeName === '/orderAudit'"
+      class="btnGroup"
+    >
+      <van-button
+        color="#2F448A"
+        plain
+        @click="cancelform"
+      >
+        驳回
       </van-button>
-      <van-button type="primary" native-type="submit">
-        提交
+      <van-button
+        type="primary"
+        native-type="button"
+        @click="detailConfim()"
+      >
+        审核通过
       </van-button>
     </div>
   </div>
 </template>
 <script>
+import { Notify } from 'vant';
 import { ImagePreview } from 'vant'
 export default {
   data() {
@@ -225,19 +261,35 @@ export default {
       ImagePreview([
         'https://img.yzcdn.cn/vant/cat.jpeg'
       ]);
+    },
+    cancelform() {
+      Notify({ type: 'warning', message: '已驳回' });
+      this.$router.go(-1)
+    },
+    detailConfim() {
+      // 成功通知
+      Notify({ type: 'success', message: '审核通过' });
+      this.$router.go(-1)
     }
   }
 };
 </script>
 <style lang="less" scoped>
-.btnGroup{
+.pm-72{
+  padding-bottom: 72px;
+  box-sizing: border-box;
+}
+.btnGroup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
   padding: 16px;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .van-button{
+  .van-button {
     width: 48%;
   }
 }

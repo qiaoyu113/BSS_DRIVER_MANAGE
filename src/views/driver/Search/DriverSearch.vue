@@ -1,9 +1,352 @@
 <template>
-  <div class="DriverSearch">
-    11111111111111111111111111111111111
+  <div :class="checked ? 'driverSearch padd' : 'driverSearch'">
+    <!-- nav-bar -->
+    <DriverTitle
+      :show-change="checkCan"
+      @screen="startScreen"
+      @changeManager="changeManager"
+    />
+    <!-- 搜索 -->
+    <van-sticky
+      :offset-top="46"
+      :style="{height: checked ? '72px' : '54px'}"
+    >
+      <van-search
+        v-model="keyWord"
+        show-action
+        placeholder="请输入搜索关键词"
+        @input="onSearch"
+        @search="onSearch"
+        @clear="onCancel"
+      >
+        <template #action>
+          <div @click="onSearch">
+            搜索
+          </div>
+        </template>
+        <template #label>
+          <div
+            v-if="options.length > 0"
+            class="van-hairline--top"
+          >
+            <van-cell
+              v-for="item in options"
+              :key="item"
+              :value="item"
+              @click="handleItemClick(item)"
+            />
+          </div>
+        </template>
+      </van-search>
+      <div
+        v-if="checked"
+        class="checkAll"
+      >
+        <van-checkbox
+          v-model="checkall"
+          checked-color="#7F8FBD"
+          class="checked"
+          shape="square"
+        >
+          全选({{ checkedList.length }})
+        </van-checkbox>
+      </div>
+    </van-sticky>
+
+    <!-- 搜索结果 -->
+    <div
+      v-if="checkCan"
+      class="list"
+      :style="{paddingTop: checked ? '15px' : '5px'}"
+    >
+      <template>
+        <div
+          v-for="(item, index) in lists"
+          :key="index"
+        >
+          <CardItem
+            class="items"
+            :item="item"
+            :checked="checked"
+            :checkall="checkedList"
+            @changeCheck="changeCheck"
+          />
+          <div class="lineHeight"></div>
+          <div
+            v-if="checked"
+            class="bottomBtn"
+          >
+            <van-button
+              color="#2F448A"
+              plain
+              style="width:38%"
+              @click="cancelManager"
+            >
+              取消
+            </van-button>
+            <van-button
+              type="primary"
+              style="width:61%"
+              @click="confirmManager"
+            >
+              选择加盟经理
+            </van-button>
+          </div>
+        </div>
+      </template>
+    </div>
+    <template v-else>
+      <div
+        v-show="options.length === 0"
+        class="history"
+      >
+        <h4>历史记录</h4>
+        <div class="historyContainer">
+          <div
+            v-for="item in historyItems"
+            :key="item"
+            class="item"
+            @click="handleItemClick(item)"
+          >
+            {{ item }}
+          </div>
+        </div>
+      </div>
+      <van-empty
+        image="search"
+        description="抱歉，未找到相关数据！"
+      />
+    </template>
+
+    <!-- 选择加盟经理弹窗 -->
+    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" />
   </div>
 </template>
-<script>
 
+<script>
+import DriverTitle from '../DriverList/components/DriverTitle';
+import CardItem from '../DriverList/components/ListItem';
+import changeManager from '../DriverList/components/ChangeManager'
+import { debounce } from '@/utils/index';
+import { Notify } from 'vant';
+export default {
+  components: {
+    CardItem,
+    DriverTitle,
+    changeManager
+  },
+  data() {
+    return {
+      changeManagerStatus: false,
+      keyWord: '',
+      lists: [],
+      historyItems: [
+        '京东',
+        '顺丰',
+        '中国邮政配送中心',
+        '启恒物流',
+        '德邦物流'
+      ],
+      options: [],
+      checkedList: [],
+      checked: false
+    };
+  },
+  computed: {
+    title() {
+      return this.$route.meta.title;
+    },
+    checkall: {
+      get: function() {
+        return this.lists.length === this.checkedList.length;
+      },
+      set: function(val) {
+        console.log(val);
+        if (val) {
+          this.checkedList = [];
+          this.lists.map((ele) => {
+            this.checkedList.push(ele);
+          });
+        } else {
+          this.checkedList = [];
+        }
+      }
+    },
+    checkCan() {
+      return this.lists.length > 0;
+    }
+  },
+  methods: {
+    // 返回上一页
+    onClickLeft() {
+      this.$router.go(-1);
+    },
+    closeManagerPop(val) {
+      this.changeManagerStatus = val.status
+    },
+    /**
+     * 新建面试表单入口
+     */
+    startScreen(val) {
+      this.showScreen = val.show;
+    },
+    /**
+     * item选中
+     */
+    changeCheck(val) {
+      console.log('tag', val);
+      if (val.change) {
+        this.checkedList.push(val.item);
+      } else {
+        let arr = this.checkedList.filter((ele) => {
+          return ele !== val.item;
+        });
+        this.checkedList = arr;
+      }
+    },
+    /**
+     * 更换加盟经理
+     */
+    changeManager(val) {
+      // this.$nextTick(() => {
+      this.checked = val.show;
+      // })
+      console.log(this.checked, 'check');
+    },
+    /**
+     * 取消选择加盟经理
+     */
+    cancelManager() {
+      this.checked = false;
+      this.checkedList = [];
+    },
+    /**
+     * 选则加盟经理
+     */
+    confirmManager() {
+      if (this.checkedList.length === 0) {
+        return Notify({
+          type: 'warning',
+          message: '请选择新的加盟经理',
+          duration: 2000
+        });
+      } else {
+        this.changeManagerStatus = true
+      }
+    },
+    // 搜索
+    onSearch: debounce(function() {
+      if (!this.keyWord) {
+        return false;
+      }
+
+      console.log(this.keyWord);
+      if (this.keyWord === 'd') {
+        this.options = ['京东', '京东12121', '京东121212ddasddasd'];
+      } else {
+        this.lists = [
+          {
+            id: 1,
+            title: '京东城配线(xs200808)',
+            update: '2020-080-09',
+            line: '稳定线路/无线路余额/支线',
+            carType: '小面',
+            status: '已试跑',
+            rearchDate: '2020-08-09',
+            worktime: '10小时',
+            tags: ['已上架', '共享', '已采线'],
+            item: 0
+          },
+          { item: 1 },
+          { item: 2 }
+        ];
+      }
+    }, 200),
+    // 取消
+    onCancel() {
+      this.keyWord = '';
+      this.lists = [];
+    },
+    handleItemClick(value) {
+      this.keyWord = value;
+    }
+  }
+};
 </script>
-<style></style>
+<style lang='less' scoped>
+.driverSearch {
+  .list {
+    padding: 5px 15px 0 15px;
+    box-sizing: border-box;
+    background-color: @body-bg;
+  }
+  .bottomBtn {
+    padding: 10px 0;
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100vw - 30px);
+    background-color: @body-bg;
+  }
+  .checkAll {
+    padding: 5px 15px 7px 15px;
+    box-sizing: border-box;
+    font-size: 13px;
+    color: #7f8fbd;
+    letter-spacing: 0;
+    text-align: center;
+    z-index: 2;
+    background-color: @body-bg;
+  }
+  font-family: PingFangSC-Regular;
+  .lineHeight {
+    background: #f9f9f9;
+    height: 10px;
+    width: 100%;
+  }
+  .history {
+    padding: 10px 12px;
+    h4 {
+      margin: 0px;
+      font-size: 15px;
+      color: #838a9d;
+    }
+    .historyContainer {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      .item {
+        margin-right: 5px;
+        margin-top: 7.5px;
+        padding: 4px 17px;
+        background: #f6f7f9;
+        border-radius: 3px;
+        font-size: 13px;
+        color: #838a9d;
+      }
+    }
+  }
+}
+.padd {
+  padding-bottom: 45px;
+  box-sizing: border-box;
+}
+</style>
+
+<style scoped>
+.driverSearch >>> .van-hairline--top::after {
+  border-color: #649cee;
+}
+.driverSearch >>> .van-search__content {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.driverSearch >>> .van-search {
+  display: flex;
+  align-items: flex-start;
+}
+</style>
+

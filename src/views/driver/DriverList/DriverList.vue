@@ -1,9 +1,24 @@
 <template>
   <div :class="checked ? 'DriverList padd' : 'DriverList'">
-    <DriverTitle @screen="startScreen" @changeManager="changeManager" />
-    <van-sticky :offset-top="90" :style="{height: checked ? '72px' : '56px'}">
-      <van-tabs v-model="active" sticky animated line-width="30" line-height="2">
-        <van-tab v-for="(item,index) in tabType" :key="index">
+    <DriverTitle
+      @screen="startScreen"
+      @changeManager="changeManager"
+    />
+    <van-sticky
+      :offset-top="90"
+      :style="{height: checked ? '72px' : '56px'}"
+    >
+      <van-tabs
+        v-model="active"
+        sticky
+        animated
+        line-width="30"
+        line-height="2"
+      >
+        <van-tab
+          v-for="(item,index) in tabType"
+          :key="index"
+        >
           <template #title>
             {{ item.type }}<div class="van-info">
               99+
@@ -11,15 +26,26 @@
           </template>
         </van-tab>
       </van-tabs>
-      <div class="checkAll">
-        <van-checkbox v-if="checked" v-model="checkall" class="checked" shape="square">
+      <div
+        v-if="checked"
+        class="checkAll"
+      >
+        <van-checkbox
+          v-model="checkall"
+          class="checked"
+          checked-color="#7F8FBD"
+          shape="square"
+        >
           全选({{ checkedList.length }})
         </van-checkbox>
       </div>
     </van-sticky>
 
     <div class="list">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-pull-refresh
+        v-model="refreshing"
+        @refresh="onRefresh"
+      >
         <van-list
           v-model="loading"
           :finished="finished"
@@ -116,7 +142,11 @@
     />
 
     <!-- picker -->
-    <van-popup v-model="showPicker" round position="bottom">
+    <van-popup
+      v-model="showPicker"
+      round
+      position="bottom"
+    >
       <van-picker
         show-toolbar
         value-key="label"
@@ -126,21 +156,39 @@
       />
     </van-popup>
 
-    <div v-if="checked" class="bottomBtn">
-      <van-button color="#2F448A" plain style="width:38%" @click="cancelManager">
+    <!-- 选择加盟经理弹窗 -->
+    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" />
+
+    <div
+      v-if="checked"
+      class="bottomBtn"
+    >
+      <van-button
+        color="#2F448A"
+        plain
+        native-type="button"
+        style="width:38%"
+        @click="cancelManager"
+      >
         取消
       </van-button>
-      <van-button type="primary" style="width:61%" @click="confirmManager">
+      <van-button
+        native-type="button"
+        type="primary"
+        style="width:61%"
+        @click="confirmManager"
+      >
         选择加盟经理
       </van-button>
     </div>
   </div>
 </template>
 <script>
-import { parseTime } from '@/utils'
-import ListItem from './components/ListItem'
-import DriverTitle from './components/DriverTitle'
+import { parseTime } from '@/utils';
+import ListItem from './components/ListItem';
+import DriverTitle from './components/DriverTitle';
 import SelfPopup from '@/components/SelfPopup';
+import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 export default {
   name: 'DriverList',
@@ -152,7 +200,8 @@ export default {
     [Notify.name]: Notify,
     DriverTitle,
     SelfPopup,
-    ListItem
+    ListItem,
+    changeManager
   },
   data() {
     return {
@@ -189,14 +238,16 @@ export default {
         { label: '状态2', value: 0 },
         { label: '状态3', value: 1 }
       ],
-      columns_carType: [{
-        label: '金杯',
-        value: '123'
-      },
-      {
-        label: '金2杯',
-        value: '1223'
-      }],
+      columns_carType: [
+        {
+          label: '金杯',
+          value: '123'
+        },
+        {
+          label: '金2杯',
+          value: '1223'
+        }
+      ],
       showPicker: false,
       showScreen: false,
       minDate: new Date(+new Date() - 86400000 * 365),
@@ -230,23 +281,24 @@ export default {
         { type: '已上岗', code: 4 },
         { type: '已退出', code: 5 }
       ],
-      checked: false
+      checked: false,
+      changeManagerStatus: false
     };
   },
   computed: {
     checkall: {
       get: function() {
-        return (this.list.length === this.checkedList.length)
+        return this.list.length === this.checkedList.length;
       },
       set: function(val) {
-        console.log(val)
+        console.log(val);
         if (val) {
-          this.checkedList = []
-          this.list.map(ele => {
-            this.checkedList.push(ele)
-          })
+          this.checkedList = [];
+          this.list.map((ele) => {
+            this.checkedList.push(ele);
+          });
         } else {
-          this.checkedList = []
+          this.checkedList = [];
         }
       }
     }
@@ -292,19 +344,19 @@ export default {
     onReset(form) {
       this.ruleForm = this.$options.data().ruleForm;
       this.formText = this.$options.data().formText;
-      form.resetValidation()
+      form.resetValidation();
     },
     /**
      * 新建面试表单入口
-    */
+     */
     startScreen(val) {
-      this.showScreen = val.show
+      this.showScreen = val.show;
     },
     /**
      * 更换加盟经理
      */
     changeManager(val) {
-      this.checked = val.show
+      this.checked = val.show;
     },
     /**
      * picker 选择
@@ -353,43 +405,52 @@ export default {
       this.ruleForm.startDate = startDate;
       this.ruleForm.endDate = endDate;
     },
+    closeManagerPop(val) {
+      this.changeManagerStatus = val.status
+    },
     /**
      * 取消选择加盟经理
      */
     cancelManager() {
       this.checked = false;
-      this.checkedList = []
+      this.checkedList = [];
     },
     /**
      * 选则加盟经理
      */
     confirmManager() {
       if (this.checkedList.length === 0) {
-        return Notify({ type: 'warning', message: '请选择新的加盟经理', duration: 2000 });
+        return Notify({
+          type: 'warning',
+          message: '请选择新的加盟经理',
+          duration: 2000
+        });
+      } else {
+        this.changeManagerStatus = true
       }
     },
     /**
      * item选中
      */
     changeCheck(val) {
-      console.log('tag', val)
+      console.log('tag', val);
       if (val.change) {
-        this.checkedList.push(val.item)
+        this.checkedList.push(val.item);
       } else {
-        let arr = this.checkedList.filter(ele => {
-          return ele !== val.item
-        })
-        this.checkedList = arr
+        let arr = this.checkedList.filter((ele) => {
+          return ele !== val.item;
+        });
+        this.checkedList = arr;
       }
     }
   }
-}
+};
 </script>
 <style scoped lang="less">
-.DriverList{
-  background-color:@body-bg;
+.DriverList {
+  background-color: @body-bg;
   position: relative;
-  .bottomBtn{
+  .bottomBtn {
     padding: 15px 0;
     box-sizing: border-box;
     margin: 0 15px;
@@ -398,29 +459,29 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: calc( 100vw - 30px );
-    background-color:@body-bg;
+    width: calc(100vw - 30px);
+    background-color: @body-bg;
   }
-  .checkAll{
+  .checkAll {
     padding: 5px 15px 7px 15px;
     box-sizing: border-box;
     font-size: 13px;
-    color: #7F8FBD;
+    color: #7f8fbd;
     letter-spacing: 0;
     text-align: center;
     z-index: 2;
-    background-color:@body-bg;
+    background-color: @body-bg;
   }
-  .list{
+  .list {
     margin-top: 5px;
     padding: 0 15px;
     box-sizing: border-box;
   }
-  .items{
+  .items {
     margin-bottom: 10px;
   }
 }
-.padd{
+.padd {
   padding-bottom: 40px;
   box-sizing: border-box;
 }
