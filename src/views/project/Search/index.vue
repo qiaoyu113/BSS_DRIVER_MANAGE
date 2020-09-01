@@ -49,22 +49,23 @@
 <script>
 import CardItem from '../List/components/CardItem'
 import { debounce } from '@/utils/index'
+import { getProjectList } from '@/api/project'
 export default {
   components: {
     CardItem
   },
   data() {
     return {
-      keyWord: '',
-      lists: [],
-      historyItems: [
-        '京东',
-        '顺丰',
-        '中国邮政配送中心',
-        '启恒物流',
-        '德邦物流'
-      ],
-      options: []
+      keyWord: '', // 关键字
+      lists: [], // 查询出来的数据
+      historyItems: [], // 历史搜索
+      options: []// 关键字查出来的关键字
+    }
+  },
+  mounted() {
+    let historyData = this.getHistory()
+    if (historyData) {
+      this.historyItems = JSON.parse(historyData)
     }
   },
   methods: {
@@ -77,29 +78,7 @@ export default {
       if (!this.keyWord) {
         return false
       }
-
-      console.log(this.keyWord)
-      if (this.keyWord === 'd') {
-        this.options = [
-          '京东',
-          '京东12121',
-          '京东121212ddasddasd'
-        ]
-      } else {
-        this.lists = [
-          {
-            id: 1,
-            title: '京东城配线(xs200808)',
-            contacts: '小小悠',
-            phone: '15021578693',
-            carType: '小面',
-            warehouseName: '近的顺义仓',
-            lineCount: 20,
-            worktime: '10小时',
-            tag: '已启用'
-          }
-        ]
-      }
+      this.getLists(this.keyWord)
     }, 200),
     // 取消
     onCancel() {
@@ -108,6 +87,47 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value
+    },
+    // 搜索
+    async getLists(keyword = '') {
+      try {
+        let params = {
+          page: 1,
+          pageNumber: 9999
+        }
+        keyword && (params.key = keyword)
+        let { data: res } = await getProjectList(params)
+        if (res.success) {
+          this.lists = res.data
+          if (keyword) {
+            this.setHistory(keyword)
+          }
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
+    },
+    // 存localStorage
+    setHistory(keyword) {
+      let index = this.historyItems.findIndex(item => item === keyword)
+      if (index > -1) {
+        this.historyItems.splice(index, 1)
+      }
+
+      if (this.historyItems.length >= 5) {
+        this.historyItems.shift()
+      }
+      this.historyItems.push(keyword)
+      localStorage.setItem('project', JSON.stringify(this.historyItems))
+    },
+    // 获取从localStorage
+    getHistory() {
+      let history = localStorage.getItem('project')
+      if (history) {
+        return history
+      }
     }
   }
 }

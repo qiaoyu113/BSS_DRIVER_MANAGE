@@ -64,8 +64,27 @@ export function getUserInfo(data) {
 let prefix = '/mock/25'
 export function getOpenCitys(params) {
   return request({
-    url: `${prefix}/api/base/v1/base/area/getOpenCityData`,
+    url: `${prefix}/v1/base/area/getOpenCityData`,
     method: 'get',
     params
   })
 }
+
+// 上传文件
+export function upload(params, data) {
+  return request({
+    url: `${prefix}/v1/base/upload/uploadOSS/${params.folder}/${params.isEncode}/${params.expire}`,
+    method: 'post',
+    data
+  })
+}
+
+// 根据类型查询字典值--不分页
+export function getDictData(params) {
+  return request({
+    url: `${prefix}/v1/base/dict/dictData/list`,
+    method: 'get',
+    params
+  })
+}
+

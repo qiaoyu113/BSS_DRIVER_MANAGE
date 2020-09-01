@@ -1,44 +1,44 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title van-ellipsis">
-      {{ obj.title }}
+      {{ obj.projectName }}({{ obj.projectId }})
     </h4>
     <p class="text van-ellipsis">
-      联系人:{{ obj.contacts }}
+      联系人:{{ obj.bussinessName }}
     </p>
     <p class="text van-ellipsis">
-      手机:{{ obj.phone }}
+      手机:{{ obj.bussinessPhone }}
     </p>
     <p class="text van-ellipsis">
-      配送车型:{{ obj.carType }}
+      配送车型:{{ obj.carTypeName }}
     </p>
     <p class="text van-ellipsis">
       仓名称:{{ obj.warehouseName }}
     </p>
     <p class="text van-ellipsis">
-      线路数:{{ obj.lineCount }}条线
+      线路数:{{ obj.lineNum }}条线
     </p>
     <div class="footer">
       <div class="right">
         <p class="time">
-          预计工作时间:{{ obj.worktime }}
+          预计工作时间:{{ obj.timeDiff | parseTime('{y}-{m}-{d}') }}
         </p>
         <div>
           <van-tag
-            v-if="obj.tag ==='已启用'"
+            v-if="obj.projectState ===2"
             class="tag"
             color="#3acb8d1a"
             text-color="#3ACB8D"
           >
-            {{ obj.tag }}
+            已启用
           </van-tag>
           <van-tag
-            v-if="obj.tag ==='已禁用'"
+            v-else-if="obj.projectState ===1"
             class="tag"
             color="#ffa0001a"
             text-color="#FFA000"
           >
-            {{ obj.tag }}
+            已禁用
           </van-tag>
         </div>
       </div>
@@ -65,7 +65,10 @@ export default {
      */
     handleDetailClick() {
       this.$router.push({
-        path: '/projectDetail'
+        path: '/projectDetail',
+        query: {
+          projectId: this.obj.projectId
+        }
       })
     }
   }

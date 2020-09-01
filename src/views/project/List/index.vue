@@ -19,13 +19,14 @@
       <van-list
         v-model="loading"
         :finished="finished"
+        :error.sync="error"
         finished-text="没有更多了"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="active" swipeable>
-          <van-tab v-for="item in tabArrs" :key="item.text">
+        <van-tabs v-model="form.projectState" swipeable @change="handleTabChange">
+          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
               <div v-if="item.num" class="van-info">
@@ -51,39 +52,39 @@
     >
       <van-field
         label-width="100"
-        :value="pickerNames['a']"
+        :value="pickerNames['receivingPoint']"
         readonly
         clickable
         label="收货点类型"
         placeholder="请选择"
-        @click="showPickerFn('a')"
+        @click="showPickerFn('receivingPoint')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['b']"
+        :value="pickerNames['isDelivery']"
         readonly
         clickable
         label="配送经验"
         placeholder="请选择"
-        @click="showPickerFn('b')"
+        @click="showPickerFn('isDelivery')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['c']"
+        :value="pickerNames['returnBill']"
         readonly
         clickable
         label="是否需要回单"
         placeholder="请选择"
-        @click="showPickerFn('c')"
+        @click="showPickerFn('returnBill')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['d']"
+        :value="pickerNames['dutyManagerId']"
         readonly
         clickable
         label="上岗经理"
         placeholder="请选择"
-        @click="handleShowModal('manager')"
+        @click="handleShowModal('dutyManagerId')"
       />
       <van-field
         label-width="100"
@@ -92,7 +93,7 @@
         clickable
         label="外线销售"
         placeholder="请选择"
-        @click="handleShowModal('sell')"
+        @click="handleShowModal('lineSaleId')"
       />
       <van-field
         label-width="100"
@@ -136,7 +137,8 @@
 <script>
 import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
-import Suggest from '@/components/SuggestSearch.vue'
+import Suggest from '@/components/SuggestSearch'
+import { getProjectList } from '@/api/project'
 export default {
   components: {
     CardItem,
@@ -149,27 +151,35 @@ export default {
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
-      active: '', // 当前激活的tab,
+      error: false, // 出错
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 100
+          num: 0,
+          name: ''
         },
         {
           text: '已启用',
-          num: 0
+          num: 0,
+          name: 2
         },
         {
           text: '已禁用',
-          num: 0
+          num: 0,
+          name: 1
         }
       ],
       lists: [],
-
       form: { // 查询表单
-        date: ''
+        receivingPoint: '',
+        isDelivery: '',
+        returnBill: '',
+        dutyManagerId: '',
+        lineSaleId: '',
+        projectState: '', // 当前激活的tab,
+        date: []
       },
-      columns1: [
+      columns1: [ // 收货点类型数组
         {
           label: '仓库',
           value: 1
@@ -191,40 +201,45 @@ export default {
           value: 5
         }
       ],
-      columns2: [
+      columns2: [ // 配送经验数组
         {
           label: '有需求',
           value: 1
         },
         {
           label: '无需求',
-          value: 0
+          value: 2
         }
       ],
-      columns3: [
+      columns3: [ // 是否需要回单
         {
           label: '是',
           value: 1
         },
         {
           label: '否',
-          value: 0
+          value: 2
         }
       ],
       showModal: false,
       options: [],
       modalKey: '',
       pickerNames: { // picker选中显示的名字
-        city: '',
-        b: '',
-        c: '',
-        startDate: '',
-        endDate: ''
+        receivingPoint: '',
+        isDelivery: '',
+        returnBill: '',
+        dutyManagerId: '',
+        lineSaleId: '',
+        date: ''
       },
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
       showPicker: false, // 是否打开picker
-      dateLists: ['date'] // 显示日历区间控件
+      dateLists: ['date'], // 显示日历区间控件
+      page: {
+        current: 0,
+        total: 0
+      }
     }
   },
   computed: {
@@ -242,37 +257,25 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
-    onLoad(isInit = false) {
-      if (isInit === true) {
+    // 加载列表
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
         this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
       }
-      setTimeout(() => {
-        console.log('xxxx')
-        let id = this.lists.length
-        for (let i = 0; i < 5; i++) {
-          let obj = {
-            id: id + i,
-            title: '京东城配线(xs200808)',
-            contacts: '小小悠',
-            phone: '15021578693',
-            carType: '小面',
-            warehouseName: '近的顺义仓',
-            lineCount: 20,
-            worktime: '10小时',
-            tag: i % 2 === 0 ? '已启用' : '已禁用'
-          }
-          this.lists.push(obj)
-        }
-        if (isInit === true) {
-          this.refreshing = false
-          this.finished = false
-        }
-
+      let result = await this.getLists(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-        if (this.lists.length > 15) {
+        if (!result.hasMore) {
           this.finished = true
         }
-      }, 500)
+      }
     },
     // 搜索
     handleSearchClick() {
@@ -282,13 +285,27 @@ export default {
     },
     // 查询
     onQuery() {
-      console.log('submit', this.form);
+      this.getLists()
+      this.show = false
     },
     // 重置
     onReset(form) {
-      this.form = {}
-      this.pickerNames = {}
-      console.log('reset');
+      this.pickerNames = {
+        receivingPoint: '',
+        isDelivery: '',
+        returnBill: '',
+        dutyManagerId: '',
+        lineSaleId: '',
+        date: ''
+      }
+      this.form = {
+        receivingPoint: '',
+        isDelivery: '',
+        returnBill: '',
+        dutyManagerId: '',
+        lineSaleId: '',
+        date: []
+      }
     },
     // 模糊搜索
     handleSearchChange(value) {
@@ -298,12 +315,15 @@ export default {
      *点击某一项
      */
     handleValueClick(obj) {
-      console.log('xxx:', obj)
+      this.form[obj.type] = obj.code
+      this.pickerNames[obj.type] = obj.name
     },
     // 打开模糊查询框
     handleShowModal(key) {
       this.modalKey = key
-      if (key === 'city') {
+      if (key === 'lineSaleId') {
+        this.options = []
+      } else if (key === 'dutyManagerId') {
         this.options = []
       }
       this.showModal = true
@@ -312,11 +332,11 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'a') {
+      if (key === 'receivingPoint') {
         this.columns.push(...this.columns1);
-      } else if (key === 'b') {
+      } else if (key === 'isDelivery') {
         this.columns.push(...this.columns2);
-      } else if (key === 'c') {
+      } else if (key === 'returnBill') {
         this.columns.push(...this.columns3);
       }
       this.showPicker = true;
@@ -324,17 +344,69 @@ export default {
     // picker选择器
     onConfirm(obj) {
       // 如果是日期选择器
-      if (this.isDateRange) {
-        if (obj.length === 2) {
-          let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
-          let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
-          this.pickerNames[this.pickerKey] = `${startName}-${endName}`
-        }
+      if (this.isDateRange && obj.length === 2) {
+        let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+        let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+        this.pickerNames[this.pickerKey] = `${startName}-${endName}`
+        this.form[this.pickerKey] = obj
       } else {
         this.pickerNames[this.pickerKey] = obj.label
+        this.form[this.pickerKey] = obj.value
       }
-      this.form[this.pickerKey] = obj
       this.showPicker = false;
+    },
+    // 状态切换
+    handleTabChange(tab) {
+      this.getLists(true)
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          pageNumber: this.page.size
+        }
+        this.form.receivingPoint && (params.receivingPoint = this.form.receivingPoint)
+        this.form.isDelivery && (params.isDelivery = this.form.isDelivery)
+        this.form.returnBill && (params.returnBill = this.form.returnBill)
+        this.form.dutyManagerId && (params.dutyManagerId = this.form.dutyManagerId)
+        this.form.lineSaleId && (params.lineSaleId = this.form.lineSaleId)
+        this.form.projectState && (params.projectState = this.form.projectState)
+        if (this.form.date && this.form.date.length > 1) {
+          params.startDate = new Date(this.form.date[0]).getTime()
+          params.endDate = new Date(this.form.date[1]).getTime()
+        }
+        let { data: res } = await getProjectList(params)
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach(item => {
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     }
   }
 }

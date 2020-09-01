@@ -19,6 +19,7 @@
       <van-list
         v-model="loading"
         :finished="finished"
+        :error.sync="error"
         finished-text="没有更多了"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
@@ -135,6 +136,7 @@ export default {
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
+      error: false, // 出错
       tabArrs: [ // tabs数组
         {
           text: '全部',
@@ -158,7 +160,7 @@ export default {
         city: '', // 城市
         customerType: '', // 客户类型
         classification: '', // 客户属性
-        date: ''
+        date: []
       },
       openCitys: [], // 开通城市列表
       columns2: [
@@ -189,10 +191,9 @@ export default {
       modalKey: '',
       pickerNames: { // picker选中显示的名字
         city: '',
-        b: '',
-        c: '',
-        startDate: '',
-        endDate: ''
+        customerType: '',
+        classification: '',
+        date: ''
       },
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
@@ -251,13 +252,23 @@ export default {
     },
     // 查询
     onQuery() {
-      console.log('submit', this.form);
+      this.getLists()
+      this.show = false
     },
     // 重置
     onReset(form) {
-      this.pickerNames = {}
-      this.form = {}
-      console.log('reset');
+      this.pickerNames = {
+        city: '',
+        customerType: '',
+        classification: '',
+        date: ''
+      }
+      this.form = {
+        city: '',
+        customerType: '',
+        classification: '',
+        date: []
+      }
     },
     // 模糊搜索
     handleSearchChange(value) {
@@ -285,9 +296,9 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'b') {
+      if (key === 'customerType') {
         this.columns.push(...this.columns2);
-      } else if (key === 'c') {
+      } else if (key === 'classification') {
         this.columns.push(...this.columns3);
       }
       this.showPicker = true;
@@ -295,16 +306,16 @@ export default {
     // picker选择器
     onConfirm(obj) {
       // 如果是日期选择器
-      if (this.isDateRange) {
-        if (obj.length === 2) {
-          let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
-          let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
-          this.pickerNames[this.pickerKey] = `${startName}-${endName}`
-        }
+      if (this.isDateRange && obj.length === 2) {
+        let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+        let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+        this.pickerNames[this.pickerKey] = `${startName}-${endName}`
+        this.form[this.pickerKey] = obj
       } else {
         this.pickerNames[this.pickerKey] = obj.label
+        this.form[this.pickerKey] = obj.value
       }
-      this.form[this.pickerKey] = obj
+
       this.showPicker = false;
     },
     // 获取开通的城市列表
@@ -333,7 +344,7 @@ export default {
         }
         this.form.city && (params.city = this.form.city)
         this.form.customerType && (params.customerType = this.form.customerType)
-        this.form.customerType && (params.customerType = this.form.customerType)
+        this.form.classification && (params.classification = this.form.classification)
         this.form.customerState && (params.customerState = this.form.customerState)
         if (this.form.date && this.form.date.length > 1) {
           params.startDate = new Date(this.form.date[0]).getTime()
@@ -358,9 +369,13 @@ export default {
           })
           return result
         } else {
+          this.loading = false;
+          this.error = true;
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
+        this.loading = false;
+        this.error = true;
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)
