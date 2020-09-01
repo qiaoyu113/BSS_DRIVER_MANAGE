@@ -89,7 +89,7 @@ export default {
         return
       }
       this.$router.replace({
-        path: '/try-run/list',
+        path: '/try-list',
         query: {
           q: this.value
         }

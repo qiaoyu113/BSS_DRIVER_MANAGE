@@ -37,7 +37,7 @@ export default {
      */
     handleDetailClick() {
       this.$router.push({
-        path: '/Details'
+        path: '/Detail'
       })
     }
   }
