@@ -19,12 +19,12 @@
           </div>
         </div>
         <div
-          :class="[{activeLine: step === 1}, 'line van-hairline--top']"
+          :class="[{activeLine: step === '1'}, 'line van-hairline--top']"
         ></div>
         <div
           :class="[
             {
-              active: step === 1,
+              active: step === '1',
             },
             'step-item flex align-center flex-direction',
           ]"
@@ -38,8 +38,8 @@
         </div>
       </div>
       <div class="hr-5"></div>
-      <StepOne v-show="step === 0" />
-      <StepTwo v-show="step === 1" />
+      <StepOne v-if="step === '0'" />
+      <StepTwo v-if="step === '1'" />
     </div>
   </div>
 </template>
@@ -53,18 +53,13 @@ export default {
     StepOne,
     StepTwo
   },
-  data() {
-    return {
-      step: 0
-    };
-  },
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    step() {
+      return this.$route.query.step || '0';
     }
-  },
-  mounted() {
-    this.step = this.$route.query.step || 0;
   },
   methods: {
     /**
