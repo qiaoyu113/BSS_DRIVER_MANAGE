@@ -49,7 +49,7 @@
 <script>
 import CardItem from '../List/components/CardItem'
 import { debounce } from '@/utils/index'
-import { getProjectList } from '@/api/project'
+import { getProjectSearch } from '@/api/project'
 export default {
   components: {
     CardItem
@@ -78,7 +78,7 @@ export default {
       if (!this.keyWord) {
         return false
       }
-      this.getLists(this.keyWord)
+      this.handleSearch(this.keyWord)
     }, 200),
     // 取消
     onCancel() {
@@ -89,14 +89,11 @@ export default {
       this.keyWord = value
     },
     // 搜索
-    async getLists(keyword = '') {
+    async handleSearch(keyword = '') {
       try {
-        let params = {
-          page: 1,
-          pageNumber: 9999
-        }
+        let params = {}
         keyword && (params.key = keyword)
-        let { data: res } = await getProjectList(params)
+        let { data: res } = await getProjectSearch(params)
         if (res.success) {
           this.lists = res.data
           if (keyword) {

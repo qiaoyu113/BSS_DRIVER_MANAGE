@@ -5,16 +5,17 @@
         配送时间信息
       </h4>
       <van-field
-        v-model="form.a"
+        :value="pickerNames['cargoType']"
         label-width="100"
         colon
         required
         label="货物类型"
-        placeholder="请输入"
-        :rules="[{ required: true, message: '请输入' }]"
+        placeholder="请选择"
+        :rules="[{ required: true, message: '请选择' }]"
+        @click="showPickerFn('cargoType')"
       />
       <van-field
-        v-model="form.b"
+        v-model="form.cargoNum"
         label-width="100"
         colon
         label="货物件数"
@@ -28,12 +29,12 @@
       />
       <!-- 精确小数点后一位 -->
       <van-field
-        v-model="form.c"
+        v-model="form.volume"
         v-only-number="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
-        label="货物体积"
+        label="货物体积(m³)"
         type="number"
         name="numValidator"
         placeholder="请输入"
@@ -44,12 +45,12 @@
       />
       <!-- 精确小数点后一位 -->
       <van-field
-        v-model="form.d"
+        v-model="form.goodsWeight"
         v-only-number="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
-        label="货物重量"
+        label="货物重量(吨)"
         name="numValidator"
         placeholder="请输入"
         maxlength="10"
@@ -61,7 +62,7 @@
       <van-field
         label-width="100"
         colon
-        :value="pickerNames['o']"
+        :value="pickerNames['carry']"
         readonly
         clickable
         required
@@ -70,10 +71,10 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('o')"
+        @click="showPickerFn('carry')"
       />
       <van-field
-        v-model="form.remark"
+        v-model="form.dutyRemark"
         colon
         label-width="100"
         rows="2"
@@ -97,6 +98,7 @@
     <van-popup v-model="showPicker" position="bottom">
       <!-- picker选择器 -->
       <van-picker
+        ref="fromThreePicker"
         value-key="label"
         show-toolbar
         :columns="columns"
@@ -108,17 +110,26 @@
 </template>
 
 <script>
+import { getDictData } from '@/api/common'
 export default {
   props: {
     form: {
       type: Object,
-      default: () => {}
+      default: () => {},
+      required: true
+    },
+    type: {
+      type: String,
+      default: '',
+      required: true
     }
   },
   data() {
     return {
-      text1: '',
-      columns1: [
+      // 货物类型
+      cargoTypeArr: [],
+      // 是否需要搬运
+      carryArr: [
         {
           label: '是',
           value: 1
@@ -129,17 +140,43 @@ export default {
         }
       ],
       pickerNames: { // picker选中显示的名字
-
+        cargoType: '',
+        carry: ''
       },
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
       showPicker: false // 是否打开picker
     }
   },
+  watch: {
+    'form.lineId'(val) {
+      if (this.type === 'edit' && val !== '') {
+        this.showPickerLable()
+      }
+    }
+  },
+  mounted() {
+    this.init()
+  },
   methods: {
+    async init() {
+      let result = await this.getDictData('type_of_goods')
+      this.cargoTypeArr = result
+    },
+    // 编辑生成label
+    showPickerLable() {
+      for (let key in this.pickerNames) {
+        let listKey = `${key}Arr`
+        let index = this[listKey].findIndex(item => item.value === this.form[key])
+        console.log(index, this.form[key], key)
+        if (index > -1) {
+          this.pickerNames[key] = this[`${key}Arr`][index].label
+        }
+      }
+    },
     // 提交
     onSubmit(values) {
-      console.log('submit', values);
+      this.$emit('submit')
     },
     // 货物件数
     numValidator(val) {
@@ -152,16 +189,49 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'o') {
-        this.columns.push(...this.columns1);
+      if (key === 'carry') {
+        this.columns.push(...this.carryArr);
+      } else if (key === 'cargoType') {
+        this.columns.push(...this.cargoTypeArr);
       }
+
       this.showPicker = true;
+
+      if (['edit'].includes(this.type)) {
+        let index = this.columns.findIndex(item => item.value === this.form[this.pickerKey])
+        if (index === -1) {
+          index = 0
+        }
+        setTimeout(() => {
+          this.$refs.fromThreePicker.setIndexes([index])
+        }, 20)
+      }
     },
     // picker选择器
     onConfirm(obj) {
       this.pickerNames[this.pickerKey] = obj.label
-      this.form[this.pickerKey] = obj
+      this.form[this.pickerKey] = obj.value
       this.showPicker = false;
+    },
+    // 从数据字典获取数据
+    async getDictData(dictType, keyword = '') {
+      try {
+        let params = {
+          dictType
+        }
+        keyword && (params.keyword = keyword)
+        let { data: res } = await getDictData(params)
+        if (res.success) {
+          return res.data.map(item => ({
+            label: item.dictLabel,
+            value: item.dictValue
+          }))
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get dict data fail:${err}`)
+      }
     }
   }
 }

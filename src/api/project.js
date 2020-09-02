@@ -17,3 +17,12 @@ export function getProjectDetail(params) {
   })
 }
 
+// 项目搜索
+export function getProjectSearch(data) {
+  return request({
+    url: `${prefix}/v2/line/project/fuzzy/check`,
+    method: 'post',
+    data
+  })
+}
+

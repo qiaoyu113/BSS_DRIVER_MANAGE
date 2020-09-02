@@ -116,7 +116,8 @@ export default {
         path: '/createLine',
         query: {
           isStable: text,
-          projectId: this.projectId
+          projectId: this.projectId,
+          isProject: 1
         }
       })
     },

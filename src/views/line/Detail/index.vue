@@ -27,6 +27,7 @@
         <van-field label="是否需要回单" label-width="110" readonly :value="form.returnBill === 1 ? '是':'否'" :border="false" colon />
         <van-field label="配送车型" label-width="110" readonly :value="form.carTypeName" :border="false" colon />
         <van-field label="主要配送区域" label-width="110" readonly :value="region" :border="false" colon />
+        <van-field label="详细地址" label-width="110" readonly :value="form.districtArea" :border="false" colon />
         <van-field label="配送点数量" label-width="110" readonly :value="form.deliveryNum" :border="false" colon />
         <van-field label="配送总里程数" label-width="110" readonly :value="form.distance" :border="false" colon />
         <van-field label="限行区域说明" label-width="110" readonly :value="form.limitRemark" :border="false" colon />
