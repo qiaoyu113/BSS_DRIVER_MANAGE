@@ -1,89 +1,106 @@
 import request from '@/utils/request'
+let prefix = '/mock/81/'
 
+// export function driverDetail(data) {
+//   return request({
+//     url: '/api/driver/driver/detail',
+//     method: 'get',
+//     params: data
+//   })
+// }
+/**
+ * 新建共享面试表单
+ */
+export function shareInterview(data) {
+  return request({
+    url: `${prefix}/v2/driver/share/interview`,
+    method: 'post',
+    data
+  })
+}
+/**
+ * 新建专车面试表单
+ */
+export function specialInterview(data) {
+  return request({
+    url: `${prefix}/v2/driver/special/interview`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 司机详情
+ */
 export function driverDetail(data) {
   return request({
-    url: '/api/driver/driver/detail',
+    url: `${prefix}v2/driver/selectDriverDetail`,
     method: 'get',
     params: data
   })
 }
-/**
- * 促撮列表查询
- */
-export function getSelectList(data) {
-  return request({
-    url: '/api/bss/v1/bss/corp/makeAMatch/selectListByKey',
-    method: 'post',
-    data
-  })
-}
 
-/**
- * 司机列表查询
- */
-export function selectDriverTask(data) {
+// 司机详情 标签信息
+export function selectLabel(data) {
   return request({
-    url: '/api/bss/v1/bss/temMatch/getDriver',
-    method: 'post',
-    data
-  })
-}
-
-/**
- * 即时撮合，推送信息给司机
- */
-export function sendMsgToDriver(data) {
-  return request({
-    url: '/api/match/tem/match/sendMsgToDriver',
-    method: 'post',
-    params: data
-  })
-}
-
-/**
- * 促撮列表详情
- */
-export function matchingRecordDetails(params) {
-  return request({
-    url: '/api/match/corp/match/history/matchingRecordDetails',
-    method: 'get',
-    params
-  })
-}
-/**
- * 提交按钮
- */
-export function submitSave(data) {
-  return request({
-    url: '/api/match/corp/match/history/save',
-    method: 'post',
-    data
-  })
-}
-
-// 司机意向保存
-export function saveIntentionOfReceiving(data) {
-  return request({
-    url: '/api/driver/corp/driver/saveIntentionOfReceiving',
-    method: 'post',
-    data
-  })
-}
-
-// 司机意向判断POST /corp/driver/judgingIntentionOfReceiving
-export function judgingIntentionOfReceiving(data) {
-  return request({
-    url: '/api/driver/corp/driver/judgingIntentionOfReceiving',
-    method: 'post',
-    data
-  })
-}
-
-// 司机助手-企业微信-解除绑定关系-判断当前已登录的加盟经理是否为司机的加盟经理
-export function getManagerSameRequest(data) {
-  return request({
-    url: '/api/driver/driver/match/driver/judge/manager/same',
+    url: `${prefix}/v2/driver/selectLabel`,
     method: 'get',
     params: data
   })
 }
+
+/**
+ * 标记成交
+ */
+export function signDeal(data) {
+  return request({
+    url: `${prefix}/v2/driver/signDeal`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 标记退出
+ */
+export function signOut(data) {
+  return request({
+    url: `${prefix}/v2/driver/signOut`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 打标签
+ */
+export function insertLabel(data) {
+  return request({
+    url: `${prefix}/v2/driver/insertLabel`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 订单信息
+ */
+export function orderLabel(data) {
+  return request({
+    url: `${prefix}/v2/driver/selectLabel`,
+    method: 'get',
+    params: data
+  })
+}
+
+/**
+  * 线路信息
+  */
+export function lineLabel(data) {
+  return request({
+    url: `${prefix}/v2/driver/selectLabel`,
+    method: 'get',
+    params: data
+  })
+}
+

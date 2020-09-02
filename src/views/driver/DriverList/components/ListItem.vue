@@ -91,7 +91,7 @@ export default {
       }
     },
     goRouter() {
-      this.$router.push('/driverdetail')
+      this.$router.push({ path: '/driverdetail', query: { id: '13' }})
     }
   }
 };

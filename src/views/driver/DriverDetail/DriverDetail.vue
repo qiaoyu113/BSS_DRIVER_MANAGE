@@ -39,16 +39,16 @@
         <van-cell>
           <template #title>
             <div class="title">
-              <span>杨师傅</span>
-              <span>18848885135</span>
-              <span>(共享/北京市)</span>
+              <span>{{ detailInfo.name }}</span>
+              <span>{{ detailInfo.phone }}</span>
+              <span>({{ detailInfo.busiTypeName }}/{{ detailInfo.workCityName }})</span>
             </div>
           </template>
         </van-cell>
         <van-cell>
           <template #title>
             <div class="itemStatus">
-              已面试
+              {{ detailInfo.statusName }}
             </div>
           </template>
         </van-cell>
@@ -57,25 +57,25 @@
             title-class="cell-title"
             value-class="cell-value"
             title="司机编号："
-            value="SJ19980822"
+            :value="detailInfo.driverId"
           />
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
             title="加盟经理："
-            value="王经理/18848885135"
+            :value="`${detailInfo.gmName}/${detailInfo.gmPhone}`"
           />
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
             title="创建人："
-            value="王经理/18848885135(共享一组)"
+            :value="`${detailInfo.createName}/${detailInfo.createPhone}(共享一组)`"
           />
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
             title="创建时间："
-            value="2020/8-27/18:07"
+            :value="detailInfo.createDate | parseTime('{y}-{m}-{d}')"
           />
         </div>
       </div>
@@ -91,6 +91,7 @@
       animated
       title-inactive-color="#3C4353"
       title-active-color="#EFF5FE"
+      @change="changeTab"
     >
       <van-tab
         v-for="(item,index) in tabList"
@@ -112,10 +113,10 @@
           <OrderInfo />
         </div>
         <div v-if="active === 1">
-          <TagInfo />
+          <TagInfo :obj="tagInfo" />
         </div>
         <div v-if="active === 0">
-          <FormInfo />
+          <FormInfo :obj="detailInfo" />
         </div>
       </van-tab>
     </van-tabs>
@@ -139,11 +140,12 @@
   </div>
 </template>
 <script>
-import { DropdownMenu, DropdownItem, Cell, CellGroup, Toast } from 'vant';
+import { DropdownMenu, DropdownItem, Cell, CellGroup, Toast, Notify } from 'vant';
 import FormInfo from './components/FormInfo';
 import TagInfo from './components/TagInfo';
 import LineInfoItem from './components/LineInfoItem';
 import OrderInfo from './components/OrderInfo';
+import { driverDetail, selectLabel, signDeal, signOut, orderLabel, lineLabel } from '@/api/driver.js'
 export default {
   name: 'DriverDetail',
   components: {
@@ -184,12 +186,21 @@ export default {
         { name: '编辑面试', url: '/editTailored' },
         { name: '编辑面试', url: '/editShare' },
         { name: '打标签', url: '/tagView' },
-        { name: '标记退出', url: '' },
-        { name: '标记成交', url: '' }
-      ]
+        { name: '标记退出' },
+        { name: '标记成交' }
+      ],
+      driverId: '',
+      detailInfo: {},
+      tagInfo: {},
+      orderInfo: {},
+      lineInfo: {}
     };
   },
-  mounted() {},
+  mounted() {
+    let id = this.$route.query.id
+    this.driverId = id
+    this.getDetail(id)
+  },
   methods: {
     onSelectOrder(item) {
       // 默认情况下点击选项时不会自动收起
@@ -201,7 +212,119 @@ export default {
     onSelectDothing(item) {
       this.showDothing = false;
       Toast(item.name);
-      this.$router.push({ path: item.url, query: { id: '132' }})
+      if (item.name === '标记退出') {
+        this.outSign(this.driverId)
+      } else if (item.name === '标记成交') {
+        this.dealSign(this.driverId)
+      } else {
+        this.$router.push({ path: item.url, query: { id: '132' }})
+      }
+    },
+    async outSign(id) {
+      try {
+        this.$loading(true)
+        let { data: res } = await signOut({ 'driverId': id });
+        if (res.success) {
+          Notify({ type: 'success', message: '标记退出成功' });
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async dealSign(id) {
+      try {
+        this.$loading(true)
+        let { data: res } = await signDeal({ 'driverId': id });
+        if (res.success) {
+          Notify({ type: 'success', message: '标记成交成功' });
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    changeTab(name, title) {
+      let id = this.driverId
+      if (name === 1) {
+        this.getTagInfo(id)
+      } else if (name === 0) {
+        this.getDetail(id)
+      } else if (name === 2) {
+        this.getOrderLabel(id)
+      } else {
+        this.getLineLabel(id)
+      }
+    },
+    async getTagInfo(id) {
+      try {
+        this.$loading(true)
+        let { data: res } = await selectLabel({ 'driverId': id });
+        if (res.success) {
+          this.tagInfo = res.data
+          console.log(res.data, 123)
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async getDetail(id) {
+      try {
+        this.$loading(true)
+        let { data: res } = await driverDetail({ 'driverId': id });
+        if (res.success) {
+          this.detailInfo = res.data
+          console.log(res.data)
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async getLineLabel(id) {
+      try {
+        this.$loading(true)
+        let { data: res } = await lineLabel({ 'driverId': id });
+        if (res.success) {
+          this.lineInfo = res.data
+          console.log(res.data)
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async getOrderLabel(id) {
+      try {
+        this.$loading(true)
+        let { data: res } = await orderLabel({ 'driverId': id });
+        if (res.success) {
+          this.orderInfo = res.data
+          console.log(res.data)
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     }
   }
 };

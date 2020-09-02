@@ -62,6 +62,14 @@ export default [
     meta: {
       title: '编辑共享面试表单'
     }
+  },
+  {
+    path: '/driverLog',
+    name: 'driverLog',
+    component: resolve => require(['@/views/driver/DriverLog/DriverLog'], resolve),
+    meta: {
+      title: '操作记录'
+    }
   }
 ]
 
