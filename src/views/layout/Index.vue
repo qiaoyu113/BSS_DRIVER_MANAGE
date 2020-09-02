@@ -67,11 +67,11 @@ export default {
       total: 0,
       page: 1,
       loadedAll: false,
-      option: [
-        { text: '线路云', value: 0 },
-        { text: '司机云', value: 1 },
-        { text: '试跑', value: 2 }
-        // { text: '运费管理', value: 3 }
+      actions: [
+        { name: '线路云', value: 0 },
+        { name: '司机云', value: 1 },
+        { name: '试跑', value: 2 }
+        // { name: '运费管理', value: 3 }
       ],
       activeIndex: 0,
       show: false,
@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     onSelect(item) {
-      this.activeIndex = item.index;
+      this.activeIndex = item.value;
       // 设置缓存，下次进入取缓存值
       localStorage.setItem('HOME_ACTIVE', this.activeIndex)
     }
