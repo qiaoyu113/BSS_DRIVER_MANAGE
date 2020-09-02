@@ -14,27 +14,57 @@
           { required: true, message: '请选择' },
         ]"
         name="calendar"
-        :value="pickerNames['a']"
+        :value="pickerNames['driverWorkTime']"
         label="司机上岗时间"
         placeholder="点击选择日期"
-        @click="showPickerFn('a')"
+        @click="showPickerFn('driverWorkTime')"
       />
+      <template v-if="isStable">
+        <van-field
+          label-width="100"
+          colon
+          name="deliveryWeekCycleValidator"
+          readonly
+          clickable
+          required
+          label="配送时间"
+          placeholder="请选择"
+          :rules="[
+            { validator: deliveryWeekCycleValidator, message: '请选择' }
+          ]"
+        >
+          <div slot="input">
+            <van-checkbox
+              v-model="isAll"
+            >
+              全选
+            </van-checkbox>
+            <van-checkbox-group ref="checkboxGroup" v-model="form['deliveryWeekCycle']" direction="horizontal">
+              <van-checkbox v-for="item in deliveryWeekCycleArr" :key="item.value" :name="item.value">
+                {{ item.label }}
+              </van-checkbox>
+            </van-checkbox-group>
+          </div>
+        </van-field>
+      </template>
+      <template v-else>
+        <van-field
+          label-width="100"
+          colon
+          :value="pickerNames['deliveryWeekCycle']"
+          readonly
+          clickable
+          required
+          label="配送时间"
+          placeholder="请选择"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
+          @click="showPickerFn('deliveryWeekCycle')"
+        />
+      </template>
       <van-field
-        label-width="100"
-        colon
-        :value="pickerNames['b']"
-        readonly
-        clickable
-        required
-        label="配送时间"
-        placeholder="请选择"
-        :rules="[
-          { required: true, message: '请选择' },
-        ]"
-        @click="showPickerFn('b')"
-      />
-      <van-field
-        v-model="form.c"
+        v-model="form.monthNum"
         colon
         required
         label="预计月出车天数"
@@ -48,7 +78,7 @@
         ]"
       />
       <van-field
-        v-model.number="form.d"
+        v-model.number="form.dayNum"
         label-width="100"
         colon
         required
@@ -58,12 +88,12 @@
         type="digit"
         :rules="[
           { required: true, message: '请输入' },
-          { validator: countByDayValidator, message: '请输入1~3' }
+          { validator: countByDayValidator, message: '请输入1~9' }
         ]"
       />
-      <template v-for="item in form.d">
+      <template v-for="item in form.dayNum">
         <div :key="'time'+item">
-          <customSelect :index="item" :columns2="columns1" @date="handleDateChange" />
+          <customSelect :index="item" :income-settlement-method-arr="timeBucket" @date="handleDateChange" />
         </div>
       </template>
       <h4 class="title van-hairline--bottom">
@@ -71,7 +101,7 @@
       </h4>
       <van-field
         colon
-        :value="pickerNames['e']"
+        :value="pickerNames['incomeSettlementMethod']"
         readonly
         clickable
         required
@@ -81,12 +111,12 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('e')"
+        @click="showPickerFn('incomeSettlementMethod')"
       />
 
       <van-field
         colon
-        :value="pickerNames['f']"
+        :value="pickerNames['settlementCycle']"
         readonly
         clickable
         required
@@ -96,12 +126,12 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('f')"
+        @click="showPickerFn('settlementCycle')"
       />
 
       <van-field
         colon
-        :value="pickerNames['g']"
+        :value="pickerNames['settlementDays']"
         readonly
         clickable
         required
@@ -111,41 +141,14 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('g')"
+        @click="showPickerFn('settlementDays')"
       />
 
-      <!-- 「整车」推送「单趟报价」「预计月报价」输入框 -->
-      <template v-if="form.f ===1">
-        <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
-        <van-field
-          v-model="form.i"
-          v-only-number="{min: 1, max: 999999.99, precision: 2}"
-          label-width="100"
-          colon
-          required
-          label="单趟报价(元)"
-          placeholder="请输入"
-          type="number"
-          :rules="[{ required: true, message: '请输入' }]"
-        />
-      </template>
       <!-- 当结算方式选择「多点配」推送「每趟保底」「每趟提成单价」「预计月报价」输入框 -->
-      <template v-if="form.f ===2">
+      <template v-if="form.incomeSettlementMethod ===2">
         <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
         <van-field
-          v-model="form.m"
-          v-only-number="{min: 1, max: 999999.99, precision: 2}"
-          label-width="100"
-          colon
-          required
-          label="每趟保底(元)"
-          placeholder="请输入"
-          type="number"
-          :rules="[{ required: true, message: '请输入' }]"
-        />
-        <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
-        <van-field
-          v-model="form.n"
+          v-model="form.everyUnitPrice"
           v-only-number="{min: 1, max: 999999.99, precision: 2}"
           label-width="100"
           colon
@@ -156,9 +159,21 @@
           :rules="[{ required: true, message: '请输入' }]"
         />
       </template>
+      <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
+      <van-field
+        v-model="form.everyTripGuaranteed"
+        v-only-number="{min: 1, max: 999999.99, precision: 2}"
+        label-width="100"
+        colon
+        required
+        :label="form.incomeSettlementMethod ===1 ? '单趟报价(元)':'每趟保底(元)'"
+        placeholder="请输入"
+        type="number"
+        :rules="[{ required: true, message: '请输入' }]"
+      />
       <!-- 输入数字限制精确到小数点后两位，小数点前8位 -->
       <van-field
-        v-model="form.j"
+        v-model="form.shipperOffer"
         v-only-number="{min: 1, max: 99999999.99, precision: 2}"
         label-width="100"
         colon
@@ -178,7 +193,11 @@
     </van-form>
     <!-- 底部弹出框 -->
     <van-popup v-model="showPicker" position="bottom">
-      <template v-if="isDate">
+      <template v-if="isDateRange">
+        <!-- 选择日期 -->
+        <van-calendar v-model="showPicker" type="range" @confirm="onConfirm" />
+      </template>
+      <template v-else-if="isDate">
         <van-datetime-picker
           v-model="form[pickerKey]"
           type="date"
@@ -192,6 +211,7 @@
       <template v-else>
         <!-- picker选择器 -->
         <van-picker
+          ref="fromTwoPicker"
           value-key="label"
           show-toolbar
           :columns="columns"
@@ -215,11 +235,6 @@ export default {
       default: () => {},
       required: true
     },
-    isStable: {
-      type: Boolean,
-      default: true,
-      required: true
-    },
     type: {
       type: String,
       default: '',
@@ -228,21 +243,10 @@ export default {
   },
   data() {
     return {
-      columns1: [
-        {
-          label: '00:00-08:00',
-          value: 1
-        },
-        {
-          label: '08:00-16:00',
-          value: 2
-        },
-        {
-          label: '16:00-24:00',
-          value: 3
-        }
-      ],
-      columns2: [
+      // 配送时间
+      deliveryWeekCycleArr: [],
+      // 结算方式
+      incomeSettlementMethodArr: [
         {
           label: '整车',
           value: 1
@@ -252,7 +256,8 @@ export default {
           value: 2
         }
       ],
-      columns3: [
+      // 结算周期
+      settlementCycleArr: [
         {
           label: '现结',
           value: 1
@@ -274,7 +279,8 @@ export default {
           value: 5
         }
       ],
-      columns4: [
+      // 结算天数
+      settsettlementDaysArr: [
         {
           label: '7天',
           value: 1
@@ -305,37 +311,148 @@ export default {
         }
       ],
       pickerNames: { // picker选中显示的名字
-        city: '',
-        b: '',
-        c: '',
-        startDate: '',
-        endDate: ''
+        deliveryWeekCycle: '',
+        incomeSettlementMethod: '',
+        settlementCycle: '',
+        settlementDays: '',
+        driverWorkTime: '',
+        workingTime: ''
       },
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
       showPicker: false, // 是否打开picker
-      areaLists: ['h'], // 显示日历控件的字段集合
-      timeLists: ['a'],
+      dateLists: ['deliveryWeekCycle'], // 显示日历控件的字段集合
+      timeLists: ['driverWorkTime'],
       minTime: new Date(),
-      maxTime: new Date(2125, 12, 31)
+      maxTime: new Date(2125, 12, 31),
+      isStable: false,
+      timeBucket: [] // 时间段
     }
   },
   computed: {
+    isDateRange() {
+      return this.dateLists.includes(this.pickerKey)
+    },
     isDate() {
       return this.timeLists.includes(this.pickerKey)
-    }
-  },
-  watch: {
-    'form.d'(newVal, oldValue) {
-      if (newVal < 0 || newVal > 3) {
-        this.form.d = 1
+    },
+    isAll: {
+      get() {
+        return this.deliveryWeekCycleArr.length === this.form['deliveryWeekCycle'].length
+      },
+      set(newVal) {
+        if (newVal) {
+          let arrs = this.deliveryWeekCycleArr.map(item => item.value)
+          this.form['deliveryWeekCycle'].push(...arrs)
+        } else {
+          this.form['deliveryWeekCycle'] = []
+        }
+        return newVal
       }
     }
   },
+  watch: {
+    'form.dayNum'(newVal, oldValue) {
+      if (newVal < 0 || newVal > 9) {
+        this.form.dayNum = 1
+        this.form.workingTime = []
+      }
+    },
+    'form.lineId'(val) {
+      if (this.type === 'edit' && val !== '') {
+        this.showPickerLable()
+        this.pickerNames.driverWorkTime = this.form.driverWorkTime
+      }
+    }
+  },
+  mounted() {
+    this.init()
+  },
   methods: {
+    init() {
+      this.isStable = +this.$route.query.isStable === 1
+      if (this.isStable) {
+      // 配送时间-稳定线路
+        this.deliveryWeekCycleArr = [
+          {
+            label: '周一',
+            value: 1
+          },
+          {
+            label: '周二',
+            value: 2
+          },
+          {
+            label: '周三',
+            value: 3
+          },
+          {
+            label: '周四',
+            value: 4
+          },
+          {
+            label: '周五',
+            value: 5
+          },
+          {
+            label: '周六',
+            value: 6
+          },
+          {
+            label: '周日',
+            value: 7
+          }
+        ]
+      }
+      let arrs = []
+      for (let i = 0; i < 23; i++) {
+        let hour = ''
+        let hourNext = ''
+        if (i < 10) {
+          hour = `0${i}`
+        } else {
+          hour = i
+        }
+        if (i + 1 < 10) {
+          hourNext = `0${i + 1}`
+        } else {
+          hourNext = i + 1
+        }
+        let brr = [
+          `${hour}:00:00-${hour}:15:00`,
+          `${hour}:15:00-${hour}:30:00`,
+          `${hour}:30:00-${hour}:45:00`,
+          `${hour}:45:00-${hourNext}:00:00`
+        ]
+        arrs.push(...brr)
+      }
+      arrs.forEach(item => {
+        this.timeBucket.push({
+          label: item,
+          value: item
+        })
+      })
+    },
+    // 编辑生成label
+    showPickerLable() {
+      for (let key in this.pickerNames) {
+        let listKey = `${key}Arr`
+        let index = this[listKey].findIndex(item => item.value === this.form[key])
+        console.log(index, this.form[key], key)
+        if (index > -1) {
+          this.pickerNames[key] = this[`${key}Arr`][index].label
+        }
+      }
+    },
+    // 校验配送时间
+    deliveryWeekCycleValidator() {
+      if (this.form.deliveryWeekCycle.length > 0) {
+        return true
+      }
+      return false
+    },
     // 提交
     onSubmit(values) {
-      console.log('submit', values);
       this.$emit('stepThree')
     },
     // 预计月出车天数
@@ -347,7 +464,7 @@ export default {
     },
     // 每日配送趟数
     countByDayValidator(val) {
-      if (val >= 1 && val <= 3) {
+      if (val >= 1 && val <= 9) {
         return true
       }
       return false
@@ -358,36 +475,51 @@ export default {
     },
     // 预计工作时间
     handleDateChange(date, index) {
-      if (this.form.e[index]) {
-        this.form.e.splice(index, 1, date)
+      if (this.form.workingTime[index]) {
+        this.form.workingTime.splice(index, 1, date)
       } else {
-        this.form.e.splice(index, 0, date)
+        this.form.workingTime.splice(index, 0, date)
       }
     },
     // 显示picker
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'b') {
-        this.columns.push(...this.columns1);
-      } else if (key === 'e') {
-        this.columns.push(...this.columns2);
-      } else if (key === 'f') {
-        this.columns.push(...this.columns3);
-      } else if (key === 'g') {
-        this.columns.push(...this.columns4);
+      if (key === 'incomeSettlementMethod') {
+        this.columns.push(...this.incomeSettlementMethodArr);
+      } else if (key === 'settlementCycle') {
+        this.columns.push(...this.settlementCycleArr);
+      } else if (key === 'settlementDays') {
+        this.columns.push(...this.settsettlementDaysArr);
       }
 
       this.showPicker = true;
+      if (['edit'].includes(this.type)) {
+        let index = this.columns.findIndex(item => item.value === this.form[this.pickerKey])
+        if (index === -1) {
+          index = 0
+        }
+        setTimeout(() => {
+          this.$refs.fromTwoPicker.setIndexes([index])
+        }, 20)
+      }
     },
     // picker选择器
     onConfirm(obj) {
       if (this.isDate) {
         this.pickerNames[this.pickerKey] = `${obj.getMonth() + 1}/${obj.getDate()}`;
+        this.form[this.pickerKey] = obj
+      } else if (this.isDateRange) {
+        if (obj.length === 2) {
+          let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+          let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+          this.pickerNames[this.pickerKey] = `${startName}-${endName}`
+          this.form[this.pickerKey] = obj
+        }
       } else {
         this.pickerNames[this.pickerKey] = obj.label
+        this.form[this.pickerKey] = obj.value
       }
-      this.form[this.pickerKey] = obj
       this.showPicker = false;
     }
   }
@@ -416,4 +548,10 @@ export default {
   }
 }
 
+</style>
+
+<style scoped>
+  .StepTwoContainer >>> .van-checkbox {
+    margin:5px;
+  }
 </style>

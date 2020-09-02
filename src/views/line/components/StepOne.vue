@@ -5,7 +5,7 @@
         基础信息
       </h4>
       <van-field
-        v-model="form.a"
+        v-model="form.lineName"
         label-width="100"
         colon
         required
@@ -14,24 +14,26 @@
         maxlength="10"
         :rules="[{ required: true, message: '请输入线路名称' }]"
       />
+      <template v-if="['copy','create'].includes(type)">
+        <van-field
+          v-model="form.lineNum"
+          label-width="100"
+          colon
+          required
+          label="线路数量"
+          placeholder="请输入"
+          name="lineNumValidator"
+          type="digit"
+          :rules="[
+            { required: true, message: '请输入线路数量' },
+            { validator: lineNumValidator, message: '请输入1~99' }
+          ]"
+        />
+      </template>
       <van-field
-        v-model="form.b"
         label-width="100"
         colon
-        required
-        label="线路数量"
-        placeholder="请输入"
-        name="lineNumValidator"
-        type="digit"
-        :rules="[
-          { required: true, message: '请输入线路数量' },
-          { validator: lineNumValidator, message: '请输入1~99' }
-        ]"
-      />
-      <van-field
-        label-width="100"
-        colon
-        :value="pickerNames['c']"
+        :value="pickerNames['lineBalance']"
         readonly
         clickable
         required
@@ -40,7 +42,7 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('c')"
+        @click="showPickerFn('lineBalance')"
       />
       <van-field
         label-width="100"
@@ -52,15 +54,15 @@
           { required: true, message: '请选择' },
         ]"
         name="calendar"
-        :value="pickerNames['d']"
+        :value="pickerNames['waitDirveValidity']"
         label="上架截止日期"
         placeholder="点击选择日期"
-        @click="showPickerFn('d')"
+        @click="showPickerFn('waitDirveValidity')"
       />
       <van-field
         label-width="100"
         colon
-        :value="pickerNames['e']"
+        :value="pickerNames['stabilityRate']"
         readonly
         clickable
         required
@@ -69,7 +71,7 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('e')"
+        @click="showPickerFn('stabilityRate')"
       />
       <h4 class="title van-hairline--bottom">
         配送信息
@@ -77,7 +79,7 @@
       <van-field
         label-width="100"
         colon
-        :value="pickerNames['f']"
+        :value="pickerNames['runSpeed']"
         readonly
         clickable
         required
@@ -86,11 +88,11 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('f')"
+        @click="showPickerFn('runSpeed')"
       />
       <van-field
         colon
-        :value="pickerNames['g']"
+        :value="pickerNames['returnBill']"
         readonly
         clickable
         required
@@ -100,7 +102,7 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('g')"
+        @click="showPickerFn('returnBill')"
       />
       <van-field
         label-width="100"
@@ -116,11 +118,10 @@
         ]"
         @click="handleShowModal('carType')"
       />
-
       <van-field
         label-width="100"
         colon
-        :value="pickerNames['h']"
+        :value="pickerNames['area']"
         readonly
         clickable
         required
@@ -129,10 +130,23 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('h')"
+        @click="showPickerFn('area')"
       />
       <van-field
-        v-model="form.j"
+        v-model="form.districtArea"
+        colon
+        label-width="100"
+        rows="2"
+        autosize
+        label="详细地址"
+        placeholder="请输入..."
+        type="textarea"
+        maxlength="30"
+        show-word-limit
+        class="textarea"
+      />
+      <van-field
+        v-model="form.deliveryNum"
         label-width="100"
         colon
         required
@@ -146,7 +160,7 @@
         ]"
       />
       <van-field
-        v-model="form.k"
+        v-model="form.distance"
         label-width="100"
         colon
         required
@@ -160,7 +174,7 @@
         ]"
       />
       <van-field
-        v-model="form.remark"
+        v-model="form.limitRemark"
         label-width="100"
         colon
         rows="2"
@@ -181,7 +195,7 @@
       <template v-if="isArea">
         <!-- 配送区域 -->
         <van-area
-          :value="form[pickerKey].length > 1 ?form[pickerKey][2]+'' : ''"
+          :value="form['area'].length > 1 ?form['area'][2]+'' : ''"
           :area-list="columns"
           :columns-placeholder="['请选择', '请选择', '请选择']"
           @confirm="onConfirm"
@@ -202,6 +216,7 @@
       <template v-else>
         <!-- picker选择器 -->
         <van-picker
+          ref="fromOnePicker"
           value-key="label"
           show-toolbar
           :columns="columns"
@@ -223,7 +238,8 @@
 </template>
 
 <script>
-import Suggest from '@/components/SuggestSearch.vue'
+import Suggest from '@/components/SuggestSearch'
+import { getDictData } from '@/api/common'
 export default {
   components: {
     Suggest
@@ -234,11 +250,6 @@ export default {
       default: () => {},
       required: true
     },
-    isStable: {
-      type: Boolean,
-      default: true,
-      required: true
-    },
     type: {
       type: String,
       default: '',
@@ -247,17 +258,19 @@ export default {
   },
   data() {
     return {
-      columns1: [
+      // 是否有线路余额
+      lineBalanceArr: [
         {
           label: '有余额线路',
           value: 1
         },
         {
           label: '无余额线路',
-          value: 0
+          value: 2
         }
       ],
-      columns2: [
+      // 线路稳定性
+      stabilityRateArr: [
         {
           label: '一个月内（不稳定)',
           value: 1
@@ -275,27 +288,30 @@ export default {
           value: 4
         }
       ],
-      columns3: [
+      // 是否走高速
+      runSpeedArr: [
         {
           label: '是',
           value: 1
         },
         {
           label: '否',
-          value: 0
+          value: 2
         }
       ],
-      columns4: [
+      // 是否需要回单
+      returnBillArr: [
         {
           label: '是',
           value: 1
         },
         {
           label: '否',
-          value: 0
+          value: 2
         }
       ],
-      columns5: {
+      // 主要配送区域
+      areaArr: {
         province_list: {
           110000: '北京市',
           120000: '天津市'
@@ -322,17 +338,19 @@ export default {
       options: [],
       modalKey: '',
       pickerNames: { // picker选中显示的名字
-        city: '',
-        b: '',
-        c: '',
-        startDate: '',
-        endDate: ''
+        lineBalance: '',
+        waitDirveValidity: '',
+        stabilityRate: '',
+        runSpeed: '',
+        returnBill: '',
+        carType: '',
+        area: ''
       },
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
       showPicker: false, // 是否打开picker
-      areaLists: ['h'], // 显示日历控件的字段集合
-      timeLists: ['d'],
+      areaLists: ['area'], // 显示日历控件的字段集合
+      timeLists: ['waitDirveValidity'],
       minTime: new Date(),
       maxTime: new Date(2125, 12, 31)
     }
@@ -345,10 +363,35 @@ export default {
       return this.timeLists.includes(this.pickerKey)
     }
   },
+  watch: {
+    'form.lineId'(val) {
+      if (this.type === 'edit' && val !== '') {
+        this.showPickerLable()
+        this.pickerNames.driverWorkTime = this.form.driverWorkTime
+      }
+    }
+  },
+  mounted() {
+    this.init()
+  },
   methods: {
+    async init() {
+      let result = await this.getDictData('Intentional_compartment')
+      this.options = result
+    },
+    // 编辑生成label
+    showPickerLable() {
+      for (let key in this.pickerNames) {
+        let listKey = `${key}Arr`
+        let index = this[listKey].findIndex(item => item.value === this.form[key])
+        console.log(index, this.form[key], key)
+        if (index > -1) {
+          this.pickerNames[key] = this[`${key}Arr`][index].label
+        }
+      }
+    },
     // 提交
     onSubmit(values) {
-      console.log('submit', values);
       this.$emit('stepTwo')
     },
     // 线路数量校验
@@ -366,52 +409,89 @@ export default {
       return false
     },
     // 模糊搜索
-    handleSearchChange(value) {
+    async handleSearchChange(value) {
       console.log('这里面接口请求模糊查询:', value)
+      if (this.modalKey === 'carType') {
+        let result = await this.getDictData('Intentional_compartment', value)
+        this.options = result
+      }
     },
     /**
      *点击某一项
      */
     handleValueClick(obj) {
-      console.log('xxx:', obj)
+      this.form[obj.type] = obj.value
+      this.pickerNames[obj.type] = obj.label
     },
     // 打开模糊查询框
-    handleShowModal(key) {
+    async handleShowModal(key) {
       this.modalKey = key
-      if (key === 'carType') {
-        this.options = []
+      if (this.modalKey === 'carType') {
+        let result = await this.getDictData('Intentional_compartment')
+        this.options = result
       }
       this.showModal = true
+    },
+    // 从数据字典获取数据
+    async getDictData(dictType, keyword = '') {
+      try {
+        let params = {
+          dictType
+        }
+        keyword && (params.keyword = keyword)
+        let { data: res } = await getDictData(params)
+        if (res.success) {
+          return res.data.map(item => ({
+            label: item.dictLabel,
+            value: item.dictValue
+          }))
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get dict data fail:${err}`)
+      }
     },
     // 显示picker
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'c') {
-        this.columns.push(...this.columns1);
-      } else if (key === 'e') {
-        this.columns.push(...this.columns2);
-      } else if (key === 'f') {
-        this.columns.push(...this.columns3);
-      } else if (key === 'g') {
-        this.columns.push(...this.columns4);
-      } else if (key === 'h') {
-        this.columns = this.columns5
+      if (key === 'lineBalance') {
+        this.columns.push(...this.lineBalanceArr);
+      } else if (key === 'stabilityRate') {
+        this.columns.push(...this.stabilityRateArr);
+      } else if (key === 'runSpeed') {
+        this.columns.push(...this.runSpeedArr);
+      } else if (key === 'returnBill') {
+        this.columns.push(...this.returnBillArr);
+      } else if (key === 'area') {
+        this.columns = this.areaArr
       }
 
       this.showPicker = true;
+      if (['edit'].includes(this.type)) {
+        let index = this.columns.findIndex(item => item.value === this.form[this.pickerKey])
+        if (index === -1) {
+          index = 0
+        }
+        setTimeout(() => {
+          this.$refs.fromOnePicker.setIndexes([index])
+        }, 20)
+      }
     },
     // picker选择器
     onConfirm(obj) {
       if (this.isDate) {
         this.pickerNames[this.pickerKey] = `${obj.getMonth() + 1}/${obj.getDate()}`;
+        this.form[this.pickerKey] = obj
       } else if (this.isArea) {
         this.form[this.pickerKey] = obj.map((item) => item.code)
         this.pickerNames[this.pickerKey] = obj.map((item) => item.name).join('/');
       } else {
         this.pickerNames[this.pickerKey] = obj.label
+        this.form[this.pickerKey] = obj.value
       }
-      this.form[this.pickerKey] = obj
+
       this.showPicker = false;
     },
     // 重置表单

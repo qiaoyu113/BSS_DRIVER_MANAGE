@@ -3,9 +3,9 @@
     <van-sticky :offset-top="0">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
-    <StepOne v-show="step === 1" :is-stable="isStable" type="copy" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" :is-stable="isStable" type="copy" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
-    <StepThree v-show="step === 3" :is-stable="isStable" type="copy" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
+    <StepOne v-show="step === 1" type="copy" :form="stepOneForm" @stepTwo="step =2" />
+    <StepTwo v-show="step === 2" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepThree v-show="step === 3" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
 
@@ -41,6 +41,7 @@ export default {
     }
   },
   mounted() {
+    this.isStable = +this.$route.query.isStable === 1
     let title = ''
     if (this.isStable) {
       title = '复制稳定线路'

@@ -72,3 +72,21 @@ export function createTemporaryLine(data) {
   })
 }
 
+// 编辑临时线路
+export function editTemporaryLine(data) {
+  return request({
+    url: `${prefix}/v2/line/editTemporaryLine`,
+    method: 'post',
+    data
+  })
+}
+
+// 编辑稳定线路
+export function editStableLine(data) {
+  return request({
+    url: `${prefix}/v2/line/editStableLine`,
+    method: 'post',
+    data
+  })
+}
+
