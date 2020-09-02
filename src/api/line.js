@@ -54,3 +54,21 @@ export function collectLineInfo(data) {
   })
 }
 
+// 发布稳定线路
+export function createStableLine(data) {
+  return request({
+    url: `${prefix}/v2/line/createStableLine`,
+    method: 'post',
+    data
+  })
+}
+
+// 发布临时线路
+export function createTemporaryLine(data) {
+  return request({
+    url: `${prefix}/v2/line/createTemporaryLine`,
+    method: 'post',
+    data
+  })
+}
+

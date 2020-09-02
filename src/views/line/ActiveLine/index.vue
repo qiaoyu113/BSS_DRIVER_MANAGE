@@ -3,9 +3,9 @@
     <van-sticky :offset-top="0">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
-    <StepOne v-show="step === 1" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
-    <StepThree v-show="step === 3" :form="stepThreeForm" @step-two="step=2" />
+    <StepOne v-show="step === 1" :is-stable="isStable" type="active" :form="stepOneForm" @stepTwo="step =2" />
+    <StepTwo v-show="step === 2" :is-stable="isStable" type="active" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepThree v-show="step === 3" :is-stable="isStable" type="active" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
 
@@ -53,6 +53,14 @@ export default {
   methods: {
     onClickLeft() {
       this.$router.go(-1)
+    },
+    // 激活线路
+    handleSubmit() {
+      if (this.isStable) {
+        // this.createStableLine()
+      } else {
+        // this.createTemporaryLine()
+      }
     }
   }
 }

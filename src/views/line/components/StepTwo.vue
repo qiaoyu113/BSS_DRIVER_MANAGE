@@ -212,7 +212,18 @@ export default {
   props: {
     form: {
       type: Object,
-      default: () => {}
+      default: () => {},
+      required: true
+    },
+    isStable: {
+      type: Boolean,
+      default: true,
+      required: true
+    },
+    type: {
+      type: String,
+      default: '',
+      required: true
     }
   },
   data() {

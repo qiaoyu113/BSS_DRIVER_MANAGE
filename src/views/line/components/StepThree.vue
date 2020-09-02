@@ -112,7 +112,18 @@ export default {
   props: {
     form: {
       type: Object,
-      default: () => {}
+      default: () => {},
+      required: true
+    },
+    isStable: {
+      type: Boolean,
+      default: true,
+      required: true
+    },
+    type: {
+      type: String,
+      default: '',
+      required: true
     }
   },
   data() {
@@ -140,6 +151,7 @@ export default {
     // 提交
     onSubmit(values) {
       console.log('submit', values);
+      this.$emit('submit')
     },
     // 货物件数
     numValidator(val) {
