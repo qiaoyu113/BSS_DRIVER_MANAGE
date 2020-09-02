@@ -26,13 +26,14 @@
       <van-list
         v-model="loading"
         :finished="finished"
+        :error.sync="error"
         finished-text="没有更多了"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="active" swipeable>
-          <van-tab v-for="item in tabArrs" :key="item.text">
+        <van-tabs v-model="form.lineState" swipeable @change="handleTabChange">
+          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
               <div v-if="item.num" class="van-info">
@@ -58,57 +59,57 @@
     >
       <van-field
         label-width="100"
-        :value="pickerNames['a']"
+        :value="pickerNames['busiType']"
         readonly
         clickable
         label="线路类型"
         placeholder="请选择"
-        @click="showPickerFn('a')"
+        @click="showPickerFn('busiType')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['b']"
+        :value="pickerNames['lineBalance']"
         readonly
         clickable
         label="是否有线路余额"
         placeholder="请选择"
-        @click="showPickerFn('b')"
+        @click="showPickerFn('lineBalance')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['c']"
+        :value="pickerNames['lineCategory']"
         readonly
         clickable
         label="线路分类"
         placeholder="请选择"
-        @click="showPickerFn('c')"
+        @click="showPickerFn('lineCategory')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['d']"
+        :value="pickerNames['lineType']"
         readonly
         clickable
         label="是否为城配线"
         placeholder="请选择"
-        @click="showPickerFn('d')"
+        @click="showPickerFn('lineType')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['manager']"
+        :value="pickerNames['dutyManagerId']"
         readonly
         clickable
         label="上岗经理"
         placeholder="请选择"
-        @click="handleShowModal('manager')"
+        @click="handleShowModal('dutyManagerId')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['sell']"
+        :value="pickerNames['lineSaleId']"
         readonly
         clickable
         label="外线销售"
         placeholder="请选择"
-        @click="handleShowModal('sell')"
+        @click="handleShowModal('lineSaleId')"
       />
       <van-field
         label-width="100"
@@ -121,21 +122,21 @@
       />
       <van-field
         label-width="100"
-        :value="pickerNames['e']"
+        :value="pickerNames['waitDirveValidity']"
         readonly
         clickable
         label="上架截止日期"
         placeholder="请选择"
-        @click="showPickerFn('e')"
+        @click="showPickerFn('waitDirveValidity')"
       />
       <van-field
         label-width="100"
-        :value="pickerNames['f']"
+        :value="pickerNames['driverWorkTime']"
         readonly
         clickable
         label="司机上岗时间"
         placeholder="请选择"
-        @click="showPickerFn('f')"
+        @click="showPickerFn('driverWorkTime')"
       />
       <van-field
         label-width="100"
@@ -191,7 +192,8 @@
 <script>
 import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
-import Suggest from '@/components/SuggestSearch.vue'
+import Suggest from '@/components/SuggestSearch'
+import { getLineList } from '@/api/line'
 export default {
   components: {
     CardItem,
@@ -204,27 +206,29 @@ export default {
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
-      active: '', // 当前激活的tab,
+      error: false, // 出错
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 100
+          num: 0,
+          name: ''
         },
         {
           text: '已上架',
-          num: 0
+          num: 0,
+          name: 1
         },
         {
-          text: '已售罄',
-          num: 0
-        },
-        {
-          text: '未开跑已下架',
-          num: 0
+          text: '已开跑',
+          num: 2
         },
         {
           text: '已开跑下架',
-          num: 0
+          num: 3
+        },
+        {
+          text: '未开跑下架',
+          num: 4
         }
       ],
       lists: [],
@@ -239,16 +243,23 @@ export default {
         }
       ],
       form: { // 查询表单
-        date: ''
+        lineState: '', // 当前激活的tab,
+        busiType: '',
+        lineBalance: '',
+        lineCategory: '',
+        lineType: '',
+        waitDirveValidity: '',
+        driverWorkTime: '',
+        date: []
       },
       columns1: [
         {
           label: '专车',
-          value: 1
+          value: 0
         },
         {
           label: '共享',
-          value: 0
+          value: 1
         }
       ],
       columns2: [
@@ -258,7 +269,7 @@ export default {
         },
         {
           label: '无线路余额',
-          value: 0
+          value: 2
         }
       ],
       columns3: [
@@ -268,7 +279,7 @@ export default {
         },
         {
           label: '临时线路',
-          value: 0
+          value: 2
         }
       ],
       columns4: [
@@ -278,26 +289,32 @@ export default {
         },
         {
           label: '支线',
-          value: 0
+          value: 2
         }
       ],
       showModal: false,
       options: [],
       modalKey: '',
       pickerNames: { // picker选中显示的名字
-        city: '',
-        b: '',
-        c: '',
-        startDate: '',
-        endDate: ''
+        busiType: '',
+        lineBalance: '',
+        lineCategory: '',
+        lineType: '',
+        waitDirveValidity: '',
+        driverWorkTime: '',
+        date: ''
       },
       pickerKey: '', // 显示picker的key
       columns: [], // picker的列表
       showPicker: false, // 是否打开picker
       dateLists: ['date'], // 显示日历控件的字段集合
-      timeLists: ['e', 'f'],
+      timeLists: ['waitDirveValidity', 'driverWorkTime'],
       minTime: new Date(),
-      maxTime: new Date(2125, 12, 31)
+      maxTime: new Date(2125, 12, 31),
+      page: {
+        current: 0,
+        total: 0
+      }
     }
   },
   computed: {
@@ -318,37 +335,25 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
-    onLoad(isInit = false) {
-      if (isInit === true) {
+    // 加载列表
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
         this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
       }
-      setTimeout(() => {
-        console.log('xxxx')
-        let id = this.lists.length
-        for (let i = 0; i < 5; i++) {
-          let obj = {
-            id: id + i,
-            title: '京东城配线(xs200808)',
-            update: '2020-080-09',
-            line: '稳定线路/无线路余额/支线',
-            carType: '小面',
-            status: '已试跑',
-            rearchDate: '2020-08-09',
-            worktime: '10小时',
-            tags: ['已上架', '共享', '已采线']
-          }
-          this.lists.push(obj)
-        }
-        if (isInit === true) {
-          this.refreshing = false
-          this.finished = false
-        }
-
+      let result = await this.getLists(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-        if (this.lists.length > 15) {
+        if (!result.hasMore) {
           this.finished = true
         }
-      }, 500)
+      }
     },
     // 搜索
     handleSearchClick() {
@@ -379,9 +384,9 @@ export default {
     // 打开模糊查询框
     handleShowModal(key) {
       this.modalKey = key
-      if (key === 'manager') {
+      if (key === 'dutyManagerId') {
         this.options = []
-      } else if (key === 'sell') {
+      } else if (key === 'lineSaleId') {
         this.options = []
       } else if (key === 'carType') {
         this.options = []
@@ -394,16 +399,15 @@ export default {
       this.pickerKey = key;
       if (key === 'selectLine') {
         this.columns.push(...this.lineColumns);
-      } else if (key === 'a') {
+      } else if (key === 'busiType') {
         this.columns.push(...this.columns1);
-      } else if (key === 'b') {
+      } else if (key === 'lineBalance') {
         this.columns.push(...this.columns2);
-      } else if (key === 'c') {
+      } else if (key === 'lineCategory') {
         this.columns.push(...this.columns3);
-      } else if (key === 'd') {
+      } else if (key === 'lineType') {
         this.columns.push(...this.columns4);
       }
-
       this.showPicker = true;
     },
     // picker选择器
@@ -421,14 +425,71 @@ export default {
           let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
           let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
           this.pickerNames[this.pickerKey] = `${startName}-${endName}`
+          this.form[this.pickerKey] = obj
         }
       } else if (this.isDate) {
         this.pickerNames[this.pickerKey] = `${obj.getMonth() + 1}/${obj.getDate()}`;
+        this.form[this.pickerKey] = obj
       } else {
         this.pickerNames[this.pickerKey] = obj.label
+        this.form[this.pickerKey] = obj.value
       }
-      this.form[this.pickerKey] = obj
+
       this.showPicker = false;
+    },
+    // 状态切换
+    handleTabChange(tab) {
+      this.getLists(true)
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          limit: this.page.size
+        }
+        this.form.lineState && (params.lineState = this.form.lineState)
+        this.form.busiType !== '' && (params.busiType = this.form.busiType)
+        this.form.lineBalance && (params.lineBalance = this.form.lineBalance)
+        this.form.lineCategory && (params.lineCategory = this.form.lineCategory)
+        this.form.lineType && (params.lineType = this.form.lineType)
+        this.form.waitDirveValidity && (params.waitDirveValidity = this.form.waitDirveValidity)
+        this.form.driverWorkTime && (params.driverWorkTime = this.form.driverWorkTime)
+        if (this.form.date && this.form.date.length > 1) {
+          params.startDate = new Date(this.form.date[0]).getTime()
+          params.endDate = new Date(this.form.date[1]).getTime()
+        }
+        let { data: res } = await getLineList(params)
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach(item => {
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     }
   }
 }

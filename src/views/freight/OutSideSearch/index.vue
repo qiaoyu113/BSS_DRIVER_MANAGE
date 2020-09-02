@@ -47,25 +47,24 @@
 </template>
 
 <script>
-import CardItem from '../List/components/CardItem'
+import CardItem from '../List/components/Cardltem'
 import { debounce } from '@/utils/index'
-import { getLineList } from '@/api/line'
 export default {
   components: {
     CardItem
   },
   data() {
     return {
-      keyWord: '', // 关键字
-      lists: [], // 查询出来的数据
-      historyItems: [], // 历史搜索
-      options: []// 关键字查出来的关键字
-    }
-  },
-  mounted() {
-    let historyData = this.getHistory()
-    if (historyData) {
-      this.historyItems = JSON.parse(historyData)
+      keyWord: '',
+      lists: [],
+      historyItems: [
+        '李斯',
+        '张三',
+        '天明',
+        '云鸟',
+        '德邦物流'
+      ],
+      options: []
     }
   },
   methods: {
@@ -78,56 +77,38 @@ export default {
       if (!this.keyWord) {
         return false
       }
-      this.getLists(this.keyWord)
+
+      console.log(this.keyWord)
+      if (this.keyWord === 'd') {
+        this.options = [
+          '京东',
+          '京东12121',
+          '京东121212ddasddasd'
+        ]
+      } else {
+        this.lists = [
+
+          {
+            id: 1,
+            title: '2020/09/08  李斯 / 1666666',
+            statust: '待上报',
+            update: '12233344',
+            carType: '李斯',
+            status: '郑州线路'
+
+          }
+
+        ]
+      }
     }, 200),
     // 取消
     onCancel() {
       this.keyWord = ''
-      this.lists = []
+      this.lists = [
+      ]
     },
     handleItemClick(value) {
       this.keyWord = value
-    },
-    // 搜索
-    async getLists(keyword = '') {
-      try {
-        let params = {
-          page: 1,
-          pageNumber: 9999
-        }
-        keyword && (params.key = keyword)
-        let { data: res } = await getLineList(params)
-        if (res.success) {
-          this.lists = res.data
-          if (keyword) {
-            this.setHistory(keyword)
-          }
-        } else {
-          this.$toast.fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get search data fail:${err}`)
-      }
-    },
-    // 存localStorage
-    setHistory(keyword) {
-      let index = this.historyItems.findIndex(item => item === keyword)
-      if (index > -1) {
-        this.historyItems.splice(index, 1)
-      }
-
-      if (this.historyItems.length >= 5) {
-        this.historyItems.shift()
-      }
-      this.historyItems.push(keyword)
-      localStorage.setItem('line', JSON.stringify(this.historyItems))
-    },
-    // 获取从localStorage
-    getHistory() {
-      let history = localStorage.getItem('line')
-      if (history) {
-        return history
-      }
     }
   }
 }

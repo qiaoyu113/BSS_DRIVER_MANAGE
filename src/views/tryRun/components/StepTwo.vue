@@ -44,6 +44,16 @@
           placeholder="司机可见/请输入不超过150字"
         />
       </van-cell-group>
+      <div class="btn-container">
+        <van-button
+          block
+          type="primary"
+          native-type="submit"
+          class="sub-btn"
+        >
+          更多操作
+        </van-button>
+      </div>
     </van-form>
     <!-- picker -->
     <van-popup v-model="showPicker" round position="bottom">
@@ -107,6 +117,19 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+.StepTwo{
+  height: 100%;
+  .btn-container{
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+  }
+  .van-cell-group{
+    &::after{
+      border-top: none;
+    }
+  }
+}
 </style>

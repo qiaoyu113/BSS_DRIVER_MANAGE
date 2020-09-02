@@ -98,17 +98,12 @@ export default {
 
 <style lang='scss' scoped>
 .VideoPreviewContainer {
+  padding: 10px 16px;
   .image {
     margin-top:10px;
     width:75px;
     height:75px;
   }
-  // #xg {
-  //   padding-top:0px!important;
-  //   width: 75px!important;
-  //   height:75px!important;
-  //   border-radius: 8px;
-  // }
 }
 
 </style>

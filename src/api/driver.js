@@ -1,13 +1,6 @@
 import request from '@/utils/request'
 let prefix = '/mock/81/'
 
-// export function driverDetail(data) {
-//   return request({
-//     url: '/api/driver/driver/detail',
-//     method: 'get',
-//     params: data
-//   })
-// }
 /**
  * 新建共享面试表单
  */

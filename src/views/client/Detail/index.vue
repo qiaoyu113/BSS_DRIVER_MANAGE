@@ -45,9 +45,7 @@ export default {
   },
   data() {
     return {
-      form: {
-        lineName: '祥云物流项目'
-      },
+      form: {},
       customerId: '' // 客户详情
     }
   },

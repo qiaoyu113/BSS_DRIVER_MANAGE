@@ -8,7 +8,7 @@
       :key="label+index"
       :style="{
         marginRight:index % 4 === 3 ? '0px':'',
-        marginLeft:index % 4 ===0 ? '0.13333333rem':''
+        marginLeft:index % 4 ===0 ? '0.43rem':''
       }"
       class="image"
       :src="item"

@@ -47,12 +47,33 @@ export default {
   },
   data() {
     return {
-      activeIndex: 0,
+      listQuery: {
+        key: '',
+        page: 1,
+        limit: 100,
+        endDate: '',
+        appletSource: '',
+        startDate: '',
+        expandManager: '',
+        clueType: '',
+        carType: '',
+        isSettledIn: '',
+        workCity: '',
+        sourceType: '',
+        isPayDeposit: '',
+        state: '1'
+      },
+      active: 1,
+      total: 0,
+      page: 1,
+      loadedAll: false,
       actions: [
-        { name: '线路云', index: 0 },
-        { name: '司机云', index: 1 },
-        { name: '试跑-在跑', index: 2 }
+        { name: '线路云', value: 0 },
+        { name: '司机云', value: 1 },
+        { name: '试跑', value: 2 }
+        // { name: '运费管理', value: 3 }
       ],
+      activeIndex: 0,
       show: false,
       list: [
         // 线路云
@@ -112,7 +133,7 @@ export default {
   },
   methods: {
     onSelect(item) {
-      this.activeIndex = item.index;
+      this.activeIndex = item.value;
       // 设置缓存，下次进入取缓存值
       localStorage.setItem('HOME_ACTIVE', this.activeIndex)
     }
