@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { parseTime, phoneRegExp } from '@/utils'
+import { parseTime, phoneRegExp, delay } from '@/utils'
 import { GetPersonInfo, TryRun, FollowCar } from '@/api/tryrun';
 import { getLineDetail } from '@/api/line'
 export default {
@@ -229,14 +229,14 @@ export default {
           }
           setTimeout(() => {
             this.$router.push('/try-run')
-          }, 2000);
+          }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`${err}`)
       } finally {
-        this.$loading(false)
+        // this.$loading(false)
       }
     },
     onConfirm(value) {

@@ -1,17 +1,9 @@
 import request from '@/utils/request'
-let prefix = '/api'
+let prefix = '/mock/74'
 // 创建试跑
 export function CreateLntentionRun(data) {
   return request({
     url: `${prefix}/waybill/v2/runtest/creatIntentionRun`,
-    method: 'post',
-    data
-  })
-}
-// 选择线路
-export function CreateLntentionRun2(data) {
-  return request({
-    url: `${prefix}/v2/runtest/creatIntentionRun`,
     method: 'post',
     data
   })
@@ -43,7 +35,15 @@ export function TryRun(data) {
 // 跟车
 export function FollowCar(data) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/followCar `,
+    url: `${prefix}/waybill/v2/runtest/followCar`,
+    method: 'post',
+    data
+  })
+}
+// 掉线
+export function SwitchTryRun(data) {
+  return request({
+    url: `${'/api'}/waybill/v2/runtest/switchDropped`,
     method: 'post',
     data
   })
@@ -57,10 +57,10 @@ export function GetRunTestInfoList(data) {
   })
 }
 // 试跑详情
-export function GetDetails(data) {
+export function GetDetails(params) {
   return request({
     url: `${prefix}/v2/runtest/runDetial`,
-    method: 'post',
-    data
+    method: 'get',
+    params
   })
 }

@@ -1,59 +1,54 @@
 <template>
-  <div class="ListItem">
+  <div class="ListItem" @click="onDetails(item.runTestId)">
     <div class="title flex align-center">
       <div class="title-tag flex align-center justify-center">
-        共享
+        {{ lineInfo.lineCategory }}
       </div>
       <h3 class="van-ellipsis">
-        京东城配线路京东城配线路2京…（XS200808）
+        {{ lineInfo.lineName }}（{{ lineInfo.lineId }}）
       </h3>
       <van-icon name="arrow" />
     </div>
     <div class="list-tag-ct flex align-center">
-      <van-tag
-        plain
-        round
-        type="primary"
-        class="tag-item"
-      >
-        标签
+      <van-tag plain round type="primary" class="tag-item">
+        {{ item.statusName }}
       </van-tag>
     </div>
     <van-cell
       title-class="cell-title"
       value-class="cell-value"
       title="上岗时间："
-      value="稳定线路"
+      :value="lineInfo.driverWorkTime"
     />
     <van-cell
       title-class="cell-title"
       value-class="cell-value"
       title="仓库位置："
-      value="稳定线路"
+      :value="warehouse"
     />
     <van-cell
       title-class="cell-title"
       value-class="cell-value"
       title="配送车型："
-      value="稳定线路"
+      :value="lineInfo.carType"
     />
     <van-cell
       title-class="cell-title"
       value-class="cell-value"
       title="配送区域："
-      value="稳定线路"
+      :value="distribution"
     />
     <van-cell
       title-class="cell-title"
       value-class="cell-value"
       title="里程时间："
-      value="稳定线路"
+      :value="lineInfo.distance + '/' + lineInfo.timeDiff"
     />
     <van-cell
       title-class="cell-title"
       value-class="cell-value"
       title="司机信息："
-      value="稳定线路"
+      :value="item.driverName + '/' + item.phone"
     />
     <div class="bottom-tag-ct flex align-center">
       <van-tag
@@ -91,6 +86,41 @@ export default {
         return {};
       }
     }
+  },
+  computed: {
+    lineInfo() {
+      return this.item.lineInfo || '';
+    },
+    warehouse() {
+      const { lineInfo } = this.item;
+      if (!lineInfo) return ''
+      return (
+        lineInfo.warehouseProvince +
+        lineInfo.warehouseCity +
+        lineInfo.warehouseCounty +
+        lineInfo.warehouseDistrict
+      );
+    },
+    distribution() {
+      const { lineInfo } = this.item;
+      if (!lineInfo) return ''
+      return (
+        lineInfo.provinceAreaName +
+        lineInfo.cityAreaName +
+        lineInfo.countyAreaName
+      );
+    }
+  },
+  methods: {
+    // 跳转详情
+    onDetails(id) {
+      this.$router.push({
+        path: '/try-detail',
+        query: {
+          id
+        }
+      })
+    }
   }
 };
 </script>
@@ -104,84 +134,84 @@ export default {
   .title {
     height: 40px;
     line-height: 40px;
-    .title-tag{
+    .title-tag {
       margin-right: 10px;
       padding: 0 10px;
       height: 20px;
       font-size: @font-size-sm;
-      color: #EFF5FE;
-      background: #7F8FBD;
+      color: #eff5fe;
+      background: #7f8fbd;
       border-radius: 3px;
       white-space: nowrap;
     }
-    h3{
+    h3 {
       margin: 0;
       font-size: @font-size-md;
       font-weight: bold;
     }
   }
-  .list-tag-ct{
+  .list-tag-ct {
     margin-bottom: 7px;
   }
-  .tag-item{
+  .tag-item {
     padding: 0 8px;
     height: 20px;
     border-color: @tab-active-color;
     color: @tab-active-color;
     font-size: @font-size-xs-1;
     border-radius: 12px;
-    &+.tag-item{
+    & + .tag-item {
       margin-left: 10px;
     }
   }
-  .van-cell{
+  .van-cell {
     padding: 0;
-    &::after{
+    &::after {
       display: none;
     }
     .cell-title,
-    .cell-value{
+    .cell-value {
       font-size: @font-size-sm-1;
       color: @text-color;
       line-height: 23px;
       flex: none;
     }
-    .cell-title{
-      flex-shrink : 0;
+    .cell-title {
+      flex-shrink: 0;
     }
-    .cell-value{
+    .cell-value {
       flex: auto;
       text-align: left;
     }
   }
-  .bottom-tag-ct{
+  .bottom-tag-ct {
     margin: 5px 0;
-    .bottom-tag{
+    .bottom-tag {
       height: 24px;
       padding: 0 11px;
       font-size: @font-size-sm;
-      color: #649CEE;
-      background: #EFF5FE;
+      color: #649cee;
+      background: #eff5fe;
       border-radius: 3px;
-      &::before{
+      &::before {
         display: none;
       }
-      &+.bottom-tag{
+      & + .bottom-tag {
         margin-left: 10px;
       }
     }
   }
-  .bottom{
+  .bottom {
     height: 30px;
-    .details{
+    .details {
       width: 70px;
       height: 20px;
       line-height: 20px;
-      color: #838A9D;
+      color: #838a9d;
       border-radius: 10px;
       text-align: center;
       font-size: @font-size-sm;
-      &::after{
+      &::after {
         border-radius: 20px;
       }
     }

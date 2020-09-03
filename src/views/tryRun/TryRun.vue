@@ -25,15 +25,15 @@
           </div>
         </template>
       </van-search>
-      <van-tabs v-model="listQuery.status" @click="onTabClick">
+      <van-tabs v-model="form.status" @click="handleTabChange">
         <van-tab
-          v-for="(item, index) in tabsList"
+          v-for="(item, index) in tabArrs"
           :key="index"
           :name="item.name"
         >
           <template #title>
             {{ item.title }}
-            <div v-if="item.name === listQuery.status" class="van-info">
+            <div v-if="item.name === form.status" class="van-info">
               {{ item.total }}
             </div>
           </template>
@@ -41,17 +41,18 @@
       </van-tabs>
     </div>
     <div class="list">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <!-- 下拉刷新  上拉加载 -->
+      <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
           v-model="loading"
           :finished="finished"
           :error.sync="error"
-          error-text="请求失败，点击重新加载"
           finished-text="没有更多了"
+          error-text="请求失败，点击重新加载"
           @load="onLoad"
         >
           <ListItem
-            v-for="(item, index) in list"
+            v-for="(item, index) in lists"
             :key="index"
             :item="item"
           />
@@ -77,7 +78,7 @@
         @click="showPickerFn('city')"
       />
       <van-field
-        v-model="listQuery.customer"
+        v-model="form.customer"
         colon
         name="customer"
         label-width="7em"
@@ -85,7 +86,7 @@
         placeholder="请输入"
       />
       <van-field
-        v-model="listQuery.project"
+        v-model="form.project"
         colon
         label-width="7em"
         name="project"
@@ -93,7 +94,7 @@
         placeholder="请输入"
       />
       <van-field
-        v-model="listQuery.line"
+        v-model="form.line"
         colon
         name="line"
         label-width="7em"
@@ -113,7 +114,7 @@
         @click="showPickerFn('carType')"
       />
       <van-field
-        v-model="listQuery.driver"
+        v-model="form.driver"
         name="driver"
         colon
         label-width="7em"
@@ -192,7 +193,7 @@ export default {
   data() {
     return {
       showSuggest: true,
-      tabsList: [
+      tabArrs: [
         {
           title: '全部',
           total: 0,
@@ -235,13 +236,13 @@ export default {
         }
       ],
       // lists
-      list: [],
+      lists: [],
       loading: false,
       finished: false,
       error: false,
       refreshing: false,
       // search
-      listQuery: {
+      form: {
         city: '', // 客户城市
         customer: '', // 客户
         project: '', // 项目
@@ -251,9 +252,12 @@ export default {
         droppedReason: '', // 掉线原因
         startDate: '', // 线路上岗开始时间
         endDate: '', // 线路上岗结束时间
-        page: 1,
-        limit: 20,
         status: '' // 状态
+      },
+      page: {
+        current: 0,
+        limit: 20,
+        total: 0
       },
       pickerNames: {
         city: '',
@@ -308,39 +312,42 @@ export default {
         });
     },
     /**
-     * 切换tab
-     */
-    onTabClick(name) {
-      console.log(name);
-      this.listQuery.status = name;
-      this.getList();
-    },
-    /**
      * 初始化数据
      */
-    onLoad() {
-      GetRunTestInfoList(this.listQuery)
-        .then(({ data }) => {
-          if (data.success) {
-            if (this.refreshing) {
-              this.list = [];
-              this.refreshing = false;
-            }
-
-            for (let i = 0; i < 10; i++) {
-              this.list.push({ item: this.list.length + 1 });
-            }
-            this.loading = false;
-
-            if (this.list.length >= 40) {
-              this.finished = true;
-            }
-          } else {
-            this.$toast.fail(data.errorMsg)
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++;
+      }
+      let result = await this.getLists(isInit);
+      if (result) {
+        this.lists = result.lists
+      }
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
+        this.loading = false;
+        if (result) {
+          if (!result.hasMore) {
+            this.finished = true
           }
-        }).catch(({ message }) => {
-          this.$toast.fail(message)
-        });
+        }
+      }
+    },
+    /**
+     * 处理参数
+     */
+    delForm(form) {
+      let obj = {};
+      Object.keys(form).forEach(key => {
+        if (form[key] !== '') {
+          obj[key] = form[key];
+        }
+      })
+      return obj
     },
     /**
      * 下拉刷新
@@ -363,8 +370,8 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.pickerNames.date = `${startDate} - ${endDate}`;
-      this.listQuery.startDate = startDate;
-      this.listQuery.endDate = endDate;
+      this.form.startDate = startDate;
+      this.form.endDate = endDate;
     },
     /**
      * 提交查询
@@ -379,7 +386,7 @@ export default {
      * 重置form
      */
     onReset(form) {
-      this.listQuery = this.$options.data().listQuery;
+      this.form = this.$options.data().form;
       this.pickerNames = this.$options.data().pickerNames;
       form.resetValidation();
     },
@@ -388,7 +395,7 @@ export default {
      */
     onConfirmPicker(value) {
       this.pickerNames[this.pickerKey] = value.dictLabel;
-      this.listQuery[this.pickerKey] = value.id;
+      this.form[this.pickerKey] = value.id;
       this.showPicker = false;
     },
     /**
@@ -396,7 +403,7 @@ export default {
      */
     onConfirmPickerCity(value) {
       this.pickerNames[this.pickerKey] = value.name;
-      this.listQuery[this.pickerKey] = value.code;
+      this.form[this.pickerKey] = value.code;
       this.showPickerCity = false;
     },
     /**
@@ -437,6 +444,53 @@ export default {
      */
     onCreateRun() {
       this.$router.push('/create-run');
+    },
+    // 状态切换
+    handleTabChange(tab) {
+      this.onLoad(true);
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        this.$loading(true)
+        const params = this.delForm(this.form);
+        params.page = this.page.current;
+        params.limit = this.page.limit;
+        let { data: res } = await GetRunTestInfoList(params)
+        if (res.success) {
+          console.log(res.data);
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          // this.tabArrs.forEach(item => {
+          //   if (item.name === this.form.customerState) {
+          //     item.num = res.page.total
+          //   } else {
+          //     item.num = 0
+          //   }
+          // })
+          console.log(result)
+          return result
+        } else {
+          this.page.current !== 1 && this.page.current--;
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(this.page.current)
+        this.page.current !== 1 && this.page.current--;
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     }
   }
 };
