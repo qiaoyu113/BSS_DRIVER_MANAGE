@@ -27,9 +27,9 @@
       />
     </template>
 
-    <StepOne v-show="step === 1" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
-    <StepThree v-show="step === 3" :form="stepThreeForm" @step-two="step=2" />
+    <StepOne v-show="step === 1" :is-stable="isStable" type="create" :form="stepOneForm" @stepTwo="step =2" />
+    <StepTwo v-show="step === 2" :is-stable="isStable" type="create" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepThree v-show="step === 3" :is-stable="isStable" type="create" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
 
@@ -37,62 +37,98 @@
 import StepOne from '../components/StepOne'
 import StepTwo from '../components/StepTwo'
 import StepThree from '../components/StepThree'
-import Suggest from '@/components/SuggestSearch.vue'
+import Suggest from '@/components/SuggestSearch'
+import { createStableLine, createTemporaryLine } from '@/api/line'
+import { getProjectSearch } from '@/api/project'
+import { Notify, Dialog } from 'vant';
+import { delay, parseTime } from '@/utils'
 export default {
   components: {
     StepOne,
     StepTwo,
     StepThree,
-    Suggest
+    Suggest,
+    [Notify.Component.name]: Notify.Component,
+    [Dialog.Component.name]: Dialog.Component
   },
+
   data() {
     return {
-      projectId: '',
+      projectId: '123',
       projectName: '',
       title: '',
-      step: 1,
+      step: 0,
       isStable: true,
       stepOneForm: {
-        h: [
-          '110000',
-          '110100',
-          '110101'
-        ]
+        lineName: '', // 线路名称
+        lineNum: '', // 线路数量
+        lineBalance: '', // 是否有线路余额
+        waitDirveValidity: '', // 上架截止日期
+        stabilityRate: '', // 线路稳定性
+        runSpeed: '', // 是否走高速
+        returnBill: '', // 是否需要回单
+        carType: '', // 配送车型
+        deliveryNum: '', // 配送点数量
+        distance: '', // 配送总里程数
+        limitRemark: '', // 限行区域说明
+        area: [], // 主要配送区域
+        districtArea: ''
       },
       stepTwoForm: {
-        e: [],
-        d: ''
+        driverWorkTime: '', // 司机上岗时间
+        deliveryWeekCycle: [], // 配送时间
+        workingTime: [], // 预计工作时间
+        monthNum: '', // 预计月出车天数
+        dayNum: '', // 每日配送趟数
+        incomeSettlementMethod: '', // 结算方式
+        settlementCycle: '', // 结算周期
+        settlementDays: '', // 结算天数
+        shipperOffer: '', // 预计月报价
+        everyTripGuaranteed: '', // 单趟报价/每趟保底
+        everyUnitPrice: ''// 每趟提成单价
       },
       stepThreeForm: {
-
+        cargoType: '', // 货物类型
+        cargoNum: '', // 货物件数
+        volume: '', // 货物体积
+        goodsWeight: '', // 货物重量
+        carry: '', // 是否需要搬运
+        dutyRemark: '' // 其他上岗要求
       },
       showModal: false,
-      projectOptions: [
-        {
-          label: '京东',
-          value: 'jingdong'
-        },
-        {
-          label: '苏宁',
-          value: 'suning'
-        }
-      ]
+      isProject: false, // 是否从项目过来的
+      projectOptions: [] // 项目列表
     }
   },
   mounted() {
-    let title = ''
-    this.isStable = this.$route.query.isStable === 1
-    if (this.isStable) {
-      title = '发布稳定线路'
-    } else {
-      title = '发布临时线路'
-    }
-    this.title = title
-    document.title = title
+    this.init()
   },
   methods: {
+    init() {
+      let title = ''
+      this.isStable = +this.$route.query.isStable === 1
+      this.isProject = +this.$route.query.isProject === 1
+      if (this.isStable) {
+        title = '发布稳定线路'
+      } else {
+        title = '发布临时线路'
+      }
+      this.title = title
+      document.title = title
+      this.handleSearch()
+    },
     onClickLeft() {
-      this.$router.go(-1)
+      if (this.isProject) {
+        Dialog.confirm({
+          title: '提示',
+          message: '已填写相关信息,请确定要返回至项目详情吗?'
+        })
+          .then(() => {
+            this.$router.go(-1)
+          })
+      } else {
+        this.$router.go(-1)
+      }
     },
     // 选择完项目
     onSubmit(value) {
@@ -100,7 +136,7 @@ export default {
     },
     // 搜索项目
     handleSearchChange(val) {
-      console.log(val)
+      this.handleSearch(val)
     },
     /**
      *选择过项目
@@ -108,6 +144,101 @@ export default {
     handlepProjectClick(obj) {
       this.projectId = obj.value
       this.projectName = obj.label
+    },
+    // 发布线路
+    handleSubmit() {
+      let params = {
+        projectId: this.projectId,
+        ...this.stepOneForm,
+        ...this.stepTwoForm,
+        ...this.stepThreeForm,
+        lineDeliveryInfoFORMS: []
+      }
+      params.provinceArea = this.stepOneForm.area[0]
+      params.cityArea = this.stepOneForm.area[1]
+      params.countyArea = this.stepOneForm.area[2]
+      if (this.isStable) {
+        params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
+      } else {
+        params.deliveryStartDate = parseTime(this.stepTwoForm.deliveryWeekCycle[0], '{y}-{m}-{d}')
+        params.deliveryEndDate = parseTime(this.stepTwoForm.deliveryWeekCycle[1], '{y}-{m}-{d}')
+        delete params.deliveryWeekCycle
+      }
+      // 预计工作时间
+      this.stepTwoForm.workingTime.forEach(item => {
+        let times = item.split('-')
+        params.lineDeliveryInfoFORMS.push(
+          {
+            workingTimeStart: times[0],
+            workingTimeEnd: times[1]
+          }
+        )
+      })
+
+      delete params.area
+      delete params.workingTime
+      if (this.isStable) {
+        this.createStableLine(params)
+      } else {
+        this.createTemporaryLine(params)
+      }
+    },
+    // 发布稳定线路
+    async createStableLine(params) {
+      try {
+        let { data: res } = await createStableLine(params)
+        if (res.success) {
+          this.createSuc()
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`create stable line fail:${err}`)
+      }
+    },
+    // 发布临时线路
+    async createTemporaryLine(params) {
+      try {
+        let { data: res } = await createTemporaryLine(params)
+        if (res.success) {
+          this.createSuc()
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`create stable line fail:${err}`)
+      }
+    },
+    // 发布成功
+    createSuc() {
+      Notify({
+        type: 'success', message: '发布成功'
+      })
+      setTimeout(() => {
+        this.$router.push({
+          path: '/line'
+        })
+      }, delay)
+    },
+    // 项目搜索
+    async handleSearch(keyword = '') {
+      try {
+        let params = {
+          select: true
+        }
+        keyword && (params.key = keyword)
+        let { data: res } = await getProjectSearch(params)
+        if (res.success) {
+          this.projectOptions = res.data.map(item => ({
+            label: item.projectName,
+            value: item.projectId
+          }))
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     }
 
   }

@@ -10,16 +10,25 @@
     </div>
     <div class="bottom">
       <div class="step-container flex align-center justify-between">
-        <div class="step-item flex align-center flex-direction">
-          <div class="top active">
+        <div class="step-item flex align-center flex-direction active">
+          <div class="top">
             1
           </div>
           <div class="tit">
             创建试跑意向
           </div>
         </div>
-        <div class="line van-hairline--top"></div>
-        <div class="step-item flex align-center flex-direction">
+        <div
+          :class="[{activeLine: step === '1'}, 'line van-hairline--top']"
+        ></div>
+        <div
+          :class="[
+            {
+              active: step === '1',
+            },
+            'step-item flex align-center flex-direction',
+          ]"
+        >
           <div class="top">
             2
           </div>
@@ -28,8 +37,9 @@
           </div>
         </div>
       </div>
-      <StepOne v-show="step === 0" />
-      <StepTwo v-show="step === 1" />
+      <div class="hr-5"></div>
+      <StepOne v-if="step === '0'" />
+      <StepTwo v-if="step === '1'" />
     </div>
   </div>
 </template>
@@ -43,18 +53,13 @@ export default {
     StepOne,
     StepTwo
   },
-  data() {
-    return {
-      step: 0
-    };
-  },
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    step() {
+      return this.$route.query.step || '0';
     }
-  },
-  mounted() {
-    this.step = this.$route.query.step || 1;
   },
   methods: {
     /**
@@ -69,6 +74,12 @@ export default {
 
 <style lang="less" scoped>
 .CreateRun {
+  display: flex;
+  flex-direction: column;
+  .bottom{
+    flex: 1;
+    overflow: auto;
+  }
   .step-container {
     position: relative;
     margin: 0 77px;
@@ -87,7 +98,7 @@ export default {
         height: 22px;
         line-height: 22px;
         font-size: 15px;
-        color: #ffffff;
+        color: @white;
         background: #dde2ee;
         border-radius: 50%;
         text-align: center;
@@ -96,10 +107,22 @@ export default {
         font-size: 12px;
         color: #dde2ee;
       }
-      .active{
-
+      &.active {
+        .top {
+          background-color: #3acb8d;
+        }
+        .tit {
+          color: @gray-9;
+        }
       }
     }
+    .activeLine::after {
+      border-color: #3acb8d;
+    }
+  }
+  .hr-5 {
+    height: 5px;
+    background-color: @body-bg;
   }
 }
 </style>

@@ -1,19 +1,19 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title van-ellipsis">
-      {{ obj.title }}
+      {{ obj.lineName }} ({{ obj.lineId }})
     </h4>
     <p class="text van-ellipsis">
-      上架有效期:{{ obj.update }}
+      上架有效期:{{ obj.waitDirveValidity | parseTime('{y}-{m}-{d}') }}
     </p>
     <p class="text van-ellipsis">
-      {{ obj.line }}
+      {{ line }}
     </p>
     <p class="text van-ellipsis">
-      配送类型:{{ obj.carType }}
+      配送类型:{{ obj.carTypeName }}
     </p>
     <p class="text van-ellipsis">
-      试跑状态:{{ obj.status }}
+      试跑状态:{{ obj.runTestStateName }}
     </p>
     <div class="footer">
       <p class="time">
@@ -21,11 +21,14 @@
       </p>
       <div class="right">
         <p class="time">
-          预计工作时间:{{ obj.worktime }}
+          预计工作时间:{{ obj.workingTimeRegin }}小时
         </p>
         <div>
-          <van-tag v-for="tag in obj.tags" :key="tag" type="primary" color="#EFF5FE" text-color="#7F8FBD" class="tag">
-            {{ tag }}
+          <van-tag type="primary" color="#EFF5FE" text-color="#7F8FBD" class="tag">
+            {{ obj.busiTypeName }}
+          </van-tag>
+          <van-tag type="primary" color="#EFF5FE" text-color="#7F8FBD" class="tag">
+            {{ obj.lineStateName }}
           </van-tag>
         </div>
       </div>
@@ -46,13 +49,21 @@ export default {
       default: () => {}
     }
   },
+  computed: {
+    line() {
+      return `${this.obj.lineCategoryName}/${this.obj.lineBalanceName}/${this.obj.lineTypeName}`
+    }
+  },
   methods: {
     /**
      * 线路详情
      */
     handleDetailClick() {
       this.$router.push({
-        path: '/lineDetail'
+        path: '/lineDetail',
+        query: {
+          lineId: this.obj.lineId
+        }
       })
     }
   }

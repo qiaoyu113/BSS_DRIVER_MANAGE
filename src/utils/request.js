@@ -15,11 +15,10 @@ import JsCookie from 'js-cookie'
 //     // url = 'http://firmiana-wechat.m1.yunniao.cn/'注释
 //   }
 // }
-let url = '/'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: url, // url url = base url + request url
+  baseURL: process.env.VUE_APP_BASE_API, // url url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })

@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 let prefix = '/mock/18'
-// 获客户路列表
+// 获客户列表
 export function getClientList(data) {
   return request({
     url: `${prefix}/v2/line/customer/queryLineCustomerList`,

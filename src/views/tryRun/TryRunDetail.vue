@@ -33,7 +33,8 @@
 </template>
 
 <script>
-import DetailsItem from './components/DetailsItem'
+import DetailsItem from './components/DetailsItem';
+import { GetDetails } from '@/api/tryrun'
 export default {
   name: 'TryRunDetail',
   components: {
@@ -224,6 +225,10 @@ export default {
       return this.$route.meta.title;
     }
   },
+  mounted() {
+    this.id = this.$route.query.id;
+    this.getDetail();
+  },
   methods: {
     onClickLeft() {
       this.$router.go(-1);
@@ -231,7 +236,23 @@ export default {
     onClickRight() {
       this.show = true;
     },
-    onSelect() {}
+    onSelect() {},
+    async getDetail() {
+      try {
+        this.$loading(true);
+        const runTestId = this.id;
+        let { data: res } = await GetDetails({ runTestId })
+        if (res.success) {
+          console.log(res)
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    }
   }
 };
 </script>

@@ -31,7 +31,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath: IS_PRODUCTION ? cdnDomian : '/',
+  publicPath: IS_PRODUCTION ? cdnDomian : process.env.VUE_APP_BASE_API,
   outputDir: 'web',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -63,15 +63,7 @@ module.exports = {
       //     // ['^' + process.env.VUE_APP_BASE_API]: ''
       //   }
       // },
-      '/mock/18': {
-        target: 'http://yapi.ynimg.cn:8888',
-        changeOrigin: true
-      },
-      '/mock/25': {
-        target: 'http://yapi.ynimg.cn:8888',
-        changeOrigin: true
-      },
-      '/mock/67': {
+      '/mock': {
         target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true
       }

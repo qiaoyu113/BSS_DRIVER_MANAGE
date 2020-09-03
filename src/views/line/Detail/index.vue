@@ -9,55 +9,58 @@
     <van-collapse v-model="activeNames">
       <van-collapse-item title="基本信息" name="1">
         <van-field label="线路名称" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="线路编号" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="项目名称" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="项目编号" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="线路属性" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="线路类型" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="线路状态" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="试跑状态" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="上架截止期" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="线路稳定性" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="收货点类型" label-width="110" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="线路编号" label-width="110" readonly :value="form.lineId" :border="false" colon />
+        <van-field label="项目名称" label-width="110" readonly :value="form.projectName" :border="false" colon />
+        <van-field label="项目编号" label-width="110" readonly :value="form.projectId" :border="false" colon />
+        <van-field label="线路分类" label-width="110" readonly :value="form.lineCategory ===1 ? '稳定线路':'临时线路'" :border="false" colon />
+        <van-field label="线路类型" label-width="110" readonly :value="form.busiTypeName" :border="false" colon />
+        <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineBalance ==='1' ? '有线路余额': '无线路余额'" :border="false" colon />
+        <van-field label="线路状态" label-width="110" readonly :value="form.lineStateName" :border="false" colon />
+        <van-field label="试跑状态" label-width="110" readonly :value="form.runTestStateName" :border="false" colon />
+        <van-field label="上架截止日期" label-width="110" readonly :value="form.waitDirveValidity | parseTime('{y}-{m}-{d}') " :border="false" colon />
+        <van-field label="线路稳定性" label-width="110" readonly :value="form.stabilityRateName" :border="false" colon />
+        <van-field label="对外销售" label-width="110" readonly :value="form.lineSaleName" :border="false" colon />
+        <van-field label="上岗经理" label-width="110" readonly :value="form.dutyManagerIdName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送信息" name="2">
-        <van-field label="是否走高速" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="是否需要回单" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="配送车型" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="主要配送区域" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="配送点数量" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="配送总里程数" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="限行区域说明" label-width="110" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="是否走高速" label-width="110" readonly :value="form.runSpeed === 1 ? '是':'否'" :border="false" colon />
+        <van-field label="是否需要回单" label-width="110" readonly :value="form.returnBill === 1 ? '是':'否'" :border="false" colon />
+        <van-field label="配送车型" label-width="110" readonly :value="form.carTypeName" :border="false" colon />
+        <van-field label="主要配送区域" label-width="110" readonly :value="region" :border="false" colon />
+        <van-field label="详细地址" label-width="110" readonly :value="form.districtArea" :border="false" colon />
+        <van-field label="配送点数量" label-width="110" readonly :value="form.deliveryNum" :border="false" colon />
+        <van-field label="配送总里程数" label-width="110" readonly :value="form.distance" :border="false" colon />
+        <van-field label="限行区域说明" label-width="110" readonly :value="form.limitRemark" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
         <van-field label="司机上岗时间" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="每日配送趟数" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="预计工作时间" label-width="110" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="配送时间" label-width="110" readonly :value="form.driverWorkTime | parseTime('{y}-{m}-{d}')" :border="false" colon />
+        <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum" :border="false" colon />
+        <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
+          <van-field label="预计工作时间" label-width="110" readonly :value="`${item.workingTimeStart}-${item.workingTimeEnd}`" :border="false" colon />
+        </div>
       </van-collapse-item>
       <van-collapse-item title="结算信息" name="4">
-        <van-field label="结算方式" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="结算周期" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="结算天数" label-width="110" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="结算方式" label-width="110" readonly :value="form.incomeSettlementMethodName" :border="false" colon />
+        <van-field label="结算周期" label-width="110" readonly :value="form.settlementCycleName" :border="false" colon />
+        <van-field label="结算天数" label-width="110" readonly :value="form.settlementDaysName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="货物信息" name="5">
-        <van-field label="货物类型" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="货物件数" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="是否需要搬运" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="货物体积" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="货物重量" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="其他上岗要求" label-width="110" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="货物类型" label-width="110" readonly :value="form.cargoTypeName" :border="false" colon />
+        <van-field label="货物件数" label-width="110" readonly :value="form.cargoNum" :border="false" colon />
+        <van-field label="是否需要搬运" label-width="110" readonly :value="form.carry ===1 ? '是':'否'" :border="false" colon />
+        <van-field label="货物体积" label-width="110" readonly :value="form.volume" :border="false" colon />
+        <van-field label="货物重量" label-width="110" readonly :value="form.goodsWeight" :border="false" colon />
+        <van-field label="其他上岗要求" label-width="110" readonly :value="form.dutyRemark" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="标签信息" name="6">
-        <van-field label="线路肥瘦标签" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="线路紧急程度" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="适配性" label-width="110" readonly :value="form.lineName" :border="false" colon />
+        <van-field label="线路紧急程度" label-width="110" readonly :value="form.lineUrgentName" :border="false" colon />
+        <van-field label="适配性" label-width="110" readonly :value="form.lineAdapterName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="现场信息" name="7">
-        <ImagePreview label="库房装货图片:" :image-arrs="form.storeRoomPics" />
-        <ImagePreview label="其他图片:" :image-arrs="form.otherPics" />
-        <VideoPreview :video-url="form.videoUrl" label="装货视频:" />
+        <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPicture" />
+        <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPicture" />
+        <VideoPreview :video-url="fileForm.loadingVideo" label="装货视频:" />
       </van-collapse-item>
     </van-collapse>
     <div class="btn">
@@ -97,38 +100,35 @@
 <script>
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
-import { Dialog } from 'vant';
+import { Dialog, Notify } from 'vant';
+import { getLineDetail, getLineDetailFiles, undercarriage } from '@/api/line'
 export default {
   components: {
     ImagePreview,
     VideoPreview,
-    [Dialog.Component.name]: Dialog.Component
+    [Dialog.Component.name]: Dialog.Component,
+    [Notify.Component.name]: Notify.Component
   },
   data() {
     return {
-      activeNames: [],
-      form: {
-        lineName: '祥云物流项目',
-        storeRoomPics: [
-          'https://img.yzcdn.cn/vant/leaf.jpg',
-          'https://img.yzcdn.cn/vant/cat.jpeg',
-          'https://img.yzcdn.cn/vant/leaf.jpg',
-          'https://img.yzcdn.cn/vant/cat.jpeg',
-          'https://img.yzcdn.cn/vant/leaf.jpg',
-          'https://img.yzcdn.cn/vant/cat.jpeg'
-        ],
-        otherPics: [
-          'https://img.yzcdn.cn/vant/leaf.jpg',
-          'https://img.yzcdn.cn/vant/cat.jpeg',
-          'https://img.yzcdn.cn/vant/leaf.jpg'
-        ],
-        videoUrl: ''
-      }
+      activeNames: ['1'],
+      form: {},
+      fileForm: {},
+      lineId: ''
 
     }
   },
+  computed: {
+    region() {
+      return this.form.provinceAreaName + '/' + this.form.cityAreaName + '/' + this.form.countyAreaName
+    }
+  },
   mounted() {
-    this.form.videoUrl = 'https://s3.pstatp.com/aweme/resource/web/static/image/index/tvc-v3_0b9db49.mp4'
+    this.lineId = this.$route.query.lineId
+    if (this.lineId) {
+      this.getLineDetail()
+      this.getLineFiles()
+    }
   },
   methods: {
     /**
@@ -145,11 +145,10 @@ export default {
         title: '提示',
         message: '确认要下架该线路吗?',
         confirmButtonText: '确定',
-        confirmButtonColor: '#2F448A',
         cancelButtonColor: ''
       })
         .then(() => {
-          // on confirm
+          this.undercarriage()
         })
         .catch(() => {
           // on cancel
@@ -183,8 +182,64 @@ export default {
       this.$router.push({
         path: path
       })
+    },
+    // 获取线路详情
+    async getLineDetail() {
+      try {
+        this.$loading(true)
+        let params = {
+          lineId: this.lineId
+        }
+        let { data: res } = await getLineDetail(params)
+        if (res.success) {
+          this.form = res.data
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get client detail fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    // 获取线路详情的文件资源
+    async getLineFiles() {
+      try {
+        let params = {
+          lineId: this.lineId
+        }
+        let { data: res } = await getLineDetailFiles(params)
+        if (res.success) {
+          this.fileForm = res.data
+          for (let key in this.fileForm) {
+            if (['warehouseLoadingPicture', 'otherPicture'].includes(key)) {
+              this.fileForm[key] = this.fileForm[key].split(',')
+            }
+          }
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get files fail:${err}`)
+      }
+    },
+    // 下架
+    async undercarriage() {
+      try {
+        let params = {
+          lineId: this.lineId
+        }
+        let { data: res } = await undercarriage(params)
+        if (res.success) {
+          Notify({ type: 'success', message: '操作成功' });
+          this.getLineDetail()
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`undercarriage fail:${err}`)
+      }
     }
-
   }
 }
 
