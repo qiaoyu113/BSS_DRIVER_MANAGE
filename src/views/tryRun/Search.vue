@@ -7,65 +7,74 @@
         left-arrow
         @click-left="onClickLeft"
       />
+      <!-- 搜索 -->
       <van-search
-        v-model="value"
+        v-model="keyWord"
         show-action
         placeholder="请输入搜索关键词"
-        autofocus
+        @input="onSearch"
+        @search="onSearch"
+        @clear="onCancel"
       >
         <template #action>
-          <div @click="onSearch">
+          <div @click="onRunList">
             搜索
           </div>
         </template>
       </van-search>
     </div>
-    <div class="history">
-      <div class="history-top flex align-center justify-between">
-        <div>历史搜索记录</div>
-        <van-icon
-          name="delete"
-          @click="onDelete"
-        />
-      </div>
-      <div class="flex flex-wrap">
-        <van-tag
-          v-for="(item, index) in historyLists"
+    <!-- 搜索结果 -->
+    <div class="bottom">
+      <template v-if="lists.length > 0">
+        <ListItem
+          v-for="(item, index) in lists"
           :key="index"
-          type="primary"
-          class="history-item"
-          @click="onSearch(item)"
-        >
-          {{ item }}
-        </van-tag>
-      </div>
-    </div>
-    <div class="noData">
-      <img src="@/assets/search.png">
-      <div class="text">
-        抱歉,未找到相关数据!
-      </div>
+          :item="item"
+        />
+      </template>
+      <template v-else>
+        <div v-show="options.length === 0" class="history">
+          <div class="history-top flex align-center justify-between">
+            <div>历史搜索记录</div>
+            <van-icon
+              v-if="historyItems.length > 0"
+              name="delete"
+              @click="onDelete"
+            />
+          </div>
+          <div class="flex flex-wrap">
+            <van-tag
+              v-for="item in historyItems"
+              :key="item"
+              type="primary"
+              class="history-item"
+              @click="handleItemClick(item)"
+            >
+              {{ item }}
+            </van-tag>
+          </div>
+        </div>
+        <van-empty image="search" description="抱歉，未找到相关数据！" />
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+import ListItem from './components/ListItem';
+import { debounce } from '@/utils/index';
+import { GetRunTestInfoList } from '@/api/tryrun';
 export default {
   name: 'Search',
+  components: {
+    ListItem
+  },
   data() {
     return {
-      value: '',
-      historyLists: [
-        '京东',
-        '顺丰',
-        '中国邮政配送中心',
-        '启恒配送',
-        '京东',
-        '顺丰',
-        '中国邮政配送中心',
-        '启恒配送',
-        '菜鸟驿站'
-      ]
+      keyWord: '', // 关键字
+      lists: [], // 查询出来的数据
+      historyItems: [], // 历史搜索
+      options: [] // 关键字查出来的关键字
     };
   },
   computed: {
@@ -74,27 +83,12 @@ export default {
     }
   },
   mounted() {
-    this.value = this.$route.query.q;
+    let historyData = this.getHistory();
+    if (historyData) {
+      this.historyItems = JSON.parse(historyData);
+    }
   },
   methods: {
-    /**
-     * 搜索
-     */
-    onSearch(val) {
-      if (typeof val === 'string') {
-        this.value = val;
-      }
-      if (!this.value) {
-        this.$toast('请输入搜索内容');
-        return
-      }
-      this.$router.replace({
-        path: '/try-list',
-        query: {
-          q: this.value
-        }
-      })
-    },
     /**
      * 返回按钮
      */
@@ -105,13 +99,79 @@ export default {
      * 删除历史记录
      */
     onDelete() {
-      this.$dialog.alert({
-        title: '提示',
-        message: '确定删除全部历史记录？',
-        showCancelButton: true
-      }).then(() => {
-        // on close
-      });
+      this.$dialog
+        .alert({
+          title: '提示',
+          message: '确定删除全部历史记录？',
+          showCancelButton: true
+        })
+        .then(() => {
+          localStorage.removeItem('tryrun');
+          this.historyItems = [];
+        });
+    },
+    // 搜索
+    onSearch: debounce(function() {
+      if (!this.keyWord) {
+        return false;
+      }
+      this.handleSearch(this.keyWord);
+    }, 200),
+    // 取消
+    onCancel() {
+      this.keyWord = '';
+      this.lists = [];
+    },
+    handleItemClick(value) {
+      this.keyWord = value;
+      this.onRunList();
+    },
+    // 搜索
+    async handleSearch(keyword = '') {
+      try {
+        let params = {};
+        keyword && (params.key = keyword);
+        let { data: res } = await GetRunTestInfoList(params);
+        if (res.success) {
+          this.lists = res.data;
+          if (keyword) {
+            this.setHistory(keyword);
+          }
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`);
+      }
+    },
+    // 存localStorage
+    setHistory(keyword) {
+      let index = this.historyItems.findIndex((item) => item === keyword);
+      if (index > -1) {
+        this.historyItems.splice(index, 1);
+      }
+
+      if (this.historyItems.length >= 5) {
+        this.historyItems.shift();
+      }
+      this.historyItems.unshift(keyword);
+      localStorage.setItem('tryrun', JSON.stringify(this.historyItems));
+    },
+    // 获取从localStorage
+    getHistory() {
+      let history = localStorage.getItem('tryrun');
+      if (history) {
+        return history;
+      }
+    },
+    // 跳转页面
+    onRunList() {
+      this.$router.replace({
+        path: '/try-list',
+        query: {
+          q: this.keyWord
+        }
+      })
     }
   }
 };
@@ -119,7 +179,16 @@ export default {
 
 <style lang="less" scoped>
 .Search {
+  display: flex;
+  flex-direction: column;
   background-color: @white;
+  .top {
+    background-color: @body-bg;
+  }
+  .bottom {
+    flex: 1;
+    overflow: auto;
+  }
   .history-item {
     display: block;
     min-width: 60px;
@@ -144,7 +213,7 @@ export default {
     }
   }
   .noData {
-    margin-top:41.5px;
+    margin-top: 41.5px;
     text-align: center;
     .text {
       margin-top: 15px;
@@ -154,7 +223,7 @@ export default {
     }
     img {
       width: 83px;
-      height:74px;
+      height: 74px;
     }
   }
 }
