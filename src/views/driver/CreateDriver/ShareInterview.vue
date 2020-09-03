@@ -72,16 +72,16 @@
           readonly
           clickable
           required
-          name="hasOwnCar"
-          :value="pickerNames.hasOwnCar"
+          name="hasCar"
+          :value="pickerNames.hasCar"
           label="是否有车"
           clearable
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('hasOwnCar')"
+          @click="showPickerFn('hasCar')"
         />
         <van-field
-          v-if="formData.hasOwnCar === '1'"
+          v-if="formData.hasCar === '1'"
           readonly
           clickable
           required
@@ -93,7 +93,7 @@
           @click="showPickerFn('currentCarType')"
         />
         <van-field
-          v-if="formData.hasOwnCar === '1'"
+          v-if="formData.hasCar === '1'"
           readonly
           clickable
           required
@@ -339,7 +339,7 @@ export default {
       showPicker: false,
       pickerNames: {
         workCity: '',
-        hasOwnCar: '',
+        hasCar: '',
         currentHasWork: '',
         heavyLifting: '',
         currentCarType: '',
@@ -361,7 +361,7 @@ export default {
         name: '',
         phone: '',
         age: '',
-        hasOwnCar: '',
+        hasCar: '',
         intentCargoType: '',
         currentCarType: '',
         intentDrivingCarType: '',
@@ -496,7 +496,7 @@ export default {
         params.interviewCity = this.interview[0]
         params.interviewCounty = this.interview[1]
         params.interviewProvince = this.interview[2]
-        if (this.formData.hasOwnCar === '2') {
+        if (this.formData.hasCar === '2') {
           params.currentCarType = '';
           params.intentDrivingCarType = '';
         }

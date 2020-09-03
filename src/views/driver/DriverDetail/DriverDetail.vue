@@ -69,8 +69,9 @@
             title-class="cell-title"
             value-class="cell-value"
             title="创建人："
-            :value="`${detailInfo.createName}/${detailInfo.createPhone}(共享一组)`"
+            :value="`${detailInfo.createName}/${detailInfo.createPhone}`"
           />
+          <!-- (共享一组) -->
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
@@ -106,11 +107,11 @@
             v-for="(info,ind) in lineList"
             :key="ind"
           >
-            <LineInfoItem />
+            <LineInfoItem :obj="info" />
           </div>
         </div>
         <div v-if="active === 2">
-          <OrderInfo />
+          <OrderInfo :obj="orderInfo" />
         </div>
         <div v-if="active === 1">
           <TagInfo :obj="tagInfo" />
@@ -145,7 +146,9 @@ import FormInfo from './components/FormInfo';
 import TagInfo from './components/TagInfo';
 import LineInfoItem from './components/LineInfoItem';
 import OrderInfo from './components/OrderInfo';
-import { driverDetail, selectLabel, signDeal, signOut, orderLabel, lineLabel } from '@/api/driver.js'
+import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js'
+import { orderDetail } from '@/api/order.js'
+import { getLingMessageByDriverId } from '@/api/tryrun.js'
 export default {
   name: 'DriverDetail',
   components: {
@@ -163,12 +166,6 @@ export default {
     return {
       active: 0,
       tabList: [
-        { type: '面试信息', code: '' },
-        { type: '标签信息', code: 1 },
-        { type: '订单信息', code: 2 },
-        { type: '线路信息', code: 3 }
-      ],
-      lineList: [
         { type: '面试信息', code: '' },
         { type: '标签信息', code: 1 },
         { type: '订单信息', code: 2 },
@@ -193,7 +190,7 @@ export default {
       detailInfo: {},
       tagInfo: {},
       orderInfo: {},
-      lineInfo: {}
+      lineList: []
     };
   },
   mounted() {
@@ -203,11 +200,13 @@ export default {
   },
   methods: {
     onSelectOrder(item) {
-      // 默认情况下点击选项时不会自动收起
-      // 可以通过 close-on-click-action 属性开启自动收起
       this.showOrder = false;
-      Toast(item.name);
-      this.$router.push({ path: item.url, query: { id: '132' }})
+      if (item.url === '/createOrder' || item.url === '/resetOrder') {
+        this.$router.push({ path: item.url, query: { id: this.driverId, driverName: this.detailInfo.name, driverPhone: this.detailInfo.phone, workCityName: this.detailInfo.workCityName,
+          workCity: this.detailInfo.workCity }})
+      } else {
+        this.$router.push({ path: item.url, query: { id: this.driverId }})
+      }
     },
     onSelectDothing(item) {
       this.showDothing = false;
@@ -217,7 +216,7 @@ export default {
       } else if (item.name === '标记成交') {
         this.dealSign(this.driverId)
       } else {
-        this.$router.push({ path: item.url, query: { id: '132' }})
+        this.$router.push({ path: item.url, query: { id: this.driverId }})
       }
     },
     async outSign(id) {
@@ -297,9 +296,9 @@ export default {
     async getLineLabel(id) {
       try {
         this.$loading(true)
-        let { data: res } = await lineLabel({ 'driverId': id });
+        let { data: res } = await getLingMessageByDriverId({ 'driverId': id });
         if (res.success) {
-          this.lineInfo = res.data
+          this.lineList = res.data
           console.log(res.data)
         } else {
           this.$toast.fail(res.errorMsg)
@@ -313,7 +312,7 @@ export default {
     async getOrderLabel(id) {
       try {
         this.$loading(true)
-        let { data: res } = await orderLabel({ 'driverId': id });
+        let { data: res } = await orderDetail({ 'driverId': id });
         if (res.success) {
           this.orderInfo = res.data
           console.log(res.data)

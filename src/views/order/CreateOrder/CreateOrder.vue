@@ -23,23 +23,26 @@
             />
             <van-field
               label="司机姓名"
-              value="李威山（SJ19980822651）"
+              :value="`${formData.driverInfoFORM.name}（${formData.driverInfoFORM.driverId}）`"
               required
+              readonly
               colon
             />
             <van-field
               label="司机电话"
-              value="18848885135"
+              :value="formData.driverInfoFORM.phone"
               required
+              readonly
               colon
             />
             <van-field
               label="工作城市："
-              value="北京市"
+              :value="workCityName"
               required
+              readonly
             />
             <van-field
-              v-model="formData.personId"
+              v-model="formData.driverInfoFORM.idNo"
               label="身份证号"
               required
               clearable
@@ -52,50 +55,29 @@
               is-link
             />
             <van-field
-              name="bussitype"
-              required
+              readonly
+              clickable
               colon
+              required
+              :value="formText.busiType"
               label="商品分类"
-            >
-              <template #input>
-                <van-radio-group
-                  v-model="formData.bussitype"
-                  direction="horizontal"
-                >
-                  <van-radio name="1">
-                    梧桐专车
-                  </van-radio>
-                  <van-radio name="2">
-                    梧桐共享
-                  </van-radio>
-                </van-radio-group>
-              </template>
-            </van-field>
+              placeholder="请选择"
+              :rules="[{ required: true, message: '请选择' }]"
+              @click="showPickerFn('busiType')"
+            />
             <van-field
-              name="bussitype"
-              required
+              readonly
+              clickable
               colon
+              required
+              :value="formText.cooperationModel"
               label="合作模式"
-            >
-              <template #input>
-                <van-radio-group
-                  v-model="formData.bussitype"
-                  direction="horizontal"
-                >
-                  <van-radio name="1">
-                    带车
-                  </van-radio>
-                  <van-radio name="2">
-                    租车
-                  </van-radio>
-                  <van-radio name="3">
-                    购车
-                  </van-radio>
-                </van-radio-group>
-              </template>
-            </van-field>
+              placeholder="请选择"
+              :rules="[{ required: true, message: '请选择' }]"
+              @click="showPickerFn('cooperationModel')"
+            />
             <van-field
-              v-model="formData.hezuo"
+              v-model="formData.cooperationTime"
               colon
               clickable
               label="合作期限（月）"
@@ -107,7 +89,7 @@
                        {validator:validatorNum(0,999), message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model="formData.money"
+              v-model="formData.incomeGuarantee"
               colon
               clickable
               label="收入保障（元）"
@@ -115,10 +97,10 @@
               placeholder="请填写0-999999.99的数字'"
               type="number"
               :rules="[{ required: true, message: '请填写收入保障' },
-                       {validator:moneyCheck, message: '请填写正确的数字'}]"
+                       {validator:moneyCheck1, message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model="formData.bili"
+              v-model="formData.rake"
               colon
               clickable
               label="抽佣比例（%）"
@@ -130,7 +112,7 @@
                        {validator:checkPercent, message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model="formData.shopmoney"
+              v-model="formData.goodsAmount"
               colon
               clickable
               label="商品金额（元）"
@@ -138,7 +120,7 @@
               placeholder="请填写0-999999.99的数字'"
               type="number"
               :rules="[{ required: true, message: '请填写商品金额' },
-                       {validator:moneyCheck, message: '请填写正确的数字'}]"
+                       {validator:moneyCheck2, message: '请填写正确的数字'}]"
             />
           </van-cell-group>
         </div>
@@ -150,70 +132,102 @@
               is-link
             />
             <van-field
+              v-if="formData.busiType !== '1' && formData.cooperationModel === '3'"
               readonly
               clickable
-              :value="formText.nianjian"
+              :value="formText.inspectionTime"
               label="年检有效期"
               colon
+              required
               placeholder="请选择年检有效期"
-              @click="changeDate('nianjian')"
+              @click="changeDate('inspectionTime')"
             />
             <van-field
-              readonly
-              clickable
-              colon
-              :value="formText.baoxian"
-              label="保险有效期"
-              placeholder="请选择保险有效期"
-              @click="changeDate('baoxian')"
-            />
-            <van-field
+              v-if="formData.busiType !== '1' && formData.cooperationModel === '3'"
               readonly
               clickable
               colon
               required
-              :value="formText.zuli"
+              :value="formText.insuranceTime"
+              label="保险有效期"
+              placeholder="请选择保险有效期"
+              @click="changeDate('insuranceTime')"
+            />
+            <van-field
+              v-if="formData.cooperationModel === '2'"
+              readonly
+              clickable
+              colon
+              required
+              :value="formText.supplier"
               label="租赁公司"
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('zuli')"
+              @click="showPickerFn('supplier')"
             />
             <van-field
+              v-if="formData.cooperationModel === '1'"
               readonly
               clickable
               colon
               required
-              :value="formText.buy"
+              :value="formText.supplier"
               label="购车公司"
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('buy')"
+              @click="showPickerFn('supplier')"
             />
+            <!-- 购车与租车 -->
             <van-field
+              v-if="formData.supplier && formData.cooperationCar && formData.cooperationModel === '1'"
               readonly
               clickable
               colon
               required
-              :value="formText.typeCar"
+              :value="formText.cooperationCar"
+              label="合作车型"
+              placeholder="请选择"
+              :rules="[{ required: true, message: '请选择' }]"
+              @click="showPickerFn('cooperationCar1')"
+            />
+            <van-field
+              v-if="formData.cooperationModel === '3'"
+              readonly
+              clickable
+              colon
+              required
+              :value="formText.cooperationCar"
+              label="合作车型"
+              placeholder="请选择"
+              :rules="[{ required: true, message: '请选择' }]"
+              @click="showPickerFn('cooperationCar2')"
+            />
+            <van-field
+              v-if="formData.supplier && formData.cooperationCar && formData.cooperationModel === '1'"
+              readonly
+              clickable
+              colon
+              required
+              :value="formText.carModel"
               label="车辆型号"
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('typeCar')"
+              @click="showPickerFn('carModel')"
             />
             <van-field
               label="车辆信息"
-              value="李威山（SJ19980822651）联动处理"
+              :value="formData.carMessage"
               required
               colon
             />
             <van-field
               label="无税车价"
-              value="4355.00元"
+              :value="formData.carPrice"
               required
               colon
             />
             <van-field
-              v-model="formData.carNo"
+              v-model="formData.plateNo"
               clickable
               label="车牌号"
               required
@@ -228,20 +242,30 @@
 
         <div v-if="formStatus === 3">
           <van-cell-group>
-            <van-cell center title="支付记录" label="总支付金额：46000.00元">
+            <van-cell
+              center
+              title="支付记录"
+              :label="`总支付金额：${formData.havePayAmount}元`"
+            >
               <template #right-icon>
-                <span class="addPay" @click="goRouter">添加</span>
+                <span
+                  class="addPay"
+                  @click="goRouter"
+                >添加</span>
               </template>
             </van-cell>
-            <div v-for="(item,index) in payList" :key="index">
-              <PayItem />
+            <div
+              v-for="(item,index) in formData.orderPayRecordInfoVOList"
+              :key="index"
+            >
+              <PayItem :obj="item" />
             </div>
           </van-cell-group>
         </div>
 
         <div class="btnGroup">
           <van-button
-            v-if="formStatus !== 1"
+            v-if="formStatus === 2 || (formStatus === 3 && routeName !== '/resetOrder')"
             type="primary"
             block
             native-type="button"
@@ -262,15 +286,24 @@
             下一步
           </van-button>
 
-          <van-button v-if="formStatus === 3" type="primary" native-type="button" @click="realSubmit">
+          <van-button
+            v-if="formStatus === 3"
+            :style="{width: ( formStatus === 3 && routeName === '/resetOrder' ) ? '100%' : '48%' }"
+            type="primary"
+            native-type="button"
+            @click="realSubmit"
+          >
             提交
           </van-button>
         </div>
       </van-form>
     </div>
-    <van-popup v-model="showPickerDate" position="bottom">
+    <van-popup
+      v-model="showPickerDate"
+      position="bottom"
+    >
       <van-datetime-picker
-        v-model="formData.nianjian"
+        v-model="formData.inspectionTime"
         type="date"
         title="选择年月日"
         @confirm="onConfirm1"
@@ -291,14 +324,19 @@
         @confirm="onConfirmPicker"
       />
     </van-popup>
-    <div class="formStatus" v-text="formStatus"></div>
+    <div
+      class="formStatus"
+      v-text="formStatus"
+    ></div>
   </div>
 </template>
 <script>
-import { parseTime } from '@/utils'
+import { parseTime } from '@/utils';
+import { Notify } from 'vant';
 import { IdPattern, carNoRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
-import PayItem from './components/PayItem'
+import PayItem from './components/PayItem';
+import { createOrUpdateOrder, orderDetail } from '@/api/order.js';
 export default {
   components: {
     PayItem
@@ -307,27 +345,34 @@ export default {
     return {
       showPickerDate: false,
       showPicker: false,
-      payList: [
-        1, 2, 3
-      ],
       pickerKey: '',
       formData: {
-        personId: '',
-        bussitype: '1',
-        hezuo: '',
-        money: '',
-        bili: '',
-        shopmoney: '',
-        nianjian: '',
-        baoxian: '',
-        carNo: '',
-        typeCar: '',
-        buy: '',
-        zuli: ''
+        cooperationModel: '',
+        cooperationTime: '',
+        incomeGuarantee: '',
+        rake: '',
+        goodsAmount: '',
+        inspectionTime: '',
+        insuranceTime: '',
+        plateNo: '',
+        cooperationCar: '',
+        busiType: '',
+        supplier: '',
+        carModel: '',
+        driverInfoFORM: {
+          driverId: '',
+          idNo: '',
+          name: '',
+          phone: '',
+          workCity: ''
+        }
       },
       formText: {
-        nianjian: '',
-        baoxian: ''
+        busiType: '',
+        inspectionTime: '',
+        insuranceTime: '',
+        cooperationModel: '',
+        carModel: ''
       },
       columns: [],
       columns_zuli: [
@@ -342,50 +387,149 @@ export default {
         { name: '五菱荣光', code: '1' },
         { name: 'GTR R34', code: '2' }
       ],
-      formStatus: 1
+      columns_busitype: [
+        { name: '梧桐共享', code: '1' },
+        { name: '梧桐专车', code: '0' }
+      ],
+      columns_cooperationModel: [
+        { name: '购车', code: '1' },
+        { name: '租车', code: '2' },
+        { name: '带车', code: '3' }
+      ],
+      columns_cooperationCar1: [
+        { name: '合作1', code: '1' },
+        { name: '合作2', code: '2' },
+        { name: '合作3', code: '3' }
+      ],
+      columns_cooperationCar2: [
+        { name: '合4', code: '1' },
+        { name: '合作5', code: '2' },
+        { name: '合作6', code: '3' }
+      ],
+      formStatus: 1,
+      workCityName: '',
+      routeName: ''
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    operateFlag() {
+      if (this.formStatus === 1) {
+        return 'step1'
+      } else if (this.formStatus === 2) {
+        return 'step2'
+      } else {
+        return 'submit'
+      }
     }
   },
   created() {
     this.IdPattern = IdPattern;
-    this.carNoRegExp = carNoRegExp
+    this.carNoRegExp = carNoRegExp;
     this.validatorNum = validatorNum;
   },
+  mounted() {
+    this.updataFrom()
+  },
   methods: {
+    updataFrom() {
+      this.routeName = this.$route.path
+      const id = this.$route.query.id;
+      this.formData.driverInfoFORM.driverId = id;
+      this.formData.driverInfoFORM.name = this.$route.query.driverName;
+      this.formData.driverInfoFORM.phone = this.$route.query.driverPhone;
+      this.formData.driverInfoFORM.workCity = this.$route.query.workCity;
+      this.workCityName = this.$route.query.workCityName;
+      this.getOrderDetail(id);
+    },
     onClickLeft() {
       this.$router.go(-1);
     },
     goRouter() {
-      this.$router.push({ path: '/addPay', query: { id: '123' }})
+      this.$router.push({
+        path: '/addPay',
+        query: { id: this.formData.driverInfoFORM.driverId }
+      });
     },
-    realSubmit() {
-      let params = { ...this.formData };
-      console.log(params);
+    async getOrderDetail(id) {
+      try {
+        this.$loading(true);
+        let { data: res } = await orderDetail({ driverId: id });
+        if (res.success) {
+          this.formText.inspectionTime = res.data.inspectionTime;
+          this.formText.insuranceTime = res.data.insuranceTime;
+          this.formText.supplier = res.data.supplier;
+          this.formText.carModel = res.data.carModel;
+          this.formText.cooperationCar = res.data.cooperationCar;
+          this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo
+          this.formData = { ...this.formData, ...res.data };
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+      } finally {
+        this.$loading(false);
+      }
     },
-    onSubmit1(values) {
-      this.formStatus++
+    async realSubmit() {
+      try {
+        this.$loading(true);
+        let params = { ...this.formData };
+        params.operateFlag = this.operateFlag
+        let { data: res } = await createOrUpdateOrder(params);
+        if (res.success) {
+          Notify({ type: 'success', message: '订单录入成功' });
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+      } finally {
+        this.$loading(false);
+      }
+    },
+    async onSubmit1(values) {
+      try {
+        this.$loading(true);
+        let params = { ...this.formData };
+        params.operateFlag = this.operateFlag
+        let { data: res } = await createOrUpdateOrder(params);
+        if (res.success) {
+          this.formStatus++;
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+      } finally {
+        this.$loading(false);
+      }
     },
     onConfirm1(time) {
       let timeText = parseTime(time, '{y}-{m}-{d}');
-      let timeCode = time.getTime()
+      let timeCode = time.getTime();
       this.formText[this.pickerKey] = timeText;
       this.formData[this.pickerKey] = timeCode;
       this.showPickerDate = false;
     },
     changeDate(key) {
       this.pickerKey = key;
-      this.showPickerDate = true
+      this.showPickerDate = true;
     },
     /**
      * picker 选择
      */
     onConfirmPicker(value) {
-      this.formText[this.pickerKey] = value.name;
-      this.formData[this.pickerKey] = value.code;
+      if (this.pickerKey === 'cooperationCar1' || this.pickerKey === 'cooperationCar2') {
+        this.formText['cooperationCar'] = value.name;
+        this.formData['cooperationCar'] = value.code;
+      } else {
+        this.formText[this.pickerKey] = value.name;
+        this.formData[this.pickerKey] = value.code;
+      }
       this.showPicker = false;
     },
     /**
@@ -394,14 +538,20 @@ export default {
     showPickerFn(key) {
       this.pickerKey = key;
       switch (key) {
-        case 'zuli':
+        case 'supplier':
           this.columns = this.columns_zuli;
           break;
-        case 'buy':
-          this.columns = this.columns_buy;
+        case 'busiType':
+          this.columns = this.columns_busitype;
           break;
-        case 'typeCar':
-          this.columns = this.columns_typeCar;
+        case 'cooperationModel':
+          this.columns = this.columns_cooperationModel;
+          break;
+        case 'cooperationCar1':
+          this.columns = this.columns_cooperationCar1;
+          break;
+        case 'cooperationCar2':
+          this.columns = this.columns_cooperationCar2;
           break;
       }
       this.showPicker = true;
@@ -409,7 +559,10 @@ export default {
     /**
      * 验证收入保障
      */
-    moneyCheck(val) {
+    moneyCheck1(val) {
+      if (Number(val) < 0) {
+        return false;
+      }
       if (/^[0-9]+$/.test(val)) {
         if (val >= 1000000 && val > 0) {
           return false;
@@ -425,7 +578,33 @@ export default {
         ) {
           let arr = String(val).split('.');
           let arr2 = String(arr[1]).substr(0, 2);
-          this.formData.money = arr[0] + '.' + arr2;
+          this.formData.incomeGuarantee = arr[0] + '.' + arr2;
+          return true;
+        } else {
+          return true;
+        }
+      }
+    },
+    moneyCheck2(val) {
+      if (Number(val) < 0) {
+        return false;
+      }
+      if (/^[0-9]+$/.test(val)) {
+        if (val >= 1000000 && val > 0) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        if (
+          !/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/.test(
+            val
+          ) &&
+          val !== ''
+        ) {
+          let arr = String(val).split('.');
+          let arr2 = String(arr[1]).substr(0, 2);
+          this.formData.goodsAmount = arr[0] + '.' + arr2;
           return true;
         } else {
           return true;
@@ -436,6 +615,9 @@ export default {
      * 验证抽佣比例
      */
     checkPercent(val) {
+      if (Number(val) < 0) {
+        return false;
+      }
       if (/^[0-9]+$/.test(val)) {
         if (Number(val) > 100 && Number(val) > 0) {
           return false;
@@ -451,7 +633,7 @@ export default {
         ) {
           let arr = String(val).split('.');
           let arr2 = String(arr[1]);
-          this.formData.bili = arr[0] + '.' + arr2[0];
+          this.formData.rake = arr[0] + '.' + arr2[0];
           return true;
         } else {
           return true;
@@ -475,7 +657,7 @@ export default {
     text-align: center;
     line-height: 50px;
   }
-  .addPay{
+  .addPay {
     color: blue;
   }
   .btnGroup {
@@ -489,5 +671,17 @@ export default {
       width: 48%;
     }
   }
+  resetBtn{
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .van-button {
+      width: 100%!important;
+    }
+  }
 }
+
 </style>

@@ -16,3 +16,15 @@ export function GetRunTestInfoList(data) {
     data
   })
 }
+
+/**
+ *
+获取线路信息
+ */
+export function getLingMessageByDriverId(data) {
+  return request({
+    url: `${prefix}/v2/runtest/getLingMessageByDriverId`,
+    method: 'get',
+    params: data
+  })
+}

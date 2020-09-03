@@ -4,7 +4,7 @@
       <van-cell>
         <template #title>
           <div class="title">
-            <span>沙漠皇帝阿兹尔</span>
+            <span>{{ obj.customerName }}</span>
             <van-icon name="arrow" />
           </div>
         </template>
@@ -39,13 +39,13 @@
           title-class="cell-title"
           value-class="cell-value"
           title="外线销售："
-          value="李威山/18848885135"
+          :value="`${obj.dutyManagerIdName}/${obj.lineSalePhone}`"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="创建时间："
-          value="2020/8-27/18:07"
+          :value="obj"
         />
       </div>
       <div class="detailBtn">
@@ -58,7 +58,13 @@
 </template>
 <script>
 export default {
-  name: 'DriverList',
+  name: 'LineInfoItem',
+  props: {
+    obj: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {}
   },

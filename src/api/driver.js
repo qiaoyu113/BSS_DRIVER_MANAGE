@@ -97,3 +97,23 @@ export function lineLabel(data) {
   })
 }
 
+/**
+ * 查询面试表某个时间点的历史数据
+ */
+export function historyList(data) {
+  return request({
+    url: `${prefix}/v2/driver/getOperateHistoryList`,
+    method: 'get',
+    params: data
+  })
+}
+
+/**
+ * 查询所有操作时间点
+ */
+export function getOperateTime() {
+  return request({
+    url: `${prefix}/v2/driver/getOperateTime`,
+    method: 'get'
+  })
+}

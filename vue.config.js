@@ -70,6 +70,10 @@ module.exports = {
       '/mock/81': {
         target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true
+      },
+      '/mock/88': {
+        target: 'http://yapi.ynimg.cn:8888',
+        changeOrigin: true
       }
     },
     after: require('./mock/mock-server.js')
