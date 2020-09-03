@@ -25,7 +25,7 @@
           </div>
         </template>
       </van-search>
-      <van-tabs v-model="tabActive" @click="onTabClick">
+      <van-tabs v-model="listQuery.status" @click="onTabClick">
         <van-tab
           v-for="(item, index) in tabsList"
           :key="index"
@@ -33,7 +33,7 @@
         >
           <template #title>
             {{ item.title }}
-            <div v-if="item.name === tabActive" class="van-info">
+            <div v-if="item.name === listQuery.status" class="van-info">
               {{ item.total }}
             </div>
           </template>
@@ -192,7 +192,6 @@ export default {
   data() {
     return {
       showSuggest: true,
-      tabActive: '',
       tabsList: [
         {
           title: '全部',

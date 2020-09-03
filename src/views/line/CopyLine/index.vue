@@ -3,9 +3,9 @@
     <van-sticky :offset-top="0">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
-    <StepOne v-show="step === 1" :form="stepOneForm" @stepTwo="step =2" />
+    <StepOne v-show="step === 1" type="copy" :form="stepOneForm" @stepTwo="step =2" />
     <StepTwo v-show="step === 2" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
-    <StepThree v-show="step === 3" :form="stepThreeForm" @step-two="step=2" />
+    <StepThree v-show="step === 3" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
 
@@ -41,6 +41,7 @@ export default {
     }
   },
   mounted() {
+    this.isStable = +this.$route.query.isStable === 1
     let title = ''
     if (this.isStable) {
       title = '复制稳定线路'
@@ -53,6 +54,14 @@ export default {
   methods: {
     onClickLeft() {
       this.$router.go(-1)
+    },
+    // 复制线路
+    handleSubmit() {
+      if (this.isStable) {
+        // this.createStableLine()
+      } else {
+        // this.createTemporaryLine()
+      }
     }
   }
 }
