@@ -9,7 +9,7 @@
         <span><input v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
       </h4>
       <p class="Pink">
-        {{ item.yicahng }}
+        {{ item.statust }}
       </p>
       <p class="text ellipsis">
         出车单号:{{ item.update }}
