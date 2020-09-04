@@ -1,0 +1,70 @@
+<template>
+  <div class="selfCalendarContainer">
+    <van-field
+      :value="label"
+      readonly
+      colon
+      clickable
+      v-bind="$attrs"
+      @click="showPickerFn"
+    />
+    <van-popup v-model="showPicker" position="bottom">
+      <van-calendar v-model="showPicker" :default-date="form[pickerKey]" type="range" @confirm="onConfirm" />
+    </van-popup>
+  </div>
+</template>
+
+<script>
+import { parseTime } from '@/utils/index'
+export default {
+  props: {
+    form: {
+      type: Object,
+      default: () => {},
+      required: true
+    },
+    pickerKey: {
+      type: String,
+      default: '',
+      required: true
+    },
+    isComputed: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      showPicker: false,
+      label: ''
+    }
+  },
+  watch: {
+    isComputed(val) {
+      if (val) {
+        this.getLable()
+      }
+    }
+  },
+  methods: {
+    // 获取label
+    getLable() {
+      this.label = `${parseTime(this.form[this.pickerKey][0], '{m}/{d}')}-${parseTime(this.form[this.pickerKey][1], '{m}/{d}')}`
+    },
+    // 打开picker
+    showPickerFn() {
+      this.showPicker = true
+    },
+    // 点击确定
+    onConfirm(obj) {
+      let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+      let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+      this.label = `${startName}-${endName}`
+      this.form[this.pickerKey] = obj
+      this.showPicker = false
+    }
+  }
+}
+
+</script>
+

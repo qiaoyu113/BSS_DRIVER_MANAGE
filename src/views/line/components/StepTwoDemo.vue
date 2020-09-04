@@ -32,6 +32,32 @@
           { required: true, message: '请选择' },
         ]"
       />
+      <self-calendar
+        label-width="100"
+        picker-key="deliveryWeekCycle"
+        :is-computed="form['deliveryWeekCycle'].length> 0"
+        :form="form"
+        readonly
+        clickable
+        required
+        label="配送时间"
+        placeholder="请选择"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
+      />
+      <selfDatetimePicker
+        label-width="100"
+        picker-key="driverWorkTime"
+        :is-computed="form['driverWorkTime']!==''"
+        :form="form"
+        required
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
+        label="司机上岗时间"
+        placeholder="点击选择日期"
+      />
     </van-form>
     <!-- 底部弹出框 -->
     <van-popup v-model="showPicker" position="bottom">
@@ -43,9 +69,13 @@
 
 import { parseTime } from '@/utils/index'
 import SelftPicker from '@/components/SelfPicker'
+import SelfCalendar from '@/components/SelfCalendar'
+import SelfDatetimePicker from '@/components/SelfDatetimePicker'
 export default {
   components: {
-    SelftPicker
+    SelftPicker,
+    SelfCalendar,
+    SelfDatetimePicker
   },
   props: {
     form: {

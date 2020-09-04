@@ -97,9 +97,3 @@ export default {
 
 </script>
 
-<style lang='scss' scoped>
-.selfPickerContainer {
-
-}
-
-</style>

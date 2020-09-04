@@ -210,7 +210,7 @@ export default {
               lineId: result.lineId
             }
           }
-          this.stepTwoForm.driverWorkTime = '2020-09-10 06:16:13'
+
           this.stepThreeForm = {
             ...this.step.stepThreeForm,
             ...{
@@ -231,8 +231,14 @@ export default {
               result.deliveryEndDate
             )
           }
+          this.stepTwoForm.deliveryWeekCycle = [
+            new Date(Date.now() + 1000 * 3600 * 24 * 2),
+            new Date(Date.now() + 1000 * 3600 * 24 * 10)
+          ]
+          this.stepTwoForm.driverWorkTime = new Date(Date.now() + 1000 * 3600 * 24 * 12)
+
           result.lineDeliveryInfoFORMS.forEach(item => {
-            let time = `${item.workingTimeStart}-${item.workingTimeEnd} `
+            let time = `${item.workingTimeStart}-${item.workingTimeEnd}`
             this.stepTwoForm.workingTime.push(time)
           })
         } else {
