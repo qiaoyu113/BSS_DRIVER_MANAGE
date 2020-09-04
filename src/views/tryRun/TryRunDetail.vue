@@ -19,7 +19,8 @@
     </div>
     <div class="container">
       <DetailsItem
-        :list="list"
+        v-if="Object.keys(detail).length > 0"
+        :detail="detail"
       />
     </div>
     <van-action-sheet
@@ -42,176 +43,7 @@ export default {
   },
   data() {
     return {
-      list: [
-        {
-          title: '客户信息',
-          children: [
-            {
-              title: '客户名称',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '项目名称',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '线路名称',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '上岗经理',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '外线销售',
-              value: (a, b) => `${a}/${b}`
-            }
-          ],
-          detail: '/' // 详情地址
-        },
-        {
-          title: '线路信息',
-          children: [
-            {
-              title: '上岗时间',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '到仓时间',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '仓库位置',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '配送车型',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '配送区域',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '里程时间',
-              value: (a, b) => `${a}/${b}`
-            }
-          ],
-          tags: ['稳线', '共享'],
-          detail: '/' // 详情地址
-        },
-        {
-          title: '司机信息',
-          children: [
-            {
-              title: '司机信息',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '车型',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '车牌号',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '现住址',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '加盟经理',
-              value: (a, b) => `${a}/${b}`
-            }
-          ],
-          detail: '/' // 详情地址
-        },
-        {
-          title: '试跑意向记录',
-          children: [
-            {
-              title: '操作人',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '操作时间',
-              value: (a, b) => `${a}/${b}`
-            }
-          ]
-        },
-        {
-          title: '上岗记录',
-          children: [
-            {
-              title: '操作人',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '操作时间',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '到仓接待人',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '到仓时间',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '岗前叮嘱',
-              value: (a, b) => `${a}/${b}`
-            }
-          ]
-        },
-        {
-          title: '转跑记录',
-          children: [
-            {
-              title: '操作人',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '操作时间',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '到仓接待人',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '到仓时间',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '岗前叮嘱',
-              value: (a, b) => `${a}/${b}`
-            }
-          ],
-          hide: true
-        },
-        {
-          title: '掉线记录',
-          children: [
-            {
-              title: '操作人',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '操作时间',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '掉线原因',
-              value: (a, b) => `${a}/${b}`
-            },
-            {
-              title: '其他原因',
-              value: (a, b) => `${a}/${b}`
-            }
-          ]
-        }
-      ],
+      detail: {},
       show: false,
       actions: [
         { name: '创建试跑', index: 0 },
@@ -236,14 +68,37 @@ export default {
     onClickRight() {
       this.show = true;
     },
-    onSelect() {},
+    onSelect(item) {
+      const { index } = item;
+      let path = '';
+      let query = {
+        lineId: 'XL202009010002',
+        driverId: 'ceshi'
+      };
+      switch (index) {
+        case 0:
+          path = '/create-run';
+          query.step = '1';
+          break;
+        case 1:
+          path = '/to-try';
+          break;
+        case 2:
+          path = '/off-try';
+          break;
+      }
+      this.$router.push({
+        path: path,
+        query
+      })
+    },
     async getDetail() {
       try {
         this.$loading(true);
-        const runTestId = this.id;
-        let { data: res } = await GetDetails({ runTestId })
+        // const runTestId = this.id;
+        let { data: res } = await GetDetails({ runTestId: 1123 })
         if (res.success) {
-          console.log(res)
+          this.detail = res.data;
         } else {
           this.$toast.fail(res.errorMsg)
         }

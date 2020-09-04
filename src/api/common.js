@@ -90,7 +90,7 @@ export function getDictData(params) {
 // 批量查询字典
 export function GetDictionaryList(data) {
   return request({
-    url: '/api/base/v1/base/dict/dict/list/types',
+    url: `${'/api/base'}/v1/base/dict/dict/list/types`,
     method: 'post',
     data
   })

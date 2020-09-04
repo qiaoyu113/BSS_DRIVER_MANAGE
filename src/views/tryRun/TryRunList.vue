@@ -23,7 +23,7 @@
     </div>
     <div class="list">
       <ListItem
-        v-for="(item, index) in list"
+        v-for="(item, index) in lists"
         :key="index"
         :item="item"
       />
@@ -33,6 +33,7 @@
 
 <script>
 import ListItem from './components/ListItem';
+import { GetRunTestInfoList } from '@/api/tryrun';
 export default {
   name: 'TryRunList',
   components: {
@@ -41,7 +42,7 @@ export default {
   data() {
     return {
       value: '',
-      list: [{ 1: 1 }, { 1: 1 }, { 1: 1 }, { 1: 1 }, { 1: 1 }, { 1: 1 }, { 1: 1 }, { 1: 1 }, { 1: 1 }]
+      lists: []
     }
   },
   computed: {
@@ -51,6 +52,7 @@ export default {
   },
   mounted() {
     this.value = this.$route.query.q;
+    this.handleSearch(this.value);
   },
   methods: {
     /**
@@ -69,6 +71,21 @@ export default {
           q: this.value
         }
       })
+    },
+    // 搜索
+    async handleSearch(keyword = '') {
+      try {
+        let params = {};
+        keyword && (params.key = keyword);
+        let { data: res } = await GetRunTestInfoList(params);
+        if (res.success) {
+          this.lists = res.data;
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`);
+      }
     }
   }
 }
