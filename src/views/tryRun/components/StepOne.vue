@@ -219,7 +219,7 @@
 </template>
 
 <script>
-import { debounce } from '@/utils/index';
+import { debounce, delay } from '@/utils/index';
 import { getLineList } from '@/api/line'
 import { CreateLntentionRun, GetDriverList } from '@/api/tryrun';
 export default {
@@ -231,7 +231,7 @@ export default {
       showActionSheet: false,
       list: [],
       form: {
-        operateFlag: 'tryRun',
+        operateFlag: 'creatIntentionRun', // 创建试跑意向
         lineId: '',
         driverId: ''
       },
@@ -291,14 +291,14 @@ export default {
                 }
               })
             }
-          }, 2000);
+          }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`${err}`)
       } finally {
-        this.$loading(false)
+        // this.$loading(false)
       }
     },
     /**

@@ -134,3 +134,14 @@ export function getMediaIdOfActivationQrCode(data) {
     params: data
   })
 }
+// -------------------------szjw 2.1-----------------------
+
+let prefix = '/mock/25'
+// 账号登录
+export function loginByAccount(data) {
+  return request({
+    url: `${prefix}/v1/auth/bss/getToken`,
+    method: 'post',
+    data
+  })
+}

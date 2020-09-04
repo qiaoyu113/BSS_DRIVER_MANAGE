@@ -31,7 +31,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath: IS_PRODUCTION ? cdnDomian : process.env.VUE_APP_BASE_API,
+  publicPath: IS_PRODUCTION ? cdnDomian : '/',
   outputDir: 'web',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
@@ -66,6 +66,15 @@ module.exports = {
       '/mock': {
         target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true
+      },
+      '/api': {
+        target: 'http://szjw-domain-gateway.d2.yunniao.cn',
+        changeOrigin: true
+      },
+      '/aaa': {
+        target: 'http://szjw-bss-web.m1.yunniao.cn',
+        changeOrigin: true,
+        pathRewrite: { '^/aaa': '' }
       }
     },
     after: require('./mock/mock-server.js')

@@ -90,9 +90,17 @@ export function getDictData(params) {
 // 批量查询字典
 export function GetDictionaryList(data) {
   return request({
-    url: '/api/base/v1/base/dict/dict/list/types',
+    url: `${'/api/base'}/v1/base/dict/dict/list/types`,
     method: 'post',
     data
   })
 }
 
+// 获取省、市、县
+let baseURL = '/aaa/api/base'
+export const GetCityByCode = (data) =>
+  request({
+    url: `${baseURL}/v1/base/area/getCityByCode`,
+    method: 'post',
+    data
+  })

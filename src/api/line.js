@@ -90,3 +90,48 @@ export function editStableLine(data) {
   })
 }
 
+// 复制临时线路
+export function copyTemporaryLine(data) {
+  return request({
+    url: `${prefix}/v2/line/copyTemporaryLine`,
+    method: 'post',
+    data
+  })
+}
+
+// 复制稳定线路
+export function copyStableLine(data) {
+  return request({
+    url: `${prefix}/v2/line/copyStableLine`,
+    method: 'post',
+    data
+  })
+}
+
+// 激活临时线路
+export function activeTemporaryLine(data) {
+  return request({
+    url: `${prefix}/v2/line/activeTemporaryLine`,
+    method: 'post',
+    data
+  })
+}
+
+// 激活稳定线路
+export function activeStableLine(data) {
+  return request({
+    url: `${prefix}/v2/line/activeStableLine`,
+    method: 'post',
+    data
+  })
+}
+
+// 判断线路是否能够激活或复制
+export function judgeMeetConditions(params) {
+  return request({
+    url: `${prefix}/v2/line/judgeMeetConditions`,
+    method: 'get',
+    params
+  })
+}
+

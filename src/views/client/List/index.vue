@@ -331,8 +331,9 @@ export default {
       }
     },
     // 状态切换
-    handleTabChange(tab) {
-      this.getLists(true)
+    async handleTabChange(tab) {
+      let result = await this.getLists(true)
+      this.lists = result.lists
     },
     // 获取列表
     async getLists(isInit) {

@@ -12,7 +12,7 @@
       <van-form @submit="onSubmit">
         <van-cell-group>
           <van-field
-            v-model="form.date"
+            v-model="formStr.droppedTime"
             readonly
             required
             clickable
@@ -28,26 +28,23 @@
           提示：掉线时间当天，不再生成出车单
         </div>
         <van-cell-group>
-          <van-field required name="radio" label="掉线原因：">
+          <van-field required name="droppedReason" label="掉线原因：">
             <template #input>
-              <van-radio-group v-model="form.radio">
-                <van-radio name="1" class="margin-bottom-xs">
-                  客户不合作/撤线
-                </van-radio>
-                <van-radio name="2" class="margin-bottom-xs">
-                  配送要求变更
-                </van-radio>
-                <van-radio name="3" class="margin-bottom-xs">
-                  司机跳单
-                </van-radio>
-                <van-radio name="4" class="margin-bottom-xs">
-                  司机换线
+              <van-radio-group v-model="form.droppedReason">
+                <van-radio
+                  v-for="(item, index) in whyList"
+                  :key="index"
+                  :name="item.dictValue"
+                  class="margin-bottom-xs"
+                  checked-color="#3ACB8D"
+                >
+                  {{ item.dictLabel }}
                 </van-radio>
               </van-radio-group>
             </template>
           </van-field>
           <van-field
-            v-model="form.message"
+            v-model="form.otherReason"
             rows="2"
             autosize
             label="其他原因："
@@ -64,6 +61,7 @@
             size="normal"
             native-type="button"
             class="cancel-btn"
+            @click="onClickLeft"
           >
             取消
           </van-button>
@@ -73,19 +71,41 @@
         </div>
       </van-form>
     </div>
+    <!-- picker -->
+    <van-popup v-model="showModal" round position="bottom">
+      <van-datetime-picker
+        v-model="formStr.date"
+        type="datetime"
+        :min-date="minDate"
+        :max-date="maxDate"
+        :formatter="formatter"
+        @confirm="onConfirm"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
+import { parseTime } from '@/utils'
+import { GetDictionaryList } from '@/api/common'
+import { SwitchTryRun } from '@/api/tryrun'
 export default {
   name: 'OffTry',
   data() {
     return {
       form: {
-        date: '',
-        radio: ''
+        droppedTime: '', // 掉线时间
+        droppedReason: '', // 掉线原因
+        otherReason: ''// 其他原因
       },
-      showModal: false
+      formStr: {
+        date: new Date(),
+        droppedTime: ''
+      },
+      minDate: new Date(+new Date() - 86400000 * 365 * 10),
+      maxDate: new Date(+new Date() + 86400000 * 365 * 10),
+      showModal: false,
+      whyList: []
     };
   },
   computed: {
@@ -93,14 +113,85 @@ export default {
       return this.$route.meta.title;
     }
   },
+  mounted() {
+    this.lineId = this.$route.query.lineId;
+    this.driverId = this.$route.query.driverId;
+    this.fetchData();
+  },
   methods: {
+    /**
+     * 请求字典接口
+     */
+    fetchData() {
+      GetDictionaryList(['dropped_reason'])
+        .then(({ data }) => {
+          if (data.success) {
+            this.whyList = data.data.dropped_reason
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+    },
+    // 选项格式化函数
+    formatter(type, val) {
+      // year、month、day、hour、minute
+      const format = {
+        year: '年',
+        month: '月',
+        day: '日',
+        hour: '时',
+        minute: '分'
+      }
+      return val + format[type]
+    },
     /**
      * 返回按钮
      */
     onClickLeft() {
       this.$router.go(-1);
     },
-    onSubmit() {}
+    // 选择时间
+    onConfirm(value) {
+      this.formStr.droppedTime = parseTime(value, '{y}-{m}-{d} {h}:{m}');
+      this.form.droppedTime = +new Date(value)
+      this.showModal = false;
+    },
+    /**
+     * 点击提交
+     */
+    async onSubmit() {
+      try {
+        this.$loading(true);
+        let { data: res } = await SwitchTryRun({
+          lineId: this.lineId, // 线路Id
+          driverId: this.driverId, // 司机Id
+          operateFlag: 'switchDropped',
+          runTestStatusRecordFORM: {
+            ...this.form
+          }
+        })
+        if (res.success) {
+          this.$dialog.confirm({
+            title: '提示',
+            message: '已成功操作试跑掉线，该线路是否需要激活？',
+            confirmButtonText: '去激活线路'
+          })
+            .then(() => {
+              // 去激活线路页面
+            })
+            .catch(() => {
+              // 关闭弹窗
+            });
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.$loading(false)
+        console.log(`${err}`)
+      } finally {
+        // this.$loading(false)
+      }
+    }
   }
 };
 </script>

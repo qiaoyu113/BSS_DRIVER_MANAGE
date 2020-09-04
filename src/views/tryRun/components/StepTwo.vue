@@ -102,11 +102,17 @@
 </template>
 
 <script>
-import { parseTime, phoneRegExp } from '@/utils'
+import { parseTime, phoneRegExp, delay } from '@/utils'
 import { GetPersonInfo, TryRun, FollowCar } from '@/api/tryrun';
 import { getLineDetail } from '@/api/line'
 export default {
   name: 'StepTwo',
+  props: {
+    to: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       showModal: false,
@@ -139,6 +145,12 @@ export default {
   },
   mounted() {
     this.lineId = this.$route.query.lineId;
+    if (this.to) {
+      this.actions = [
+        { name: '确认跟车', value: 'followCar' },
+        { name: '确认试跑', value: 'switchTryRun' }
+      ]
+    }
     this.getPersonInfo();
   },
   methods: {
@@ -160,7 +172,7 @@ export default {
         this.$loading(true);
         let { data: res } = await GetPersonInfo({
           // lineId: this.lineId
-          lineId: 'XL202009010002'
+          lineId: 'XL202009010031'
         })
         if (res.success) {
           const arr = ['上岗经理', '外线销售']
@@ -214,7 +226,7 @@ export default {
       try {
         this.$loading(true);
         let { data: res } = await SubmintForm({
-          lineId: 'XL202009010002',
+          lineId: 'XL202009010012',
           driverId: 'SJ202009020002',
           operateFlag: this.operateFlag,
           runTestStatusRecordFORM: {
@@ -229,14 +241,15 @@ export default {
           }
           setTimeout(() => {
             this.$router.push('/try-run')
-          }, 2000);
+          }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
+        this.$loading(false)
         console.log(`${err}`)
       } finally {
-        this.$loading(false)
+        // this.$loading(false)
       }
     },
     onConfirm(value) {

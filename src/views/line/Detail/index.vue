@@ -14,7 +14,7 @@
         <van-field label="项目编号" label-width="110" readonly :value="form.projectId" :border="false" colon />
         <van-field label="线路分类" label-width="110" readonly :value="form.lineCategory ===1 ? '稳定线路':'临时线路'" :border="false" colon />
         <van-field label="线路类型" label-width="110" readonly :value="form.busiTypeName" :border="false" colon />
-        <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineBalance ==='1' ? '有线路余额': '无线路余额'" :border="false" colon />
+        <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineBalance ===1 ? '有线路余额': '无线路余额'" :border="false" colon />
         <van-field label="线路状态" label-width="110" readonly :value="form.lineStateName" :border="false" colon />
         <van-field label="试跑状态" label-width="110" readonly :value="form.runTestStateName" :border="false" colon />
         <van-field label="上架截止日期" label-width="110" readonly :value="form.waitDirveValidity | parseTime('{y}-{m}-{d}') " :border="false" colon />
@@ -33,8 +33,8 @@
         <van-field label="限行区域说明" label-width="110" readonly :value="form.limitRemark" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
-        <van-field label="司机上岗时间" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="form.driverWorkTime | parseTime('{y}-{m}-{d}')" :border="false" colon />
+        <van-field label="司机上岗时间" label-width="110" readonly :value="form.driverWorkTime | parseTime('{y}-{m}-{d}')" :border="false" colon />
+        <van-field label="配送时间" label-width="110" readonly :value="form.deliveryWeekCycle" :border="false" colon />
         <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
           <van-field label="预计工作时间" label-width="110" readonly :value="`${item.workingTimeStart}-${item.workingTimeEnd}`" :border="false" colon />
@@ -101,7 +101,7 @@
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
 import { Dialog, Notify } from 'vant';
-import { getLineDetail, getLineDetailFiles, undercarriage } from '@/api/line'
+import { getLineDetail, getLineDetailFiles, undercarriage, judgeMeetConditions } from '@/api/line'
 export default {
   components: {
     ImagePreview,
@@ -157,7 +157,7 @@ export default {
     /**
      * 打标签
      */
-    handleLinkClick(text) {
+    async handleLinkClick(text) {
       let path = ''
       switch (text) {
         case 'tag':
@@ -179,9 +179,46 @@ export default {
           path = '/'
       }
 
-      this.$router.push({
-        path: path
-      })
+      if (['copy', 'active'].includes(text)) {
+        let result = await this.judgeMeetConditions(text)
+        if (result) {
+          this.$router.push({
+            path: path,
+            query: {
+              lineId: this.lineId
+            }
+          })
+        }
+      } else {
+        this.$router.push({
+          path: path,
+          query: {
+            lineId: this.lineId
+          }
+        })
+      }
+    },
+    // 判断激活和复制是否有权限
+    async judgeMeetConditions(conditionType) {
+      try {
+        let params = {
+          lineId: this.lineId,
+          conditionType
+        }
+        let { data: res } = await judgeMeetConditions(params)
+        if (res.success) {
+          return true
+        } else {
+          Dialog.alert({
+            title: '提示',
+            message: res.data.msg
+          }).then(() => {
+            return false
+          });
+        }
+      } catch (err) {
+        console.log('judgeMeetConditions fail:', err)
+      }
     },
     // 获取线路详情
     async getLineDetail() {
@@ -194,7 +231,7 @@ export default {
         if (res.success) {
           this.form = res.data
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get client detail fail:${err}`)
@@ -217,7 +254,7 @@ export default {
             }
           }
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get files fail:${err}`)
@@ -234,7 +271,7 @@ export default {
           Notify({ type: 'success', message: '操作成功' });
           this.getLineDetail()
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`undercarriage fail:${err}`)

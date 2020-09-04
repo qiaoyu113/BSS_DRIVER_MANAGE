@@ -1,5 +1,4 @@
 import router from '@/router'
-import store from '@/store'
 // import { Notify } from 'vant'
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
@@ -15,7 +14,7 @@ router.beforeEach(async(to, from, next) => {
   if (hasToken) {
     // 已经登录，跳转到首页
     // next({ path: '/' })
-    await store.dispatch('user/getInfo')
+    // await store.dispatch('user/getInfo')
     // if (to.matched.length === 1) { // 匹配前往的路由不存在
     //   if (to.path === '/404') { // 这就是跳出循环的关键
     //     next()
@@ -26,7 +25,11 @@ router.beforeEach(async(to, from, next) => {
     //     }) : next('/404');
     //   }
     // } else {
-    next()
+    if (to.path === '/login') {
+      next('/')
+    } else {
+      next()
+    }
     // }
   } else {
     /* has no token */
