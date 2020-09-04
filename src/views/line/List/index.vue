@@ -477,6 +477,7 @@ export default {
           this.tabArrs.forEach(item => {
             if (item.name === this.form.lineState) {
               item.num = res.page.total
+              console.log(item.num, res.page.total)
             } else {
               item.num = 0
             }

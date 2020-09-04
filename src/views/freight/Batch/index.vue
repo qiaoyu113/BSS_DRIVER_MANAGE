@@ -11,7 +11,7 @@
       </van-nav-bar>
     </van-sticky>
     <!-- 搜索 -->
-    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号">
+    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly @click="handleSearchClick">
       <template #action>
         <div class="searchSelect" @click="showPopup">
           筛选
@@ -29,7 +29,7 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="active" swipeable>
+        <van-tabs v-model="active" swipeable @change="handleTabChange">
           <van-tab v-for="item in tabArrs" :key="item.text">
             <template #title>
               {{ item.text }}
@@ -155,7 +155,7 @@
 import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
-import { Toast } from 'vant'
+// import { Toast } from 'vant
 export default {
   components: {
     CardItem,
@@ -275,6 +275,19 @@ export default {
     },
     showPopup() {
       this.show = true
+    },
+    // 搜索
+    handleSearchClick() {
+      this.$router.push({
+        path: '/outlineSearch',
+        parmas: {
+          type: 1
+        }
+      })
+    },
+    // 状态切换
+    handleTabChange(tab) {
+      this.getLists(true)
     },
     batch() {
       this.$router.push({ path: 'batch' })

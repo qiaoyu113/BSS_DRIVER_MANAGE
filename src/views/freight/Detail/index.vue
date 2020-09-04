@@ -4,16 +4,14 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <!-- <div class="headerRight">
-            批量上报
-          </div> -->
+          <div class="headerRight" @click="showPopup">
+            上报
+          </div>
         </template>
       </van-nav-bar>
     </van-sticky>
-    <p class="sahngbao" @click="showPopup">
-      上报
-    </p>
-    <div class="CardItemcontainer">
+
+    <!-- <div class="CardItemcontainer">
       <div>场景1</div>
       <h4 class="title ellipsis">
         2020/09/08  李斯 / 1666666 <span style="color:red;">待上报</span>
@@ -30,9 +28,41 @@
       <p class="text ellipsis">
         确认状态：已确认/确认的金额
       </p>
+    </div> -->
+    <div v-for="item in dataAll" :key="item" class="CardItemcontainer megin">
+      <h4 class="title ellipsis">
+        2020/09/02 张山 1888888333 <span style="color: 0000ff73;">{{ dataAll.confirmMoney }}</span>
+      </h4>
+      <P class="text ellipsis">
+        出车单号：{{ dataAll.wayBillId }}
+      </P>
+      <P class="text ellipsis">
+        加盟经理：{{ dataAll.gmName }}/{{ dataAll.gmPhone }}
+      </P>
+      <P class="text ellipsis">
+        线路名称：{{ dataAll.lineName }}
+      </P>
+
+      <p class="text ellipsis">
+        上报人：{{ dataAll.gmReportName }}/{{ dataAll.gmReportPhone }}
+      </p>
+      <p class="text ellipsis">
+        上报时间：{{ dataAll.gmReportTime }}
+      </p>
+      <p class="text ellipsis">
+        趟数1金额：1000
+      </p>
+      <!-- <p class="text ellipsis">
+        趟数2金额：1000
+      </p> -->
+      <p class="text ellipsis">
+        备注：{{ dataAll.remark }}
+      </p>
+      <p class="text ellipsis">
+        确认状态：{{ dataAll.gmState }}
+      </p>
     </div>
     <div class="CardItemcontainer megin">
-      <div>场景2</div>
       <h4 class="title ellipsis">
         2020/09/02 张山 1888888333 <span style="color: 0000ff73;">500.00</span>
       </h4>
@@ -55,9 +85,9 @@
       <p class="text ellipsis">
         趟数1金额：1000
       </p>
-      <p class="text ellipsis">
+      <!-- <p class="text ellipsis">
         趟数2金额：1000
-      </p>
+      </p> -->
       <p class="text ellipsis">
         备注：
       </p>
@@ -66,24 +96,37 @@
       </p>
     </div>
     <van-popup v-model="show">
-      <div class="danceng">
+      <div class="danceng" style=" border-radius:5px">
         <p>运费上报</p>
         <div>
-          <p style="display: flex; justify-content:space-around;color:#000;">
-            趟数1:<input
-              type="text"
-              style="width:123px"
-            >
-            <span>元</span>
+          <p>*趟数1</p>
+          <li>
+            <span>0:20-06:00</span>
+            <input v-model="value" type="text" style="border:none" placeholder="350.00">
+            <van-button type="default">
+              元
+            </van-button>
+          </li>
+          <div class="Remarks">
+            <van-field
+              v-model="message"
+              rows="1"
+              autosize
+              label="备注:"
+              type="textarea"
+              placeholder="请输入不超过150字"
+              show-word-limit
+            />
+          </div>
+          <p class="footer_but">
+            <button @click="show = false">
+              取消
+            </button>
+            <button>未出车</button>
+            <button @click="footer_confirm">
+              确认
+            </button>
           </p>
-          <p>
-            <span class="beizhu">备注：</span> <textarea cols="20" rows="3">内容</textarea>
-          </p>
-        </div>
-        <div class="but_ton">
-          <button>取消</button>
-          <button>未出车</button>
-          <button>确认</button>
         </div>
       </div>
     </van-popup>
@@ -91,16 +134,22 @@
 </template>
 
 <script>
+import { shippingDetailByGM, wayBillAmountDetail } from '@/api/freight'
 export default {
   data() {
     return {
       show: false,
-      obj: ''
+      obj: '',
+      dataAll: [],
+      value: '', // 上报金额
+      message: '' // 备注
+
     }
   },
   mounted() {
-    console.log(this.$route.query.obj)
     this.obj = this.$route.query.obj
+    console.log(shippingDetailByGM)
+    this.shippingDetailByGM()
   },
 
   methods: {
@@ -112,6 +161,51 @@ export default {
     },
     showPopup() {
       this.show = true;
+    },
+    footer_confirm() {
+      this.wayBillAmountDetail() // 运费上报
+    },
+    async wayBillAmountDetail() {
+      try {
+        let parmas = {
+          driverName: '', // 司机名称
+          driverPhone: '', // 司机手机号
+          lineName: '', // 线路名称
+          wayBillId: '', // 出车单号
+          deliverTime: '', // 配送时间段
+          deliverNo: '', // 第几趟
+          preMoney: '' // 预估用费
+        }
+        this.$loading(true)
+        let { data: res } = await wayBillAmountDetail(parmas)
+        console.log(res)
+        if (res.success) {
+          res.data
+        } else {
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.error = true;
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async shippingDetailByGM() {
+      try {
+        this.$loading(true)
+        let { data: res } = await shippingDetailByGM()
+        if (res.success) {
+          this.dataAll = res.data
+        } else {
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.error = true;
+      } finally {
+        this.$loading(false)
+      }
     }
 
   }
@@ -162,6 +256,10 @@ export default {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+  }
+  h4{
+    border-bottom: 1px solid #ddd;
+    line-height: 40px;
   }
 
   .title {
@@ -220,37 +318,50 @@ export default {
   margin-left: 10px ;
 }
 .danceng{
-  width: 200px;
-   height: 200px;
+  width: 260px;
+   height: 220px;
   background-color: #fff;
   padding: 10px;
+  box-sizing: border-box;
 
 }
-.but_ton{
+.danceng>p:nth-child(1){
+  text-align: center;
+  color: #000;
+}
+.danceng>div>li{
+
+ list-style: none;
+}
+.footer_but{
+  width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  overflow: hidden;
 }
-.but_ton>button{
-  width: 60px;
-  border: none;
-  color: #fff;
+.footer_but>button{
+  width: 30%;
   height: 30px;
-}
-.but_ton>button:nth-child(1){
-  background:#ddd;
+  border: none;
 
 }
-.but_ton>button:nth-child(2){
-  background:#f28787;
+.footer_but>button:nth-child(1){
+  border:1px solid #2F448A ;
+  color:#2F448A ;
+   background: #fff;
+  border-radius: 5px;
 }
-.but_ton>button:nth-child(3){
-  background:#6d8bee;
+.footer_but>button:nth-child(2){
+  border:1px solid #7F8FBD ;
+  color:#fff ;
+   background: #7F8FBD;
+  border-radius: 5px;
 }
-.beizhu{
-  position: relative;
-  bottom:30px;
-  left: 6px;
+.footer_but>button:nth-child(3){
+  border:1px solid #2F448A ;
+  color:#fff ;
+   background: #2F448A;
+  border-radius: 5px;
 }
-
 </style>
 

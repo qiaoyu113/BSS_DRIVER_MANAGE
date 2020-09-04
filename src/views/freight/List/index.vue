@@ -30,7 +30,7 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="active" swipeable>
+        <van-tabs v-model="active" swipeable @change="handleTabChange">
           <van-tab v-for="item in tabArrs" :key="item.text">
             <template #title>
               {{ item.text }}
@@ -160,6 +160,7 @@ import CardItem from './components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
+import { getConfirmInfoList } from '@/api/freight'
 export default {
   components: {
     CardItem,
@@ -286,14 +287,59 @@ export default {
   },
   computed: {
   },
+  mounted() {
+    // console.log(getConfirmInfoList)
+  },
   methods: {
+
     onClickLeft() {
       this.$router.go(-1)
     },
     batch() {
       this.$router.push({
-        path: 'batch'
+        path: 'batch',
+        parmas: {
+          arr: this.lists
+        }
       })
+    },
+    handleTabChange(tab) {
+      console.log(tab)
+      this.getConfirmInfoList(true)
+    },
+    async getConfirmInfoList(isInit) {
+      try {
+        this.$loading(true)
+        let { data: res } = await getConfirmInfoList()
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach(item => {
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     },
     // 选择线路
     onConfirm(obj) {
@@ -317,6 +363,25 @@ export default {
       this.listQuery.startDate = startDate;
       this.listQuery.endDate = endDate;
     },
+    // async onLoad(isInit = false) {
+    //   if (isInit === true) { // 下拉刷新
+    //     this.page.current = 1
+    //     this.lists = []
+    //   } else { // 上拉加载更多
+    //     this.page.current++
+    //   }
+    //   let result = await this.getLists(isInit)
+    //   this.lists = result.lists
+    //   if (isInit === true) { // 下拉刷新
+    //     this.refreshing = false
+    //     this.finished = false
+    //   } else { // 上拉加载更多
+    //     this.loading = false;
+    //     if (!result.hasMore) {
+    //       this.finished = true
+    //     }
+    //   }
+    // },
     onLoad(isInit = false) {
       if (isInit === true) {
         this.lists = []
@@ -326,12 +391,12 @@ export default {
         for (let i = 0; i < 5; i++) {
           let obj = {
             id: id + i,
-            title: '2020/09/08  张三 / 18888888888',
+            driver: '2020/09/08  张三 / 18888888888',
             yicahng: '异常',
             statust: '未出车',
-            update: '12233344',
-            carType: '张三',
-            status: '北京线路'
+            wayBillId: '12339223',
+            gmId: '张三',
+            line: '北京线路'
           }
           this.lists.push(obj)
         }
@@ -349,7 +414,10 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/outlineSearch'
+        path: '/outlineSearch',
+        query: {
+          type: 1
+        }
       })
     },
     /**

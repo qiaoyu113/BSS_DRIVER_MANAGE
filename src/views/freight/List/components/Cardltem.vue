@@ -1,19 +1,19 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title ellipsis">
-      {{ obj.title }}
+      {{ obj.driver }}
     </h4>
     <p v-if="obj.yicahng != ''" class="dai">
       {{ obj.yicahng }}
     </p>
     <p class="text ellipsis">
-      出车单号:{{ obj.update }}
+      出车单号:{{ obj.wayBillId }}
     </p>
     <p class="text ellipsis">
-      加盟经理:{{ obj.carType }}
+      加盟经理:{{ obj.gmId }}
     </p>
     <p class="text ellipsis">
-      路线名称:{{ obj.status }}
+      路线名称:{{ obj.line }}
     </p>
     <div class="detail van-hairline--top">
       <van-button type="default" round hairline @click="handleDetailClick">

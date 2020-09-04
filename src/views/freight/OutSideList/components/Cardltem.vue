@@ -1,9 +1,11 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title ellipsis">
-      {{ obj.title }} <i v-if="obj.yicahng != ''">{{ obj.yicahng }}</i>
-      <span>{{ obj.statust }}</span>
+      {{ obj.title }}
     </h4>
+    <p v-if="obj.yicahng != ''" class="dai">
+      {{ obj.yicahng }}
+    </p>
     <p class="text ellipsis">
       出车单号:{{ obj.update }}
     </p>
@@ -11,8 +13,13 @@
       加盟经理:{{ obj.carType }}
     </p>
     <p class="text ellipsis">
-      路线名称:{{ obj.status }} <span class="text_xiang" @click="handleDetailClick(obj)">详情></span>
+      路线名称:{{ obj.status }}
     </p>
+    <div class="detail van-hairline--top">
+      <van-button type="default" round hairline @click="handleDetailClick">
+        详情
+      </van-button>
+    </div>
   </div>
 </template>
 
@@ -33,7 +40,6 @@ export default {
       this.$router.push({
         path: '/Detail',
         query: { obj: obj }
-
       })
     }
   }
@@ -64,10 +70,7 @@ export default {
     font-size: 13px;
     color: #3C4353;
   }
-  .text_xiang{
-    float: right;
-    color: blue ;
-  }
+
   .footer {
     margin-bottom:12.5px;
     display: flex;
@@ -93,6 +96,14 @@ export default {
     text-align: center;
     border-top-color:#D8D8D8;
   }
+}
+.dai{
+  width: 40px;
+  height: 15px;
+  border: 1px solid #FF5D5D;
+  border-radius: 10px;
+  text-align: center;
+  color: #FF5D5D;
 }
 
 </style>
