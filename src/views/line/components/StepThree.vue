@@ -4,15 +4,19 @@
       <h4 class="title van-hairline--bottom">
         配送时间信息
       </h4>
-      <van-field
-        :value="pickerNames['cargoType']"
-        label-width="100"
-        colon
+      <selftPicker
+        picker-key="cargoType"
+        :form="form"
+        :columns="cargoTypeArr"
+        value="label"
+        :is-computed="form['cargoType']!==''&&cargoTypeArr.length > 0"
         required
+        label-width="100"
         label="货物类型"
         placeholder="请选择"
-        :rules="[{ required: true, message: '请选择' }]"
-        @click="showPickerFn('cargoType')"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
       />
       <van-field
         v-model="form.cargoNum"
@@ -59,19 +63,19 @@
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
-      <van-field
-        label-width="100"
-        colon
-        :value="pickerNames['carry']"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="carry"
+        :form="form"
+        :columns="carryArr"
+        value="label"
+        :is-computed="form['carry']!==''"
         required
+        label-width="100"
         label="是否需要搬运"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('carry')"
       />
       <van-field
         v-model="form.dutyRemark"
@@ -95,23 +99,16 @@
         </van-button>
       </div>
     </van-form>
-    <van-popup v-model="showPicker" position="bottom">
-      <!-- picker选择器 -->
-      <van-picker
-        ref="fromThreePicker"
-        value-key="label"
-        show-toolbar
-        :columns="columns"
-        @confirm="onConfirm"
-        @cancel="showPicker = false"
-      />
-    </van-popup>
   </div>
 </template>
 
 <script>
 import { getDictData } from '@/api/common'
+import SelftPicker from '@/components/SelfPicker'
 export default {
+  components: {
+    SelftPicker
+  },
   props: {
     form: {
       type: Object,
@@ -138,21 +135,7 @@ export default {
           label: '否',
           value: 2
         }
-      ],
-      pickerNames: { // picker选中显示的名字
-        cargoType: '',
-        carry: ''
-      },
-      pickerKey: '', // 显示picker的key
-      columns: [], // picker的列表
-      showPicker: false // 是否打开picker
-    }
-  },
-  watch: {
-    'form.lineId'(val) {
-      if (this.type === 'edit' && val !== '') {
-        this.showPickerLable()
-      }
+      ]
     }
   },
   mounted() {
@@ -162,17 +145,6 @@ export default {
     async init() {
       let result = await this.getDictData('type_of_goods')
       this.cargoTypeArr = result
-    },
-    // 编辑生成label
-    showPickerLable() {
-      for (let key in this.pickerNames) {
-        let listKey = `${key}Arr`
-        let index = this[listKey].findIndex(item => item.value === this.form[key])
-        console.log(index, this.form[key], key)
-        if (index > -1) {
-          this.pickerNames[key] = this[`${key}Arr`][index].label
-        }
-      }
     },
     // 提交
     onSubmit(values) {
@@ -184,34 +156,6 @@ export default {
         return true
       }
       return false
-    },
-    // 显示picker
-    showPickerFn(key) {
-      this.columns = []
-      this.pickerKey = key;
-      if (key === 'carry') {
-        this.columns.push(...this.carryArr);
-      } else if (key === 'cargoType') {
-        this.columns.push(...this.cargoTypeArr);
-      }
-
-      this.showPicker = true;
-
-      if (['edit'].includes(this.type)) {
-        let index = this.columns.findIndex(item => item.value === this.form[this.pickerKey])
-        if (index === -1) {
-          index = 0
-        }
-        setTimeout(() => {
-          this.$refs.fromThreePicker.setIndexes([index])
-        }, 20)
-      }
-    },
-    // picker选择器
-    onConfirm(obj) {
-      this.pickerNames[this.pickerKey] = obj.label
-      this.form[this.pickerKey] = obj.value
-      this.showPicker = false;
     },
     // 从数据字典获取数据
     async getDictData(dictType, keyword = '') {
@@ -227,7 +171,7 @@ export default {
             value: item.dictValue
           }))
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get dict data fail:${err}`)

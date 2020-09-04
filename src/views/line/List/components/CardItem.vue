@@ -1,5 +1,5 @@
 <template>
-  <div class="CardItemcontainer">
+  <div class="CardItemcontainer" @click="handleDetailClick">
     <h4 class="title van-ellipsis">
       {{ obj.lineName }} ({{ obj.lineId }})
     </h4>
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick">
+      <van-button type="default" round hairline>
         详情
       </van-button>
     </div>

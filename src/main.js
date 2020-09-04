@@ -14,7 +14,7 @@ import 'vant/lib/index.less';// 全局引入Vant 样式
 import defaultSettings from '@/settings'
 import * as filters from '@/filters'
 import global_ from 'components/Global'
-import { Toast } from 'vant'
+import { Toast, Notify } from 'vant'
 import * as directives from '@/directives'
 
 Vue.prototype.$toast = Toast
@@ -29,6 +29,9 @@ Vue.prototype.$loading = (status) => {
   } else {
     Toast.clear()
   }
+}
+Vue.prototype.$fail = (message) => {
+  Notify({ type: 'danger', message });
 }
 
 // Register global directives
