@@ -4,108 +4,12 @@
       <h4 class="title van-hairline--bottom">
         配送时间信息
       </h4>
-      <van-field
-        label-width="100"
-        colon
-        readonly
-        clickable
-        required
-        :rules="[
-          { required: true, message: '请选择' },
-        ]"
-        name="calendar"
-        :value="pickerNames['driverWorkTime']"
-        label="司机上岗时间"
-        placeholder="点击选择日期"
-        @click="showPickerFn('driverWorkTime')"
-      />
-      <template v-if="isStable">
-        <van-field
-          label-width="100"
-          colon
-          name="deliveryWeekCycleValidator"
-          readonly
-          clickable
-          required
-          label="配送时间"
-          placeholder="请选择"
-          :rules="[
-            { validator: deliveryWeekCycleValidator, message: '请选择' }
-          ]"
-        >
-          <div slot="input">
-            <van-checkbox
-              v-model="isAll"
-            >
-              全选
-            </van-checkbox>
-            <van-checkbox-group ref="checkboxGroup" v-model="form['deliveryWeekCycle']" direction="horizontal">
-              <van-checkbox v-for="item in deliveryWeekCycleArr" :key="item.value" :name="item.value">
-                {{ item.label }}
-              </van-checkbox>
-            </van-checkbox-group>
-          </div>
-        </van-field>
-      </template>
-      <template v-else>
-        <van-field
-          label-width="100"
-          colon
-          :value="pickerNames['deliveryWeekCycle']"
-          readonly
-          clickable
-          required
-          label="配送时间"
-          placeholder="请选择"
-          :rules="[
-            { required: true, message: '请选择' },
-          ]"
-          @click="showPickerFn('deliveryWeekCycle')"
-        />
-      </template>
-      <van-field
-        v-model="form.monthNum"
-        v-only-number="{min: 1, max: 31}"
-        colon
-        required
-        label="预计月出车天数"
-        placeholder="请输入"
-        label-width="100"
-        name="daysUseCarValidator"
-        type="digit"
-        :rules="[
-          { required: true, message: '请输入' },
-          { validator: daysUseCarValidator, message: '请输入1~31' }
-        ]"
-      />
-      <van-field
-        v-model.number="form.dayNum"
-        label-width="100"
-        colon
-        required
-        label="每日配送趟数"
-        placeholder="请输入"
-        name="countByDayValidator"
-        type="digit"
-        :rules="[
-          { required: true, message: '请输入' },
-          { validator: countByDayValidator, message: '请输入1~9' }
-        ]"
-        @input="handleInput"
-      />
-      <template v-for="item in form.dayNum">
-        <div :key="'time'+item">
-          <customSelect :index="item" :value="form.workingTime[item-1]" :columns2="timeBucket" @date="handleDateChange" />
-        </div>
-      </template>
-      <h4 class="title van-hairline--bottom">
-        结算信息
-      </h4>
-      <van-field
-        colon
-        :value="pickerNames['incomeSettlementMethod']"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="incomeSettlementMethod"
+        :form="form"
+        :columns="incomeSettlementMethodArr"
+        value="label"
+        :is-computed="form['incomeSettlementMethod']!==''"
         required
         label-width="100"
         label="结算方式"
@@ -113,14 +17,13 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('incomeSettlementMethod')"
       />
-
-      <van-field
-        colon
-        :value="pickerNames['settlementCycle']"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="settlementCycle"
+        :form="form"
+        :columns="settlementCycleArr"
+        value="label"
+        :is-computed="form['settlementCycle']!==''"
         required
         label-width="100"
         label="结算周期"
@@ -128,109 +31,21 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('settlementCycle')"
       />
-
-      <van-field
-        colon
-        :value="pickerNames['settlementDays']"
-        readonly
-        clickable
-        required
-        label-width="100"
-        label="结算天数"
-        placeholder="请选择"
-        :rules="[
-          { required: true, message: '请选择' },
-        ]"
-        @click="showPickerFn('settlementDays')"
-      />
-
-      <!-- 当结算方式选择「多点配」推送「每趟保底」「每趟提成单价」「预计月报价」输入框 -->
-      <template v-if="form.incomeSettlementMethod ===2">
-        <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
-        <van-field
-          v-model="form.everyUnitPrice"
-          v-only-number="{min: 1, max: 999999.99, precision: 2}"
-          label-width="100"
-          colon
-          required
-          label="每趟提成单价(元)"
-          placeholder="请输入"
-          type="number"
-          :rules="[{ required: true, message: '请输入' }]"
-        />
-      </template>
-      <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
-      <van-field
-        v-model="form.everyTripGuaranteed"
-        v-only-number="{min: 1, max: 999999.99, precision: 2}"
-        label-width="100"
-        colon
-        required
-        :label="form.incomeSettlementMethod ===1 ? '单趟报价(元)':'每趟保底(元)'"
-        placeholder="请输入"
-        type="number"
-        :rules="[{ required: true, message: '请输入' }]"
-      />
-      <!-- 输入数字限制精确到小数点后两位，小数点前8位 -->
-      <van-field
-        v-model="form.shipperOffer"
-        v-only-number="{min: 1, max: 99999999.99, precision: 2}"
-        label-width="100"
-        colon
-        required
-        label="预计月报价(元)"
-        placeholder="请输入"
-        :rules="[{ required: true, message: '请输入线路名称' }]"
-      />
-      <div class="btn">
-        <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-one')">
-          返回上一步
-        </van-button>
-        <van-button type="primary" block>
-          下一步
-        </van-button>
-      </div>
     </van-form>
     <!-- 底部弹出框 -->
     <van-popup v-model="showPicker" position="bottom">
-      <template v-if="isDateRange">
-        <!-- 选择日期 -->
-        <van-calendar v-model="showPicker" :default-date="form[pickerKey]" type="range" @confirm="onConfirm" />
-      </template>
-      <template v-else-if="isDate">
-        <van-datetime-picker
-          v-model="form[pickerKey]"
-          type="date"
-          title="选择年月日"
-          :min-date="minTime"
-          :max-date="maxTime"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
-      <template v-else>
-        <!-- picker选择器 -->
-        <van-picker
-          ref="fromTwoPicker"
-          value-key="label"
-          show-toolbar
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
     </van-popup>
   </div>
 </template>
 
 <script>
-import CustomSelect from './Select'
+
 import { parseTime } from '@/utils/index'
+import SelftPicker from '@/components/SelfPicker'
 export default {
   components: {
-    CustomSelect
+    SelftPicker
   },
   props: {
     form: {
@@ -246,8 +61,7 @@ export default {
   },
   data() {
     return {
-      // 配送时间
-      deliveryWeekCycleArr: [],
+
       // 结算方式
       incomeSettlementMethodArr: [
         {
@@ -280,37 +94,6 @@ export default {
         {
           label: '季度结',
           value: 5
-        }
-      ],
-      // 结算天数
-      settlementDaysArr: [
-        {
-          label: '7天',
-          value: 1
-        },
-        {
-          label: '10天',
-          value: 2
-        },
-        {
-          label: '15天',
-          value: 3
-        },
-        {
-          label: '30天',
-          value: 4
-        },
-        {
-          label: '45天',
-          value: 5
-        },
-        {
-          label: '60天',
-          value: 6
-        },
-        {
-          label: '90天',
-          value: 7
         }
       ],
       pickerNames: { // picker选中显示的名字
@@ -355,10 +138,10 @@ export default {
   },
   watch: {
     'form.lineId'(val) {
-      if (this.type === 'edit' && val !== '') {
-        this.showPickerLable()
-        this.pickerNames.driverWorkTime = this.form.driverWorkTime
-      }
+      // if (this.type === 'edit' && val !== '') {
+      //   this.showPickerLable()
+      //   this.pickerNames.driverWorkTime = this.form.driverWorkTime
+      // }
     }
   },
   mounted() {

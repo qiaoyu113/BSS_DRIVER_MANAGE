@@ -220,15 +220,18 @@ export default {
         },
         {
           text: '已开跑',
-          num: 2
+          num: 2,
+          name: 2
         },
         {
           text: '已开跑下架',
-          num: 3
+          num: 3,
+          name: 3
         },
         {
           text: '未开跑下架',
-          num: 4
+          num: 4,
+          name: 4
         }
       ],
       lists: [],
@@ -438,8 +441,9 @@ export default {
       this.showPicker = false;
     },
     // 状态切换
-    handleTabChange(tab) {
-      this.getLists(true)
+    async handleTabChange(tab) {
+      let result = await this.getLists(true)
+      this.lists = result.lists
     },
     // 获取列表
     async getLists(isInit) {
@@ -471,7 +475,7 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
+            if (item.name === this.form.lineState) {
               item.num = res.page.total
             } else {
               item.num = 0
@@ -481,7 +485,7 @@ export default {
         } else {
           this.loading = false;
           this.error = true;
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;

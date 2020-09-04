@@ -227,7 +227,7 @@ export default {
             value: item.dictValue
           }))
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get dict data fail:${err}`)

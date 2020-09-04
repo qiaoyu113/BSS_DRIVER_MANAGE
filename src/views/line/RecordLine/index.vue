@@ -17,7 +17,7 @@
         <van-uploader slot="input" v-model="showForm.otherPictures" name="otherPictures" :after-read="afterRead" :max-count="6" :before-delete="handleDeleteFile" />
       </van-field>
       <van-field label="装货视频" colon class="video">
-        <van-uploader slot="input" v-model="showForm.loadingVideo" name="loadingVideo" :after-read="afterRead" :before-read="beforeRead" :max-count="1" :preview-full-image="false" :before-delete="handleDeleteFile">
+        <van-uploader slot="input" v-model="showForm.loadingVideo" name="loadingVideo" :after-read="afterRead" :max-count="1" :preview-full-image="false" accept="video/*" :before-delete="handleDeleteFile" @click-preview="handleVideoPreview">
         </van-uploader>
       </van-field>
       <p class="tips van-hairline--bottom">
@@ -41,6 +41,13 @@
         提交
       </van-button>
     </van-form>
+
+    <VideoPlay
+      v-if="show"
+      v-model="show"
+      :url="videoUrl"
+      @close="show=false"
+    />
   </div>
 </template>
 
@@ -48,9 +55,11 @@
 import Toast from 'vant'
 import { upload } from '@/api/common'
 import { collectLineInfo } from '@/api/line'
+import VideoPlay from '../components/video'
 export default {
   components: {
-    [Toast.name]: Toast
+    [Toast.name]: Toast,
+    VideoPlay
   },
   data() {
     return {
@@ -64,9 +73,12 @@ export default {
         otherPictures: [], // 其他图片
         loadingVideo: [], // 装货视频
         informationDescription: '' // 现场信息说明
-      }
+      },
+      show: false,
+      videoUrl: ''
     }
   },
+
   methods: {
     /**
      *返回按钮
@@ -97,7 +109,7 @@ export default {
             path: '/line'
           })
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`submit fail:${err}`)
@@ -113,17 +125,6 @@ export default {
     afterRead(file, { name }) {
       this.uploadFile(file, name)
     },
-
-    /**
-     * 上传前校验
-     */
-    beforeRead(file) {
-      // if (file.type !== 'image/jpeg') {
-      //   Toast('请上传 jpg 格式图片');
-      //   return false;
-      // }
-      return true;
-    },
     // 上传文件
     async uploadFile(file, key) {
       try {
@@ -131,14 +132,14 @@ export default {
         formData.append('file', file.file)
         let params = {
           expire: 0,
-          folder: 'img',
+          folder: key === 'loadingVideo' ? 'video' : 'img',
           isEncode: true
         }
         let { data: res } = await upload(params, formData)
         if (res.success) {
           this.form[key].push(res.data.url)
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`upload file fail:${err}`)
@@ -150,6 +151,11 @@ export default {
     handleDeleteFile(file, { index, name }) {
       this.form[name].splice(index, 1)
       this.showForm[name].splice(index, 1)
+    },
+    // 预览视频
+    handleVideoPreview() {
+      this.videoUrl = this.showForm.loadingVideo[0].content
+      this.show = true
     }
   }
 }

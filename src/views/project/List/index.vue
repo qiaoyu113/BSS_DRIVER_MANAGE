@@ -356,8 +356,9 @@ export default {
       this.showPicker = false;
     },
     // 状态切换
-    handleTabChange(tab) {
-      this.getLists(true)
+    async handleTabChange(tab) {
+      let result = await this.getLists(true)
+      this.lists = result.lists
     },
     // 获取列表
     async getLists(isInit) {
@@ -388,7 +389,7 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
+            if (item.name === this.form.projectState) {
               item.num = res.page.total
             } else {
               item.num = 0

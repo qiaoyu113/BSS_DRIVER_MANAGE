@@ -66,6 +66,11 @@ module.exports = {
       '/mock': {
         target: 'http://yapi.ynimg.cn:8888',
         changeOrigin: true
+      },
+      '/aaa': {
+        target: 'http://szjw-bss-web.m1.yunniao.cn',
+        changeOrigin: true,
+        pathRewrite: { '^/aaa': '' }
       }
     },
     after: require('./mock/mock-server.js')

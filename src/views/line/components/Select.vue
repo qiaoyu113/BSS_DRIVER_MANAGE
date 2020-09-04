@@ -1,7 +1,7 @@
 <template>
   <div class="SelectContainer">
     <van-field
-      :value="text"
+      :value="value"
       readonly
       clickable
       required
@@ -35,18 +35,20 @@ export default {
     columns2: {
       type: Array,
       default: () => []
+    },
+    value: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      text: '',
       showPicker: false
     }
   },
   methods: {
     // 司机上岗时间
     onConfirm(obj) {
-      this.text = obj.label
       this.$emit('date', obj.value, this.index)
       this.showPicker = false
     }

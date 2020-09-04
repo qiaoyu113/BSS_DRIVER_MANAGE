@@ -70,15 +70,13 @@
       <van-button type="info" block class="loginBtn" color="#2F448A">
         登陆
       </van-button>
-      <span class="loginWay" @click="handleChangeLoginWay">{{ loginWay === 'account' ? '使用手机登陆' :'使用账号登陆' }}</span>
+      <!-- <span class="loginWay" @click="handleChangeLoginWay">{{ loginWay === 'account' ? '使用手机登陆' :'使用账号登陆' }}</span> -->
     </van-form>
   </div>
 </template>
 <script>
-import { login } from '@/api/user';
 import { Form, Field, Icon, Button } from 'vant';
 import { phoneRegExp } from '@/utils/index'
-import { setToken } from '@/utils/auth'
 export default {
   name: 'Login',
   components: {
@@ -101,10 +99,9 @@ export default {
       count: 60 // 倒计时的秒数
     };
   },
-  created() {
+  mounted() {
     this.phonePattern = phoneRegExp
   },
-  mounted() {},
   beforeDestroy() {
     this.clearTimer()
   },
@@ -113,26 +110,7 @@ export default {
      * 登录
      */
     async onSubmit() {
-      try {
-        this.$loading(true)
-        setToken(121)
-        this.$router.push({
-          path: '/'
-        })
-        let { data: res } = await login()
-        if (res.success) {
-
-          // this.$store.commit('LOGIN', res.data)
-          // this.$router.replace({
-          //   path: this.redirect || '/',
-          //   query: this.otherQuery
-          // })
-        }
-      } catch (err) {
-        console.log(`login error:${err}`,)
-      } finally {
-        this.$loading(false)
-      }
+      this.$store.dispatch('user/login', this)
     },
     /**
      * 切换登录方式

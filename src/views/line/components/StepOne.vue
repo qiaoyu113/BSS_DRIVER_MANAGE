@@ -161,13 +161,14 @@
       />
       <van-field
         v-model="form.distance"
+        v-only-number="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
         label="配送总里程数"
         placeholder="请输入"
         name="mileageValidator"
-        type="digit"
+        type="number"
         :rules="[
           { required: true, message: '请输入' },
           { validator: mileageValidator, message: '请输入1~9999' }
@@ -200,6 +201,7 @@
           :columns-placeholder="['请选择', '请选择', '请选择']"
           @confirm="onConfirm"
           @cancel="showPicker = false"
+          @change="handleAreaChange"
         />
       </template>
       <template v-else-if="isDate">
@@ -239,7 +241,7 @@
 
 <script>
 import Suggest from '@/components/SuggestSearch'
-import { getDictData } from '@/api/common'
+import { getDictData, GetCityByCode } from '@/api/common'
 export default {
   components: {
     Suggest
@@ -312,27 +314,9 @@ export default {
       ],
       // 主要配送区域
       areaArr: {
-        province_list: {
-          110000: '北京市',
-          120000: '天津市'
-        },
-        city_list: {
-          110100: '北京市',
-          110200: '县',
-          120100: '天津市',
-          120200: '县'
-        },
-        county_list: {
-          110101: '东城区',
-          110102: '西城区',
-          110105: '朝阳区',
-          110106: '丰台区',
-          120101: '和平区',
-          120102: '河东区',
-          120103: '河西区',
-          120104: '南开区',
-          120105: '河北区'
-        }
+        province_list: {},
+        city_list: {},
+        county_list: {}
       },
       showModal: false,
       options: [],
@@ -365,9 +349,10 @@ export default {
   },
   watch: {
     'form.lineId'(val) {
-      if (this.type === 'edit' && val !== '') {
+      if (['edit', 'active', 'copy'].includes(this.type) && val !== '') {
         this.showPickerLable()
         this.pickerNames.driverWorkTime = this.form.driverWorkTime
+        this.pickerNames.area = `${this.form.provinceAreaName}/${this.form.cityAreaName}/${this.form.countyAreaName}`
       }
     }
   },
@@ -378,15 +363,28 @@ export default {
     async init() {
       let result = await this.getDictData('Intentional_compartment')
       this.options = result
+      let provinceLists = await this.loadCityByCode(['100000'])
+      this.areaArr.province_list = provinceLists
+      if (['edit', 'copy', 'active'].includes(this.type)) {
+        let cityLists = await this.loadCityByCode(['100000', '140000'])
+        this.areaArr.city_list = cityLists
+        let countyList = await this.loadCityByCode(['100000', '140000', '140100'])
+        this.form.area = ['140000', '140100', '140105']
+        this.areaArr.county_list = countyList
+      }
     },
     // 编辑生成label
     showPickerLable() {
       for (let key in this.pickerNames) {
         let listKey = `${key}Arr`
-        let index = this[listKey].findIndex(item => item.value === this.form[key])
-        console.log(index, this.form[key], key)
-        if (index > -1) {
-          this.pickerNames[key] = this[`${key}Arr`][index].label
+        if (![...this.areaLists, ...this.timeLists, 'carType'].includes(key)) {
+          let index = this[listKey].findIndex(item => item.value === this.form[key])
+          if (index > -1) {
+            this.pickerNames[key] = this[`${key}Arr`][index].label
+          }
+        } else if (this.timeLists.includes(key)) {
+          this.pickerNames[key] = this.form[key] // 显示时间
+          this.pickerNames.carType = this.form.carTypeName // 显示车型
         }
       }
     },
@@ -446,7 +444,7 @@ export default {
             value: item.dictValue
           }))
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get dict data fail:${err}`)
@@ -469,11 +467,13 @@ export default {
       }
 
       this.showPicker = true;
-      if (['edit'].includes(this.type)) {
+
+      if (['edit'].includes(this.type) && ![...this.timeLists, ...this.areaLists].includes(this.pickerKey)) {
         let index = this.columns.findIndex(item => item.value === this.form[this.pickerKey])
         if (index === -1) {
           index = 0
         }
+
         setTimeout(() => {
           this.$refs.fromOnePicker.setIndexes([index])
         }, 20)
@@ -498,6 +498,36 @@ export default {
     reset() {
       this.pickerNames = {}
       this.$refs.stepOne.resetValidation()
+    },
+    // 三级联动变化
+    async handleAreaChange(vm, item, index) {
+      let params = ['100000']
+      if (index === 0) {
+        params.push(item[0].code)
+        let result = await this.loadCityByCode(params)
+        this.areaArr.city_list = result
+      } else if (index === 1) {
+        params.push(item[0].code)
+        params.push(item[1].code)
+        let result = await this.loadCityByCode(params)
+        this.areaArr.county_list = result
+      }
+    },
+    // 获取省、市、县
+    async loadCityByCode(params) {
+      try {
+        let { data: res } = await GetCityByCode(params)
+        if (res.success) {
+          let codeObj = {}
+          for (let i = 0; i < res.data.length; i++) {
+            let item = res.data[i]
+            codeObj[item.code] = item.name
+          }
+          return codeObj
+        }
+      } catch (err) {
+        console.log(`load city by code fail:${err}`)
+      }
     }
   }
 }
