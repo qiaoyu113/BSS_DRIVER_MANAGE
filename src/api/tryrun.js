@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-let prefix = '/mock/74'
+let prefix = '/api'
 // 创建试跑
 export function CreateLntentionRun(data) {
   return request({
