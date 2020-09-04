@@ -264,15 +264,15 @@
           readonly
           clickable
           required
-          name="hasOwnCar"
-          :value="pickerNames.hasOwnCar"
+          name="hasCar"
+          :value="pickerNames.hasCar"
           label="是否有车"
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('hasOwnCar')"
+          @click="showPickerFn('hasCar')"
         />
         <van-field
-          v-if="formData.hasOwnCar === '1'"
+          v-if="formData.hasCar === '1'"
           readonly
           clickable
           required
@@ -284,7 +284,7 @@
           @click="showPickerFn('currentCarType')"
         />
         <van-field
-          v-if="formData.hasOwnCar === '1'"
+          v-if="formData.hasCar === '0'"
           readonly
           clickable
           required
@@ -421,7 +421,7 @@ import { Dialog } from 'vant';
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { validatorNum } from '@/utils/validate';
 import { phoneRegExp } from '@/utils/index';
-import { specialInterview } from '@/api/driver.js'
+import { specialInterview, getInterview } from '@/api/driver.js'
 export default {
   name: 'TailoredInterview',
   components: {
@@ -449,7 +449,7 @@ export default {
       householdAddress: [],
       pickerNames: {
         currentHasWork: '',
-        hasOwnCar: '',
+        hasCar: '',
         inviteType: '',
         workCity: '',
         sourceChannel: '',
@@ -490,7 +490,7 @@ export default {
         drivingAge: '',
         livingAge: '',
         drivingLicenceType: '',
-        hasOwnCar: '',
+        hasCar: '',
         currentCarType: '',
         intentDrivingCarType: '',
         heavyLifting: '',
@@ -691,7 +691,9 @@ export default {
           120105: '河北区'
           // ....
         }
-      }
+      },
+      routeName: '',
+      editForm: ''
     };
   },
   computed: {
@@ -699,11 +701,47 @@ export default {
       return this.$route.meta.title;
     }
   },
+  watch: {
+    'formData.hasCar'(val) {
+      if (val === '0') {
+        this.formData.currentCarType = '';
+        this.pickerNames.currentCarType = ''
+      } else {
+        this.formData.intentDrivingCarType = '';
+        this.pickerNames.intentDrivingCarType = ''
+      }
+    }
+  },
   created() {
     this.validatorNum = validatorNum;
     this.phonePattern = phoneRegExp;
   },
+  mounted() {
+    this.routeName = this.$route.path;
+    this.driverId = this.$route.id;
+    if (this.routeName === '/editTailored') {
+      this.getDetail(this.driverId);
+    }
+  },
   methods: {
+    async getDetail(id) {
+      try {
+        let params = {
+          driverId: id
+        }
+        this.$loading(true)
+        let { data: res } = await getInterview(params);
+        if (res.success) {
+          this.editForm = res.data
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
     async onSubmit(values) {
       try {
         this.$loading(true)
@@ -717,11 +755,11 @@ export default {
         params.householdProvince = this.householdAddress[0] // 户籍地址
         params.householdCity = this.householdAddress[1]
         params.householdCounty = this.householdAddress[2]
-        if (this.formData.hasOwnCar === '2') {
+        if (this.formData.hasCar === '0') {
           params.currentCarType = '';
+        } else {
           params.intentDrivingCarType = '';
         }
-        console.log(params, 'params');
         let { data: res } = await specialInterview(params);
         if (res.success) {
           Notify({ type: 'success', message: '面试成功' });
@@ -809,7 +847,7 @@ export default {
         case 'currentHasWork':
           this.columns = this.isOrNot;
           break;
-        case 'hasOwnCar':
+        case 'hasCar':
           this.columns = this.isOrNot;
           break;
         case 'isAdvancedIntention':

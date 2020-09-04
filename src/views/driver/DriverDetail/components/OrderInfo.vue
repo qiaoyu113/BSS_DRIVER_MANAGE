@@ -42,7 +42,7 @@
       <van-field
         label="支付时间"
         colon
-        :value="obj.updateDate"
+        :value="obj.updateDate | parseTime('{y}-{m}-{d}')"
         readonly
       />
     </van-cell-group>

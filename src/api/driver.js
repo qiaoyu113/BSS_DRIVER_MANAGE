@@ -1,5 +1,18 @@
 import request from '@/utils/request'
 let prefix = '/mock/81/'
+let linePrefix = '/mock/74'
+let transportPrefix = '/mock/103'
+
+/**
+ * 司机列表
+ */
+export function getDriverList(data) {
+  return request({
+    url: `${transportPrefix}/v2/driver/getDriverList`,
+    method: 'post',
+    data
+  })
+}
 
 /**
  * 新建共享面试表单
@@ -11,6 +24,18 @@ export function shareInterview(data) {
     data
   })
 }
+/**
+ *
+ *
+ */
+export function getInterview(data) {
+  return request({
+    url: `${prefix}/v2/driver/interview`,
+    method: 'get',
+    params: data
+  })
+}
+
 /**
  * 新建专车面试表单
  */
@@ -117,3 +142,27 @@ export function getOperateTime() {
     method: 'get'
   })
 }
+
+/**
+ *
+获取线路信息
+ */
+export function getLingMessageByDriverId(data) {
+  return request({
+    url: `${linePrefix}/v2/runtest/getLingMessageByDriverId`,
+    method: 'get',
+    params: data
+  })
+}
+
+/**
+ *修改司机加盟经理
+ */
+export function updateGmByDriverId(data) {
+  return request({
+    url: `${prefix}/v2/driver/updateGmByDriverId`,
+    method: 'post',
+    data
+  })
+}
+

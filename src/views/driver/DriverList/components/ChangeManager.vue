@@ -2,7 +2,6 @@
   <div class="changemanager">
     <van-popup
       v-model="managerStatus"
-      closeable
       round
       @click-overlay="colsedPop"
     >
@@ -47,13 +46,13 @@
               clickable
               colon
               :border="false"
-              name="joinManager"
-              :value="pickerNames.joinManager"
+              name="gmId"
+              :value="pickerNames.gmId"
               label="加盟经理"
               clearable
               placeholder="请选择"
               :rules="[{ required: true, message: '请填写加盟经理' }]"
-              @click="showPickerFn('joinManager')"
+              @click="showPickerFn('gmId')"
             />
           </div>
           <div class="btnGroup">
@@ -94,7 +93,8 @@
   </div>
 </template>
 <script>
-import { Popup } from 'vant';
+import { Popup, Notify } from 'vant';
+import { updateGmByDriverId } from '@/api/driver.js'
 export default {
   components: {
     [Popup.name]: Popup
@@ -109,11 +109,11 @@ export default {
     return {
       active: 0,
       pickerNames: {
-        joinManager: '',
+        gmId: '',
         workCity: ''
       },
       formData: {
-        joinManager: '',
+        gmId: '',
         workCity: ''
       },
       columns: [],
@@ -129,7 +129,7 @@ export default {
           code: '1223'
         }
       ],
-      columns_joinManager: [
+      columns_gmId: [
         {
           name: '泽拉斯',
           code: '123'
@@ -154,10 +154,31 @@ export default {
     this.managerStatus = this.status
   },
   methods: {
-    onSubmit(values) {
-      let params = { ...this.formData };
-      console.log(params, this.$parent.checkedList);
-      this.managerStatus = false;
+    async onSubmit(values) {
+      try {
+        this.$loading(true)
+        let params = {
+          'gmId': this.formData.gmId,
+          'driverId': this.$parent.checkedList
+        };
+        console.log(params, this.$parent.checkedList);
+        let { data: res } = await updateGmByDriverId(params);
+        if (res.success) {
+          this.managerStatus = false;
+          if (res.data.flag) {
+            Notify({ type: 'success', message: '加盟经理更改成功' });
+          } else {
+            Notify({ type: 'warn', message: res.data.msg });
+          }
+          this.$emit('changeOver')
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     },
     resetform() {
       this.formData = this.$options.data().formData;
@@ -170,11 +191,11 @@ export default {
     showPickerFn(key) {
       this.pickerKey = key;
       switch (key) {
-        case 'joinManager':
-          this.columns = this.columns_workCity;
+        case 'gmId':
+          this.columns = this.columns_gmId;
           break;
         case 'workCity':
-          this.columns = this.columns_joinManager;
+          this.columns = this.columns_workCity;
           break;
       }
       this.showPicker = true;

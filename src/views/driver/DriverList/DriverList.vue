@@ -14,6 +14,7 @@
         animated
         line-width="30"
         line-height="2"
+        @change="handleTabChange"
       >
         <van-tab
           v-for="(item,index) in tabType"
@@ -21,7 +22,7 @@
         >
           <template #title>
             {{ item.type }}<div class="van-info">
-              99+
+              {{ item.num }}
             </div>
           </template>
         </van-tab>
@@ -55,7 +56,7 @@
           @load="onLoad"
         >
           <ListItem
-            v-for="(item, index) in list"
+            v-for="(item, index) in lists"
             :key="index"
             class="items"
             :item="item"
@@ -89,14 +90,14 @@
         placeholder="请选择"
         @click="showPickerFn('businessType')"
       />
-      <van-field
+      <!-- <van-field
         v-model="formText.GmGroup"
         readonly
         name="GmGroup"
         label="加盟小组"
         placeholder="请选择"
         @click="showPickerFn('GmGroup')"
-      />
+      /> -->
       <van-field
         v-model="formText.GmManager"
         readonly
@@ -114,9 +115,9 @@
         @click="showPickerFn('carType')"
       />
       <van-field
-        v-model="formText.status"
+        v-model="formText.orderStatus"
         readonly
-        name="status"
+        name="orderStatus"
         label="订单状态"
         placeholder="请选择"
         @click="showPickerFn('status')"
@@ -124,7 +125,6 @@
       <van-field
         v-model="formText.dateArr"
         readonly
-        name="status"
         label="创建时间"
         placeholder="请选择"
         @click="dateShow = true"
@@ -157,7 +157,7 @@
     </van-popup>
 
     <!-- 选择加盟经理弹窗 -->
-    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" />
+    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" @changeOver="changeOver" />
 
     <div
       v-if="checked"
@@ -190,6 +190,8 @@ import DriverTitle from './components/DriverTitle';
 import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
+import { getDriverList } from '@/api/driver.js'
+import { GetDictionaryList, getOpenCitys } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -206,7 +208,7 @@ export default {
   data() {
     return {
       checkedList: [],
-      list: [],
+      lists: [],
       loading: false,
       finished: false,
       error: false,
@@ -233,21 +235,15 @@ export default {
         { label: '闫义杰', value: 0 },
         { label: '高艳涛', value: 1 }
       ],
-      columns_status: [
-        { label: '状态1', value: '' },
-        { label: '状态2', value: 0 },
-        { label: '状态3', value: 1 }
+      columns_orderStatus: [
+        { label: '全部', value: '' },
+        { label: '已成交', value: '30' },
+        { label: '审核不通过', value: '25' },
+        { label: '待审核', value: '20' },
+        { label: '待确认', value: '15' }
+        // { label: '已退出', value: '5' }
       ],
-      columns_carType: [
-        {
-          label: '金杯',
-          value: '123'
-        },
-        {
-          label: '金2杯',
-          value: '1223'
-        }
-      ],
+      columns_carType: [],
       showPicker: false,
       showScreen: false,
       minDate: new Date(+new Date() - 86400000 * 365),
@@ -260,42 +256,46 @@ export default {
         GmGroup: '',
         GmManager: '',
         carType: '',
-        status: '',
+        orderStatus: '',
         dateArr: ''
       },
       ruleForm: {
         workCity: '',
         businessType: '',
-        GmGroup: '',
+        // GmGroup: '',
         GmManager: '',
         carType: '',
-        status: '',
+        status: 'all',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        orderStatus: ''
       },
       tabType: [
-        { type: '全部', code: '' },
-        { type: '已面试', code: 1 },
-        { type: '待成交', code: 2 },
-        { type: '已成交', code: 3 },
-        { type: '已上岗', code: 4 },
-        { type: '已退出', code: 5 }
+        { type: '全部', code: 'all', num: '' },
+        { type: '已面试', code: '1', num: '' },
+        { type: '待成交', code: '2', num: '' },
+        { type: '已成交', code: '3', num: '' },
+        { type: '已上岗', code: '4', num: '' },
+        { type: '已退出', code: '5', num: '' }
       ],
       checked: false,
-      changeManagerStatus: false
+      changeManagerStatus: false,
+      page: {
+        current: 0,
+        size: 10
+      }
     };
   },
   computed: {
     checkall: {
       get: function() {
-        return this.list.length === this.checkedList.length;
+        return this.lists.length === this.checkedList.length;
       },
       set: function(val) {
-        console.log(val);
         if (val) {
           this.checkedList = [];
-          this.list.map((ele) => {
-            this.checkedList.push(ele);
+          this.lists.map((ele) => {
+            this.checkedList.push(ele.driverId);
           });
         } else {
           this.checkedList = [];
@@ -303,24 +303,55 @@ export default {
       }
     }
   },
-  mounted() {},
+  watch: {
+    active(val) {
+      this.checkedList = [];
+    }
+  },
+  mounted() {
+    // 请求字典
+    this.fetchData();
+  },
   methods: {
-    onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push({ item: this.list.length + 1 });
-        }
-
-        // 加载状态结束
+    /**
+     * 请求字典接口
+     */
+    fetchData() {
+      GetDictionaryList(['Intentional_compartment'])
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_carType = data.data.Intentional_compartment
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+      getOpenCitys({})
+        .then(({ data }) => {
+          if (data.success) {
+            this.cityList = data.data;
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+    },
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
+      }
+      let result = await this.getLists(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 20) {
-          this.finished = true;
+        if (!result.hasMore) {
+          this.finished = true
         }
-      }, 1000);
+      }
     },
     /**
      * 下拉刷新
@@ -334,9 +365,65 @@ export default {
       this.loading = true;
       this.onLoad();
     },
-    onSubmit(value) {
-      console.log(this.ruleForm);
+    // 状态切换
+    async handleTabChange(tab) {
+      if (tab === 0) {
+        this.ruleForm.status = 'all'
+      } else {
+        this.ruleForm.status = String(tab)
+      }
+      let result = await this.getLists(true)
+      this.lists = result.lists
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          limit: this.page.size
+        }
+        params = { ...params, ...this.ruleForm }
+        if (this.ruleForm.startDate && this.ruleForm.endDate) {
+          params.startDate = new Date(this.ruleForm.startDate).getTime()
+          params.endDate = new Date(this.ruleForm.endDate).getTime()
+        }
+        let { data: res } = await getDriverList(params)
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabType.forEach(item => {
+            if (item.code === this.ruleForm.status) {
+              item.num = res.title[item.code]
+            } else {
+              item.num = ''
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async onSubmit(value) {
+      let result = await this.getLists(true)
+      this.lists = result.lists
       this.onRefresh();
+      this.showScreen = false
     },
     /**
      * 重置form
@@ -378,23 +465,20 @@ export default {
         case 'businessType':
           this.columns = this.columns_businessType;
           break;
-        case 'GmGroup':
-          this.columns = this.columns_GmGroup;
-          break;
+        // case 'GmGroup':
+        //   this.columns = this.columns_GmGroup;
+        //   break;
         case 'GmManager':
           this.columns = this.columns_GmManager;
           break;
         case 'carType':
           this.columns = this.columns_carType;
           break;
-        case 'status':
-          this.columns = this.columns_status;
+        case 'orderStatus':
+          this.columns = this.columns_orderStatus;
           break;
       }
       this.showPicker = true;
-    },
-    formatDate(date) {
-      return `${date.getMonth() + 1}/${date.getDate()}`;
     },
     onConfirm(date) {
       const [start, end] = date;
@@ -402,8 +486,8 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.formText.dateArr = `${startDate} - ${endDate}`;
-      this.ruleForm.startDate = startDate;
-      this.ruleForm.endDate = endDate;
+      this.ruleForm.startDate = start;
+      this.ruleForm.endDate = end;
     },
     closeManagerPop(val) {
       this.changeManagerStatus = val.status
@@ -414,6 +498,9 @@ export default {
     cancelManager() {
       this.checked = false;
       this.checkedList = [];
+    },
+    changeOver() {
+      this.checked = false;
     },
     /**
      * 选则加盟经理
@@ -433,12 +520,11 @@ export default {
      * item选中
      */
     changeCheck(val) {
-      console.log('tag', val);
       if (val.change) {
         this.checkedList.push(val.item);
       } else {
         let arr = this.checkedList.filter((ele) => {
-          return ele !== val.item;
+          return ele !== val;
         });
         this.checkedList = arr;
       }
@@ -482,7 +568,7 @@ export default {
   }
 }
 .padd {
-  padding-bottom: 40px;
+  padding-bottom: 60px;
   box-sizing: border-box;
 }
 </style>

@@ -148,7 +148,7 @@ import LineInfoItem from './components/LineInfoItem';
 import OrderInfo from './components/OrderInfo';
 import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js'
 import { orderDetail } from '@/api/order.js'
-import { getLingMessageByDriverId } from '@/api/tryrun.js'
+import { getLingMessageByDriverId } from '@/api/driver.js'
 export default {
   name: 'DriverDetail',
   components: {
@@ -201,9 +201,13 @@ export default {
   methods: {
     onSelectOrder(item) {
       this.showOrder = false;
-      if (item.url === '/createOrder' || item.url === '/resetOrder') {
+      if (item.url === '/createOrder') {
         this.$router.push({ path: item.url, query: { id: this.driverId, driverName: this.detailInfo.name, driverPhone: this.detailInfo.phone, workCityName: this.detailInfo.workCityName,
           workCity: this.detailInfo.workCity }})
+      } else if (item.url === '/resetOrder') {
+        this.$router.push({ path: item.url, query: { id: this.driverId, driverName: this.detailInfo.name, driverPhone: this.detailInfo.phone, workCityName: this.detailInfo.workCityName,
+          workCity: this.detailInfo.workCity, orderId: '123' }})
+        // this.detailInfo.orderId
       } else {
         this.$router.push({ path: item.url, query: { id: this.driverId }})
       }

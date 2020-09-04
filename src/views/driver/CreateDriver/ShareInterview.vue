@@ -24,6 +24,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择现居住地址' }]"
           @click="showPickerFnArea('interview')"
+          @focus="copyData('interview','select')"
         />
         <van-field
           readonly
@@ -36,6 +37,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请填写工作城市' }]"
           @click="showPickerFn('workCity')"
+          @focus="copyData('workCity','select')"
         />
         <van-field
           v-model="formData.name"
@@ -46,6 +48,7 @@
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机姓名' }]"
+          @focus="copyData('name')"
         />
         <van-field
           v-model="formData.phone"
@@ -56,6 +59,7 @@
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'}]"
+          @focus="copyData('phone')"
         />
         <van-field
           v-model="formData.age"
@@ -67,6 +71,7 @@
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写年龄' },{validator:validatorNum(18,60), message: '年龄应在18至60岁之间'}]"
+          @focus="copyData('age')"
         />
         <van-field
           readonly
@@ -79,6 +84,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
           @click="showPickerFn('hasCar')"
+          @focus="copyData('hasCar','select')"
         />
         <van-field
           v-if="formData.hasCar === '1'"
@@ -91,9 +97,10 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
           @click="showPickerFn('currentCarType')"
+          @focus="copyData('currentCarType','select')"
         />
         <van-field
-          v-if="formData.hasCar === '1'"
+          v-if="formData.hasCar === '0'"
           readonly
           clickable
           required
@@ -103,6 +110,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
           @click="showPickerFn('intentDrivingCarType')"
+          @focus="copyData('currentCarType','select')"
         />
         <van-field
           readonly
@@ -126,6 +134,7 @@
           maxlength="3"
           :rules="[{ required: true, message: '请填写0-500的数字' },
                    {validator:validatorNum(0,500), message: '请填写0-500的数字'}]"
+          @focus="copyData('experience')"
         />
         <van-field
           readonly
@@ -228,6 +237,7 @@
           maxlength="5"
           placeholder="请填写0-25000的数字'"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '原收入应在0至25000元之间'}]"
+          @focus="copyData('originIncomeAvg')"
         />
         <van-field
           v-model="formData.expIncomeAvg"
@@ -239,6 +249,7 @@
           type="digit"
           placeholder="请填写0-25000的数字'"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '期望收入应在0至25000元之间'}]"
+          @focus="copyData('expIncomeAvg')"
         />
         <van-field
           v-model="formData.workDuration"
@@ -249,6 +260,7 @@
           type="digit"
           placeholder="请填写0-500的数字'"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '从业时间应在0至500个月之间'}]"
+          @focus="copyData('workDuration')"
         />
         <van-field
           v-model="formData.scatteredJobRate"
@@ -259,6 +271,7 @@
           type="digit"
           placeholder="请填写0-100的数字'"
           :rules="[{ required: true, message: '请填写0-100的数字' },{validator:validatorNum(0,100), message: '零散活占比应在100之间'}]"
+          @focus="copyData('scatteredJobRate')"
         />
         <van-field
           readonly
@@ -322,7 +335,7 @@ import { Dialog } from 'vant';
 import { phoneRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
-import { shareInterview } from '@/api/driver.js'
+import { shareInterview, getInterview } from '@/api/driver.js'
 export default {
   name: 'ShareInterview',
   components: {
@@ -388,8 +401,8 @@ export default {
       columns: [],
       showAddressPicker: false,
       isOrNot: [
-        { name: '是', code: '0' },
-        { name: '否', code: '1' }
+        { name: '是', code: '1' },
+        { name: '否', code: '0' }
       ],
       columns_workCity: [
         { name: '北京1', code: '123456' },
@@ -469,7 +482,10 @@ export default {
           120105: '河北区'
           // ....
         }
-      }
+      },
+      routeName: '',
+      driverId: '',
+      editForm: {}
     };
   },
   computed: {
@@ -477,11 +493,52 @@ export default {
       return this.$route.meta.title;
     }
   },
+  watch: {
+    'formData.hasCar'(val) {
+      if (val === '0') {
+        this.formData.currentCarType = '';
+        this.pickerNames.currentCarType = ''
+      } else {
+        this.formData.intentDrivingCarType = '';
+        this.pickerNames.intentDrivingCarType = ''
+      }
+    }
+  },
+  mounted() {
+    this.routeName = this.$route.path;
+    this.driverId = this.$route.id;
+    if (this.routeName === '/editShare') {
+      this.getDetail(this.driverId);
+    }
+  },
   created() {
     this.phonePattern = phoneRegExp;
     this.validatorNum = validatorNum;
   },
   methods: {
+    copyData(value) {
+      if (value && value !== 0) {
+        this.formData[value] = this.editForm[value]
+      }
+    },
+    async getDetail(id) {
+      try {
+        let params = {
+          driverId: id
+        }
+        this.$loading(true)
+        let { data: res } = await getInterview(params);
+        if (res.success) {
+          this.editForm = res.data
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
     async onSubmit(values) {
       try {
         this.$loading(true)
@@ -496,8 +553,9 @@ export default {
         params.interviewCity = this.interview[0]
         params.interviewCounty = this.interview[1]
         params.interviewProvince = this.interview[2]
-        if (this.formData.hasCar === '2') {
+        if (this.formData.hasCar === '0') {
           params.currentCarType = '';
+        } else {
           params.intentDrivingCarType = '';
         }
         console.log(params, 'params');

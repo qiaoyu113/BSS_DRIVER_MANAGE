@@ -4,7 +4,7 @@
       <van-cell>
         <template #title>
           <div class="title">
-            <span>{{ obj.customerName }}</span>
+            <span>{{ obj.lineName }}</span>
             <van-icon name="arrow" />
           </div>
         </template>
@@ -12,7 +12,7 @@
       <van-cell>
         <template #title>
           <div class="itemStatus">
-            试跑
+            {{ obj.lineStateName }}
           </div>
         </template>
       </van-cell>
@@ -21,19 +21,19 @@
           title-class="cell-title"
           value-class="cell-value"
           title="线路编号："
-          value="XL19980822651"
+          :value="obj.lineId"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="仓位置："
-          value="如意湖王鼎国际"
+          :value="obj.warehouseAreaName"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="配送区域："
-          value="信阳浉河贤山庙"
+          :value="obj.deliveryAreaName"
         />
         <van-cell
           title-class="cell-title"
@@ -45,7 +45,7 @@
           title-class="cell-title"
           value-class="cell-value"
           title="创建时间："
-          :value="obj"
+          :value="obj.createDate | parseTime('{y}-{m}-{d}')"
         />
       </div>
       <div class="detailBtn">
@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     goRouter() {
-      this.$router.push({ path: '/lineDetail', id: '' })
+      this.$router.push({ path: '/lineDetail', id: this.obj.lineId })
     }
   }
 }
