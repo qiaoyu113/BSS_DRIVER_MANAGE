@@ -9,7 +9,7 @@
       />
     </div>
     <div class="bottom">
-      <StepTwo />
+      <StepTwo :to="'switch'" />
     </div>
   </div>
 </template>
