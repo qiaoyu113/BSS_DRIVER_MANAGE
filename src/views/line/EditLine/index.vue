@@ -231,11 +231,6 @@ export default {
               result.deliveryEndDate
             )
           }
-          this.stepTwoForm.deliveryWeekCycle = [
-            new Date(Date.now() + 1000 * 3600 * 24 * 2),
-            new Date(Date.now() + 1000 * 3600 * 24 * 10)
-          ]
-          this.stepTwoForm.driverWorkTime = new Date(Date.now() + 1000 * 3600 * 24 * 12)
 
           result.lineDeliveryInfoFORMS.forEach(item => {
             let time = `${item.workingTimeStart}-${item.workingTimeEnd}`

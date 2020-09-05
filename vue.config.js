@@ -70,11 +70,6 @@ module.exports = {
       '/api': {
         target: 'http://szjw-domain-gateway.d2.yunniao.cn',
         changeOrigin: true
-      },
-      '/aaa': {
-        target: 'http://szjw-bss-web.m1.yunniao.cn',
-        changeOrigin: true,
-        pathRewrite: { '^/aaa': '' }
       }
     },
     after: require('./mock/mock-server.js')
