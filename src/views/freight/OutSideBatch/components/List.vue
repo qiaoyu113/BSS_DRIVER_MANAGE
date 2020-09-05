@@ -1,28 +1,34 @@
 <template>
   <div>
-    <P v-show="batchShow" class="all">
-      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkLength }} 个出车单位</span>
+    <P class="all">
+      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkbox }} 个出车单位</span>
     </P>
     <div v-for="item in obj" :key="item.id" class="CardItemcontainer">
       <h4 class="title ellipsis">
         {{ item.title }}
-        <span>{{ item.statust }} <input v-show="batchShow" v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
+        <span><input v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
       </h4>
+      <p class="Pink">
+        {{ item.yicahng }}
+      </p>
       <p class="text ellipsis">
         出车单号:{{ item.update }}
       </p>
       <p class="text ellipsis">
         线路名称:{{ item.carType }}
       </p>
-      <p v-if="item.yicahng != ''" class="Pink">
-        {{ item.yicahng }}
-      </p>
+
+      <div class="detail van-hairline--top">
+        <van-button type="default" round hairline @click="handleDetailClick">
+          详情
+        </van-button>
+      </div>
     </div>
-    <div v-show="batchShow" class="Bulk">
+    <div class="Bulk">
       <button @click="cancel()">
         取消批量上传
       </button>
-      <button @click="upBatchFreight">
+      <button @click="Add_to">
         批量上报运费
       </button>
     </div>
@@ -66,6 +72,28 @@ export default {
       this.$router.push({
         path: '/Details'
       })
+    },
+    Add_to() {
+      let obje = []
+      if (!this.checkLength) {
+        Toast.fail('请选择上报运费');
+      } else {
+        this.obj.forEach(item => {
+          if (item.all === true) {
+            obje.push(item)
+          }
+        })
+        this.$router.push({
+          path: '/report',
+          query: {
+            obj: JSON.stringify(obje)
+          }
+        })
+      }
+
+      // this.$router.push({
+      //   name: 'report'
+      // })
     },
     quanxian() {
       this.obj.forEach(item => {
@@ -132,9 +160,11 @@ export default {
 
 <style lang='scss' scoped>
 .CardItemcontainer {
-  padding: 0px 15px;
+  padding: 0px 30px;
   margin-top: 20px;
+  margin-left:20px ;
   font-family: PingFangSC-Semibold;
+  position: relative;
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -143,16 +173,19 @@ export default {
   .title {
     margin: 10px 0px;
     font-size: 14px;
-    color: #3C4353;
+    color: #3C4353 ;
   }
   .title>span{
-    float: right;
+   position: absolute;
+   left: 0px;
+   top: 60px;
+
   }
   .text {
     margin-top:0px;
     margin-bottom:8px;
     font-size: 13px;
-    color: #3C4353;
+    color: #3C4353 ;
   }
   .text_xiang{
     float: right;
@@ -185,12 +218,14 @@ export default {
   }
 }
 .all{
-  margin-left: 30px;
+  margin-left: 20px;
 }
 .Bulk{
   width: 100%;
   height: 50px;
+  background: oldlace;
   display: flex;
+  z-index: 999;
   justify-content: space-between;
 
   position: fixed;
@@ -211,11 +246,12 @@ export default {
 }
 .Pink{
   width: 50px;
-  line-height: 25px;
+  line-height: 20px;
   text-align: center;
-  border-radius:6px ;
-  background: #ff00008a;
-  color: #fff;
+  border-radius:10px ;
+
+  border: 1px solid #ff00008a;
+  color: #ff00008a;
 }
 </style>
 

@@ -139,6 +139,7 @@ import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getProjectList } from '@/api/project'
+import { GetSpecifiedRoleList } from '@/api/common'
 export default {
   components: {
     CardItem,
@@ -179,7 +180,7 @@ export default {
         projectState: '', // 当前激活的tab,
         date: []
       },
-      columns1: [ // 收货点类型数组
+      receivingPointArr: [ // 收货点类型数组
         {
           label: '仓库',
           value: 1
@@ -201,7 +202,7 @@ export default {
           value: 5
         }
       ],
-      columns2: [ // 配送经验数组
+      isDeliveryArr: [ // 配送经验数组
         {
           label: '有需求',
           value: 1
@@ -211,7 +212,7 @@ export default {
           value: 2
         }
       ],
-      columns3: [ // 是否需要回单
+      returnBillArr: [ // 是否需要回单
         {
           label: '是',
           value: 1
@@ -309,22 +310,34 @@ export default {
     },
     // 模糊搜索
     handleSearchChange(value) {
-      console.log('这里面接口请求模糊查询:', value)
+      if (this.modalKey === 'dutyManagerId') {
+        let params = {
+          keyword: value,
+          roleId: 3
+        }
+        this.getOpenCityList(params)
+      } else if (this.modalKey === 'lineSaleId') {
+        let params = {
+          keyword: value,
+          roleId: 2
+        }
+        this.getOpenCityList(params)
+      }
     },
     /**
      *点击某一项
      */
     handleValueClick(obj) {
-      this.form[obj.type] = obj.code
-      this.pickerNames[obj.type] = obj.name
+      this.form[obj.type] = obj.value
+      this.pickerNames[obj.type] = obj.label
     },
     // 打开模糊查询框
     handleShowModal(key) {
       this.modalKey = key
       if (key === 'lineSaleId') {
-        this.options = []
+        this.getSpecifiedRoleList({ roleId: 2 })
       } else if (key === 'dutyManagerId') {
-        this.options = []
+        this.getSpecifiedRoleList({ roleId: 3 })
       }
       this.showModal = true
     },
@@ -333,11 +346,11 @@ export default {
       this.columns = []
       this.pickerKey = key;
       if (key === 'receivingPoint') {
-        this.columns.push(...this.columns1);
+        this.columns.push(...this.receivingPointArr);
       } else if (key === 'isDelivery') {
-        this.columns.push(...this.columns2);
+        this.columns.push(...this.isDeliveryArr);
       } else if (key === 'returnBill') {
-        this.columns.push(...this.columns3);
+        this.columns.push(...this.returnBillArr);
       }
       this.showPicker = true;
     },
@@ -354,6 +367,22 @@ export default {
         this.form[this.pickerKey] = obj.value
       }
       this.showPicker = false;
+    },
+    // 获取外线销售和上岗经理
+    async getSpecifiedRoleList(params) {
+      try {
+        let { data: res } = await GetSpecifiedRoleList(params)
+        if (res.success) {
+          this.options = res.data.map(item => ({
+            label: item.name,
+            value: item.id
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get list fail:${err}`)
+      }
     },
     // 状态切换
     async handleTabChange(tab) {

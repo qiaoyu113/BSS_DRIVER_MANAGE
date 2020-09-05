@@ -9,7 +9,7 @@
         <span><input v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
       </h4>
       <p class="Pink">
-        {{ item.yicahng }}
+        {{ item.statust }}
       </p>
       <p class="text ellipsis">
         出车单号:{{ item.update }}
@@ -66,7 +66,7 @@ export default {
     },
     quanxian() {
       if (this.checkedo === true) {
-        this.checkbox = this.obj
+        this.checkbox = this.obj.length
       } else {
         this.checkbox = 0
       }
@@ -76,15 +76,6 @@ export default {
       this.getLength()
     },
     checkboxall(v) {
-      console.log(v.all)
-      var arr = []
-      if (v.all === true) {
-        arr.push(v)
-        this.checkbox = arr.length
-      } else {
-        console.log(this.checkbox - '1')
-      }
-
       this.obj.filter(res => {
         if (res.all === true) {
           this.checkedo = true

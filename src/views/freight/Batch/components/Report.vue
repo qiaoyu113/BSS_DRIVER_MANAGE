@@ -1,7 +1,7 @@
 <template>
   <div class="lineListContainer">
     <van-sticky :offset-top="0">
-      <van-nav-bar title="加盟运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="批量运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <!-- <div class="headerRight" @click="batch">
             批量上报
@@ -13,7 +13,7 @@
       <p>提示：一批量选择 <span class="blur_clor">{{ 3 }}</span> 个出单车</p>
       <!-- 出车多趟 -->
       <ul>
-        <li><span>已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
+        <li><span class="status">已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
         <li class="Number_ong">
@@ -41,7 +41,7 @@
       </ul>
       <!-- 单趟出车 -->
       <ul>
-        <li><span>已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
+        <li><span class="status">已出车</span> <span><van-switch v-model="checked1" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
         <li>
@@ -60,7 +60,7 @@
       </ul>
       <!-- 未出车 -->
       <ul>
-        <li><span>已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
+        <li><span class="status">已出车</span> <span><van-switch v-model="checked2" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
       </ul>
@@ -78,32 +78,48 @@
     </div>
     <div class="Bulk">
       <button @click="cancel">
-        取消批量上传
+        全部未出车
       </button>
-      <button>批量上报运费</button>
+      <button>全部上报</button>
     </div>
   </div>
 </template>
 <script>
+import { noCarBatchByGM } from '@/api/freight'
 export default {
   data() {
     return {
       checked: true,
       value: '',
       message: '',
+      checked1: '',
+      checked2: '',
       obj: ''
     }
   },
   mounted() {
-    // this.obj = JSON.parse(this.$route.query.obj)
-    // console.log(this.obj)
+    this.obj = JSON.parse(this.$route.query.obj)
+    console.log(this.obj)
   },
   methods: {
     onClickLeft() {
       this.$router.go(-1)
     },
     cancel() {
-      this.$router.go(-1)
+      // this.$router.go(-1)
+      this.noCarBatchByGM()
+    },
+    async noCarBatchByGM() {
+      try {
+        let { data: res } = await noCarBatchByGM()
+        if (res.success) {
+          this.lists = res.data
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     }
 
   }
@@ -143,7 +159,8 @@ export default {
   overflow: hidden;
 }
 .cont_ent>p{
-  margin-left: 20px;
+  background: #FBF8F2 ;
+  text-indent: 20px;
 }
 .cont_ent>ul{
   width: 100%;
@@ -193,27 +210,29 @@ border-radius:5px  0px  0px  5px;
 .Bulk{
   width: 100%;
   z-index: 999;
+  font-size: 15px;
   height: 50px;
   background: #fff;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   position: fixed;
   bottom: 0;
 }
 .Bulk>button{
   border: none;
 
-  border-radius: 5px;
+  border-radius: 2px;
 }
 .Bulk>button:nth-child(1){
-  width: 50%;
-    background: #b67a7aa8;
-    color: #fff;
+  width: 46%;
+  background: #fff;
+  border: 1px solid #2F448A;
+    color: #2F448A;
 }
 .Bulk>button:nth-child(2){
-  width: 50%;
+  width: 46%;
   color: #fff;;
-  background: #0000ff75;
+  background: #2F448A;
 }
 .blur_clor{
 color:#0000ffa6;
@@ -222,6 +241,14 @@ color:#0000ffa6;
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+.status{
+  width: 50px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  border: 1px solid #3ACB8D ;
+  border-radius: 20px ;
 }
 
 </style>

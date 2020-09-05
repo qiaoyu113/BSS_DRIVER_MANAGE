@@ -9,7 +9,7 @@
     <van-field label="客户名称" label-width="100" readonly :value="form.customerCompanyName" :border="false" colon />
     <van-field label="客户类型" label-width="100" readonly :value="form.customerTypeName" :border="false" colon />
     <!-- 公司 -->
-    <van-field v-if="form.customerCompanyMain" label="公司主体" label-width="100" readonly :value="form.customerCompanyMain" :border="false" colon />
+    <van-field v-if="form.customerType ===1" label="公司主体" label-width="100" readonly :value="form.customerCompanyMain" :border="false" colon />
     <van-field label="客户编号" label-width="100" readonly :value="form.customerId" :border="false" colon />
     <van-field label="创建人" label-width="100" readonly :value="form.createName" :border="false" colon />
     <van-field label="审核状态" label-width="100" readonly :value="form.reviewStateName" :border="false" colon />
@@ -30,7 +30,7 @@
     <van-field label="详细地址" label-width="100" readonly :value="form.address" :border="false" colon />
     <van-field label="备注" label-width="100" readonly :value="form.remark" colon />
 
-    <van-cell-group title="营业执照" class="busiLicense">
+    <van-cell-group v-if="form.customerType ===1" title="营业执照" class="busiLicense">
       <ImagePreview :image-arrs="form.businessLicenseUrl" />
     </van-cell-group>
   </div>

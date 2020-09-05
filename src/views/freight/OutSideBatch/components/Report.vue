@@ -1,7 +1,7 @@
 <template>
   <div class="lineListContainer">
     <van-sticky :offset-top="0">
-      <van-nav-bar title="加盟运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="批量运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <!-- <div class="headerRight" @click="batch">
             批量上报
@@ -13,46 +13,54 @@
       <p>提示：一批量选择 <span class="blur_clor">{{ 3 }}</span> 个出单车</p>
       <!-- 出车多趟 -->
       <ul>
-        <li><span>已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
+        <li><span class="status">已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
-        <li>
+        <li class="Number_ong">
           <p>*趟数1:0:02 - 06:00</p>
           <div class="Number">
-            <van-field v-model="value" placeholder="" />
+            <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
+            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
+
             <van-button type="default">
-              元
+              <van-icon name="arrow" color="#A6AAB8" />
             </van-button>
           </div>
         </li>
-        <li>
+        <li class="Number_ong">
           <p>*趟数2:0:02 - 06:00</p>
           <div class="Number">
-            <van-field v-model="value" placeholder="" />
+            <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
+            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
+
             <van-button type="default">
-              元
+              <van-icon name="arrow" color="#A6AAB8" />
             </van-button>
           </div>
         </li>
       </ul>
       <!-- 单趟出车 -->
       <ul>
-        <li><span>已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
+        <li><span class="status">已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
         <li>
-          <p>*趟数1:0:02 - 06:00</p>
-          <div class="Number">
-            <van-field v-model="value" placeholder="" />
-            <van-button type="default">
-              元
-            </van-button>
+          <div class="Number_ong">
+            <p>*趟数1:0:02 - 06:00</p>
+            <div class="Number">
+              <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
+              <input v-model="value" type="text" style="border:none" placeholder="350.00元">
+
+              <van-button type="default">
+                <van-icon name="arrow" color="#A6AAB8" />
+              </van-button>
+            </div>
           </div>
         </li>
       </ul>
       <!-- 未出车 -->
       <ul>
-        <li><span>已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
+        <li><span class="status">已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
       </ul>
@@ -60,21 +68,19 @@
     <div class="Remarks">
       <van-field
         v-model="message"
-
-        rows="4"
+        rows="3"
         autosize
         label="备注:"
         type="textarea"
-        maxlength="150"
-        placeholder="请输入备注"
+        placeholder="请输入不超过150字"
         show-word-limit
       />
     </div>
     <div class="Bulk">
       <button @click="cancel">
-        取消批量上传
+        全部未出车
       </button>
-      <button>批量上报运费</button>
+      <button>全部上报</button>
     </div>
   </div>
 </template>
@@ -85,12 +91,12 @@ export default {
       checked: true,
       value: '',
       message: '',
-      obj: []
+      obj: ''
     }
   },
   mounted() {
-    this.obj = JSON.parse(this.$route.query.obj)
-    console.log(this.obj)
+    // this.obj = JSON.parse(this.$route.query.obj)
+    // console.log(this.obj)
   },
   methods: {
     onClickLeft() {
@@ -137,13 +143,14 @@ export default {
   overflow: hidden;
 }
 .cont_ent>p{
-  margin-left: 20px;
+  background: #FBF8F2 ;
+  text-indent: 20px;
 }
 .cont_ent>ul{
   width: 100%;
-     padding: 10px 10px 30px 10px;
+  padding: 10px 10px 20px 10px;
   box-sizing: border-box;
-  background: #dddddd;
+  background: #fff;
   height: 100%;
   margin-top: 10px;
 }
@@ -158,9 +165,13 @@ export default {
   color: yellowgreen;
 }
 .Number{
-  width: 80%;
+  width: 50%;
+  height: 35px;
   display: flex;
   justify-content: space-between;
+}
+.Number>input{
+  text-align: right;
 }
 .cont_ent>ul>li:nth-child(2){
   color: #666;
@@ -171,42 +182,57 @@ export default {
     line-height: 25px;
 }
 .van-cell {
-    line-height: 0.5rem;
+line-height: 0.5rem;
 border-right: 1px solid #ccc;
+border-bottom :none;
 border-radius:5px  0px  0px  5px;
 
 }
 .Remarks{
-  margin: 10px 0 100px 0;
+  margin: 10px 0 80px 0;
 }
 .Bulk{
   width: 100%;
   z-index: 999;
+  font-size: 15px;
   height: 50px;
   background: #fff;
   display: flex;
-  justify-content: space-between;
-
+  justify-content: space-around;
   position: fixed;
   bottom: 0;
 }
 .Bulk>button{
   border: none;
 
-  border-radius: 5px;
+  border-radius: 2px;
 }
 .Bulk>button:nth-child(1){
-  width: 50%;
-    background: #b67a7aa8;
-    color: #fff;
+  width: 46%;
+  background: #fff;
+  border: 1px solid #2F448A;
+    color: #2F448A;
 }
 .Bulk>button:nth-child(2){
-  width: 50%;
+  width: 46%;
   color: #fff;;
-  background: #0000ff75;
+  background: #2F448A;
 }
 .blur_clor{
 color:#0000ffa6;
+}
+.Number_ong{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.status{
+  width: 50px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  border: 1px solid #3ACB8D ;
+  border-radius: 20px ;
 }
 
 </style>
@@ -214,7 +240,7 @@ color:#0000ffa6;
   .Remarks >>> .van-field__body  {
     border: 1px solid #ddd;
   }
-  .Remarks >>>.van-cell[data-v-9567927c] {
+  .Remarks >>>.van-cell {
     line-height: 0.5rem;
     border: none;
 
@@ -226,8 +252,16 @@ color:#0000ffa6;
 
 }
 .Remarks >>>.van-cell {
+ width: 84%;
 
-    width: 84%;
-
+}
+.Number >>>.van-button{
+  height: 35px;
+}
+.van-button--default{
+  border: none;
+  background: #fff;
+  color: #A6AAB8;
+  font-size: ;
 }
 </style>

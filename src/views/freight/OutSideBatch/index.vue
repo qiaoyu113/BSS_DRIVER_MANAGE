@@ -97,12 +97,13 @@
 </template>
 
 <script>
-// import Suggest from '@/components/SuggestSearch.vue'
+import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
 import { Toast } from 'vant'
 export default {
   components: {
-    CardItem
+    CardItem,
+    Suggest
   },
   data() {
     return {
