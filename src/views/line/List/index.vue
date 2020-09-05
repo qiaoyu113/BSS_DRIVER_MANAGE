@@ -194,6 +194,7 @@ import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getLineList } from '@/api/line'
+import { getOpenCitys, GetSpecifiedRoleList } from '@/api/common'
 export default {
   components: {
     CardItem,
@@ -255,7 +256,7 @@ export default {
         driverWorkTime: '',
         date: []
       },
-      columns1: [
+      busiTypeArr: [
         {
           label: '专车',
           value: 0
@@ -265,7 +266,7 @@ export default {
           value: 1
         }
       ],
-      columns2: [
+      lineBalanceArr: [
         {
           label: '有线路余额',
           value: 1
@@ -275,7 +276,7 @@ export default {
           value: 2
         }
       ],
-      columns3: [
+      lineCategoryArr: [
         {
           label: '稳定线路',
           value: 1
@@ -285,7 +286,7 @@ export default {
           value: 2
         }
       ],
-      columns4: [
+      lineTypeArr: [
         {
           label: '城配线',
           value: 1
@@ -366,35 +367,102 @@ export default {
     },
     // 查询
     onQuery() {
-      console.log('submit', this.form);
+      this.getLists()
+      this.show = false
     },
     // 重置
     onReset(form) {
-      this.pickerNames = {}
-      this.form = {}
-      console.log('reset');
+      this.pickerNames = {
+        busiType: '',
+        lineBalance: '',
+        lineCategory: '',
+        lineType: '',
+        waitDirveValidity: '',
+        driverWorkTime: '',
+        date: ''
+      }
+      this.form = {
+        lineState: '', // 当前激活的tab,
+        busiType: '',
+        lineBalance: '',
+        lineCategory: '',
+        lineType: '',
+        waitDirveValidity: '',
+        driverWorkTime: '',
+        date: []
+      }
     },
     // 模糊搜索
     handleSearchChange(value) {
-      console.log('这里面接口请求模糊查询:', value)
+      if (this.modalKey === 'dutyManagerId') {
+        let params = {
+          keyword: value,
+          roleId: 3
+        }
+        this.getOpenCityList(params)
+      } else if (this.modalKey === 'lineSaleId') {
+        let params = {
+          keyword: value,
+          roleId: 2
+        }
+        this.getOpenCityList(params)
+      } else if (this.modalKey === 'carType') {
+        let params = {
+          keyword: value
+        }
+        this.getOpenCityList(params)
+      }
     },
     /**
      *点击某一项
      */
     handleValueClick(obj) {
-      console.log('xxx:', obj)
+      this.form[obj.type] = obj.value
+      this.pickerNames[obj.type] = obj.label
     },
     // 打开模糊查询框
-    handleShowModal(key) {
+    async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.options = []
+        this.getSpecifiedRoleList({ roleId: 3 })
       } else if (key === 'lineSaleId') {
-        this.options = []
+        this.getSpecifiedRoleList({ roleId: 2 })
       } else if (key === 'carType') {
-        this.options = []
+        this.getOpenCityList()
       }
       this.showModal = true
+    },
+    // 获取外线销售和上岗经理
+    async getSpecifiedRoleList(params) {
+      try {
+        let { data: res } = await GetSpecifiedRoleList(params)
+        if (res.success) {
+          this.options = res.data.map(item => ({
+            label: item.name,
+            value: item.id
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get list fail:${err}`)
+      }
+    },
+    // 获取开通的城市列表
+    async getOpenCityList(params = {}) {
+      try {
+        let { data: res } = await getOpenCitys(params)
+        if (res.success) {
+          this.options = res.data.map(item => ({
+            label: item.name,
+            value: item.code
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get open city list fail:${err}`)
+      }
     },
     // 显示picker
     showPickerFn(key) {
@@ -403,13 +471,13 @@ export default {
       if (key === 'selectLine') {
         this.columns.push(...this.lineColumns);
       } else if (key === 'busiType') {
-        this.columns.push(...this.columns1);
+        this.columns.push(...this.busiTypeArr);
       } else if (key === 'lineBalance') {
-        this.columns.push(...this.columns2);
+        this.columns.push(...this.lineBalanceArr);
       } else if (key === 'lineCategory') {
-        this.columns.push(...this.columns3);
+        this.columns.push(...this.lineCategoryArr);
       } else if (key === 'lineType') {
-        this.columns.push(...this.columns4);
+        this.columns.push(...this.lineTypeArr);
       }
       this.showPicker = true;
     },
@@ -459,6 +527,9 @@ export default {
         this.form.lineCategory && (params.lineCategory = this.form.lineCategory)
         this.form.lineType && (params.lineType = this.form.lineType)
         this.form.waitDirveValidity && (params.waitDirveValidity = this.form.waitDirveValidity)
+        this.form.carType && (params.carType = this.form.carType)
+        this.form.dutyManagerId && (params.dutyManagerId = this.form.dutyManagerId)
+        this.form.lineSaleId && (params.lineSaleId = this.form.lineSaleId)
         this.form.driverWorkTime && (params.driverWorkTime = this.form.driverWorkTime)
         if (this.form.date && this.form.date.length > 1) {
           params.startDate = new Date(this.form.date[0]).getTime()

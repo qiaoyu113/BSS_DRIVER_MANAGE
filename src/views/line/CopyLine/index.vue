@@ -41,7 +41,9 @@ export default {
         distance: '', // 配送总里程数
         limitRemark: '', // 限行区域说明
         area: [], // 主要配送区域
-        districtArea: ''
+        districtArea: '',
+        lineId: '',
+        carTypeName: ''
       },
       stepTwoForm: {
         driverWorkTime: '', // 司机上岗时间
@@ -54,7 +56,11 @@ export default {
         settlementDays: '', // 结算天数
         shipperOffer: '', // 预计月报价
         everyTripGuaranteed: '', // 单趟报价/每趟保底
-        everyUnitPrice: ''// 每趟提成单价
+        everyUnitPrice: '', // 每趟提成单价
+        provinceAreaName: '',
+        cityAreaName: '',
+        countyAreaName: '',
+        lineId: ''
       },
       stepThreeForm: {
         cargoType: '', // 货物类型
@@ -62,7 +68,8 @@ export default {
         volume: '', // 货物体积
         goodsWeight: '', // 货物重量
         carry: '', // 是否需要搬运
-        dutyRemark: '' // 其他上岗要求
+        dutyRemark: '', // 其他上岗要求
+        lineId: ''
       }
     }
   },
@@ -163,7 +170,7 @@ export default {
             ...this.stepOneForm,
             ...{
               lineName: result.lineName,
-              lineNum: '',
+              lineNum: result.lineNum,
               lineBalance: result.lineBalance,
               waitDirveValidity: result.waitDirveValidity,
               stabilityRate: result.stabilityRate,
@@ -178,7 +185,12 @@ export default {
                 result.cityArea,
                 result.countyArea
               ],
-              districtArea: result.districtArea
+              districtArea: result.districtArea,
+              provinceAreaName: result.provinceAreaName,
+              cityAreaName: result.cityAreaName,
+              countyAreaName: result.countyAreaName,
+              lineId: result.lineId,
+              carTypeName: result.carTypeName
             }
           }
           this.stepTwoForm = {
@@ -187,14 +199,16 @@ export default {
               driverWorkTime: result.driverWorkTime,
               monthNum: result.monthNum,
               dayNum: result.dayNum,
-              incomeSettlementMethod: '',
-              settlementCycle: result.incomeSettlementMethod,
+              incomeSettlementMethod: result.incomeSettlementMethod,
+              settlementCycle: result.settlementCycle,
               settlementDays: result.settlementDays,
               shipperOffer: result.shipperOffer,
               everyTripGuaranteed: result.everyTripGuaranteed,
-              everyUnitPrice: result.everyUnitPrice
+              everyUnitPrice: result.everyUnitPrice,
+              lineId: result.lineId
             }
           }
+
           this.stepThreeForm = {
             ...this.step.stepThreeForm,
             ...{
@@ -203,7 +217,8 @@ export default {
               volume: result.volume,
               goodsWeight: result.goodsWeight,
               carry: result.carry,
-              dutyRemark: result.dutyRemark
+              dutyRemark: result.dutyRemark,
+              lineId: result.lineId
             }
           }
           if (this.isStable) {
@@ -214,8 +229,9 @@ export default {
               result.deliveryEndDate
             )
           }
+
           result.lineDeliveryInfoFORMS.forEach(item => {
-            let time = `${item.workingTimeStart}-${item.workingTimeEnd} `
+            let time = `${item.workingTimeStart}-${item.workingTimeEnd}`
             this.stepTwoForm.workingTime.push(time)
           })
         } else {

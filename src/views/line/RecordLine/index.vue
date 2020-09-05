@@ -11,13 +11,43 @@
     <!-- form表单 -->
     <van-form ref="recordLine" @submit="onSubmit">
       <van-field label="库房装货图片" colon label-width="100">
-        <van-uploader slot="input" v-model="showForm.warehouseLoadingPictures" name="warehouseLoadingPictures" :after-read="afterRead" :max-count="6" :before-delete="handleDeleteFile" />
+        <van-uploader
+          slot="input"
+          v-model="showForm.warehouseLoadingPictures"
+          name="warehouseLoadingPictures"
+          :after-read="afterRead"
+          :max-count="6"
+          :before-delete="handleDeleteFile"
+          :max-size="5 * 1024 * 1024"
+          @oversize="onOversize('5M')"
+        />
       </van-field>
       <van-field label="其他图片" colon>
-        <van-uploader slot="input" v-model="showForm.otherPictures" name="otherPictures" :after-read="afterRead" :max-count="6" :before-delete="handleDeleteFile" />
+        <van-uploader
+          slot="input"
+          v-model="showForm.otherPictures"
+          name="otherPictures"
+          :after-read="afterRead"
+          :max-count="6"
+          :before-delete="handleDeleteFile"
+          :max-size="5 * 1024 * 1024"
+          @oversize="onOversize('5M')"
+        />
       </van-field>
       <van-field label="装货视频" colon class="video">
-        <van-uploader slot="input" v-model="showForm.loadingVideo" name="loadingVideo" :after-read="afterRead" :max-count="1" :preview-full-image="false" accept="video/*" :before-delete="handleDeleteFile" @click-preview="handleVideoPreview">
+        <van-uploader
+          slot="input"
+          v-model="showForm.loadingVideo"
+          name="loadingVideo"
+          :after-read="afterRead"
+          :max-count="1"
+          :preview-full-image="false"
+          accept="video/*"
+          :before-delete="handleDeleteFile"
+          :max-size="50 * 1024 * 1024"
+          @oversize="onOversize('50M')"
+          @click-preview="handleVideoPreview"
+        >
         </van-uploader>
       </van-field>
       <p class="tips van-hairline--bottom">
@@ -52,13 +82,11 @@
 </template>
 
 <script>
-import Toast from 'vant'
 import { upload } from '@/api/common'
 import { collectLineInfo } from '@/api/line'
 import VideoPlay from '../components/video'
 export default {
   components: {
-    [Toast.name]: Toast,
     VideoPlay
   },
   data() {
@@ -156,6 +184,10 @@ export default {
     handleVideoPreview() {
       this.videoUrl = this.showForm.loadingVideo[0].content
       this.show = true
+    },
+    // 文件最大限制
+    onOversize(size) {
+      this.$toast(`文件大小不能超过${size}`)
     }
   }
 }

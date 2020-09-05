@@ -105,12 +105,8 @@
     <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
-      :options="openCitys"
+      :options="options"
       :type="modalKey"
-      :props="{
-        label:'name',
-        value:'code'
-      }"
       @keyWordValue="handleSearchChange"
       @finish="handleValueClick"
       @closed="showModal=false"
@@ -162,8 +158,8 @@ export default {
         classification: '', // 客户属性
         date: []
       },
-      openCitys: [], // 开通城市列表
-      columns2: [
+      options: [], // 开通城市列表
+      customerTypeArr: [
         {
           label: '公司',
           value: 1
@@ -173,7 +169,7 @@ export default {
           value: 2
         }
       ],
-      columns3: [
+      classificationArr: [
         {
           label: '外线客户',
           value: 1
@@ -281,8 +277,8 @@ export default {
      *点击模糊查询框某一项
      */
     handleValueClick(obj) {
-      this.form[obj.type] = obj.code
-      this.pickerNames[obj.type] = obj.name
+      this.form[obj.type] = obj.value
+      this.pickerNames[obj.type] = obj.label
     },
     // 打开模糊查询框
     handleShowModal(key) {
@@ -297,9 +293,9 @@ export default {
       this.columns = []
       this.pickerKey = key;
       if (key === 'customerType') {
-        this.columns.push(...this.columns2);
+        this.columns.push(...this.customerTypeArr);
       } else if (key === 'classification') {
-        this.columns.push(...this.columns3);
+        this.columns.push(...this.classificationArr);
       }
       this.showPicker = true;
     },
@@ -323,8 +319,12 @@ export default {
       try {
         let { data: res } = await getOpenCitys(params)
         if (res.success) {
-          this.openCitys = []
-          this.openCitys.push(...res.data)
+          this.options = res.data.map(item => ({
+            label: item.name,
+            value: item.code
+          }))
+        } else {
+          this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get open city list fail:${err}`)
