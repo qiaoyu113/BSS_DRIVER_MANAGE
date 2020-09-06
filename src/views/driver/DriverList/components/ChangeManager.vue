@@ -95,6 +95,7 @@
 <script>
 import { Popup, Notify } from 'vant';
 import { updateGmByDriverId } from '@/api/driver.js'
+import { getCurrentLowerOfficeCityData } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -119,16 +120,7 @@ export default {
       columns: [],
       pickerKey: '',
       showPicker: false,
-      columns_workCity: [
-        {
-          name: '北京',
-          code: '123'
-        },
-        {
-          name: '天津',
-          code: '1223'
-        }
-      ],
+      columns_workCity: [],
       columns_gmId: [
         {
           name: '泽拉斯',
@@ -151,9 +143,20 @@ export default {
     }
   },
   mounted() {
-    this.managerStatus = this.status
+    this.managerStatus = this.status;
+    this.fetchData();
   },
   methods: {
+    fetchData() {
+      getCurrentLowerOfficeCityData({})
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_workCity = data.data;
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+    },
     async onSubmit(values) {
       try {
         this.$loading(true)
@@ -167,6 +170,7 @@ export default {
           this.managerStatus = false;
           if (res.data.flag) {
             Notify({ type: 'success', message: '加盟经理更改成功' });
+            this.$parent.checkedList = []
           } else {
             Notify({ type: 'warn', message: res.data.msg });
           }

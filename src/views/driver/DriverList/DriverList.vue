@@ -45,7 +45,7 @@
     <div class="list">
       <van-pull-refresh
         v-model="refreshing"
-        @refresh="onRefresh"
+        @refresh="onLoad(true)"
       >
         <van-list
           v-model="loading"
@@ -120,7 +120,7 @@
         name="orderStatus"
         label="订单状态"
         placeholder="请选择"
-        @click="showPickerFn('status')"
+        @click="showPickerFn('orderStatus')"
       />
       <van-field
         v-model="formText.dateArr"
@@ -149,7 +149,7 @@
     >
       <van-picker
         show-toolbar
-        value-key="label"
+        value-key="name"
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirmPicker"
@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getOpenCitys } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -216,31 +216,27 @@ export default {
       columns: [],
       pickerKey: '',
       columns_businessType: [
-        { label: '全部', value: '' },
-        { label: '专车', value: 0 },
-        { label: '共享', value: 1 }
+        { name: '全部', code: '' },
+        { name: '专车', code: 0 },
+        { name: '共享', code: 1 }
       ],
-      columns_workCity: [
-        { label: '北京', value: '' },
-        { label: '河南', value: 0 },
-        { label: '澳大利亚', value: 1 }
-      ],
+      columns_workCity: [],
       columns_GmGroup: [
-        { label: '共享一组', value: '' },
-        { label: '共享二组', value: 0 },
-        { label: '共享三组', value: 1 }
+        { name: '共享一组', code: '' },
+        { name: '共享二组', code: 0 },
+        { name: '共享三组', code: 1 }
       ],
       columns_GmManager: [
-        { label: '李威山', value: '' },
-        { label: '闫义杰', value: 0 },
-        { label: '高艳涛', value: 1 }
+        { name: '李威山', code: '' },
+        { name: '闫义杰', code: 0 },
+        { name: '高艳涛', code: 1 }
       ],
       columns_orderStatus: [
-        { label: '全部', value: '' },
-        { label: '已成交', value: '30' },
-        { label: '审核不通过', value: '25' },
-        { label: '待审核', value: '20' },
-        { label: '待确认', value: '15' }
+        { name: '全部', code: '' },
+        { name: '已成交', code: '30' },
+        { name: '审核不通过', code: '25' },
+        { name: '待审核', code: '20' },
+        { name: '待确认', code: '15' }
         // { label: '已退出', value: '5' }
       ],
       columns_carType: [],
@@ -320,15 +316,17 @@ export default {
       GetDictionaryList(['Intentional_compartment'])
         .then(({ data }) => {
           if (data.success) {
-            this.columns_carType = data.data.Intentional_compartment
+            this.columns_carType = data.data.Intentional_compartment.map(ele => {
+              return { name: ele.dictLabel, code: ele.dictValue }
+            })
           }
         }).catch((err) => {
           console.log(err)
         });
-      getOpenCitys({})
+      getCurrentLowerOfficeCityData({})
         .then(({ data }) => {
           if (data.success) {
-            this.cityList = data.data;
+            this.columns_workCity = data.data;
           }
         }).catch((err) => {
           console.log(err)
@@ -372,6 +370,7 @@ export default {
       } else {
         this.ruleForm.status = String(tab)
       }
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
     },
@@ -383,10 +382,15 @@ export default {
           page: this.page.current,
           limit: this.page.size
         }
-        params = { ...params, ...this.ruleForm }
+        this.ruleForm.workCity && (params.workCity = this.ruleForm.workCity)
+        this.ruleForm.businessType && (params.businessType = this.ruleForm.businessType)
+        this.ruleForm.GmManager && (params.GmManager = this.ruleForm.GmManager)
+        this.ruleForm.carType && (params.carType = this.ruleForm.carType)
+        this.ruleForm.status && (params.status = this.ruleForm.status)
+        this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
         if (this.ruleForm.startDate && this.ruleForm.endDate) {
-          params.startDate = new Date(this.ruleForm.startDate).getTime()
-          params.endDate = new Date(this.ruleForm.endDate).getTime()
+          this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
         }
         let { data: res } = await getDriverList(params)
         if (res.success) {
@@ -420,9 +424,10 @@ export default {
       }
     },
     async onSubmit(value) {
-      let result = await this.getLists(true)
-      this.lists = result.lists
-      this.onRefresh();
+      // let result = await this.getLists(true)
+      // this.lists = result.lists
+      // this.onRefresh();
+      this.getLists()
       this.showScreen = false
     },
     /**
@@ -449,8 +454,8 @@ export default {
      * picker 选择
      */
     onConfirmPicker(value) {
-      this.formText[this.pickerKey] = value.label;
-      this.ruleForm[this.pickerKey] = value.value;
+      this.formText[this.pickerKey] = value.name;
+      this.ruleForm[this.pickerKey] = value.code;
       this.showPicker = false;
     },
     /**

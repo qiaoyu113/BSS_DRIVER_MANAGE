@@ -37,7 +37,7 @@
             />
             <van-field
               label="工作城市："
-              :value="workCityName"
+              :value="formData.driverInfoFORM.workCityName"
               required
               readonly
             />
@@ -54,7 +54,20 @@
               value="商品信息"
               is-link
             />
-            <van-field
+            <selftPicker
+              picker-key="busiType"
+              :form="formData"
+              :columns="columns_busiType"
+              value="name"
+              :is-computed="formData['busiType']!==''"
+              required
+              label="商品分类"
+              placeholder="请选择"
+              :rules="[
+                { required: true, message: '请选择' },
+              ]"
+            />
+            <!-- <van-field
               readonly
               clickable
               colon
@@ -64,8 +77,21 @@
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('busiType')"
+            /> -->
+            <selftPicker
+              picker-key="cooperationModel"
+              :form="formData"
+              :columns="columns_cooperationModel"
+              value="name"
+              :is-computed="formData['cooperationModel']!==''"
+              required
+              label="合作模式"
+              placeholder="请选择"
+              :rules="[
+                { required: true, message: '请选择' },
+              ]"
             />
-            <van-field
+            <!-- <van-field
               readonly
               clickable
               colon
@@ -75,7 +101,7 @@
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('cooperationModel')"
-            />
+            /> -->
             <van-field
               v-model="formData.cooperationTime"
               colon
@@ -132,7 +158,7 @@
               is-link
             />
             <van-field
-              v-if="formData.busiType !== '1' && formData.cooperationModel === '3'"
+              v-if="formData.busiType !== 1 && formData.cooperationModel === 3"
               readonly
               clickable
               :value="formText.inspectionTime"
@@ -143,7 +169,7 @@
               @click="changeDate('inspectionTime')"
             />
             <van-field
-              v-if="formData.busiType !== '1' && formData.cooperationModel === '3'"
+              v-if="formData.busiType !== 1 && formData.cooperationModel === 3"
               readonly
               clickable
               colon
@@ -153,7 +179,22 @@
               placeholder="请选择保险有效期"
               @click="changeDate('insuranceTime')"
             />
-            <van-field
+            <selftPicker
+              v-if="formData.cooperationModel === 2"
+              :key="formData.cooperationModel"
+              picker-key="supplier"
+              :form="formData"
+              :columns="columns_supplier"
+              value="name"
+              :is-computed="formData['supplier']!==''"
+              required
+              label="租赁公司"
+              placeholder="请选择"
+              :rules="[
+                { required: true, message: '请选择' },
+              ]"
+            />
+            <!-- <van-field
               v-if="formData.cooperationModel === '2'"
               readonly
               clickable
@@ -164,8 +205,23 @@
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('supplier')"
+            /> -->
+            <selftPicker
+              v-if="formData.cooperationModel === 1"
+              :key="formData.cooperationModel"
+              picker-key="supplier"
+              :form="formData"
+              :columns="columns_supplier"
+              value="name"
+              :is-computed="formData['supplier']!==''"
+              required
+              label="购车公司"
+              placeholder="请选择"
+              :rules="[
+                { required: true, message: '请选择' },
+              ]"
             />
-            <van-field
+            <!-- <van-field
               v-if="formData.cooperationModel === '1'"
               readonly
               clickable
@@ -176,9 +232,24 @@
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('supplier')"
-            />
+            /> -->
             <!-- 购车与租车 -->
-            <van-field
+            <selftPicker
+              v-if="formData.supplier && formData.cooperationModel !== 3"
+              :key="'cooperationCar1'+formStatus"
+              picker-key="cooperationCar"
+              :form="formData"
+              :columns="columns_cooperationCar1"
+              value="name"
+              :is-computed="formData['cooperationCar']!==''"
+              required
+              label="合作车型"
+              placeholder="请选择"
+              :rules="[
+                { required: true, message: '请选择' },
+              ]"
+            />
+            <!-- <van-field
               v-if="formData.supplier && formData.cooperationModel !== '3'"
               readonly
               clickable
@@ -189,8 +260,23 @@
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('cooperationCar1')"
+            /> -->
+            <selftPicker
+              v-if="formData.cooperationModel ===3"
+              :key="'cooperationCar2'+formStatus"
+              picker-key="cooperationCar"
+              :form="formData"
+              :columns="columns_cooperationCar2"
+              value="name"
+              :is-computed="formData['cooperationCar']!==''"
+              required
+              label="合作车型"
+              placeholder="请选择"
+              :rules="[
+                { required: true, message: '请选择' },
+              ]"
             />
-            <van-field
+            <!-- <van-field
               v-if="formData.cooperationModel === '3'"
               readonly
               clickable
@@ -201,8 +287,23 @@
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('cooperationCar2')"
+            /> -->
+            <selftPicker
+              v-if="formData.supplier && formData.cooperationCar && formData.cooperationModel === 1"
+              :key="'carModel'+formStatus"
+              picker-key="carModel"
+              :form="formData"
+              :columns="columns_carModel"
+              value="name"
+              :is-computed="formData['carModel']!==''"
+              required
+              label="车辆型号"
+              placeholder="请选择"
+              :rules="[
+                { required: true, message: '请选择' },
+              ]"
             />
-            <van-field
+            <!-- <van-field
               v-if="formData.supplier && formData.cooperationCar && formData.cooperationModel === '1'"
               readonly
               clickable
@@ -213,17 +314,19 @@
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('carModel')"
-            />
-            <template v-if="formData.cooperationModel !== '3' && formData.cooperationCar">
+            /> -->
+            <template v-if="formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel">
               <div>
                 <van-field
+                  :key="'describe'+formStatus"
                   label="车辆信息"
                   :value="formText.describe"
                   required
                   colon
                 />
                 <van-field
-                  v-if="formData.supplier && formData.cooperationModel === '1'"
+                  v-if="formData.supplier && formData.cooperationModel === 1"
+                  :key="'carPrice'+formStatus"
                   label="无税车价"
                   :value="formText.carPrice"
                   required
@@ -233,7 +336,8 @@
             </template>
 
             <van-field
-              v-if="formData.cooperationModel !== '1'"
+              v-if="formData.cooperationModel !== 1"
+              :key="'plateNo'+formStatus"
               v-model="formData.plateNo"
               clickable
               label="车牌号"
@@ -265,43 +369,49 @@
               v-for="(item,index) in formData.orderPayRecordInfoFORMList"
               :key="index"
             >
-              <PayItem :obj="item" />
+              <PayItem :obj="item" :index="index" @delete="deleteItem" />
             </div>
           </van-cell-group>
         </div>
 
-        <div class="btnGroup">
-          <van-button
-            v-if="formStatus === 2 || (formStatus === 3 && routeName !== '/resetOrder')"
-            type="primary"
-            block
-            native-type="button"
-            @click="() => {
-              formStatus--
-            }"
-          >
-            上一步
-          </van-button>
+        <div :key="formStatus" class="bottomGroup">
+          <div
+            class="formStatus"
+            v-text="`${formStatus}/3`"
+          ></div>
+          <div class="btnGroup">
+            <van-button
+              v-if="formStatus === 2 || (formStatus === 3 && routeName !== '/resetOrder')"
+              type="primary"
+              block
+              native-type="button"
+              @click="() => {
+                formStatus--
+              }"
+            >
+              上一步
+            </van-button>
 
-          <van-button
-            v-if="formStatus !== 3"
-            type="primary"
-            :style="{width: formStatus === 1 ? '100%' : '48%' }"
-            native-type="submit"
-            block
-          >
-            下一步
-          </van-button>
+            <van-button
+              v-if="formStatus !== 3"
+              type="primary"
+              :style="{width: formStatus === 1 ? '100%' : '48%' }"
+              native-type="submit"
+              block
+            >
+              下一步
+            </van-button>
 
-          <van-button
-            v-if="formStatus === 3"
-            :style="{width: ( formStatus === 3 && routeName === '/resetOrder' ) ? '100%' : '48%' }"
-            type="primary"
-            native-type="button"
-            @click="realSubmit"
-          >
-            提交
-          </van-button>
+            <van-button
+              v-if="formStatus === 3"
+              :style="{width: ( formStatus === 3 && routeName === '/resetOrder' ) ? '100%' : '48%' }"
+              type="primary"
+              native-type="button"
+              @click="realSubmit"
+            >
+              提交
+            </van-button>
+          </div>
         </div>
       </van-form>
     </div>
@@ -331,10 +441,6 @@
         @confirm="onConfirmPicker"
       />
     </van-popup>
-    <div
-      class="formStatus"
-      v-text="formStatus"
-    ></div>
   </div>
 </template>
 <script>
@@ -343,7 +449,8 @@ import { Notify } from 'vant';
 import { IdPattern, carNoRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import PayItem from './components/PayItem';
-import { GetDictionaryList } from '@/api/common.js'
+import SelftPicker from '@/components/SelfPicker';
+import { GetDictionaryList } from '@/api/common.js';
 import {
   createOrUpdateOrder,
   orderDetail,
@@ -357,7 +464,8 @@ import {
 } from '@/api/order.js';
 export default {
   components: {
-    PayItem
+    PayItem,
+    SelftPicker
   },
   data() {
     return {
@@ -399,29 +507,18 @@ export default {
       },
       columns: [],
       columns_supplier: [],
-      columns_buy: [
-        { name: '李威山的4S店', code: '1' },
-        { name: '布鲁斯韦恩企业制造', code: '2' }
-      ],
-      columns_typeCar: [
-        { name: '五菱荣光', code: '1' },
-        { name: 'GTR R34', code: '2' }
-      ],
-      columns_busitype: [
-        { name: '梧桐共享', code: '1' },
-        { name: '梧桐专车', code: '0' }
+      columns_carModel: [],
+      columns_busiType: [
+        { name: '梧桐共享', code: 1 },
+        { name: '梧桐专车', code: 0 }
       ],
       columns_cooperationModel: [
-        { name: '购车', code: '1' },
-        { name: '租车', code: '2' },
-        { name: '带车', code: '3' }
+        { name: '购车', code: 1 },
+        { name: '租车', code: 2 },
+        { name: '带车', code: 3 }
       ],
       columns_cooperationCar1: [],
-      columns_cooperationCar2: [
-        { name: '合4', code: '1' },
-        { name: '合作5', code: '2' },
-        { name: '合作6', code: '3' }
-      ],
+      columns_cooperationCar2: [],
       formStatus: 1,
       workCityName: '',
       routeName: '',
@@ -445,46 +542,56 @@ export default {
       }
     },
     payMoneyed() {
-      let money = 0
+      let money = 0;
       if (this.formData.orderPayRecordInfoFORMList.length > 0) {
-        this.formData.orderPayRecordInfoFORMList.map(ele => {
-          money = Number(ele.money) + Number(money)
-        })
-        return money
+        this.formData.orderPayRecordInfoFORMList.map((ele) => {
+          money = Number(ele.money) + Number(money);
+        });
+        return money;
       } else {
-        return money
+        return money;
       }
     }
   },
+  beforeRouteLeave(to, from, next) {
+    if (to.path !== '/addPay') {
+      window.localStorage.removeItem('payItemInfo')
+    }
+    next();
+  },
   watch: {
     'formData.cooperationModel'(value) {
-      if (value === '1') {
+      if (value === 1) {
         if (!this.id) {
           this.formData.supplier = '';
           this.formData.cooperationCar = '';
+          this.formData.carModel = '';
           this.formText.supplier = '';
           this.formText.cooperationCar = '';
         } else {
           if (this.editors) {
             this.formData.supplier = '';
             this.formData.cooperationCar = '';
+            this.formData.carModel = '';
             this.formText.supplier = '';
             this.formText.cooperationCar = '';
           }
           this.editors = true;
         }
         this.getCompany('1');
-      } else if (value === '2') {
+      } else if (value === 2) {
         if (!this.id) {
           this.formData.supplier = '';
           this.formData.cooperationCar = '';
           this.formText.supplier = '';
+          this.formData.carModel = '';
           this.formText.cooperationCar = '';
         } else {
           if (this.editors) {
             this.formData.supplier = '';
             this.formData.cooperationCar = '';
             this.formText.supplier = '';
+            this.formData.carModel = '';
             this.formText.cooperationCar = '';
           }
           this.editors = true;
@@ -493,9 +600,13 @@ export default {
       } else {
         if (!this.id) {
           this.formText.cooperationCar = '';
+          this.formData.cooperationCar = '';
+          this.formData.carModel = '';
         } else {
           if (this.editors) {
             this.formText.cooperationCar = '';
+            this.formData.cooperationCar = '';
+            this.formData.carModel = '';
           }
           this.editors = true;
         }
@@ -503,41 +614,46 @@ export default {
     },
     'formData.supplier'(value) {
       if (!this.id) {
-        this.formData.cooperationCar = ''
+        this.formData.cooperationCar = '';
+        this.formData.carModel = '';
       } else {
         if (this.editorsSupplier) {
-          this.formData.cooperationCar = ''
+          this.formData.cooperationCar = '';
+          this.formData.carModel = '';
         }
-        this.editorsSupplier = true
+        this.editorsSupplier = true;
       }
       if (value) {
         this.getCar();
       }
     },
     'formData.cooperationCar'(value) {
-      if (this.formData.cooperationModel === '1' || this.formData.cooperationModel === '2') {
+      if (
+        this.formData.cooperationModel === 1 ||
+        this.formData.cooperationModel === 2
+      ) {
         if (value) {
           if (this.id) {
             if (this.editorsCar) {
-              this.formData.carModel = ''
+              this.formData.carModel = '';
             }
-            this.editorsCar = true
+            this.editorsCar = true;
           } else {
-            this.formData.carModel = ''
+            this.formData.carModel = '';
           }
-          this.formData.carModel = ''
+          this.formData.carModel = '';
           this.formText.carModel = '';
-          if (this.formData.cooperationModel === '1' && value) {
-            this.GetModelByTypeAndCityAndSupplierAndCarType()
-          } else if (this.formData.cooperationModel === '2') {
-            this.getPrice()
+          if (this.formData.cooperationModel === 1 && value) {
+            this.GetModelByTypeAndCityAndSupplierAndCarType();
+          } else if (this.formData.cooperationModel === 2) {
+            this.getPrice();
           }
         }
       }
     },
     'formData.carModel'(val) {
       if (val) {
-        this.getBuyCarPrice() // 购车
+        this.getBuyCarPrice(); // 购车
       }
     }
     // 'formData.goodsAmount'(value) {
@@ -567,19 +683,19 @@ export default {
   },
   methods: {
     async getBuyCarPrice() {
-      let { data } = await GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel(
-        {
-          busType: this.formData.cooperationModel,
-          city: this.formData.driverInfoFORM.workCity,
-          supplier: this.formData.supplier,
-          carType: this.formData.cooperationCar,
-          model: this.formData.carModel
-        }
-      )
+      let {
+        data
+      } = await GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel({
+        busType: this.formData.cooperationModel,
+        city: this.formData.driverInfoFORM.workCity,
+        supplier: this.formData.supplier,
+        carType: this.formData.cooperationCar,
+        model: this.formData.carModel
+      });
       if (data.success) {
-        this.formText.carPrice = data.data.price
-        this.formText.describe = data.data.describe
-        this.formData.productId = data.data.productCode
+        this.formText.carPrice = data.data.price;
+        this.formText.describe = data.data.describe;
+        this.formData.productId = data.data.productCode;
       } else {
         this.$toast.fail(data);
       }
@@ -601,8 +717,8 @@ export default {
       }
 
       if (res.success) {
-        this.columns_supplier = res.data.map(ele => {
-          return { name: ele, code: ele }
+        this.columns_supplier = res.data.map((ele) => {
+          return { name: ele, code: ele };
         });
       } else {
         this.$toast.fail(res.errorMsg);
@@ -610,7 +726,7 @@ export default {
     },
     async getCar() {
       let res = '';
-      if (this.formData.cooperationModel === '1') {
+      if (this.formData.cooperationModel === 1) {
         // 购车
         let { data } = await GetCarTypeByTypeAndCityAndSupplier({
           busType: this.formData.cooperationModel,
@@ -618,7 +734,7 @@ export default {
           supplier: this.formData.supplier
         });
         res = data;
-      } else if (this.formData.cooperationModel === '2') {
+      } else if (this.formData.cooperationModel === 2) {
         // 租车
         let { data } = await GetRentalCarTypeByParams({
           busType: this.formData.cooperationModel,
@@ -629,71 +745,82 @@ export default {
       }
 
       if (res.success) {
-        this.columns_cooperationCar1 = res.data.map(ele => {
-          return { name: ele.carTypeName, code: ele.carType }
+        this.columns_cooperationCar1 = res.data.map((ele) => {
+          return { name: ele.carTypeName, code: ele.carType };
         });
       } else {
         this.$toast.fail(res.errorMsg);
       }
     },
     async GetModelByTypeAndCityAndSupplierAndCarType() {
-      let { data } = await GetModelByTypeAndCityAndSupplierAndCarType(
-        { busType: this.formData.cooperationModel, city: this.formData.driverInfoFORM.workCity, supplier: this.formData.supplier, carType: this.formData.cooperationCar }
-      )
+      let { data } = await GetModelByTypeAndCityAndSupplierAndCarType({
+        busType: this.formData.cooperationModel,
+        city: this.formData.driverInfoFORM.workCity,
+        supplier: this.formData.supplier,
+        carType: this.formData.cooperationCar
+      });
       if (data.success) {
-        this.optionsCarType = data.data
+        this.columns_carModel = data.data.map((ele) => {
+          return { name: ele, code: ele };
+        });
       } else {
         this.$toast.fail(data);
       }
     },
     async getPrice() {
-      let { data } = await GetPriceAndByTypeAndCityAndSupplierAndCarType(
-        {
-          busType: this.formData.cooperationModel,
-          city: this.formData.driverInfoFORM.workCity,
-          supplier: this.formData.supplier,
-          carType: this.formData.cooperationCar
-        }
-      )
+      let { data } = await GetPriceAndByTypeAndCityAndSupplierAndCarType({
+        busType: this.formData.cooperationModel,
+        city: this.formData.driverInfoFORM.workCity,
+        supplier: this.formData.supplier,
+        carType: this.formData.cooperationCar
+      });
       if (data.success) {
-        this.formText.carPrice = data.data.price
-        this.formText.describe = data.data.describe
-        this.formData.productId = data.data.productCode
+        this.formText.carPrice = data.data.price;
+        this.formText.describe = data.data.describe;
+        this.formData.productId = data.data.productCode;
       } else {
         this.$toast.fail(data);
       }
     },
     updataFrom() {
       this.routeName = this.$route.path;
-      const id = this.$route.query.id;
-      this.formData.driverInfoFORM.driverId = id;
-      this.formData.driverInfoFORM.name = this.$route.query.driverName;
-      this.formData.driverInfoFORM.phone = this.$route.query.driverPhone;
-      this.formData.driverInfoFORM.workCity = this.$route.query.workCity;
+      // const id = this.$route.query.id;
+      // this.formData.driverInfoFORM.driverId = id;
+      // this.formData.driverInfoFORM.name = this.$route.query.driverName;
+      // this.formData.driverInfoFORM.phone = this.$route.query.driverPhone;
+      // this.formData.driverInfoFORM.workCity = this.$route.query.workCity;
       this.workCityName = this.$route.query.workCityName;
       let orderId = this.$route.query.orderId;
       if (orderId) {
-        this.id = orderId
+        this.id = orderId;
       }
-      this.fetchData()
+      this.fetchData();
     },
     async fetchData() {
-      let payItemInfo = JSON.parse(window.localStorage.getItem('payItemInfo'))
-      console.log(payItemInfo)
-      if (payItemInfo) {
-        this.formData.orderPayRecordInfoFORMList.push(payItemInfo)
-      }
-      const { data } = await GetDictionaryList(['Intentional_compartment', 'busi_type', 'pay_type'])
+      const { data } = await GetDictionaryList([
+        'Intentional_compartment',
+        'busi_type',
+        'pay_type'
+      ]);
       if (data.success) {
-        this.columns_cooperationCar2 = data.data.Intentional_compartment
+        this.columns_cooperationCar2 = data.data.Intentional_compartment.map(
+          (ele) => {
+            return { name: ele.dictLabel, code: ele.dictValue };
+          }
+        );
+        let payItemInfo = JSON.parse(window.localStorage.getItem('payItemInfo'));
+        if (payItemInfo) {
+          this.formData.orderPayRecordInfoFORMList.push(payItemInfo);
+          this.formStatus = 3
+        }
         // this.optionsPay = data.data.pay_type
-        this.columns_busitype = data.data.busi_type.splice(0, 2)
+        // this.columns_busitype = data.data.busi_type.splice(0, 2)
       } else {
         this.$toast.fail(data);
       }
-      if (this.routeName !== '/createOrder') {
-        this.getOrderDetail(this.$route.query.id);
-      }
+      // if (this.routeName !== '/createOrder') {
+      this.getOrderDetail(this.$route.query.id);
+      // }
     },
     onClickLeft() {
       this.$router.go(-1);
@@ -716,6 +843,7 @@ export default {
           this.formText.cooperationCar = res.data.cooperationCar;
           this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
           this.formData = { ...this.formData, ...res.data };
+          this.formData.driverInfoFORM = this.formData.driverInfoVO
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -727,6 +855,10 @@ export default {
     },
     async realSubmit() {
       try {
+        if (Number(this.payMoneyed) > Number(this.formData.goodsAmount)) {
+          Notify({ type: 'warning', message: '添加的支付金额，不能超过剩余添加金额' });
+          return
+        }
         this.$loading(true);
         let params = { ...this.formData };
         params.operateFlag = this.operateFlag;
@@ -774,7 +906,10 @@ export default {
      * picker 选择
      */
     onConfirmPicker(value) {
-      if (this.pickerKey === 'cooperationCar1' || this.pickerKey === 'cooperationCar2') {
+      if (
+        this.pickerKey === 'cooperationCar1' ||
+        this.pickerKey === 'cooperationCar2'
+      ) {
         this.formText['cooperationCar'] = value.name;
         this.formData['cooperationCar'] = value.code;
       } else {
@@ -793,7 +928,7 @@ export default {
           this.columns = this.columns_supplier;
           break;
         case 'busiType':
-          this.columns = this.columns_busitype;
+          this.columns = this.columns_busiType;
           break;
         case 'cooperationModel':
           this.columns = this.columns_cooperationModel;
@@ -890,6 +1025,13 @@ export default {
           return true;
         }
       }
+    },
+    deleteItem(index) {
+      console.log(index)
+      let list = this.formData.orderPayRecordInfoFORMList.filter((ele, ind) => {
+        return ind !== index
+      })
+      this.formData.orderPayRecordInfoFORMList = { ...list }
     }
   }
 };
@@ -899,17 +1041,24 @@ export default {
   position: relative;
   .formStatus {
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    position: fixed;
-    right: 50px;
-    bottom: 100px;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #2f448a;
+    color: #2f448a;
+    z-index: 99;
+    font-size: 13px;
     text-align: center;
-    line-height: 50px;
+    line-height: 40px;
+    margin-right: 15px;
+    margin-top: 15px;
   }
   .addPay {
     color: #7f8fbd;
+  }
+  .bottomGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
   }
   .btnGroup {
     width: 100%;

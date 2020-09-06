@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-let prefix = '/mock/88/'
+let prefix = '/mock/88'
 let productPrefix = '/mock/111'
 
 /**

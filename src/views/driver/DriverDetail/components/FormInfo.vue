@@ -5,6 +5,7 @@
         <div
           v-if="type.busiType === 0"
           :key="type.busiTypeName"
+          class="busiTypeBox"
         >
           <van-cell title="共享面试表">
             <template #right-icon>
@@ -161,8 +162,8 @@
         <div
           v-if="type.busiType === 1"
           :key="type.busiTypeName"
+          class="busiTypeBox"
         >
-          <br v-if="obj.interviewInfoVOList.length === 2">
           <van-cell title="专车面试表">
             <template #right-icon>
               <span
@@ -409,6 +410,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .formInfo {
+  .van-form .busiTypeBox {
+    margin-bottom: 10px;
+  }
   .van-cell-group {
     padding: 15px 0;
     box-sizing: border-box;
@@ -426,4 +430,7 @@ export default {
     color: #7f8fbd;
   }
 }
+.van-form .busiTypeBox:last-child {
+    margin-bottom: 0px;
+  }
 </style>

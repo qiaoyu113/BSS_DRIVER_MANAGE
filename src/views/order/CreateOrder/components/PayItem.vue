@@ -6,7 +6,11 @@
       colon
       readonly
       :border="false"
-    />
+    >
+      <template #button>
+        <span class="delete" @click="deleteItem">删除</span>
+      </template>
+    </van-field>
     <van-field
       label="支付时间"
       :value="obj.payDate"
@@ -49,6 +53,10 @@ export default {
     obj: {
       type: Object,
       default: () => {}
+    },
+    index: {
+      type: Number,
+      default: () => {}
     }
   },
   data() {
@@ -59,8 +67,15 @@ export default {
       ImagePreview([
         url
       ]);
+    },
+    deleteItem() {
+      this.$emit('delete', this.index)
     }
   }
 }
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.delete{
+  color: #EB3303;
+}
+</style>

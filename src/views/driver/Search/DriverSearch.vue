@@ -1,5 +1,5 @@
 <template>
-  <div :class="checked ? 'driverSearch padd' : 'driverSearch'">
+  <div :style="{backgroundColor:lists.length > 0 ? '#F9F9F9' : ''}" :class="checked ? 'driverSearch padd' : 'driverSearch'">
     <!-- nav-bar -->
     <DriverTitle
       :show-change="checkCan"
@@ -100,7 +100,10 @@
         v-show="options.length === 0"
         class="history"
       >
-        <h4>历史记录</h4>
+        <div class="historyBox">
+          <h4>历史搜索记录</h4>
+          <van-icon v-if="historyItems.length > 0" name="delete" size="20" color="#7F8FBD" @click="deleteBtn" />
+        </div>
         <div class="historyContainer">
           <div
             v-for="item in historyItems"
@@ -129,7 +132,7 @@ import DriverTitle from '../DriverList/components/DriverTitle';
 import CardItem from '../DriverList/components/ListItem';
 import changeManager from '../DriverList/components/ChangeManager'
 import { debounce } from '@/utils/index';
-import { Notify } from 'vant';
+import { Notify, Dialog } from 'vant';
 export default {
   components: {
     CardItem,
@@ -169,6 +172,12 @@ export default {
     },
     checkCan() {
       return this.lists.length > 0;
+    }
+  },
+  mounted() {
+    let historyData = this.getHistory()
+    if (historyData) {
+      this.historyItems = JSON.parse(historyData)
     }
   },
   methods: {
@@ -231,6 +240,20 @@ export default {
       } else {
         this.changeManagerStatus = true
       }
+    },
+    deleteBtn() {
+      Dialog.confirm({
+        title: '提示',
+        message: '确认删除全部历史记录？'
+      })
+        .then(() => {
+          // on confirm
+          this.historyItems = []
+          window.localStorage.removeItem('driver');
+        })
+        .catch(() => {
+          // on cancel
+        });
     },
     // 搜索
     onSearch: debounce(function() {
@@ -302,7 +325,6 @@ export default {
   .list {
     padding: 5px 15px 0 15px;
     box-sizing: border-box;
-    background-color: @body-bg;
   }
   .bottomBtn {
     padding: 10px 0;
@@ -337,6 +359,11 @@ export default {
       margin: 0px;
       font-size: 15px;
       color: #838a9d;
+    }
+    .historyBox{
+      display: flex;
+      justify-content:space-between;
+      align-items: center;
     }
     .historyContainer {
       display: flex;

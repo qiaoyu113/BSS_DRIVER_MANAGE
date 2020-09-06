@@ -148,7 +148,7 @@
 <script>
 import { parseTime } from '@/utils';
 import { Toast } from 'vant';
-import { upload } from '@/api/common';
+import { upload, GetDictionaryList } from '@/api/common';
 export default {
   components: {
     [Toast.name]: Toast
@@ -184,7 +184,16 @@ export default {
       return this.$route.meta.title;
     }
   },
+  beforeRouteLeave(to, from, next) {
+    console.log(to.path)
+    // ...
+    if (to.path !== '/createOrder' && to.path !== '/resetOrder') {
+      window.localStorage.removeItem('payItemInfo')
+    }
+    next();
+  },
   mounted() {
+    this.fetchData();
     this.form.orderId = this.$route.query.orderId
   },
   methods: {
@@ -193,6 +202,23 @@ export default {
      */
     onClickLeft() {
       this.$router.go(-1);
+    },
+    async fetchData() {
+      const { data } = await GetDictionaryList([
+        'pay_type'
+      ]);
+      if (data.success) {
+        this.columns = data.data.pay_type.map(
+          (ele) => {
+            return { name: ele.dictLabel, code: ele.dictValue };
+          }
+        );
+      } else {
+        this.$toast.fail(data);
+      }
+      // if (this.routeName !== '/createOrder') {
+      this.getOrderDetail(this.$route.query.id);
+      // }
     },
     cancelform() {
       this.$router.go(-1)

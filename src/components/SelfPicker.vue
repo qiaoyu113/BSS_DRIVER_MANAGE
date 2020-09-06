@@ -57,22 +57,34 @@ export default {
     }
   },
   watch: {
-    isComputed(val) {
-      if (val) {
-        this.getLabel()
-      }
+    // isComputed(val) {
+    //   if (val) {
+    //     this.getLabel()
+    //   }
+    // },
+    value(val) {
+      this.value = val
+    },
+    isComputed: {
+      handler(val, oldName) {
+        if (val) {
+          this.getLabel()
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
     // 回显第一次获取label和索引index
     getLabel() {
-      let index = this.columns.findIndex(item => item.value === this.form[this.pickerKey])
+      let index = this.columns.findIndex(item => (item.value || item.code || item.dictValue) === this.form[this.pickerKey])
       if (index === -1) {
         index = 0
       } else {
         this.index = index
         this.isFirst = true
-        this.label = this.columns[index].label
+        this.label = (this.columns[index].label || this.columns[index].name || this.columns[index].dictLabel)
       }
     },
     // 打开picker
@@ -87,8 +99,8 @@ export default {
     },
     // 点击确定
     onConfirm(obj, index) {
-      this.label = obj.label
-      this.form[this.pickerKey] = obj.value
+      this.label = (obj.label || obj.name || obj.dictLabel)
+      this.form[this.pickerKey] = (obj.value || obj.code || obj.dictValue)
       this.index = index
       this.showPicker = false
     }
