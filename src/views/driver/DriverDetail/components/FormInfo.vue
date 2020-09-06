@@ -403,7 +403,7 @@ export default {
   },
   methods: {
     goRouter() {
-      this.$router.push({ path: '/driverLog', query: { id: '123' }});
+      this.$router.push({ path: '/driverLog', query: { id: 'test' }});
     }
   }
 };
