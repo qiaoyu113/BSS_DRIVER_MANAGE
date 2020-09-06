@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-let prefix = '/mock/81/'
+let prefix = '/mock/81'
 let linePrefix = '/mock/74'
 let transportPrefix = '/mock/103'
 
@@ -52,7 +52,7 @@ export function specialInterview(data) {
  */
 export function driverDetail(data) {
   return request({
-    url: `${prefix}v2/driver/selectDriverDetail`,
+    url: `${prefix}/v2/driver/selectDriverDetail`,
     method: 'get',
     params: data
   })
