@@ -153,7 +153,12 @@
     <van-popup v-model="showPicker" position="bottom">
       <template v-if="isDateRange">
         <!-- 选择日期 -->
-        <van-calendar v-model="showPicker" type="range" @confirm="onConfirm" />
+        <van-calendar
+          v-model="showPicker"
+          type="range"
+          :min-date="minDate1"
+          @confirm="onConfirm"
+        />
       </template>
       <template v-else-if="isDate">
         <van-datetime-picker
@@ -318,7 +323,8 @@ export default {
       page: {
         current: 0,
         size: 10
-      }
+      },
+      minDate1: new Date(2000, 0, 1)
     }
   },
   computed: {
@@ -338,6 +344,14 @@ export default {
   methods: {
     onClickLeft() {
       this.$router.go(-1)
+    },
+    // 是否更多数据
+    isModeData() {
+      if (this.lists.length === 0) {
+        this.finished = true
+      } else {
+        this.finished = false
+      }
     },
     // 加载列表
     async onLoad(isInit = false) {
@@ -370,6 +384,7 @@ export default {
     async onQuery() {
       let result = await this.getLists(true)
       this.lists = result.lists
+      this.isModeData()
       this.show = false
     },
     // 重置
@@ -514,6 +529,7 @@ export default {
     async handleTabChange(tab) {
       let result = await this.getLists(true)
       this.lists = result.lists
+      this.isModeData()
     },
     // 获取列表
     async getLists(isInit) {

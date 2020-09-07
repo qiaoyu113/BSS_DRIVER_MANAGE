@@ -75,7 +75,7 @@
           v-for="(item, index) in runTestStatusRecordVOList"
           :key="index"
           :title="item.recordFlag"
-          :name="id+'-'+index"
+          :name="item.id+'-'+index"
         >
           <template v-if="item.recordFlag === '试跑意向记录'">
             <!-- 试跑意向记录 -->
@@ -90,10 +90,10 @@
             <van-cell title="其他原因：" :value="`${item.otherReason}`"></van-cell>
           </template>
           <template v-else>
-            <!-- 上岗记录 -->
+            <!-- 上岗记录 &  -->
             <van-cell title="操作人：" :value="`${item.dealIdMessage}`"></van-cell>
             <van-cell title="操作时间：" :value="`${item.droppedTime}`"></van-cell>
-            <van-cell title="到仓接待人：" :value="`${item.receptionist}/${item.receptionist}/${item.receptionistPhone}`"></van-cell>
+            <van-cell title="到仓接待人：" :value="`${item.receptionist}/${item.receptionistPhone}`"></van-cell>
             <van-cell title="到仓时间：" :value="`${item.arrivalTime | parseTime}`"></van-cell>
             <van-cell title="岗前叮嘱：" :value="`${item.preJobAdvice}`"></van-cell>
           </template>
