@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="CardItemcontainer" @click="checkChange">
+    <div class="CardItemcontainer" @click.stop="checkChange">
       <h4 class="title ellipsis">
         {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
-        <span><input v-model="check" type="checkbox"></span>
+        <van-checkbox v-model="check" />
       </h4>
       <p class="Pink">
         {{ obj.statusName }}
@@ -81,10 +81,10 @@ export default {
 
   methods: {
     checkChange() {
-      if (this.checked) {
-        this.$emit('changeCheck', { change: !this.check, obj: this.obj.customerId })
-        this.check = !this.check
-      }
+      let currentStatus = !this.check
+      this.$emit('changeCheck', { change: currentStatus, id: this.obj.id })
+      this.check = currentStatus
+      console.log('------------------------:', currentStatus)
     },
     /**
      * 线路详情
@@ -108,38 +108,8 @@ export default {
       } else {
         Toast.fail('请选择上报运费');
       }
-      // let obje = []
-      // if (!this.checkLength) {
-      //   Toast.fail('请选择上报运费');
-      // } else {
-      //   this.obj.forEach(item => {
-      //     if (item.all === true) {
-      //       obje.push(item)
-      //     }
-      //   })
-      //   this.$router.push({
-      //     path: '/report',
-      //     query: {
-      //       obj: JSON.stringify(obje)
-      //     }
-      //   })
-      // }
-
-      // this.$router.push({
-      //   name: 'report'
-      // })
     }
-    // // 获取选中数量
-    // getLength() {
-    //   let num = 0;
-    //   this.obj.forEach(res => {
-    //     if (res.all === true) {
-    //       num = num + 1
-    //     }
-    //   })
-    //   this.checkLength = num
-    //   console.log(this.checkLength)
-    // }
+
   }
 }
 
