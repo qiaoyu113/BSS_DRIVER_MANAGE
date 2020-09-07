@@ -12,7 +12,7 @@ export function getProjectList(data) {
 // 获取项目详情
 export function getProjectDetail(params) {
   return request({
-    url: `${prefix}/v2/line/project/info`,
+    url: `${prefix}/v2/line/project/v2/line/project/info`,
     method: 'get',
     params
   })
