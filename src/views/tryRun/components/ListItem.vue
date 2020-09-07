@@ -2,10 +2,10 @@
   <div class="ListItem" @click="onDetails(item.runTestId)">
     <div class="title flex align-center">
       <div class="title-tag flex align-center justify-center">
-        {{ lineInfo.lineCategory }}
+        {{ lineInfoEs.lineCategoryName }}
       </div>
       <h3 class="van-ellipsis">
-        {{ lineInfo.lineName }}（{{ lineInfo.lineId }}）
+        {{ lineInfoEs.lineName }}（{{ lineInfoEs.lineId }}）
       </h3>
       <van-icon name="arrow" />
     </div>
@@ -18,7 +18,7 @@
       title-class="cell-title"
       value-class="cell-value"
       title="上岗时间："
-      :value="lineInfo.driverWorkTime"
+      :value="lineInfoEs.driverWorkTime | parseTime('{y}-{m}-{d}')"
     />
     <van-cell
       title-class="cell-title"
@@ -30,7 +30,7 @@
       title-class="cell-title"
       value-class="cell-value"
       title="配送车型："
-      :value="lineInfo.carType"
+      :value="lineInfoEs.carTypeName"
     />
     <van-cell
       title-class="cell-title"
@@ -42,7 +42,7 @@
       title-class="cell-title"
       value-class="cell-value"
       title="里程时间："
-      :value="lineInfo.distance + '/' + lineInfo.timeDiff"
+      :value="lineInfoEs.distance + '/' + lineInfoEs.timeDiff"
     />
     <van-cell
       title-class="cell-title"
@@ -50,22 +50,14 @@
       title="司机信息："
       :value="item.driverName + '/' + item.phone"
     />
-    <div class="bottom-tag-ct flex align-center">
+    <div v-if="item.droppedReasonName" class="bottom-tag-ct flex align-center">
       <van-tag
         plain
         round
         type="primary"
         class="bottom-tag"
       >
-        司机跳单
-      </van-tag>
-      <van-tag
-        plain
-        round
-        type="primary"
-        class="bottom-tag"
-      >
-        司机跳单
+        {{ item.droppedReasonName }}
       </van-tag>
     </div>
     <div class="bottom van-hairline--top flex flex align-center justify-center">
@@ -88,26 +80,26 @@ export default {
     }
   },
   computed: {
-    lineInfo() {
-      return this.item.lineInfo || '';
+    lineInfoEs() {
+      return this.item.lineInfoEs || '';
     },
     warehouse() {
-      const { lineInfo } = this.item;
-      if (!lineInfo) return ''
+      const { lineInfoEs } = this.item;
+      if (!lineInfoEs) return ''
       return (
-        lineInfo.warehouseProvince +
-        lineInfo.warehouseCity +
-        lineInfo.warehouseCounty +
-        lineInfo.warehouseDistrict
+        lineInfoEs.warehouseProvinceName +
+        lineInfoEs.warehouseCityName +
+        lineInfoEs.warehouseCountyName +
+        lineInfoEs.warehouseDistrict
       );
     },
     distribution() {
-      const { lineInfo } = this.item;
-      if (!lineInfo) return ''
+      const { lineInfoEs } = this.item;
+      if (!lineInfoEs) return ''
       return (
-        lineInfo.provinceAreaName +
-        lineInfo.cityAreaName +
-        lineInfo.countyAreaName
+        lineInfoEs.provinceAreaName +
+        lineInfoEs.cityAreaName +
+        lineInfoEs.countyAreaName
       );
     }
   },
@@ -185,7 +177,7 @@ export default {
     }
   }
   .bottom-tag-ct {
-    margin: 5px 0;
+    margin-top: 5px;
     .bottom-tag {
       height: 24px;
       padding: 0 11px;
@@ -202,6 +194,7 @@ export default {
     }
   }
   .bottom {
+    margin-top: 5px;
     height: 30px;
     .details {
       width: 70px;
