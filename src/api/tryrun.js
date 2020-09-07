@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-let prefix = '/mock/74'
+let prefix = '/api'
 // 创建试跑
 export function CreateLntentionRun(data) {
   return request({
@@ -51,7 +51,7 @@ export function SwitchTryRun(data) {
 // 试跑列表
 export function GetRunTestInfoList(data) {
   return request({
-    url: `${prefix}/v2/runtest/getRunTestInfoList`,
+    url: `${prefix}/waybill_center/v2/runtest/getRunTestInfoList`,
     method: 'post',
     data
   })
@@ -59,7 +59,23 @@ export function GetRunTestInfoList(data) {
 // 试跑详情
 export function GetDetails(params) {
   return request({
-    url: `${prefix}/v2/runtest/runDetial`,
+    url: `${prefix}/waybill/v2/runtest/runDetial`,
+    method: 'get',
+    params
+  })
+}
+// 线路查询
+export function GetLine(data) {
+  return request({
+    url: `${prefix}/line_center/v2/line/lineInfo/fuzzyCheck`,
+    method: 'post',
+    data
+  })
+}
+// 获取线路详情
+export function GetLineDetail(params) {
+  return request({
+    url: `${prefix}/line_center/v2/line/lineInfoDetail`,
     method: 'get',
     params
   })
