@@ -17,12 +17,15 @@
     </p>
     <div class="footer">
       <p class="time">
-        到仓时间:{{ obj.rearchDate }}
+        配送时间:{{ obj.driverWorkTime | parseTime('{y}-{m}-{d}')
+        }}
       </p>
       <div class="right">
-        <p class="time">
-          预计工作时间:{{ obj.workingTimeRegin }}小时
-        </p>
+        <div>
+          <p v-for="(item,idx) in obj.workingTimeRegin.split(',')" :key="idx" class="time">
+            预计工作时间:{{ item }}
+          </p>
+        </div>
         <div>
           <van-tag type="primary" color="#EFF5FE" text-color="#7F8FBD" class="tag">
             {{ obj.busiTypeName }}
@@ -100,7 +103,9 @@ export default {
       display: flex;
       flex-flow: row nowrap;
       justify-content: space-between;
+      align-items: center;
       .tag {
+        margin-bottom:5px;
         margin-right:5px;
         padding: 3px 10px;
       }

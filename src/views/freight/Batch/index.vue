@@ -39,18 +39,15 @@
               </div>
             </template>
             <P class="all">
-              <van-checkbox v-model="checkall" class="checked" shape="square">
-                <span>全选</span> <span>已选择{{ checkedList.length }} 个出车单位</span>
+              <van-checkbox v-model="checkall" class="checked">
+                <span>全选</span>
+                <span>已选择{{ checkedNum }} 个出车单位</span>
               </van-checkbox>
             </P>
             <div v-for="sub in lists" :key="sub.id">
               <CardItem
-
                 class="items"
                 :obj="sub"
-                :checked="checked"
-                :checkall="checkedList"
-                @changeCheck="changeCheck"
               />
             </div>
           </van-tab>
@@ -179,8 +176,6 @@ export default {
   },
   data() {
     return {
-      checkedList: [],
-      checked: false,
       value: '', // 搜索框
       active: '', // 当前激活的tab,
       refreshing: false, // 下拉刷新
@@ -231,9 +226,7 @@ export default {
       showPicker9: false,
       showPicker10: false,
       showPicker11: false,
-      page: {
-        current: ''
-      },
+
       columns1: [
         {
           label: '专车',
@@ -277,7 +270,8 @@ export default {
       showModal: false,
       options: [],
       type: '',
-      lists: []
+      lists: [],
+      checkedList: []
 
     }
   },
@@ -288,15 +282,21 @@ export default {
       }
       return new Date()
     },
+    checkedNum() {
+      return this.lists.filter(item => item.checked).length
+    },
     checkall: {
       get: function() {
-        return (this.lists.length === this.checkedList.length)
+        return (this.lists.length === this.checkedNum)
       },
       set: function(val) {
-        this.checkedList = []
         if (val) {
           this.lists.forEach(item => {
-            this.checkedList.push(item.id)
+            item.checked = true
+          })
+        } else {
+          this.lists.forEach(item => {
+            item.checked = false
           })
         }
       }
@@ -307,21 +307,6 @@ export default {
 
   },
   methods: {
-    /**
-     * item选中
-     */
-    changeCheck(val) {
-      console.log('tag', val)
-      if (val.change) {
-        console.log('===================================')
-        this.checkedList.push(val)
-      } else {
-        let arr = this.checkedList.filter(ele => {
-          return ele !== val.id
-        })
-        this.checkedList = arr
-      }
-    },
 
     onClickLeft() {
       this.$router.go(-1)
@@ -354,6 +339,9 @@ export default {
         let { data: res } = await getGmInfoList(params)
         if (res.success) {
           let newLists = res.data
+          newLists.forEach(item => {
+            item.checked = false
+          })
           if (!isInit) {
             newLists = this.lists.concat(newLists)
           }
