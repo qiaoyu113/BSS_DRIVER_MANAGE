@@ -16,7 +16,7 @@
       路线名称:{{ obj.lineName }}
     </p>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick">
+      <van-button type="default" round hairline @click="handleDetailClick(obj)">
         详情
       </van-button>
     </div>
@@ -38,8 +38,9 @@ export default {
      */
     handleDetailClick(obj) {
       this.$router.push({
-        path: '/Detail',
-        query: { obj: obj }
+        path: '/detail',
+        query: { obj: obj,
+          type: '2' }
       })
     }
   }

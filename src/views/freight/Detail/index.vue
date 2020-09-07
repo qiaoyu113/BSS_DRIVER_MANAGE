@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { reportMoneyBatchByGM } from '@/api/freight'
+import { reportMoneyBatchByGM, reportMoneyBatchBySale } from '@/api/freight'
 import { Toast } from 'vant';
 export default {
   data() {
@@ -97,7 +97,7 @@ export default {
   },
   mounted() {
     this.obj = this.$route.query.obj
-    console.log(this.$route.query.obj)
+    console.log(this.$route.query.type)
   },
 
   methods: {
@@ -111,7 +111,11 @@ export default {
       this.show = true;
     },
     footer_confirm() {
-      this.wayBillAmountDetail() // 运费上报
+      if (this.$route.query.type === '1') {
+        this.wayBillAmountDetail() // 加盟运费上报
+      } else {
+        this.reportMoneyBatchBySale() // 线外运费上报
+      }
     },
     async wayBillAmountDetail() {
       try {
@@ -121,7 +125,7 @@ export default {
           wayBillAmountIds: 'message'
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchByGM(parmas)
+        let { data: res } = await reportMoneyBatchByGM(parmas) // 加盟运费
         console.log(res)
         if (res.success) {
           res.data
@@ -138,7 +142,32 @@ export default {
       }
     }
 
+  },
+  async reportMoneyBatchBySale() {
+    try {
+      let parmas = {
+        moneys: this.value, // 运费
+        remark: this.message, // 备注
+        wayBillAmountIds: 'message'
+      }
+      this.$loading(true)
+      let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
+      console.log(res)
+      if (res.success) {
+        res.data
+        Toast.success('上报成功');
+      } else {
+        this.error = true;
+        this.$toast.fail(res.errorMsg)
+      }
+    } catch (err) {
+      this.error = true;
+    } finally {
+      Toast.fail('上报失败');
+      // this.$loading(false)
+    }
   }
+
 }
 
 </script>
