@@ -59,7 +59,8 @@
   </div>
 </template>
 <script>
-import { getOperateTime, historyList } from '@/api/driver.js';
+import { getOperateTime } from '@/api/driver.js';
+// import { getOperateTime, historyList } from '@/api/driver.js';
 export default {
   data() {
     return {

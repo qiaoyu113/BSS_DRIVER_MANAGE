@@ -507,7 +507,7 @@ import { phoneRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { GetDictionaryList, getOpenCitys } from '@/api/common'
-import SelfArea from '@/components/SelfArea'
+// import SelfArea from '@/components/SelfArea'
 import SelftPicker from '@/components/SelfPicker'
 import { shareInterview, getInterview } from '@/api/driver.js'
 export default {
@@ -519,8 +519,8 @@ export default {
     [Popup.name]: Popup,
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
-    SelftPicker,
-    SelfArea
+    SelftPicker
+    // SelfArea
   },
   data() {
     return {
