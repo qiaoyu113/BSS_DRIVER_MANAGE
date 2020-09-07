@@ -131,7 +131,19 @@
           placeholder="请输入"
           :rules="[{ required: true, message: '请输入0-60之间的数字' },{validator:validatorNum(18,60), message: '年龄应在18至60岁之间'}]"
         />
-        <van-field
+        <self-area
+          label-width="100"
+          picker-key="liveaddress"
+          :form="area"
+          :is-computed="area.liveaddress.length > 2"
+          required
+          label="现居住地址"
+          placeholder="请选择"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
+        />
+        <!-- <van-field
           readonly
           clickable
           required
@@ -141,8 +153,20 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
           @click="areaPickFn('liveaddress')"
+        /> -->
+        <self-area
+          label-width="100"
+          picker-key="intentWork"
+          :form="area"
+          :is-computed="area.intentWork.length > 2"
+          required
+          label="意向工作区域"
+          placeholder="请选择"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
         />
-        <van-field
+        <!-- <van-field
           readonly
           clickable
           required
@@ -152,7 +176,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
           @click="areaPickFn('intentWork')"
-        />
+        /> -->
         <selftPicker
           picker-key="intentDeliveryMode"
           :form="formData"
@@ -267,7 +291,19 @@
           :rules="[{ required: true, message: '请选择' }]"
           @click="showPickerFn('householdType')"
         /> -->
-        <van-field
+        <self-area
+          label-width="100"
+          picker-key="householdAddress"
+          :form="area"
+          :is-computed="area.householdAddress.length > 2"
+          required
+          label="户籍地址"
+          placeholder="请选择"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
+        />
+        <!-- <van-field
           readonly
           clickable
           required
@@ -277,7 +313,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
           @click="areaPickFn('householdAddress')"
-        />
+        /> -->
         <van-field
           v-model="formData.householdDistrict"
           name="householdDistrict"
@@ -685,6 +721,7 @@ import { phoneRegExp } from '@/utils/index';
 import { specialInterview, getInterview } from '@/api/driver.js'
 import { GetDictionaryList, getOpenCitys } from '@/api/common'
 import SelftPicker from '@/components/SelfPicker'
+import SelfArea from '@/components/SelfArea'
 export default {
   name: 'TailoredInterview',
   components: {
@@ -695,7 +732,8 @@ export default {
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
     [Notify.Notify]: Notify,
-    SelftPicker
+    SelftPicker,
+    SelfArea
   },
   data() {
     return {
@@ -709,7 +747,11 @@ export default {
       showPicker: false,
       liveaddress: [],
       intentWork: [],
-      householdAddress: [],
+      area: {
+        liveaddress: [],
+        intentWork: [],
+        householdAddress: []
+      },
       pickerNames: {
         currentHasWork: '',
         hasCar: '',
@@ -1033,6 +1075,9 @@ export default {
             this.editForm = res.data
           } else {
             this.formData = { ...this.formData, ...res.data }
+            // this.area.liveaddress.push()
+            // intentWork
+            // householdAddress
           }
         } else {
           this.$toast.fail(res.errorMsg)
@@ -1047,15 +1092,15 @@ export default {
       try {
         this.$loading(true)
         let params = { ...this.formData };
-        params.liveProvince = this.liveaddress[0]; // 居住地址
-        params.liveCity = this.liveaddress[1];
-        params.liveCounty = this.liveaddress[2];
-        params.intentWorkProvince = this.intentWork[0];// 意向工作区域
-        params.intentWorkCity = this.intentWork[1];
-        params.intentWorkCounty = this.intentWork[2];
-        params.householdProvince = this.householdAddress[0] // 户籍地址
-        params.householdCity = this.householdAddress[1]
-        params.householdCounty = this.householdAddress[2]
+        params.liveProvince = this.area.liveaddress[0]; // 居住地址
+        params.liveCity = this.area.liveaddress[1];
+        params.liveCounty = this.area.liveaddress[2];
+        params.intentWorkProvince = this.area.intentWork[0];// 意向工作区域
+        params.intentWorkCity = this.area.intentWork[1];
+        params.intentWorkCounty = this.area.intentWork[2];
+        params.householdProvince = this.area.householdAddress[0] // 户籍地址
+        params.householdCity = this.area.householdAddress[1]
+        params.householdCounty = this.area.householdAddress[2]
         if (this.formData.hasCar === '0') {
           params.currentCarType = '';
         } else {

@@ -14,19 +14,19 @@
         label-width="120px"
         @submit="onSubmit"
       >
-        <!-- <self-area
-        label-width="100"
-        picker-key="area"
-        :form="form"
-        :is-computed="form.area.length > 2"
-        required
-        label="主要配送区域"
-        placeholder="请选择"
-        :rules="[
-          { required: true, message: '请选择' },
-        ]"
-      /> -->
-        <van-field
+        <self-area
+          label-width="100"
+          picker-key="interview"
+          :form="area"
+          :is-computed="area.interview.length > 2"
+          required
+          label="面试地址"
+          placeholder="请选择"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
+        />
+        <!-- <van-field
           readonly
           clickable
           required
@@ -37,7 +37,7 @@
           :rules="[{ required: true, message: '请选择现居住地址' }]"
           @click="showPickerFnArea('interview')"
           @focus="copyData('interview','select')"
-        />
+        /> -->
         <selftPicker
           picker-key="workCity"
           :form="formData"
@@ -165,7 +165,19 @@
           @click="showPickerFn('intentDrivingCarType')"
           @focus="copyData('currentCarType','select')"
         /> -->
-        <van-field
+        <self-area
+          label-width="100"
+          picker-key="liveaddress"
+          :form="area"
+          :is-computed="area.liveaddress.length > 2"
+          required
+          label="现居住地址"
+          placeholder="请选择"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
+        />
+        <!-- <van-field
           readonly
           clickable
           required
@@ -175,7 +187,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择现居住地址' }]"
           @click="showPickerFnArea('liveaddress')"
-        />
+        /> -->
         <van-field
           v-model="formData.experience"
           name="货物运输经验（月）"
@@ -361,20 +373,19 @@
           :rules="[{ required: true, message: '请选择' }]"
           @click="showPickerFn('isLocalPlate')"
         /> -->
-        <!-- <selftPicker
+        <self-area
+          label-width="100"
           picker-key="intentWork"
-          :form="formData"
-          :columns="columns_intentWork"
-          value="name"
-          :is-computed="formData['intentWork']!==''"
+          :form="area"
+          :is-computed="area.intentWork.length > 2"
           required
           label="高意向工作区域"
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
           ]"
-        /> -->
-        <van-field
+        />
+        <!-- <van-field
           readonly
           clickable
           required
@@ -384,7 +395,7 @@
           placeholder="请选择"
           :rules="[{ required: true, message: '请选择' }]"
           @click="showPickerFnArea('intentWork')"
-        />
+        /> -->
         <van-field
           v-model="formData.originIncomeAvg"
           label-width="160px"
@@ -542,9 +553,11 @@ export default {
         intentCargoType: '',
         isNewEnergy: ''
       },
-      liveaddress: [],
-      intentWork: [],
-      interview: [],
+      area: {
+        liveaddress: [],
+        intentWork: [],
+        interview: []
+      },
       formData: {
         workCity: '',
         name: '',
@@ -742,16 +755,16 @@ export default {
       try {
         this.$loading(true)
         let params = { ...this.formData };
-        params.liveProvince = this.liveaddress[0]; // 居住地
-        params.liveCity = this.liveaddress[1];
-        params.liveCounty = this.liveaddress[2];
-        params.intentWorkProvince = this.intentWork[0]; // 高意向工作地
-        params.intentWorkCity = this.intentWork[1];
-        params.intentWorkCounty = this.intentWork[2];
+        params.liveProvince = this.area.liveaddress[0]; // 居住地
+        params.liveCity = this.area.liveaddress[1];
+        params.liveCounty = this.area.liveaddress[2];
+        params.intentWorkProvince = this.area.intentWork[0]; // 高意向工作地
+        params.intentWorkCity = this.area.intentWork[1];
+        params.intentWorkCounty = this.area.intentWork[2];
         // 面试地址
-        params.interviewCity = this.interview[0]
-        params.interviewCounty = this.interview[1]
-        params.interviewProvince = this.interview[2]
+        params.interviewCity = this.area.interview[0]
+        params.interviewCounty = this.area.interview[1]
+        params.interviewProvince = this.area.interview[2]
         if (this.formData.hasCar === '0') {
           params.currentCarType = '';
         } else {
