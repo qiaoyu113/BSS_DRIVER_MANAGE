@@ -293,13 +293,11 @@ export default {
         return (this.lists.length === this.checkedList.length)
       },
       set: function(val) {
+        this.checkedList = []
         if (val) {
-          this.checkedList = []
-          this.lists.map(ele => {
-            this.checkedList.push(ele)
+          this.lists.forEach(item => {
+            this.checkedList.push(item.id)
           })
-        } else {
-          this.checkedList = []
         }
       }
     }
@@ -315,10 +313,11 @@ export default {
     changeCheck(val) {
       console.log('tag', val)
       if (val.change) {
+        console.log('===================================')
         this.checkedList.push(val)
       } else {
         let arr = this.checkedList.filter(ele => {
-          return ele !== val
+          return ele !== val.id
         })
         this.checkedList = arr
       }
@@ -428,7 +427,7 @@ export default {
           startDate: this.text10
         }
         this.$loading(true)
-        let { data: res } = await getConfirmInfoList(parmas)
+        let { data: res } = await getGmInfoList(parmas)
         console.log(res)
         if (res.success) {
           this.lists = res.data
