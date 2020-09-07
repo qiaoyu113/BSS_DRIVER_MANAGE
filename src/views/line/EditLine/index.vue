@@ -13,13 +13,15 @@
 import StepOne from '../components/StepOne'
 import StepTwo from '../components/StepTwo'
 import StepThree from '../components/StepThree'
+import { Notify } from 'vant'
 import { editTemporaryLine, editStableLine, getLineDetail } from '@/api/line'
-import { parseTime } from '@/utils/index'
+import { delay } from '@/utils'
 export default {
   components: {
     StepOne,
     StepTwo,
-    StepThree
+    StepThree,
+    [Notify.Component.name]: Notify.Component
   },
   data() {
     return {
@@ -39,7 +41,9 @@ export default {
         distance: '', // 配送总里程数
         limitRemark: '', // 限行区域说明
         area: [], // 主要配送区域
-        districtArea: ''
+        districtArea: '',
+        lineId: '',
+        carTypeName: ''
       },
       stepTwoForm: {
         driverWorkTime: '', // 司机上岗时间
@@ -52,7 +56,11 @@ export default {
         settlementDays: '', // 结算天数
         shipperOffer: '', // 预计月报价
         everyTripGuaranteed: '', // 单趟报价/每趟保底
-        everyUnitPrice: ''// 每趟提成单价
+        everyUnitPrice: '', // 每趟提成单价
+        provinceAreaName: '',
+        cityAreaName: '',
+        countyAreaName: '',
+        lineId: ''
       },
       stepThreeForm: {
         cargoType: '', // 货物类型
@@ -60,11 +68,13 @@ export default {
         volume: '', // 货物体积
         goodsWeight: '', // 货物重量
         carry: '', // 是否需要搬运
-        dutyRemark: '' // 其他上岗要求
+        dutyRemark: '', // 其他上岗要求
+        lineId: ''
       }
     }
   },
   mounted() {
+    this.lineId = this.$route.query.lineId
     this.init()
   },
 
@@ -99,8 +109,8 @@ export default {
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
-        params.deliveryStartDate = parseTime(this.stepTwoForm.deliveryWeekCycle[0], '{y}-{m}-{d}')
-        params.deliveryEndDate = parseTime(this.stepTwoForm.deliveryWeekCycle[1], '{y}-{m}-{d}')
+        params.deliveryStartDate = this.stepTwoForm.deliveryWeekCycle[0]
+        params.deliveryEndDate = this.stepTwoForm.deliveryWeekCycle[1]
         delete params.deliveryWeekCycle
       }
       // 预计工作时间
@@ -129,7 +139,7 @@ export default {
         if (res.success) {
           this.createSuc()
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
@@ -142,7 +152,7 @@ export default {
         if (res.success) {
           this.createSuc()
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
@@ -177,7 +187,12 @@ export default {
                 result.cityArea,
                 result.countyArea
               ],
-              districtArea: result.districtArea
+              districtArea: result.districtArea,
+              provinceAreaName: result.provinceAreaName,
+              cityAreaName: result.cityAreaName,
+              countyAreaName: result.countyAreaName,
+              lineId: result.lineId,
+              carTypeName: result.carTypeName
             }
           }
           this.stepTwoForm = {
@@ -186,14 +201,16 @@ export default {
               driverWorkTime: result.driverWorkTime,
               monthNum: result.monthNum,
               dayNum: result.dayNum,
-              incomeSettlementMethod: '',
-              settlementCycle: result.incomeSettlementMethod,
+              incomeSettlementMethod: result.incomeSettlementMethod,
+              settlementCycle: result.settlementCycle,
               settlementDays: result.settlementDays,
               shipperOffer: result.shipperOffer,
               everyTripGuaranteed: result.everyTripGuaranteed,
-              everyUnitPrice: result.everyUnitPrice
+              everyUnitPrice: result.everyUnitPrice,
+              lineId: result.lineId
             }
           }
+
           this.stepThreeForm = {
             ...this.step.stepThreeForm,
             ...{
@@ -202,7 +219,8 @@ export default {
               volume: result.volume,
               goodsWeight: result.goodsWeight,
               carry: result.carry,
-              dutyRemark: result.dutyRemark
+              dutyRemark: result.dutyRemark,
+              lineId: result.lineId
             }
           }
           if (this.isStable) {
@@ -213,18 +231,30 @@ export default {
               result.deliveryEndDate
             )
           }
+
           result.lineDeliveryInfoFORMS.forEach(item => {
-            let time = `${item.workingTimeStart}-${item.workingTimeEnd} `
+            let time = `${item.workingTimeStart}-${item.workingTimeEnd}`
             this.stepTwoForm.workingTime.push(time)
           })
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get client detail fail:${err}`)
       } finally {
         this.$loading(false)
       }
+    },
+    // 发布成功
+    createSuc() {
+      Notify({
+        type: 'success', message: '发布成功'
+      })
+      setTimeout(() => {
+        this.$router.push({
+          path: '/line'
+        })
+      }, delay)
     }
   }
 }

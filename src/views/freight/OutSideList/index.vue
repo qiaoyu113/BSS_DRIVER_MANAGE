@@ -312,7 +312,6 @@ export default {
       })
     },
     handleTabChange(tab) {
-      console.log(tab)
       this.getLineInfoList(true)
     },
     async getLineInfoList(isInit) {
@@ -320,11 +319,9 @@ export default {
         this.$loading(true)
 
         let parmas = {
-          customerCity: this.listQuery.name,
-          customer: this.listQuery.name1,
-          project: this.listQuery.name2,
-          dutyManagerId: this.listQuery.name3,
-          startDate: this.listQuery.startDate
+          page: this.page.current,
+          limit: this.page.size,
+          pageNumber: 20
         }
         let { data: res } = await getLineInfoList(parmas)
         if (res.success) {

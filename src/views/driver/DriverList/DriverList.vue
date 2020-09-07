@@ -1,25 +1,52 @@
 <template>
   <div :class="checked ? 'DriverList padd' : 'DriverList'">
-    <DriverTitle @screen="startScreen" @changeManager="changeManager" />
-    <van-sticky :offset-top="90" :style="{height: checked ? '72px' : '56px'}">
-      <van-tabs v-model="active" sticky animated line-width="30" line-height="2">
-        <van-tab v-for="(item,index) in tabType" :key="index">
+    <DriverTitle
+      @screen="startScreen"
+      @changeManager="changeManager"
+    />
+    <van-sticky
+      :offset-top="90"
+      :style="{height: checked ? '72px' : '56px'}"
+    >
+      <van-tabs
+        v-model="active"
+        sticky
+        animated
+        line-width="30"
+        line-height="2"
+        @change="handleTabChange"
+      >
+        <van-tab
+          v-for="(item,index) in tabType"
+          :key="index"
+        >
           <template #title>
             {{ item.type }}<div class="van-info">
-              99+
+              {{ item.num }}
             </div>
           </template>
         </van-tab>
       </van-tabs>
-      <div class="checkAll">
-        <van-checkbox v-if="checked" v-model="checkall" class="checked" shape="square">
+      <div
+        v-if="checked"
+        class="checkAll"
+      >
+        <van-checkbox
+          v-model="checkall"
+          class="checked"
+          checked-color="#7F8FBD"
+          shape="square"
+        >
           全选({{ checkedList.length }})
         </van-checkbox>
       </div>
     </van-sticky>
 
     <div class="list">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-pull-refresh
+        v-model="refreshing"
+        @refresh="onLoad(true)"
+      >
         <van-list
           v-model="loading"
           :finished="finished"
@@ -29,7 +56,7 @@
           @load="onLoad"
         >
           <ListItem
-            v-for="(item, index) in list"
+            v-for="(item, index) in lists"
             :key="index"
             class="items"
             :item="item"
@@ -63,14 +90,14 @@
         placeholder="请选择"
         @click="showPickerFn('businessType')"
       />
-      <van-field
+      <!-- <van-field
         v-model="formText.GmGroup"
         readonly
         name="GmGroup"
         label="加盟小组"
         placeholder="请选择"
         @click="showPickerFn('GmGroup')"
-      />
+      /> -->
       <van-field
         v-model="formText.GmManager"
         readonly
@@ -88,17 +115,16 @@
         @click="showPickerFn('carType')"
       />
       <van-field
-        v-model="formText.status"
+        v-model="formText.orderStatus"
         readonly
-        name="status"
+        name="orderStatus"
         label="订单状态"
         placeholder="请选择"
-        @click="showPickerFn('status')"
+        @click="showPickerFn('orderStatus')"
       />
       <van-field
         v-model="formText.dateArr"
         readonly
-        name="status"
         label="创建时间"
         placeholder="请选择"
         @click="dateShow = true"
@@ -116,32 +142,56 @@
     />
 
     <!-- picker -->
-    <van-popup v-model="showPicker" round position="bottom">
+    <van-popup
+      v-model="showPicker"
+      round
+      position="bottom"
+    >
       <van-picker
         show-toolbar
-        value-key="label"
+        value-key="name"
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirmPicker"
       />
     </van-popup>
 
-    <div v-if="checked" class="bottomBtn">
-      <van-button color="#2F448A" plain style="width:38%" @click="cancelManager">
+    <!-- 选择加盟经理弹窗 -->
+    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" @changeOver="changeOver" />
+
+    <div
+      v-if="checked"
+      class="bottomBtn"
+    >
+      <van-button
+        color="#2F448A"
+        plain
+        native-type="button"
+        style="width:38%"
+        @click="cancelManager"
+      >
         取消
       </van-button>
-      <van-button type="primary" style="width:61%" @click="confirmManager">
+      <van-button
+        native-type="button"
+        type="primary"
+        style="width:61%"
+        @click="confirmManager"
+      >
         选择加盟经理
       </van-button>
     </div>
   </div>
 </template>
 <script>
-import { parseTime } from '@/utils'
-import ListItem from './components/ListItem'
-import DriverTitle from './components/DriverTitle'
+import { parseTime } from '@/utils';
+import ListItem from './components/ListItem';
+import DriverTitle from './components/DriverTitle';
 import SelfPopup from '@/components/SelfPopup';
+import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
+import { getDriverList } from '@/api/driver.js'
+import { GetDictionaryList, getCurrentLowerOfficeCityData } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -152,12 +202,13 @@ export default {
     [Notify.name]: Notify,
     DriverTitle,
     SelfPopup,
-    ListItem
+    ListItem,
+    changeManager
   },
   data() {
     return {
       checkedList: [],
-      list: [],
+      lists: [],
       loading: false,
       finished: false,
       error: false,
@@ -165,38 +216,30 @@ export default {
       columns: [],
       pickerKey: '',
       columns_businessType: [
-        { label: '全部', value: '' },
-        { label: '专车', value: 0 },
-        { label: '共享', value: 1 }
+        { name: '全部', code: '' },
+        { name: '专车', code: 0 },
+        { name: '共享', code: 1 }
       ],
-      columns_workCity: [
-        { label: '北京', value: '' },
-        { label: '河南', value: 0 },
-        { label: '澳大利亚', value: 1 }
-      ],
+      columns_workCity: [],
       columns_GmGroup: [
-        { label: '共享一组', value: '' },
-        { label: '共享二组', value: 0 },
-        { label: '共享三组', value: 1 }
+        { name: '共享一组', code: '' },
+        { name: '共享二组', code: 0 },
+        { name: '共享三组', code: 1 }
       ],
       columns_GmManager: [
-        { label: '李威山', value: '' },
-        { label: '闫义杰', value: 0 },
-        { label: '高艳涛', value: 1 }
+        { name: '李威山', code: '' },
+        { name: '闫义杰', code: 0 },
+        { name: '高艳涛', code: 1 }
       ],
-      columns_status: [
-        { label: '状态1', value: '' },
-        { label: '状态2', value: 0 },
-        { label: '状态3', value: 1 }
+      columns_orderStatus: [
+        { name: '全部', code: '' },
+        { name: '已成交', code: '30' },
+        { name: '审核不通过', code: '25' },
+        { name: '待审核', code: '20' },
+        { name: '待确认', code: '15' }
+        // { label: '已退出', value: '5' }
       ],
-      columns_carType: [{
-        label: '金杯',
-        value: '123'
-      },
-      {
-        label: '金2杯',
-        value: '1223'
-      }],
+      columns_carType: [],
       showPicker: false,
       showScreen: false,
       minDate: new Date(+new Date() - 86400000 * 365),
@@ -209,66 +252,104 @@ export default {
         GmGroup: '',
         GmManager: '',
         carType: '',
-        status: '',
+        orderStatus: '',
         dateArr: ''
       },
       ruleForm: {
         workCity: '',
         businessType: '',
-        GmGroup: '',
+        // GmGroup: '',
         GmManager: '',
         carType: '',
-        status: '',
+        status: 'all',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        orderStatus: ''
       },
       tabType: [
-        { type: '全部', code: '' },
-        { type: '已面试', code: 1 },
-        { type: '待成交', code: 2 },
-        { type: '已成交', code: 3 },
-        { type: '已上岗', code: 4 },
-        { type: '已退出', code: 5 }
+        { type: '全部', code: 'all', num: '' },
+        { type: '已面试', code: '1', num: '' },
+        { type: '待成交', code: '2', num: '' },
+        { type: '已成交', code: '3', num: '' },
+        { type: '已上岗', code: '4', num: '' },
+        { type: '已退出', code: '5', num: '' }
       ],
-      checked: false
+      checked: false,
+      changeManagerStatus: false,
+      page: {
+        current: 0,
+        size: 10
+      }
     };
   },
   computed: {
     checkall: {
       get: function() {
-        return (this.list.length === this.checkedList.length)
+        return this.lists.length === this.checkedList.length;
       },
       set: function(val) {
-        console.log(val)
         if (val) {
-          this.checkedList = []
-          this.list.map(ele => {
-            this.checkedList.push(ele)
-          })
+          this.checkedList = [];
+          this.lists.map((ele) => {
+            this.checkedList.push(ele.driverId);
+          });
         } else {
-          this.checkedList = []
+          this.checkedList = [];
         }
       }
     }
   },
-  mounted() {},
+  watch: {
+    active(val) {
+      this.checkedList = [];
+    }
+  },
+  mounted() {
+    // 请求字典
+    this.fetchData();
+  },
   methods: {
-    onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push({ item: this.list.length + 1 });
-        }
-
-        // 加载状态结束
+    /**
+     * 请求字典接口
+     */
+    fetchData() {
+      GetDictionaryList(['Intentional_compartment'])
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_carType = data.data.Intentional_compartment.map(ele => {
+              return { name: ele.dictLabel, code: ele.dictValue }
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+      getCurrentLowerOfficeCityData({})
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_workCity = data.data;
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+    },
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
+      }
+      let result = await this.getLists(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 20) {
-          this.finished = true;
+        if (!result.hasMore) {
+          this.finished = true
         }
-      }, 1000);
+      }
     },
     /**
      * 下拉刷新
@@ -282,9 +363,72 @@ export default {
       this.loading = true;
       this.onLoad();
     },
-    onSubmit(value) {
-      console.log(this.ruleForm);
-      this.onRefresh();
+    // 状态切换
+    async handleTabChange(tab) {
+      if (tab === 0) {
+        this.ruleForm.status = 'all'
+      } else {
+        this.ruleForm.status = String(tab)
+      }
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          limit: this.page.size
+        }
+        this.ruleForm.workCity && (params.workCity = this.ruleForm.workCity)
+        this.ruleForm.businessType && (params.businessType = this.ruleForm.businessType)
+        this.ruleForm.GmManager && (params.GmManager = this.ruleForm.GmManager)
+        this.ruleForm.carType && (params.carType = this.ruleForm.carType)
+        this.ruleForm.status && (params.status = this.ruleForm.status)
+        this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
+        if (this.ruleForm.startDate && this.ruleForm.endDate) {
+          this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
+        }
+        let { data: res } = await getDriverList(params)
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabType.forEach(item => {
+            if (item.code === this.ruleForm.status) {
+              item.num = res.title[item.code]
+            } else {
+              item.num = ''
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async onSubmit(value) {
+      // let result = await this.getLists(true)
+      // this.lists = result.lists
+      // this.onRefresh();
+      this.getLists()
+      this.showScreen = false
     },
     /**
      * 重置form
@@ -292,26 +436,26 @@ export default {
     onReset(form) {
       this.ruleForm = this.$options.data().ruleForm;
       this.formText = this.$options.data().formText;
-      form.resetValidation()
+      form.resetValidation();
     },
     /**
      * 新建面试表单入口
-    */
+     */
     startScreen(val) {
-      this.showScreen = val.show
+      this.showScreen = val.show;
     },
     /**
      * 更换加盟经理
      */
     changeManager(val) {
-      this.checked = val.show
+      this.checked = val.show;
     },
     /**
      * picker 选择
      */
     onConfirmPicker(value) {
-      this.formText[this.pickerKey] = value.label;
-      this.ruleForm[this.pickerKey] = value.value;
+      this.formText[this.pickerKey] = value.name;
+      this.ruleForm[this.pickerKey] = value.code;
       this.showPicker = false;
     },
     /**
@@ -326,23 +470,20 @@ export default {
         case 'businessType':
           this.columns = this.columns_businessType;
           break;
-        case 'GmGroup':
-          this.columns = this.columns_GmGroup;
-          break;
+        // case 'GmGroup':
+        //   this.columns = this.columns_GmGroup;
+        //   break;
         case 'GmManager':
           this.columns = this.columns_GmManager;
           break;
         case 'carType':
           this.columns = this.columns_carType;
           break;
-        case 'status':
-          this.columns = this.columns_status;
+        case 'orderStatus':
+          this.columns = this.columns_orderStatus;
           break;
       }
       this.showPicker = true;
-    },
-    formatDate(date) {
-      return `${date.getMonth() + 1}/${date.getDate()}`;
     },
     onConfirm(date) {
       const [start, end] = date;
@@ -350,46 +491,57 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.formText.dateArr = `${startDate} - ${endDate}`;
-      this.ruleForm.startDate = startDate;
-      this.ruleForm.endDate = endDate;
+      this.ruleForm.startDate = start;
+      this.ruleForm.endDate = end;
+    },
+    closeManagerPop(val) {
+      this.changeManagerStatus = val.status
     },
     /**
      * 取消选择加盟经理
      */
     cancelManager() {
       this.checked = false;
-      this.checkedList = []
+      this.checkedList = [];
+    },
+    changeOver() {
+      this.checked = false;
     },
     /**
      * 选则加盟经理
      */
     confirmManager() {
       if (this.checkedList.length === 0) {
-        return Notify({ type: 'warning', message: '请选择新的加盟经理', duration: 2000 });
+        return Notify({
+          type: 'warning',
+          message: '请选择新的加盟经理',
+          duration: 2000
+        });
+      } else {
+        this.changeManagerStatus = true
       }
     },
     /**
      * item选中
      */
     changeCheck(val) {
-      console.log('tag', val)
       if (val.change) {
-        this.checkedList.push(val.item)
+        this.checkedList.push(val.item);
       } else {
-        let arr = this.checkedList.filter(ele => {
-          return ele !== val.item
-        })
-        this.checkedList = arr
+        let arr = this.checkedList.filter((ele) => {
+          return ele !== val;
+        });
+        this.checkedList = arr;
       }
     }
   }
-}
+};
 </script>
 <style scoped lang="less">
-.DriverList{
-  background-color:@body-bg;
+.DriverList {
+  background-color: @body-bg;
   position: relative;
-  .bottomBtn{
+  .bottomBtn {
     padding: 15px 0;
     box-sizing: border-box;
     margin: 0 15px;
@@ -398,30 +550,30 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: calc( 100vw - 30px );
-    background-color:@body-bg;
+    width: calc(100vw - 30px);
+    background-color: @body-bg;
   }
-  .checkAll{
+  .checkAll {
     padding: 5px 15px 7px 15px;
     box-sizing: border-box;
     font-size: 13px;
-    color: #7F8FBD;
+    color: #7f8fbd;
     letter-spacing: 0;
     text-align: center;
     z-index: 2;
-    background-color:@body-bg;
+    background-color: @body-bg;
   }
-  .list{
+  .list {
     margin-top: 5px;
     padding: 0 15px;
     box-sizing: border-box;
   }
-  .items{
+  .items {
     margin-bottom: 10px;
   }
 }
-.padd{
-  padding-bottom: 40px;
+.padd {
+  padding-bottom: 60px;
   box-sizing: border-box;
 }
 </style>

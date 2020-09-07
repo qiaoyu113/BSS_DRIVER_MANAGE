@@ -36,6 +36,7 @@
                   :key="index"
                   :name="item.dictValue"
                   class="margin-bottom-xs"
+                  checked-color="#3ACB8D"
                 >
                   {{ item.dictLabel }}
                 </van-radio>
@@ -60,6 +61,7 @@
             size="normal"
             native-type="button"
             class="cancel-btn"
+            @click="onClickLeft"
           >
             取消
           </van-button>
@@ -84,7 +86,7 @@
 </template>
 
 <script>
-import { parseTime, delay } from '@/utils'
+import { parseTime } from '@/utils'
 import { GetDictionaryList } from '@/api/common'
 import { SwitchTryRun } from '@/api/tryrun'
 export default {
@@ -169,10 +171,18 @@ export default {
           }
         })
         if (res.success) {
-          this.$toast.success('掉线成功！');
-          setTimeout(() => {
-            this.$router.push('/try-run')
-          }, delay);
+          this.$loading(false);
+          this.$dialog.confirm({
+            title: '提示',
+            message: '已成功操作试跑掉线，该线路是否需要激活？',
+            confirmButtonText: '去激活线路'
+          })
+            .then(() => {
+              // 去激活线路页面
+            })
+            .catch(() => {
+              // 关闭弹窗
+            });
         } else {
           this.$toast.fail(res.errorMsg)
         }

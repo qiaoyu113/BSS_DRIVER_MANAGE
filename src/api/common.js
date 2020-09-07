@@ -90,9 +90,33 @@ export function getDictData(params) {
 // 批量查询字典
 export function GetDictionaryList(data) {
   return request({
-    url: `${'/api/base'}/v1/base/dict/dict/list/types`,
+    url: `${prefix}/v1/base/dict/dict/list/types`,
     method: 'post',
     data
   })
 }
 
+// 获取省、市、县
+export const GetCityByCode = (data) =>
+  request({
+    url: `${prefix}/v1/base/area/getCityByCode`,
+    method: 'post',
+    data
+  })
+
+// 加盟经理(1)  外销销售(2) 上岗经理(3)
+export const GetSpecifiedRoleList = (data) =>
+  request({
+    url: `${prefix}/v1/base/role/getSpecifiedRoleList`,
+    method: 'post',
+    data
+  })
+
+// 查询当前用户组织下的城市列表或者所归属的城市 工作城市
+export function getCurrentLowerOfficeCityData(params) {
+  return request({
+    url: `${prefix}/v1/base/office/getCurrentLowerOfficeCityData`,
+    method: 'get',
+    params
+  })
+}

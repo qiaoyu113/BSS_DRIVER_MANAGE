@@ -41,7 +41,7 @@ import Suggest from '@/components/SuggestSearch'
 import { createStableLine, createTemporaryLine } from '@/api/line'
 import { getProjectSearch } from '@/api/project'
 import { Notify, Dialog } from 'vant';
-import { delay, parseTime } from '@/utils'
+import { delay } from '@/utils'
 export default {
   components: {
     StepOne,
@@ -160,8 +160,8 @@ export default {
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
-        params.deliveryStartDate = parseTime(this.stepTwoForm.deliveryWeekCycle[0], '{y}-{m}-{d}')
-        params.deliveryEndDate = parseTime(this.stepTwoForm.deliveryWeekCycle[1], '{y}-{m}-{d}')
+        params.deliveryStartDate = this.stepTwoForm.deliveryWeekCycle[0]
+        params.deliveryEndDate = this.stepTwoForm.deliveryWeekCycle[1]
         delete params.deliveryWeekCycle
       }
       // 预计工作时间
@@ -190,7 +190,7 @@ export default {
         if (res.success) {
           this.createSuc()
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
@@ -203,7 +203,7 @@ export default {
         if (res.success) {
           this.createSuc()
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
@@ -234,7 +234,7 @@ export default {
             value: item.projectId
           }))
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)

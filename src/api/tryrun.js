@@ -27,7 +27,7 @@ export function GetPersonInfo(params) {
 // 试跑
 export function TryRun(data) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/tryRun`,
+    url: `${prefix}/v2/runtest/tryRun`,
     method: 'post',
     data
   })
@@ -43,7 +43,7 @@ export function FollowCar(data) {
 // 掉线
 export function SwitchTryRun(data) {
   return request({
-    url: `${'/api'}/waybill/v2/runtest/switchDropped`,
+    url: `${prefix}/v2/runtest/switchDropped`,
     method: 'post',
     data
   })

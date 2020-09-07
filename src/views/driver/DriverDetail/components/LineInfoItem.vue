@@ -4,7 +4,7 @@
       <van-cell>
         <template #title>
           <div class="title">
-            <span>沙漠皇帝阿兹尔</span>
+            <span>{{ obj.lineName }}</span>
             <van-icon name="arrow" />
           </div>
         </template>
@@ -12,7 +12,7 @@
       <van-cell>
         <template #title>
           <div class="itemStatus">
-            试跑
+            {{ obj.lineStateName }}
           </div>
         </template>
       </van-cell>
@@ -21,31 +21,31 @@
           title-class="cell-title"
           value-class="cell-value"
           title="线路编号："
-          value="XL19980822651"
+          :value="obj.lineId"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="仓位置："
-          value="如意湖王鼎国际"
+          :value="obj.warehouseAreaName"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="配送区域："
-          value="信阳浉河贤山庙"
+          :value="obj.deliveryAreaName"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="外线销售："
-          value="李威山/18848885135"
+          :value="`${obj.dutyManagerIdName}/${obj.lineSalePhone}`"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="创建时间："
-          value="2020/8-27/18:07"
+          :value="obj.createDate | parseTime('{y}-{m}-{d}')"
         />
       </div>
       <div class="detailBtn">
@@ -58,13 +58,19 @@
 </template>
 <script>
 export default {
-  name: 'DriverList',
+  name: 'LineInfoItem',
+  props: {
+    obj: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {}
   },
   methods: {
     goRouter() {
-      this.$router.push({ path: '/lineDetail', id: '' })
+      this.$router.push({ path: '/lineDetail', id: this.obj.lineId })
     }
   }
 }

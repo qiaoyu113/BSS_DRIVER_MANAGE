@@ -231,7 +231,7 @@ export default {
       showActionSheet: false,
       list: [],
       form: {
-        operateFlag: 'tryRun',
+        operateFlag: 'creatIntentionRun', // 创建试跑意向
         lineId: '',
         driverId: ''
       },

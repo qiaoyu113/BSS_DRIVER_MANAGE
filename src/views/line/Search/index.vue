@@ -103,7 +103,7 @@ export default {
             this.setHistory(keyword)
           }
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)

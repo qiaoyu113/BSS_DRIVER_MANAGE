@@ -46,6 +46,30 @@ export default [
     meta: {
       title: '填写面试表单'
     }
+  },
+  {
+    path: '/editTailored',
+    name: 'editTailored',
+    component: resolve => require(['@/views/driver/CreateDriver/TailoredInterview'], resolve),
+    meta: {
+      title: '编辑专车面试表单'
+    }
+  },
+  {
+    path: '/editShare',
+    name: 'editShare',
+    component: resolve => require(['@/views/driver/CreateDriver/ShareInterview'], resolve),
+    meta: {
+      title: '编辑共享面试表单'
+    }
+  },
+  {
+    path: '/driverLog',
+    name: 'driverLog',
+    component: resolve => require(['@/views/driver/DriverLog/DriverLog'], resolve),
+    meta: {
+      title: '操作记录'
+    }
   }
 ]
 

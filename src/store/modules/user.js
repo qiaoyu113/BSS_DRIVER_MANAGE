@@ -1,6 +1,5 @@
 // import { login, getInfo } from 'api/user'
-import { login } from 'api/user'
-import { Toast } from 'vant'
+import { loginByAccount } from 'api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 // import router from '@/router'
@@ -19,7 +18,7 @@ export default {
   },
   mutations: {
     [LOGIN](state, data) {
-      let userToken = data.data
+      let userToken = data.token
       state.token = userToken
       setToken(userToken)
     },
@@ -40,24 +39,34 @@ export default {
   actions: {
     async login(state, data) {
       try {
-        let res = await login({
-          phoneNumber: data.phoneNumber,
-          password: data.password
-        })
-        state.commit(LOGIN, res)
-        Toast({
-          message: '登录成功',
-          position: 'middle',
-          duration: 1500
-        })
-        setTimeout(() => {
-          const redirect = data.$route.query.redirect || '/'
-          data.$router.replace({
-            path: redirect
+        data.$loading(true)
+        let res = {}
+        // 账号登录
+        if (data.loginWay === 'account') {
+          let { data: response } = await loginByAccount({
+            username: data.loginForm.account,
+            password: data.loginForm.password
           })
-        }, 1500)
+
+          res = response
+        }
+        if (res.success) {
+          state.commit(LOGIN, res.data)
+          state.commit(SetUserData, res.data)
+
+          setTimeout(() => {
+            const redirect = data.$route.query.redirect || '/'
+            data.$router.replace({
+              path: redirect
+            })
+          }, 20)
+        } else {
+          data.$fail(res.errorMsg)
+        }
       } catch (error) {
-        console.log(error)
+        console.log(`login error:${error}`,)
+      } finally {
+        data.$loading(false)
       }
     },
     // get user info
@@ -70,7 +79,7 @@ export default {
         //     // eslint-disable-next-line
         //     reject('Verification failed, please Login again.')
         //   }
-        commit(SetUserData, 'wt_admin')
+        // commit(SetUserData, 'wt_admin')
         resolve('data')
         // }).catch(error => {
         //   reject(error)

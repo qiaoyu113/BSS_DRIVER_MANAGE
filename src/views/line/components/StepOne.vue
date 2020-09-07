@@ -30,71 +30,69 @@
           ]"
         />
       </template>
-      <van-field
-        label-width="100"
-        colon
-        :value="pickerNames['lineBalance']"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="lineBalance"
+        :form="form"
+        :columns="lineBalanceArr"
+        value="label"
+        :is-computed="form['lineBalance']!==''"
         required
+        label-width="100"
         label="是否有线路余额"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('lineBalance')"
       />
-      <van-field
+      <selfDatetimePicker
         label-width="100"
-        colon
-        readonly
-        clickable
+        picker-key="waitDirveValidity"
+        :is-computed="form['waitDirveValidity']!==''"
+        :form="form"
         required
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        name="calendar"
-        :value="pickerNames['waitDirveValidity']"
         label="上架截止日期"
         placeholder="点击选择日期"
-        @click="showPickerFn('waitDirveValidity')"
       />
-      <van-field
-        label-width="100"
-        colon
-        :value="pickerNames['stabilityRate']"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="stabilityRate"
+        :form="form"
+        :columns="stabilityRateArr"
+        value="label"
+        :is-computed="form['stabilityRate']!==''"
         required
+        label-width="100"
         label="线路稳定性"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('stabilityRate')"
       />
       <h4 class="title van-hairline--bottom">
         配送信息
       </h4>
-      <van-field
-        label-width="100"
-        colon
-        :value="pickerNames['runSpeed']"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="runSpeed"
+        :form="form"
+        :columns="runSpeedArr"
+        value="label"
+        :is-computed="form['runSpeed']!==''"
         required
+        label-width="100"
         label="是否走高速"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('runSpeed')"
       />
-      <van-field
-        colon
-        :value="pickerNames['returnBill']"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="returnBill"
+        :form="form"
+        :columns="returnBillArr"
+        value="label"
+        :is-computed="form['returnBill']!==''"
         required
         label-width="100"
         label="是否需要回单"
@@ -102,7 +100,6 @@
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('returnBill')"
       />
       <van-field
         label-width="100"
@@ -118,19 +115,17 @@
         ]"
         @click="handleShowModal('carType')"
       />
-      <van-field
+      <self-area
         label-width="100"
-        colon
-        :value="pickerNames['area']"
-        readonly
-        clickable
+        picker-key="area"
+        :form="form"
+        :is-computed="form.area.length > 2"
         required
         label="主要配送区域"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择' },
         ]"
-        @click="showPickerFn('area')"
       />
       <van-field
         v-model="form.districtArea"
@@ -161,13 +156,14 @@
       />
       <van-field
         v-model="form.distance"
+        v-only-number="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
         label="配送总里程数"
         placeholder="请输入"
         name="mileageValidator"
-        type="digit"
+        type="number"
         :rules="[
           { required: true, message: '请输入' },
           { validator: mileageValidator, message: '请输入1~9999' }
@@ -190,41 +186,6 @@
         下一步
       </van-button>
     </van-form>
-    <!-- 底部弹出框 -->
-    <van-popup v-model="showPicker" position="bottom">
-      <template v-if="isArea">
-        <!-- 配送区域 -->
-        <van-area
-          :value="form['area'].length > 1 ?form['area'][2]+'' : ''"
-          :area-list="columns"
-          :columns-placeholder="['请选择', '请选择', '请选择']"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
-      <template v-else-if="isDate">
-        <van-datetime-picker
-          v-model="form[pickerKey]"
-          type="date"
-          title="选择年月日"
-          :min-date="minTime"
-          :max-date="maxTime"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
-      <template v-else>
-        <!-- picker选择器 -->
-        <van-picker
-          ref="fromOnePicker"
-          value-key="label"
-          show-toolbar
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
-    </van-popup>
     <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
@@ -240,9 +201,15 @@
 <script>
 import Suggest from '@/components/SuggestSearch'
 import { getDictData } from '@/api/common'
+import SelftPicker from '@/components/SelfPicker'
+import SelfDatetimePicker from '@/components/SelfDatetimePicker'
+import SelfArea from '@/components/SelfArea'
 export default {
   components: {
-    Suggest
+    Suggest,
+    SelftPicker,
+    SelfDatetimePicker,
+    SelfArea
   },
   props: {
     form: {
@@ -310,64 +277,11 @@ export default {
           value: 2
         }
       ],
-      // 主要配送区域
-      areaArr: {
-        province_list: {
-          110000: '北京市',
-          120000: '天津市'
-        },
-        city_list: {
-          110100: '北京市',
-          110200: '县',
-          120100: '天津市',
-          120200: '县'
-        },
-        county_list: {
-          110101: '东城区',
-          110102: '西城区',
-          110105: '朝阳区',
-          110106: '丰台区',
-          120101: '和平区',
-          120102: '河东区',
-          120103: '河西区',
-          120104: '南开区',
-          120105: '河北区'
-        }
-      },
       showModal: false,
       options: [],
       modalKey: '',
-      pickerNames: { // picker选中显示的名字
-        lineBalance: '',
-        waitDirveValidity: '',
-        stabilityRate: '',
-        runSpeed: '',
-        returnBill: '',
-        carType: '',
-        area: ''
-      },
-      pickerKey: '', // 显示picker的key
-      columns: [], // picker的列表
-      showPicker: false, // 是否打开picker
-      areaLists: ['area'], // 显示日历控件的字段集合
-      timeLists: ['waitDirveValidity'],
-      minTime: new Date(),
-      maxTime: new Date(2125, 12, 31)
-    }
-  },
-  computed: {
-    isArea() {
-      return this.areaLists.includes(this.pickerKey)
-    },
-    isDate() {
-      return this.timeLists.includes(this.pickerKey)
-    }
-  },
-  watch: {
-    'form.lineId'(val) {
-      if (this.type === 'edit' && val !== '') {
-        this.showPickerLable()
-        this.pickerNames.driverWorkTime = this.form.driverWorkTime
+      pickerNames: {
+        carType: ''
       }
     }
   },
@@ -378,17 +292,6 @@ export default {
     async init() {
       let result = await this.getDictData('Intentional_compartment')
       this.options = result
-    },
-    // 编辑生成label
-    showPickerLable() {
-      for (let key in this.pickerNames) {
-        let listKey = `${key}Arr`
-        let index = this[listKey].findIndex(item => item.value === this.form[key])
-        console.log(index, this.form[key], key)
-        if (index > -1) {
-          this.pickerNames[key] = this[`${key}Arr`][index].label
-        }
-      }
     },
     // 提交
     onSubmit(values) {
@@ -446,57 +349,14 @@ export default {
             value: item.dictValue
           }))
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get dict data fail:${err}`)
       }
     },
-    // 显示picker
-    showPickerFn(key) {
-      this.columns = []
-      this.pickerKey = key;
-      if (key === 'lineBalance') {
-        this.columns.push(...this.lineBalanceArr);
-      } else if (key === 'stabilityRate') {
-        this.columns.push(...this.stabilityRateArr);
-      } else if (key === 'runSpeed') {
-        this.columns.push(...this.runSpeedArr);
-      } else if (key === 'returnBill') {
-        this.columns.push(...this.returnBillArr);
-      } else if (key === 'area') {
-        this.columns = this.areaArr
-      }
-
-      this.showPicker = true;
-      if (['edit'].includes(this.type)) {
-        let index = this.columns.findIndex(item => item.value === this.form[this.pickerKey])
-        if (index === -1) {
-          index = 0
-        }
-        setTimeout(() => {
-          this.$refs.fromOnePicker.setIndexes([index])
-        }, 20)
-      }
-    },
-    // picker选择器
-    onConfirm(obj) {
-      if (this.isDate) {
-        this.pickerNames[this.pickerKey] = `${obj.getMonth() + 1}/${obj.getDate()}`;
-        this.form[this.pickerKey] = obj
-      } else if (this.isArea) {
-        this.form[this.pickerKey] = obj.map((item) => item.code)
-        this.pickerNames[this.pickerKey] = obj.map((item) => item.name).join('/');
-      } else {
-        this.pickerNames[this.pickerKey] = obj.label
-        this.form[this.pickerKey] = obj.value
-      }
-
-      this.showPicker = false;
-    },
     // 重置表单
     reset() {
-      this.pickerNames = {}
       this.$refs.stepOne.resetValidation()
     }
   }

@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 // let prefix = '/api/waybill'
+let prefix = 'mock/95'
 // 加盟运费接口
 export function getConfirmInfoList(data) {
   return request({
@@ -52,13 +53,13 @@ export function reportMoneyBatchByGM(data) {
   })
 }
 // 线外列表运费接口
-// export function getLineInfoList(data) {
-//   return request({
-//     url: `${prefix}/v2/waybill/getLineInfoList`, // 外线测列表
-//     method: 'post',
-//     data
-//   })
-// }
+export function getLineInfoList(data) {
+  return request({
+    url: `${prefix}/v2/waybill/getLineInfoList`, // 外线测列表
+    method: 'post',
+    data
+  })
+}
 export function noCarBatchBySale(data) {
   return request({
     url: `${prefix}/v2/waybill/noCarBatchBySale`, // 外线侧批量设置未出车

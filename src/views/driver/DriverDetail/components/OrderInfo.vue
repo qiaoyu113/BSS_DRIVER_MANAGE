@@ -1,6 +1,6 @@
 <template>
   <div class="OrderInfo">
-    <van-cell title="订单编号：DD202005060001">
+    <van-cell :title="obj.orderId">
       <template #right-icon>
         <span
           class="doBtn"
@@ -10,33 +10,39 @@
     </van-cell>
     <van-cell-group>
       <van-field
-        label="商品分类："
-        value="梧桐共享"
+        label="商品分类"
+        :value="obj.busiTypeName"
+        readonly
+        colon
+      />
+      <van-field
+        label="合作模式"
+        :value="obj.cooperationModelName"
+        readonly
+        colon
+      />
+      <van-field
+        label="合作车型"
+        :value="obj.cooperationCarName"
+        colon
         readonly
       />
       <van-field
-        label="合作模式："
-        value="带车"
+        label="合作期限"
+        colon
+        :value="`${obj.cooperationTime}（月）`"
         readonly
       />
       <van-field
-        label="合作车型："
-        value="4.2米厢货"
+        label="订单金额"
+        colon
+        :value="`￥${obj.havePayAmount}`"
         readonly
       />
       <van-field
-        label="合作期限："
-        value="3个月"
-        readonly
-      />
-      <van-field
-        label="订单金额："
-        value="￥4000.00"
-        readonly
-      />
-      <van-field
-        label="支付时间："
-        value="2020/08/15 13:59:23"
+        label="支付时间"
+        colon
+        :value="obj.updateDate | parseTime('{y}-{m}-{d}')"
         readonly
       />
     </van-cell-group>
@@ -44,12 +50,18 @@
 </template>
 <script>
 export default {
+  props: {
+    obj: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {};
   },
   methods: {
     goRouter() {
-      this.$router.push({ path: '/orderDetail', query: { id: '' }});
+      this.$router.push({ path: '/orderDetail', query: { id: this.obj.driverId }});
     }
   }
 };
