@@ -27,7 +27,7 @@ export function GetPersonInfo(params) {
 // 试跑
 export function TryRun(data) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/tryRun`,
+    url: `${prefix}/v2/runtest/tryRun`,
     method: 'post',
     data
   })
@@ -43,7 +43,7 @@ export function FollowCar(data) {
 // 掉线
 export function SwitchTryRun(data) {
   return request({
-    url: `${'/api'}/waybill/v2/runtest/switchDropped`,
+    url: `${prefix}/v2/runtest/switchDropped`,
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function SwitchTryRun(data) {
 // 试跑列表
 export function GetRunTestInfoList(data) {
   return request({
-    url: `${prefix}/v2/runtest/getRunTestInfoList`,
+    url: `${prefix}/waybill_center/v2/runtest/getRunTestInfoList`,
     method: 'post',
     data
   })
@@ -59,7 +59,23 @@ export function GetRunTestInfoList(data) {
 // 试跑详情
 export function GetDetails(params) {
   return request({
-    url: `${prefix}/v2/runtest/runDetial`,
+    url: `${prefix}/waybill/v2/runtest/runDetial`,
+    method: 'get',
+    params
+  })
+}
+// 线路查询
+export function GetLine(data) {
+  return request({
+    url: `${prefix}/line_center/v2/line/lineInfo/fuzzyCheck`,
+    method: 'post',
+    data
+  })
+}
+// 获取线路详情
+export function GetLineDetail(params) {
+  return request({
+    url: `${prefix}/line_center/v2/line/lineInfoDetail`,
     method: 'get',
     params
   })

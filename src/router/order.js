@@ -36,7 +36,7 @@ export default [
     name: 'addPay',
     component: resolve => require(['@/views/order/CreateOrder/AddPay'], resolve),
     meta: {
-      title: '添加历史记录'
+      title: '添加支付记录'
     }
   }
 ]

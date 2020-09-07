@@ -1,38 +1,47 @@
 <template>
   <div class="PayItem">
     <van-field
-      label="支付金额："
-      value="2300.00元"
+      label="支付金额"
+      :value="`${obj.money}元`"
+      colon
+      readonly
+      :border="false"
+    >
+      <template #button>
+        <span class="delete" @click="deleteItem">删除</span>
+      </template>
+    </van-field>
+    <van-field
+      label="支付时间"
+      :value="obj.payDate"
+      colon
       readonly
       :border="false"
     />
     <van-field
-      label="支付时间："
-      value="2020-08-08"
-      readonly
+      label="支付方式"
+      :value="obj.payTypeName"
       :border="false"
-    />
-    <van-field
-      label="支付方式："
-      value="微信小程序"
-      :border="false"
+      colon
       readonly
     />
-    <van-field name="uploader" label="支付图片：" readonly :border="false" @click="lookPic">
+    <van-field name="uploader" label="支付图片：" readonly :border="false" @click="lookPic(obj.payImageUrl)">
       <template #input>
-        <van-image width="100" height="100" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+        <van-image width="100" height="100" :src="obj.payImageUrl" />
       </template>
     </van-field>
     <van-field
       :border="false"
-      label="交易编号："
-      value="123456789987465"
+      label="交易编号"
+      :value="obj.transactionId"
+      colon
       readonly
     />
     <van-field
       style="border-bottom: 1px solid #c8c9cc;"
-      label="备注："
-      value="？？？？"
+      label="备注"
+      :value="obj.remarks"
+      colon
       readonly
     />
   </div>
@@ -40,16 +49,33 @@
 <script>
 import { ImagePreview } from 'vant'
 export default {
+  props: {
+    obj: {
+      type: Object,
+      default: () => {}
+    },
+    index: {
+      type: Number,
+      default: () => {}
+    }
+  },
   data() {
     return {}
   },
   methods: {
-    lookPic() {
+    lookPic(url) {
       ImagePreview([
-        'https://img.yzcdn.cn/vant/cat.jpeg'
+        url
       ]);
+    },
+    deleteItem() {
+      this.$emit('delete', this.index)
     }
   }
 }
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.delete{
+  color: #EB3303;
+}
+</style>

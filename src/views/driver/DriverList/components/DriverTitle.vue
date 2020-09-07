@@ -2,7 +2,7 @@
   <div class="DriverTitle">
     <van-sticky :offset-top="0">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-1)">
-        <template #right>
+        <template v-if="showChange" #right>
           <div style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
             新建
           </div>
@@ -11,7 +11,7 @@
           </div>
         </template>
       </van-nav-bar>
-      <van-search disabled show-action placeholder="请输入搜索关键词" @click="searchClick">
+      <van-search v-if="title === '司机管理'" disabled show-action placeholder="请输入搜索关键词" @click="searchClick">
         <template #action>
           <div class="search" @click.stop="screenOut ">
             <span>筛选</span>
@@ -34,6 +34,12 @@ export default {
   name: 'DriverTitle',
   components: {
     [Icon.name]: Icon
+  },
+  props: {
+    showChange: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {

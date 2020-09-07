@@ -171,6 +171,7 @@ export default {
           }
         })
         if (res.success) {
+          this.$loading(false);
           this.$dialog.confirm({
             title: '提示',
             message: '已成功操作试跑掉线，该线路是否需要激活？',

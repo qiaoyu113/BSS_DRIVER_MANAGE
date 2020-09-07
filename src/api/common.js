@@ -64,7 +64,7 @@ export function getUserInfo(data) {
 let prefix = '/mock/25'
 export function getOpenCitys(params) {
   return request({
-    url: `${prefix}/v1/base/area/getOpenCityData`,
+    url: '/api/base/v1/base/area/getOpenCityData',
     method: 'get',
     params
   })
@@ -82,7 +82,7 @@ export function upload(params, data) {
 // 根据类型查询字典值--不分页
 export function getDictData(params) {
   return request({
-    url: `${prefix}/v1/base/dict/dictData/list`,
+    url: '/api/base/v1/base/dict/dictData/list',
     method: 'get',
     params
   })
@@ -90,7 +90,7 @@ export function getDictData(params) {
 // 批量查询字典
 export function GetDictionaryList(data) {
   return request({
-    url: `${'/api/base'}/v1/base/dict/dict/list/types`,
+    url: '/api/base/v1/base/dict/dict/list/types',
     method: 'post',
     data
   })
@@ -111,3 +111,12 @@ export const GetSpecifiedRoleList = (data) =>
     method: 'post',
     data
   })
+
+// 查询当前用户组织下的城市列表或者所归属的城市 工作城市
+export function getCurrentLowerOfficeCityData(params) {
+  return request({
+    url: `${prefix}/v1/base/office/getCurrentLowerOfficeCityData`,
+    method: 'get',
+    params
+  })
+}

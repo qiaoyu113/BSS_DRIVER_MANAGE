@@ -179,11 +179,11 @@
 </template>
 
 <script>
-import { GetDictionaryList, getOpenCitys } from '@/api/common'
-import { GetRunTestInfoList } from '@/api/tryrun'
+import { GetDictionaryList, getOpenCitys } from '@/api/common';
+import { GetRunTestInfoList } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
-import { parseTime } from '@/utils'
+import { parseTime } from '@/utils';
 export default {
   name: 'TryRun',
   components: {
@@ -296,43 +296,49 @@ export default {
       GetDictionaryList(['Intentional_compartment', 'dropped_reason'])
         .then(({ data }) => {
           if (data.success) {
-            this.carList = data.data.Intentional_compartment
-            this.whyList = data.data.dropped_reason
+            this.carList = data.data.Intentional_compartment;
+            this.whyList = data.data.dropped_reason;
           }
-        }).catch((err) => {
-          console.log(err)
+        })
+        .catch((err) => {
+          console.log(err);
         });
       getOpenCitys({})
         .then(({ data }) => {
           if (data.success) {
             this.cityList = data.data;
           }
-        }).catch((err) => {
-          console.log(err)
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
     /**
      * 初始化数据
      */
     async onLoad(isInit = false) {
-      if (isInit === true) { // 下拉刷新
-        this.page.current = 1
-        this.lists = []
-      } else { // 上拉加载更多
+      if (isInit === true) {
+        // 下拉刷新
+        this.page.current = 1;
+        this.lists = [];
+      } else {
+        // 上拉加载更多
         this.page.current++;
       }
       let result = await this.getLists(isInit);
       if (result) {
-        this.lists = result.lists
+        this.lists = result.lists;
       }
-      if (isInit === true) { // 下拉刷新
-        this.refreshing = false
-        this.finished = false
-      } else { // 上拉加载更多
+      if (isInit === true) {
+        // 下拉刷新
+        this.refreshing = false;
+        this.finished = false;
+      } else {
+        // 上拉加载更多
         this.loading = false;
         if (result) {
           if (!result.hasMore) {
-            this.finished = true
+            this.finished = true;
           }
         }
       }
@@ -342,12 +348,12 @@ export default {
      */
     delForm(form) {
       let obj = {};
-      Object.keys(form).forEach(key => {
+      Object.keys(form).forEach((key) => {
         if (form[key] !== '') {
           obj[key] = form[key];
         }
-      })
-      return obj
+      });
+      return obj;
     },
     /**
      * 下拉刷新
@@ -355,11 +361,10 @@ export default {
     onRefresh() {
       // 清空列表数据
       this.finished = false;
-
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
-      this.loading = true;
-      this.onLoad();
+      // this.loading = true;
+      this.onLoad(true);
     },
     /**
      * 日期选择
@@ -380,7 +385,6 @@ export default {
       this.showPopup = false;
       this.refreshing = true;
       this.onRefresh();
-      console.log('submit', value);
     },
     /**
      * 重置form
@@ -437,7 +441,7 @@ export default {
      *返回按钮
      */
     onClickLeft() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     /**
      * 创建试跑
@@ -452,44 +456,43 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
-        this.$loading(true)
+        this.$loading(true);
         const params = this.delForm(this.form);
         params.page = this.page.current;
         params.limit = this.page.limit;
-        let { data: res } = await GetRunTestInfoList(params)
+        let { data: res } = await GetRunTestInfoList(params);
         if (res.success) {
-          console.log(res.data);
-          let newLists = res.data
+          this.$loading(false);
+          let newLists = res.data;
           if (!isInit) {
-            newLists = this.lists.concat(newLists)
+            newLists = this.lists.concat(newLists);
           }
           let result = {
             lists: newLists,
             hasMore: res.page.total > newLists.length
-          }
-          // this.tabArrs.forEach(item => {
-          //   if (item.name === this.form.customerState) {
-          //     item.num = res.page.total
-          //   } else {
-          //     item.num = 0
-          //   }
-          // })
-          console.log(result)
-          return result
+          };
+          this.tabArrs.forEach((item) => {
+            if (item.name === this.form.status) {
+              item.total = res.page.total;
+            } else {
+              item.total = 0;
+            }
+          });
+          return result;
         } else {
           this.page.current !== 1 && this.page.current--;
           this.loading = false;
           this.error = true;
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(this.page.current)
+        this.$loading(false);
         this.page.current !== 1 && this.page.current--;
         this.loading = false;
         this.error = true;
-        console.log(`get list fail:${err}`)
+        console.log(`get list fail:${err}`);
       } finally {
-        this.$loading(false)
+        // this.$loading(false);
       }
     }
   }
@@ -500,15 +503,15 @@ export default {
   display: flex;
   flex-direction: column;
   background: @body-bg;
-  .top{
+  .top {
     margin-bottom: 5px;
     background-color: @body-bg;
   }
-  .list{
+  .list {
     flex: 1;
     overflow: auto;
   }
-  .navBarTit{
+  .navBarTit {
     color: @white;
   }
   .search {
@@ -525,6 +528,20 @@ export default {
       transform: rotate(-45deg);
       opacity: 1;
       content: '';
+    }
+  }
+  .noData {
+    margin-top: 41.5px;
+    text-align: center;
+    .text {
+      margin-top: 15px;
+      font-size: 15px;
+      color: #656565;
+      text-align: center;
+    }
+    img {
+      width: 83px;
+      height: 74px;
     }
   }
 }
