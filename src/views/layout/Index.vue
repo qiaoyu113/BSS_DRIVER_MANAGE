@@ -71,7 +71,7 @@ export default {
         { name: '线路云', value: 0 },
         { name: '司机云', value: 1 },
         { name: '试跑', value: 2 },
-        { name: '运费管理', value: 4 }
+        { name: '运费管理', value: 3 }
       ],
       activeIndex: 0,
       show: false,
