@@ -314,7 +314,7 @@ export default {
     handleTabChange(tab) {
       this.getLineInfoList(true)
     },
-    async getLineInfoList(isInit) {
+    async getLineInfoList(isInit) { // 外线加盟列表
       try {
         this.$loading(true)
 
@@ -400,7 +400,10 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/outlineSearch'
+        path: '/outlineSearch',
+        query: {
+          type: '2'
+        }
       })
     },
     /**

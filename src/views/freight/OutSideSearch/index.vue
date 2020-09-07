@@ -14,7 +14,7 @@
       @clear="onCancel"
     >
       <template #action>
-        <div @click="onSearch">
+        <div @click="onSearcha">
           搜索
         </div>
       </template>
@@ -80,11 +80,13 @@ export default {
       if (!this.keyWord) {
         return false
       }
-      console.log(this.type)
-      // if (this.type === '1') {
+
       this.getGmInfoListByKeyWorld(this.keyWord)
-      // }
     }, 200),
+    onSearcha() {
+      this.getGmInfoListByKeyWorld(this.keyWord)
+    },
+
     // 取消
     onCancel() {
       this.keyWord = ''
