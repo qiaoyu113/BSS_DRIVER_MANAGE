@@ -14,7 +14,7 @@
         </template>
       </van-nav-bar>
       <div class="detail-type">
-        待试跑
+        {{ detail.statusName }}
       </div>
     </div>
     <div class="container">
@@ -95,17 +95,18 @@ export default {
     async getDetail() {
       try {
         this.$loading(true);
-        // const runTestId = this.id;
-        let { data: res } = await GetDetails({ runTestId: 1123 })
+        const runTestId = this.id;
+        let { data: res } = await GetDetails({ runTestId })
         if (res.success) {
+          this.$loading(false)
+          console.log(res.data);
           this.detail = res.data;
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        console.log(`${err}`)
-      } finally {
         this.$loading(false)
+        console.log(`${err}`)
       }
     }
   }
