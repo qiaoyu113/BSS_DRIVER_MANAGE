@@ -1,5 +1,5 @@
 <template>
-  <div class="selfAreaContainer">
+  <div class="selfAreaContainer" :class="border ? 'van-hairline--bottom':''">
     <van-field
       :value="label"
       readonly
@@ -38,6 +38,10 @@ export default {
     isComputed: {
       type: Boolean,
       default: false
+    },
+    border: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

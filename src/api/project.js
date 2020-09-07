@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 let prefix = '/mock/39'
+// let prefix = '/api/line_center'
 // 获项目列表
 export function getProjectList(data) {
   return request({

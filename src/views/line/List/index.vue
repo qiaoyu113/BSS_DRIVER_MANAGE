@@ -317,7 +317,7 @@ export default {
       maxTime: new Date(2125, 12, 31),
       page: {
         current: 0,
-        total: 0
+        size: 10
       }
     }
   },
@@ -348,6 +348,7 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
+
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -366,8 +367,9 @@ export default {
       })
     },
     // 查询
-    onQuery() {
-      this.getLists()
+    async onQuery() {
+      let result = await this.getLists(true)
+      this.lists = result.lists
       this.show = false
     },
     // 重置
@@ -396,13 +398,13 @@ export default {
     handleSearchChange(value) {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
-          keyword: value,
+          nickname: value,
           roleId: 3
         }
         this.getOpenCityList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
-          keyword: value,
+          nickname: value,
           roleId: 2
         }
         this.getOpenCityList(params)
@@ -438,7 +440,7 @@ export default {
         let { data: res } = await GetSpecifiedRoleList(params)
         if (res.success) {
           this.options = res.data.map(item => ({
-            label: item.name,
+            label: item.nick,
             value: item.id
           }))
         } else {
@@ -546,9 +548,8 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.lineState) {
+            if (this.form.lineState === item.name) {
               item.num = res.page.total
-              console.log(item.num, res.page.total)
             } else {
               item.num = 0
             }

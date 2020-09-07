@@ -19,7 +19,7 @@
         </p>
         <div>
           <van-tag
-            v-if="obj.customerState ===1"
+            v-if="obj.customerState ===2"
             class="tag"
             color="#3acb8d1a"
             text-color="#3ACB8D"
@@ -27,7 +27,7 @@
             已启用
           </van-tag>
           <van-tag
-            v-if="obj.customerState ===2"
+            v-if="obj.customerState ===1"
             class="tag"
             color="#ffa0001a"
             text-color="#FFA000"
