@@ -97,6 +97,7 @@ export default {
           pageNumber: 9999
         }
         keyword && (params.key = keyword)
+        this.$loading(true)
         let { data: res } = await getClientList(params)
         if (res.success) {
           this.lists = res.data
@@ -108,6 +109,8 @@ export default {
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 存localStorage

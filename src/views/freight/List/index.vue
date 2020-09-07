@@ -65,17 +65,6 @@
       @submit="onSubmit"
       @reset="onReset"
     >
-      <!-- <van-field
-        readonly
-        clickable
-        label-width="7em"
-        name="city"
-        :value="listQuery.city"
-        label="城市"
-        is-link
-        placeholder="请选择城市"
-        @click="showPickerFn('city')"
-      /> -->
       <van-field
         v-model="listQuery.name"
         colon
@@ -297,6 +286,7 @@ export default {
         total: 0,
         size: 10
       }
+
     }
   },
   computed: {
@@ -419,6 +409,7 @@ export default {
         this.page.current++
       }
       let result = await this.getConfirmInfoList(isInit)
+
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false

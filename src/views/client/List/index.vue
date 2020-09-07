@@ -212,9 +212,6 @@ export default {
       return this.dateLists.includes(this.pickerKey)
     }
   },
-  mounted() {
-
-  },
   methods: {
     // 返回
     onClickLeft() {
@@ -247,8 +244,9 @@ export default {
       })
     },
     // 查询
-    onQuery() {
-      this.getLists()
+    async onQuery() {
+      let result = await this.getLists(true)
+      this.lists = result.lists
       this.show = false
     },
     // 重置
@@ -341,7 +339,7 @@ export default {
         this.$loading(true)
         let params = {
           page: this.page.current,
-          pageNumber: this.page.size
+          limit: this.page.size
         }
         this.form.city && (params.city = this.form.city)
         this.form.customerType && (params.customerType = this.form.customerType)

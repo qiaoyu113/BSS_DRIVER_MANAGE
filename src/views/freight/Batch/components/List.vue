@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div class="CardItemcontainer" @click.stop="checkChange">
+    <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
-        <van-checkbox v-model="check" />
+        <van-checkbox v-model="obj.checked">
+          {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
+        </van-checkbox>
       </h4>
       <p class="Pink">
         {{ obj.statusName }}
@@ -39,66 +40,20 @@ export default {
     obj: {
       type: Object,
       default: () => {}
-    },
-    checked: {
-      type: Boolean,
-      default: false
-    },
-    checkall: {
-      type: Array,
-      default() {
-        return [];
-      }
     }
   },
-  data() {
-    return {
-      check: false,
-      checkedo: '',
-      checkLength: '',
-      checkbox: ''
-    }
-  },
-  computed: {
-
-  },
-  watch: {
-    checkall(val) {
-      console.log(val, this.obj)
-      let status = false;
-      val.map(ele => {
-        if (ele === this.obj.id) {
-          status = true
-        }
-        return
-      })
-      this.check = status
-    }
-  },
-  mounted() {
-
-  },
-
   methods: {
-    checkChange() {
-      let currentStatus = !this.check
-      this.$emit('changeCheck', { change: currentStatus, id: this.obj.id })
-      this.check = currentStatus
-      console.log('------------------------:', currentStatus)
-    },
     /**
      * 线路详情
      */
     handleDetailClick() {
       this.$router.push({ name: '/detail', params: { type: '1' }})
     },
-
     cancel() {
       this.$router.go(-1)
     },
     Add_to() {
-      console.log(this.check)
-      if (this.check === true) {
+      if (this.obj.checked === true) {
         this.$router.push({
           path: '/report',
           query: {
@@ -109,7 +64,6 @@ export default {
         Toast.fail('请选择上报运费');
       }
     }
-
   }
 }
 
@@ -131,12 +85,6 @@ export default {
     margin: 10px 0px;
     font-size: 14px;
     color: #3C4353 ;
-  }
-  .title>span{
-   position: absolute;
-   left: 0px;
-   top: 60px;
-
   }
   .text {
     margin-top:0px;

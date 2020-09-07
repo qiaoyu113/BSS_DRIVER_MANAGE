@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 
 let prefix = '/mock/32'
+// let prefix = '/api/line_center'
 // 获取线路列表
 export function getLineList(data) {
   return request({
-    url: `${prefix}/v1/line/lineInfo/queryLineListByConditionsQuery`,
+    url: `${prefix}/v2/line/lineInfo/queryLineListByConditionsQuery`,
     method: 'post',
     data
   })
@@ -132,6 +133,15 @@ export function judgeMeetConditions(params) {
     url: `${prefix}/v2/line/judgeMeetConditions`,
     method: 'get',
     params
+  })
+}
+
+// 线路搜索
+export function getLineSearch(data) {
+  return request({
+    url: `${prefix}/v2/line/lineInfo/fuzzyCheck`,
+    method: 'post',
+    data
   })
 }
 

@@ -103,8 +103,7 @@
 
 <script>
 import { parseTime, phoneRegExp, delay } from '@/utils'
-import { GetPersonInfo, TryRun, FollowCar } from '@/api/tryrun';
-import { getLineDetail } from '@/api/line'
+import { GetPersonInfo, TryRun, FollowCar, GetLineDetail } from '@/api/tryrun';
 export default {
   name: 'StepTwo',
   props: {
@@ -171,8 +170,7 @@ export default {
       try {
         this.$loading(true);
         let { data: res } = await GetPersonInfo({
-          // lineId: this.lineId
-          lineId: 'XL202009010031'
+          lineId: this.lineId
         })
         if (res.success) {
           const arr = ['上岗经理', '外线销售']
@@ -197,8 +195,8 @@ export default {
     },
     async getLineDetail() {
       try {
-        let { data: res } = await getLineDetail({
-          lineId: 'XL202009010002'
+        let { data: res } = await GetLineDetail({
+          lineId: this.lineId
         })
         if (res.success) {
           console.log(res.data)

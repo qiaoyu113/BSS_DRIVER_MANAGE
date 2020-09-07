@@ -1,5 +1,5 @@
 <template>
-  <div class="selfPickerContainer">
+  <div class="selfPickerContainer" :class="border ? 'van-hairline--bottom':''">
     <van-field
       :value="label"
       readonly
@@ -46,6 +46,10 @@ export default {
     isComputed: {
       type: Boolean,
       default: false
+    },
+    border: {
+      type: Boolean,
+      default: true
     },
     props: {
       type: Object,

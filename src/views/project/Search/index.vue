@@ -93,6 +93,7 @@ export default {
       try {
         let params = {}
         keyword && (params.key = keyword)
+        this.$loading(true)
         let { data: res } = await getProjectSearch(params)
         if (res.success) {
           this.lists = res.data
@@ -104,6 +105,8 @@ export default {
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 存localStorage

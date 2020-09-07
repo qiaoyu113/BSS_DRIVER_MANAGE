@@ -36,7 +36,7 @@
             >
               全选
             </van-checkbox>
-            <van-checkbox-group ref="checkboxGroup" v-model="form['deliveryWeekCycle']" direction="horizontal">
+            <van-checkbox-group v-model="form['deliveryWeekCycle']" direction="horizontal">
               <van-checkbox v-for="item in deliveryWeekCycleArr" :key="item.value" :name="item.value">
                 {{ item.label }}
               </van-checkbox>

@@ -14,24 +14,26 @@ import 'vant/lib/index.less';// 全局引入Vant 样式
 import defaultSettings from '@/settings'
 import * as filters from '@/filters'
 import global_ from 'components/Global'
-import { Toast, Notify } from 'vant'
+import { Toast } from 'vant'
 import * as directives from '@/directives'
 
 Vue.prototype.$toast = Toast
+let loading = null
 Vue.prototype.$loading = (status) => {
   if (status) {
-    Toast.loading({
+    loading = Toast.loading({
       duration: 0,
       message: '加载中...',
       forbidClick: true,
       loadingType: 'spinner'
     })
   } else {
-    Toast.clear()
+    loading.clear()
+    loading = null
   }
 }
 Vue.prototype.$fail = (message) => {
-  Notify({ type: 'danger', message });
+  Toast.fail(message)
 }
 
 // Register global directives

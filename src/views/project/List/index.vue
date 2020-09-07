@@ -88,7 +88,7 @@
       />
       <van-field
         label-width="100"
-        :value="pickerNames['e']"
+        :value="pickerNames['lineSaleId']"
         readonly
         clickable
         label="外线销售"
@@ -239,7 +239,7 @@ export default {
       dateLists: ['date'], // 显示日历区间控件
       page: {
         current: 0,
-        total: 0
+        size: 10
       }
     }
   },
@@ -285,8 +285,9 @@ export default {
       })
     },
     // 查询
-    onQuery() {
-      this.getLists()
+    async onQuery() {
+      let result = await this.getLists(true)
+      this.lists = result.lists
       this.show = false
     },
     // 重置
@@ -312,13 +313,13 @@ export default {
     handleSearchChange(value) {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
-          keyword: value,
+          nickname: value,
           roleId: 3
         }
         this.getOpenCityList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
-          keyword: value,
+          nickname: value,
           roleId: 2
         }
         this.getOpenCityList(params)
@@ -374,7 +375,7 @@ export default {
         let { data: res } = await GetSpecifiedRoleList(params)
         if (res.success) {
           this.options = res.data.map(item => ({
-            label: item.name,
+            label: item.nick,
             value: item.id
           }))
         } else {
@@ -395,7 +396,7 @@ export default {
         this.$loading(true)
         let params = {
           page: this.page.current,
-          pageNumber: this.page.size
+          limit: this.page.size
         }
         this.form.receivingPoint && (params.receivingPoint = this.form.receivingPoint)
         this.form.isDelivery && (params.isDelivery = this.form.isDelivery)
