@@ -286,7 +286,8 @@ export default {
                 path: '/create-run',
                 query: {
                   step: '1',
-                  lineId: this.form.lineId
+                  lineId: this.form.lineId,
+                  driverId: this.form.driverId
                 }
               })
             }
