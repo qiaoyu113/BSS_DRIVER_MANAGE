@@ -89,7 +89,7 @@
     <van-popup v-model="showPicker" position="bottom">
       <template v-if="isDateRange">
         <!-- 选择日期 -->
-        <van-calendar v-model="showPicker" type="range" @confirm="onConfirm" />
+        <van-calendar v-model="showPicker" type="range" :min-date="minDate1" @confirm="onConfirm" />
       </template>
       <template v-else>
         <!-- picker选择器 -->
@@ -198,13 +198,14 @@ export default {
       page: {
         current: 0,
         size: 10
-      }
+      },
+      minDate1: new Date(2000, 0, 1)
     }
   },
   computed: {
     minDate() {
-      if (this.form.r) {
-        return new Date(this.form.r)
+      if (this.form.date.length > 0) {
+        return new Date(this.form.date[0])
       }
       return new Date()
     },
@@ -216,6 +217,14 @@ export default {
     // 返回
     onClickLeft() {
       this.$router.go(-1)
+    },
+    // 是否更多数据
+    isModeData() {
+      if (this.lists.length === 0) {
+        this.finished = true
+      } else {
+        this.finished = false
+      }
     },
     // 加载列表
     async onLoad(isInit = false) {
@@ -247,6 +256,7 @@ export default {
     async onQuery() {
       let result = await this.getLists(true)
       this.lists = result.lists
+      this.isModeData()
       this.show = false
     },
     // 重置
@@ -332,6 +342,7 @@ export default {
     async handleTabChange(tab) {
       let result = await this.getLists(true)
       this.lists = result.lists
+      this.isModeData()
     },
     // 获取列表
     async getLists(isInit) {
@@ -355,6 +366,7 @@ export default {
           if (!isInit) {
             newLists = this.lists.concat(newLists)
           }
+
           let result = {
             lists: newLists,
             hasMore: res.page.total > newLists.length

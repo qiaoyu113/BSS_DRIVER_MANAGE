@@ -64,7 +64,7 @@ export function getUserInfo(data) {
 let prefix = '/mock/25'
 export function getOpenCitys(params) {
   return request({
-    url: '/api/base/v1/base/area/getOpenCityData',
+    url: `${prefix}/v1/base/area/getOpenCityData`,
     method: 'get',
     params
   })
@@ -82,7 +82,7 @@ export function upload(params, data) {
 // 根据类型查询字典值--不分页
 export function getDictData(params) {
   return request({
-    url: '/api/base/v1/base/dict/dictData/list',
+    url: `${prefix}/v1/base/dict/dictData/list`,
     method: 'get',
     params
   })
@@ -90,7 +90,7 @@ export function getDictData(params) {
 // 批量查询字典
 export function GetDictionaryList(data) {
   return request({
-    url: '/api/base/v1/base/dict/dict/list/types',
+    url: `${prefix}/v1/base/dict/dict/list/types`,
     method: 'post',
     data
   })
@@ -99,7 +99,7 @@ export function GetDictionaryList(data) {
 // 获取省、市、县
 export const GetCityByCode = (data) =>
   request({
-    url: '/api/base/v1/base/area/getCityByCode',
+    url: `${prefix}/api/base/v1/base/area/getCityByCode`,
     method: 'post',
     data
   })

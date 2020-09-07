@@ -31,7 +31,7 @@
         <van-field label="仓名称" label-width="100" readonly :value="form.warehouseName" :border="false" colon />
         <van-field label="仓联系人" label-width="100" readonly :value="form.warehouseContactName" :border="false" colon />
         <van-field label="仓联系电话" label-width="100" readonly :value="form.warehouseContactPhone" :border="false" colon />
-        <van-field label="开放时间" label-width="100" readonly :value="form.warehouseOpen | parseTime('{y}-{m}-{d}')" :border="false" colon />
+        <van-field label="开放时间" label-width="100" readonly :value="`${form.warehouseOpen}-${form.warehouseClose}`" :border="false" colon />
         <van-field label="所在区域" label-width="100" readonly :value="region" :border="false" colon />
         <van-field label="详细地址" label-width="100" readonly :value="form.warehouseDistrict" :border="false" colon />
         <van-field label="备注" label-width="100" readonly :value="form.warehouseRemark" :border="false" colon />
