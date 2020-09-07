@@ -10,15 +10,26 @@
         </template>
       </van-nav-bar>
     </van-sticky>
-
-    <!-- <div class="CardItemcontainer">
-      <div>场景1</div>
+    <!-- <div v-for="item in obj" :key="item" class="CardItemcontainer megin">
       <h4 class="title ellipsis">
-        2020/09/08  李斯 / 1666666 <span style="color:red;">待上报</span>
+        2020/09/02 张山 1888888333 <span style="color: 0000ff73;">{{ item.confirmMoney }}</span>
       </h4>
       <P class="text ellipsis">
-        出车编号：111111111
+        出车单号：{{ item.wayBillId }}
       </P>
+      <P class="text ellipsis">
+        加盟经理：{{ item.gmName }}/{{ item.gmPhone }}
+      </P>
+      <P class="text ellipsis">
+        线路名称：{{ item.lineName }}
+      </P>
+
+      <p class="text ellipsis">
+        上报人：{{ item.gmReportName }}/{{ item.gmReportPhone }}
+      </p>
+      <p class="text ellipsis">
+        上报时间：{{ item.gmReportTime }}
+      </p>
       <p class="text ellipsis">
         趟数1金额：1000
       </p>
@@ -26,73 +37,43 @@
         趟数2金额：1000
       </p>
       <p class="text ellipsis">
-        确认状态：已确认/确认的金额
+        备注：{{ item.remark }}
+      </p>
+      <p class="text ellipsis">
+        确认状态：{{ item.gmState }}
       </p>
     </div> -->
-    <div v-for="item in dataAll" :key="item" class="CardItemcontainer megin">
-      <h4 class="title ellipsis">
-        2020/09/02 张山 1888888333 <span style="color: 0000ff73;">{{ dataAll.confirmMoney }}</span>
-      </h4>
-      <P class="text ellipsis">
-        出车单号：{{ dataAll.wayBillId }}
-      </P>
-      <P class="text ellipsis">
-        加盟经理：{{ dataAll.gmName }}/{{ dataAll.gmPhone }}
-      </P>
-      <P class="text ellipsis">
-        线路名称：{{ dataAll.lineName }}
-      </P>
-
-      <p class="text ellipsis">
-        上报人：{{ dataAll.gmReportName }}/{{ dataAll.gmReportPhone }}
-      </p>
-      <p class="text ellipsis">
-        上报时间：{{ dataAll.gmReportTime }}
-      </p>
-      <p class="text ellipsis">
-        趟数1金额：1000
-      </p>
-      <!-- <p class="text ellipsis">
-        趟数2金额：1000
-      </p> -->
-      <p class="text ellipsis">
-        备注：{{ dataAll.remark }}
-      </p>
-      <p class="text ellipsis">
-        确认状态：{{ dataAll.gmState }}
-      </p>
-    </div>
     <div class="CardItemcontainer megin">
       <h4 class="title ellipsis">
-        2020/09/02 张山 1888888333 <span style="color: 0000ff73;">500.00</span>
+        <span style="color: 0000ff73;">{{ obj.predictCost }}</span>
       </h4>
       <P class="text ellipsis">
-        出车单号：111111111
+        出车单号:{{ obj.wayBillId }}
       </P>
       <P class="text ellipsis">
-        加盟经理：马文涛/173333322
+        加盟经理:{{ obj.joinManagerName }}/{{ obj.gmPhone }}
       </P>
       <P class="text ellipsis">
-        线路名称：京东线路A
+        线路名称：{{ obj.lineName }}
       </P>
 
       <p class="text ellipsis">
-        上报人：马文涛/173333322
+        上报人：{{ obj.gmReportName }}/{{ obj.gmReportPhone }}
       </p>
       <p class="text ellipsis">
-        上报时间：2020/09/08 12:00:00
+        上报时间：{{ obj.gmReportTime }}
       </p>
       <p class="text ellipsis">
-        趟数1金额：1000
+        趟数1金额：{{ obj.gmFee }}
       </p>
       <!-- <p class="text ellipsis">
-        趟数2金额：1000
+        趟数2金额：{{}}
       </p> -->
       <p class="text ellipsis">
         备注：
       </p>
       <p class="text ellipsis">
-        确认状态：已确认/确认的金额
+        确认状态：{{ obj.gmStatusCode }}
       </p>
     </div>
     <van-popup v-model="show">
@@ -148,7 +129,7 @@ export default {
   },
   mounted() {
     this.obj = this.$route.query.obj
-    console.log(shippingDetailByGM)
+    console.log(this.$route.query.obj)
     this.shippingDetailByGM()
   },
 

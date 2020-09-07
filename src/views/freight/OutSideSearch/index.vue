@@ -81,9 +81,9 @@ export default {
         return false
       }
       console.log(this.type)
-      if (this.type === '1') {
-        this.getGmInfoListByKeyWorld(this.keyWord)
-      }
+      // if (this.type === '1') {
+      this.getGmInfoListByKeyWorld(this.keyWord)
+      // }
     }, 200),
     // 取消
     onCancel() {

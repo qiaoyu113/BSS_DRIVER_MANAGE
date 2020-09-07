@@ -19,6 +19,7 @@
         </div>
       </template>
     </van-search>
+
     <!-- 下拉刷新  上拉加载 -->
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
       <van-list
@@ -37,9 +38,21 @@
                 {{ item.num }}
               </div>
             </template>
+            <P class="all">
+              <van-checkbox v-model="checkall" class="checked" shape="square">
+                <span>全选</span> <span>已选择{{ checkedList.length }} 个出车单位</span>
+              </van-checkbox>
+            </P>
+            <div v-for="sub in lists" :key="sub.id">
+              <CardItem
 
-            <CardItem :obj="lists" />
-            <!-- <div class="lineHeight"></div> -->
+                class="items"
+                :obj="sub"
+                :checked="checked"
+                :checkall="checkedList"
+                @changeCheck="changeCheck"
+              />
+            </div>
           </van-tab>
         </van-tabs>
       </van-list>
@@ -57,14 +70,14 @@
         :value="text1"
         readonly
         clickable
-        label="城市"
+        label="司机城市"
         placeholder="请选择"
         @click="showPicker1 = true"
       />
       <van-field
         v-model="text2"
         name="username"
-        label="用户名"
+        label="司机"
         placeholder="请输入"
       />
       <van-field
@@ -155,6 +168,7 @@
 import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
+import { getGmInfoList } from '@/api/freight'
 // import { Toast } from 'vant
 export default {
   components: {
@@ -165,6 +179,8 @@ export default {
   },
   data() {
     return {
+      checkedList: [],
+      checked: false,
       value: '', // 搜索框
       active: '', // 当前激活的tab,
       refreshing: false, // 下拉刷新
@@ -195,6 +211,11 @@ export default {
       form: { // 查询表单
 
       },
+      page: {
+        current: 0,
+        total: 0,
+        size: 10
+      },
       // 筛选
       text1: '', // 城市选择
       text2: '', // 用户名
@@ -210,6 +231,9 @@ export default {
       showPicker9: false,
       showPicker10: false,
       showPicker11: false,
+      page: {
+        current: ''
+      },
       columns1: [
         {
           label: '专车',
@@ -253,9 +277,8 @@ export default {
       showModal: false,
       options: [],
       type: '',
-      lists: [
+      lists: []
 
-      ]
     }
   },
   computed: {
@@ -264,12 +287,43 @@ export default {
         return new Date(this.form.r)
       }
       return new Date()
+    },
+    checkall: {
+      get: function() {
+        return (this.lists.length === this.checkedList.length)
+      },
+      set: function(val) {
+        if (val) {
+          this.checkedList = []
+          this.lists.map(ele => {
+            this.checkedList.push(ele)
+          })
+        } else {
+          this.checkedList = []
+        }
+      }
     }
   },
+
   mounted() {
 
   },
   methods: {
+    /**
+     * item选中
+     */
+    changeCheck(val) {
+      console.log('tag', val)
+      if (val.change) {
+        this.checkedList.push(val)
+      } else {
+        let arr = this.checkedList.filter(ele => {
+          return ele !== val
+        })
+        this.checkedList = arr
+      }
+    },
+
     onClickLeft() {
       this.$router.go(-1)
     },
@@ -287,43 +341,71 @@ export default {
     },
     // 状态切换
     handleTabChange(tab) {
-      this.getLists(true)
+      this.getConfirmInfoList(true)
     },
-    batch() {
-      this.$router.push({ path: 'batch' })
-    },
-    onLoad(isInit = false) {
-      if (isInit === true) {
-        this.lists = []
-      }
-      setTimeout(() => {
-        let id = this.lists.length
-        for (let i = 0; i < 5; i++) {
-          let obj = {
-            id: id + i,
-            title: '2020/09/08  李斯 / 1666666',
-            statust: '待上报',
-            update: '12233344',
-            carType: '李斯',
-            status: '郑州线路',
-            yicahng: '有差异',
-            all: false
+    async getConfirmInfoList(isInit) {
+      try {
+        this.$loading(true)
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          limit: this.page.size,
+          pageNumber: 20
+        }
+        let { data: res } = await getGmInfoList(params)
+        if (res.success) {
+          let newLists = res.data
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
           }
-          this.lists.push(obj)
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach(item => {
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
         }
-        if (isInit === true) {
-          this.refreshing = false
-          this.finished = false
-        }
-
+      } catch (err) {
         this.loading = false;
-        if (this.lists.length > 15) {
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
+      }
+      let result = await this.getConfirmInfoList(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
+        this.loading = false;
+        if (!result.hasMore) {
           this.finished = true
         }
-      }, 500)
+      }
     },
+
     onQuery() {
-      console.log('submit', this.form);
+      this.getConf()
+      console.log('submit', this.form)
     },
     // 重置
     onReset(form) {
@@ -335,6 +417,34 @@ export default {
       this.text11 = ''
       this.form = {}
       console.log('reset');
+    },
+    async getConf() {
+      try {
+        let parmas = {
+          customerCity: this.text1,
+          customer: this.text2,
+          project: this.text3,
+          dutyManagerId: this.text4,
+          startDate: this.text10
+        }
+        this.$loading(true)
+        let { data: res } = await getConfirmInfoList(parmas)
+        console.log(res)
+        if (res.success) {
+          this.lists = res.data
+          this.listQuery = ''
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     },
     // 线路类型 ----右侧pop选中关闭
     onConfirm1(obj) {
@@ -408,7 +518,6 @@ export default {
 
   }
 }
-
 </script>
 <style lang='scss' scoped>
 .lineListContainer {
@@ -491,6 +600,9 @@ export default {
     text-align: center;
     border-top-color:#D8D8D8;
   }
+}
+.all{
+  margin-left: 20px;
 }
 
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <P class="all">
-      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkbox }} 个出车单位</span>
+      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkLength }} 个出车单位</span>
     </P>
     <div v-for="item in obj" :key="item.id" class="CardItemcontainer">
       <h4 class="title ellipsis">
@@ -19,7 +19,7 @@
       </p>
 
       <div class="detail van-hairline--top">
-        <van-button type="default" round hairline @click="handleDetailClick">
+        <van-button type="default" round hairline @click="handleDetailClick()">
           详情
         </van-button>
       </div>
@@ -70,7 +70,10 @@ export default {
      */
     handleDetailClick() {
       this.$router.push({
-        path: '/Details'
+        path: '/Details',
+        query: {
+          type: 2
+        }
       })
     },
     Add_to() {

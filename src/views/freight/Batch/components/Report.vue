@@ -80,12 +80,14 @@
       <button @click="cancel">
         全部未出车
       </button>
-      <button>全部上报</button>
+      <button @click="Report()">
+        全部上报
+      </button>
     </div>
   </div>
 </template>
 <script>
-import { noCarBatchByGM } from '@/api/freight'
+import { noCarBatchByGM, reportMoneyBatchByGM } from '@/api/freight'
 export default {
   data() {
     return {
@@ -99,13 +101,30 @@ export default {
   },
   mounted() {
     this.obj = JSON.parse(this.$route.query.obj)
-    console.log(this.obj)
   },
   methods: {
     onClickLeft() {
       this.$router.go(-1)
     },
-    cancel() {
+    Report() {
+      console.log(this.checked == true)
+      if (this.checked === true) {
+        this.reportMoneyBatchByGM()
+      }
+    },
+    async reportMoneyBatchByGM() {
+      try {
+        let { data: res } = await reportMoneyBatchByGM()
+        if (res.success) {
+          this.lists = res.data
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
+    },
+    cancel() { // 全部未出车
       // this.$router.go(-1)
       this.noCarBatchByGM()
     },
