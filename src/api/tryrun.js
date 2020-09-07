@@ -27,7 +27,7 @@ export function GetPersonInfo(params) {
 // 试跑
 export function TryRun(data) {
   return request({
-    url: `${prefix}/v2/runtest/tryRun`,
+    url: `${prefix}/waybill/v2/runtest/tryRun`,
     method: 'post',
     data
   })
@@ -43,7 +43,7 @@ export function FollowCar(data) {
 // 掉线
 export function SwitchTryRun(data) {
   return request({
-    url: `${prefix}/v2/runtest/switchDropped`,
+    url: `${prefix}/waybill/v2/runtest/switchDropped`,
     method: 'post',
     data
   })
@@ -75,7 +75,7 @@ export function GetLine(data) {
 // 获取线路详情
 export function GetLineDetail(params) {
   return request({
-    url: `${prefix}/line_center/v2/line/lineInfoDetail`,
+    url: `${prefix}/line_center/v2/line/lineInfo/detail`,
     method: 'get',
     params
   })
