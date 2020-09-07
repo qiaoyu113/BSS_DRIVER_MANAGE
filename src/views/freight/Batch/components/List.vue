@@ -1,21 +1,18 @@
 <template>
   <div>
-    <P class="all">
-      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkbox }} 个出车单位</span>
-    </P>
-    <div v-for="item in obj" :key="item.id" class="CardItemcontainer">
+    <div class="CardItemcontainer" @click="checkChange">
       <h4 class="title ellipsis">
-        {{ item.title }}
-        <span><input v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
+        {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
+        <span><input v-model="check" type="checkbox"></span>
       </h4>
       <p class="Pink">
-        {{ item.statust }}
+        {{ obj.statusName }}
       </p>
       <p class="text ellipsis">
-        出车单号:{{ item.update }}
+        出车单号:{{ obj.wayBillId }}
       </p>
       <p class="text ellipsis">
-        线路名称:{{ item.carType }}
+        线路名称:{{ obj.lineName }}
       </p>
 
       <div class="detail van-hairline--top">
@@ -40,92 +37,109 @@ import { Toast } from 'vant'
 export default {
   props: {
     obj: {
-      type: Array,
+      type: Object,
       default: () => {}
+    },
+    checked: {
+      type: Boolean,
+      default: false
+    },
+    checkall: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   },
   data() {
     return {
+      check: false,
       checkedo: '',
-      checkedall: '',
+      checkLength: '',
       checkbox: ''
     }
   },
   computed: {
 
   },
+  watch: {
+    checkall(val) {
+      console.log(val, this.obj)
+      let status = false;
+      val.map(ele => {
+        if (ele === this.obj.id) {
+          status = true
+        }
+        return
+      })
+      this.check = status
+    }
+  },
+  mounted() {
+
+  },
 
   methods: {
+    checkChange() {
+      if (this.checked) {
+        this.$emit('changeCheck', { change: !this.check, obj: this.obj.customerId })
+        this.check = !this.check
+      }
+    },
     /**
      * 线路详情
      */
     handleDetailClick() {
-      this.$router.push({
-        path: '/Details'
-      })
+      this.$router.push({ name: '/detail', params: { type: '1' }})
     },
-    quanxian() {
-      if (this.checkedo === true) {
-        this.checkbox = this.obj.length
-      } else {
-        this.checkbox = 0
-      }
-      this.obj.forEach(item => {
-        item.all = this.checkedo
-      });
-      this.getLength()
-    },
-    checkboxall(v) {
-      this.obj.filter(res => {
-        if (res.all === true) {
-          this.checkedo = true
-        } else {
-          this.checkedo = false
-        }
-      })
-      this.obj.forEach(res => {
-        if (res.all === false) {
-          this.checkedo = false
-        }
-      })
 
-      this.getLength()
-    },
     cancel() {
       this.$router.go(-1)
     },
     Add_to() {
-      let obje = []
-      if (!this.checkLength) {
-        Toast.fail('请选择上报运费');
-      } else {
-        this.obj.forEach(item => {
-          if (item.all === true) {
-            obje.push(item)
-          }
-        })
+      console.log(this.check)
+      if (this.check === true) {
         this.$router.push({
           path: '/report',
           query: {
-            obj: JSON.stringify(obje)
+            obj: JSON.stringify(this.obj)
           }
         })
+      } else {
+        Toast.fail('请选择上报运费');
       }
+      // let obje = []
+      // if (!this.checkLength) {
+      //   Toast.fail('请选择上报运费');
+      // } else {
+      //   this.obj.forEach(item => {
+      //     if (item.all === true) {
+      //       obje.push(item)
+      //     }
+      //   })
+      //   this.$router.push({
+      //     path: '/report',
+      //     query: {
+      //       obj: JSON.stringify(obje)
+      //     }
+      //   })
+      // }
 
       // this.$router.push({
       //   name: 'report'
       // })
-    },
-    // 获取选中数量
-    getLength() {
-      let num = 0;
-      this.obj.forEach(res => {
-        if (res.all === true) {
-          num = num + 1
-        }
-      })
-      this.checkLength = num
     }
+    // // 获取选中数量
+    // getLength() {
+    //   let num = 0;
+    //   this.obj.forEach(res => {
+    //     if (res.all === true) {
+    //       num = num + 1
+    //     }
+    //   })
+    //   this.checkLength = num
+    //   console.log(this.checkLength)
+    // }
   }
 }
 

@@ -65,7 +65,7 @@
       @submit="onSubmit"
       @reset="onReset"
     >
-      <van-field
+      <!-- <van-field
         readonly
         clickable
         label-width="7em"
@@ -75,6 +75,14 @@
         is-link
         placeholder="请选择城市"
         @click="showPickerFn('city')"
+      /> -->
+      <van-field
+        v-model="listQuery.name"
+        colon
+        name="name1"
+        label-width="7em"
+        label="城市"
+        placeholder="请选择城市"
       />
       <van-field
         v-model="listQuery.name1"
@@ -85,7 +93,7 @@
         placeholder="请输入客户"
       />
       <van-field
-        v-model="listQuery.name5"
+        v-model="listQuery.name2"
         name="name5"
         colon
         label-width="7em"
@@ -93,7 +101,7 @@
         placeholder="请输入项目"
       />
       <van-field
-        v-model="listQuery.name5"
+        v-model="listQuery.name3"
         name="name5"
         colon
         label-width="7em"
@@ -210,6 +218,7 @@ export default {
       },
       // search
       listQuery: {
+        name: '',
         name1: '',
         name2: '',
         name3: '',
@@ -231,6 +240,11 @@ export default {
       showPicker9: false,
       showPicker10: false,
       showPicker11: false,
+      page: {
+        current: 0,
+        total: 0,
+        size: 10
+      },
       columns1: [
         {
           label: '专车',
@@ -298,13 +312,18 @@ export default {
       })
     },
     handleTabChange(tab) {
-      console.log(tab)
       this.getLineInfoList(true)
     },
     async getLineInfoList(isInit) {
       try {
         this.$loading(true)
-        let { data: res } = await getLineInfoList()
+
+        let parmas = {
+          page: this.page.current,
+          limit: this.page.size,
+          pageNumber: 20
+        }
+        let { data: res } = await getLineInfoList(parmas)
         if (res.success) {
           let newLists = res.data
           if (!isInit) {
@@ -358,54 +377,26 @@ export default {
       this.listQuery.startDate = startDate;
       this.listQuery.endDate = endDate;
     },
-    // async onLoad(isInit = false) {
-    //   if (isInit === true) { // 下拉刷新
-    //     this.page.current = 1
-    //     this.lists = []
-    //   } else { // 上拉加载更多
-    //     this.page.current++
-    //   }
-    //   let result = await this.getLists(isInit)
-    //   this.lists = result.lists
-    //   if (isInit === true) { // 下拉刷新
-    //     this.refreshing = false
-    //     this.finished = false
-    //   } else { // 上拉加载更多
-    //     this.loading = false;
-    //     if (!result.hasMore) {
-    //       this.finished = true
-    //     }
-    //   }
-    // },
-    onLoad(isInit = false) {
-      if (isInit === true) {
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
         this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
       }
-      setTimeout(() => {
-        let id = this.lists.length
-        for (let i = 0; i < 5; i++) {
-          let obj = {
-            id: id + i,
-            title: '2020/09/08  张三 / 18888888888',
-            yicahng: '异常',
-            statust: '未出车',
-            update: '12233344',
-            carType: '张三',
-            status: '北京线路'
-          }
-          this.lists.push(obj)
-        }
-        if (isInit === true) {
-          this.refreshing = false
-          this.finished = false
-        }
-
+      let result = await this.getLineInfoList(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-        if (this.lists.length > 15) {
+        if (!result.hasMore) {
           this.finished = true
         }
-      }, 500)
+      }
     },
+
     // 搜索
     handleSearchClick() {
       this.$router.push({
@@ -418,8 +409,34 @@ export default {
     onSubmit(value) {
       this.showPopup = false;
       this.refreshing = true;
-      this.onRefresh();
+      // this.onRefresh();
+      this.getqurey()
       console.log('submit', value);
+    },
+    async getqurey() {
+      try {
+        let parmas = {
+          customerCity: this.listQuery.name,
+          customer: this.listQuery.name1,
+          project: this.listQuery.name2,
+          startDate: this.pickerNames.date
+        }
+        this.$loading(true)
+        let { data: res } = await getLineInfoList(parmas)
+        if (res.success) {
+          res.data
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     },
     /**
      * 重置form
