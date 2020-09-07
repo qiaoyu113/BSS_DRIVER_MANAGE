@@ -46,6 +46,13 @@ export default {
     isComputed: {
       type: Boolean,
       default: false
+    },
+    props: {
+      type: Object,
+      default: () => ({
+        label: 'label',
+        value: 'value'
+      })
     }
   },
   data() {
@@ -72,7 +79,7 @@ export default {
       } else {
         this.index = index
         this.isFirst = true
-        this.label = this.columns[index].label
+        this.label = this.columns[index][this.props.label]
       }
     },
     // 打开picker
@@ -87,8 +94,8 @@ export default {
     },
     // 点击确定
     onConfirm(obj, index) {
-      this.label = obj.label
-      this.form[this.pickerKey] = obj.value
+      this.label = obj[this.props.label]
+      this.form[this.pickerKey] = obj[this.props.value]
       this.index = index
       this.showPicker = false
     }
