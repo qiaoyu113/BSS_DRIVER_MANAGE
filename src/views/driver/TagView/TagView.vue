@@ -2,7 +2,7 @@
   <div class="TagView">
     <van-sticky :offset-top="0">
       <van-nav-bar
-        title="打标签"
+        :title="title"
         left-text="返回"
         left-arrow
         @click-left="$router.go(-1)"
@@ -43,7 +43,8 @@
   </div>
 </template>
 <script>
-import { Toast, Cell, Form } from 'vant';
+import { insertLabel } from '@/api/driver.js'
+import { Toast, Cell, Form, Notify } from 'vant';
 export default {
   name: 'TagView',
   components: {
@@ -62,10 +63,29 @@ export default {
       actions: [{ name: '是', value: 1 }, { name: '否', value: 0 }]
     };
   },
+  computed: {
+    title() {
+      return this.$route.meta.title;
+    }
+  },
   mounted() {},
   methods: {
-    onSubmit(values) {
-      console.log('submit', values, this.formData);
+    async onSubmit(values) {
+      let parmas = { ...this.formData }
+      try {
+        this.$loading(true)
+        let { data: res } = await insertLabel(parmas);
+        if (res.success) {
+          Notify({ type: 'success', message: '打标签成功' });
+          this.$router.go(-1)
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     },
     onSelect(item) {
       // 默认情况下点击选项时不会自动收起

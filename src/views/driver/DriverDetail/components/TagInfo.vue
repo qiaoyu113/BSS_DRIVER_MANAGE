@@ -3,40 +3,43 @@
     <div class="tags">
       <van-form label-width="150px">
         <van-field
-          label="是否小白司机："
-          value="是"
+          label="是否小白司机"
+          colon
+          :value="obj.isNoviceName"
           readonly
         />
         <van-field
-          label="是否为司急："
-          value="是"
+          label="是否为司急"
+          colon
+          :value="obj.isUrgentName"
           readonly
         />
         <van-field
-          label="是否存在跳单行为："
-          value="否"
+          label="是否存在跳单行为"
+          colon
+          :value="obj.isDownName"
           readonly
         />
       </van-form>
     </div>
     <div class="remakeList">
       <div
-        v-for="(item,index) in tagList"
+        v-for="(item,index) in obj.labelRemarkList"
         :key="index"
         class="remakeItem"
       >
         <div class="remakeTitle">
           <span>备注：</span>
-          <div>是否存在跳单行为是否存在跳单行为是否存在跳单行为是否存在跳单行为是否存在跳单行为</div>
+          <div v-text="item.remark"></div>
         </div>
         <van-field
           label="创建人："
-          value="李威山/18848885135"
+          :value="`${item.createName}/${item.createPhone}`"
           readonly
         />
         <van-field
           label="创建时间："
-          value="2020/08/15 13:59:239"
+          :value="item.createDate | parseTime('{y}-{m}-{d}')"
           readonly
         />
       </div>
@@ -46,9 +49,15 @@
 
 <script>
 export default {
+  props: {
+    obj: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
-      tagList: [1, 2, 3]
+
     };
   }
 };

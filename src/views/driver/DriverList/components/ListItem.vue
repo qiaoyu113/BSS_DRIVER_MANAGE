@@ -5,15 +5,15 @@
       <van-cell>
         <template #title>
           <div class="title">
-            <span>杨师傅</span>
-            <span>18848885135</span>
+            <span>{{ item.name }}</span>
+            <span>{{ item.phone }}</span>
           </div>
         </template>
       </van-cell>
       <van-cell>
         <template #title>
           <div class="itemStatus">
-            已面试
+            {{ item.statusName }}
           </div>
         </template>
       </van-cell>
@@ -21,19 +21,19 @@
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
-          value="共享/北京/4.2米厢货"
+          :value="`${item.busiTypeName}/${item.workCityName}/${item.carTypeName}`"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="加盟经理："
-          value="王经理/18848885135"
+          :value="`${item.gmName}/${item.gmMobile}`"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           title="创建时间："
-          value="2020/8-27/18:07"
+          :value="item.createDate | parseTime('{y}-{m}-{d}')"
         />
       </div>
       <div class="detailBtn">
@@ -75,7 +75,7 @@ export default {
     checkall(val) {
       let status = false;
       val.map(ele => {
-        if (ele.item === this.item.item) {
+        if (ele === this.item.driverId) {
           status = true
         }
         return
@@ -86,12 +86,12 @@ export default {
   methods: {
     checkChange() {
       if (this.checked) {
-        this.$emit('changeCheck', { change: !this.check, item: this.item })
+        this.$emit('changeCheck', { change: !this.check, item: this.item.driverId })
         this.check = !this.check
       }
     },
     goRouter() {
-      this.$router.push('/driverdetail')
+      this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
     }
   }
 };
