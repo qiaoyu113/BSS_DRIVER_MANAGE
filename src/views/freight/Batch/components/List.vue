@@ -34,11 +34,15 @@
 </template>
 
 <script>
-import { Toast } from 'vant'
+// import { Toast } from 'vant'
 export default {
   props: {
     obj: {
       type: Object,
+      default: () => {}
+    },
+    checkedarr: {
+      type: Array,
       default: () => {}
     }
   },
@@ -53,16 +57,12 @@ export default {
       this.$router.go(-1)
     },
     Add_to() {
-      if (this.obj.checked === true) {
-        this.$router.push({
-          path: '/report',
-          query: {
-            obj: JSON.stringify(this.obj)
-          }
-        })
-      } else {
-        Toast.fail('请选择上报运费');
-      }
+      this.$router.push({
+        path: '/report',
+        query: {
+          obj: JSON.stringify(this.checkedarr)
+        }
+      })
     }
   }
 }
@@ -85,6 +85,7 @@ export default {
     margin: 10px 0px;
     font-size: 14px;
     color: #3C4353 ;
+    position: relative;
   }
   .text {
     margin-top:0px;
@@ -121,9 +122,6 @@ export default {
     text-align: center;
     border-top-color:#D8D8D8;
   }
-}
-.all{
-  margin-left: 20px;
 }
 .Bulk{
   width: 100%;

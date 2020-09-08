@@ -2,50 +2,115 @@
   <div class="lineListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="外线运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div v-show="!batchShow" class="headerRight" @click="batch">
+          <!-- <div class="headerRight" @click="batch">
             批量上报
-          </div>
+          </div> -->
         </template>
       </van-nav-bar>
     </van-sticky>
     <!-- 搜索 -->
-    <van-search v-model="value" show-action placeholder="搜索司机姓名/编号">
+    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly @click="handleSearchClick">
       <template #action>
-        <div class="searchSelect" @click="datePicker = true">
-          日期
+        <div class="searchSelect" @click="showPopup">
+          筛选
           <van-icon name="play" color="#3C4353" />
         </div>
       </template>
     </van-search>
-    <!-- tabs -->
-    <van-tabs v-model="active" swipeable>
-      <van-tab v-for="item in tabArrs" :key="item.text">
-        <template #title>
-          {{ item.text }}
-          <div v-if="item.num" class="van-info">
-            {{ item.num }}
-          </div>
-        </template>
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-          <!-- <p>刷新次数: {{ count }}</p> -->
 
-          <CardItem :obj="lists" :batchshow="batchShow" @batch="batch" />
-          <!-- <div class="lineHeight"></div> -->
-        </van-pull-refresh>
-      </van-tab>
-    </van-tabs>
-    <van-popup v-model="datePicker" position="bottom">
-      <van-datetime-picker
-        v-model="currentDate"
-        title="选择日期"
-        type="date"
-        :max-date="maxDate"
-        @confirm="dateConfirm"
-        @cancel="datePicker = false"
+    <!-- 下拉刷新  上拉加载 -->
+    <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <!-- tabs -->
+        <van-tabs v-model="active" swipeable @change="handleTabChange">
+          <van-tab v-for="item in tabArrs" :key="item.text">
+            <template #title>
+              {{ item.text }}
+              <div v-if="item.num" class="van-info">
+                {{ item.num }}
+              </div>
+            </template>
+            <P class="all">
+              <van-checkbox v-model="checkall" class="checked">
+                <span>全选</span>
+                <span>已选择{{ checkedNum }} 个出车单位</span>
+              </van-checkbox>
+            </P>
+            <div v-for="sub in lists" :key="sub.id">
+              <CardItem
+                class="items"
+                :obj="sub"
+                :checkedarr="checkedarr"
+              />
+            </div>
+          </van-tab>
+        </van-tabs>
+      </van-list>
+    </van-pull-refresh>
+
+    <!-- 右侧筛选抽屉 -->
+    <SelfPopup
+      ref="lineLineForm"
+      :show.sync="show"
+      form-ref="form"
+      @submit="onQuery"
+      @reset="onReset"
+    >
+      <van-field
+        :value="text1"
+        readonly
+        clickable
+        label="司机城市"
+        placeholder="请选择"
+        @click="showPicker1 = true"
       />
-    </van-popup>
+      <van-field
+        v-model="text2"
+        name="username"
+        label="司机"
+        placeholder="请输入"
+      />
+      <van-field
+        v-model="text3"
+        name="username"
+        label="线路"
+        placeholder="请输入"
+      />
+      <van-field
+        :value="text4"
+        readonly
+        clickable
+        label="加盟经理"
+        placeholder="请选择"
+        @click="handleShowModal('manager')"
+      />
+
+      <van-field
+        :value="text10"
+        readonly
+        clickable
+        label="创建时间"
+        placeholder="开始日期"
+        :min-date="minDate"
+        @click="showPicker10 = true"
+      />
+      <van-field
+        :value="text11"
+        readonly
+        clickable
+        input-align="center"
+        placeholder="结束日期"
+        @click="showPicker11 = true"
+      />
+    </SelfPopup>
     <van-popup v-model="showPicker1" position="bottom">
       <van-picker
         value-key="label"
@@ -55,6 +120,7 @@
         @cancel="showPicker1 = false"
       />
     </van-popup>
+
     <van-popup v-model="showPicker3" position="bottom">
       <van-picker
         value-key="label"
@@ -97,24 +163,26 @@
 </template>
 
 <script>
+import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
-import { Toast } from 'vant'
+import { getGmInfoList } from '@/api/freight'
+// import { Toast } from 'vant
 export default {
   components: {
     CardItem,
+    SelfPopup,
     Suggest
+
   },
   data() {
     return {
       value: '', // 搜索框
       active: '', // 当前激活的tab,
+      refreshing: false, // 下拉刷新
+      loading: false, // 上拉加载
+      finished: false, // 是否加载完成
       show: false,
-      batchShow: false,
-      currentDate: new Date(),
-      datePicker: false,
-      maxDate: this.getMaxDate(),
-      title: '项目运费',
       ruleForm: {
         username: '',
         password: ''
@@ -139,6 +207,11 @@ export default {
       form: { // 查询表单
 
       },
+      page: {
+        current: 0,
+        total: 0,
+        size: 10
+      },
       // 筛选
       text1: '', // 城市选择
       text2: '', // 用户名
@@ -154,6 +227,7 @@ export default {
       showPicker9: false,
       showPicker10: false,
       showPicker11: false,
+
       columns1: [
         {
           label: '专车',
@@ -197,47 +271,9 @@ export default {
       showModal: false,
       options: [],
       type: '',
-      lists: [
-        {
-          id: 1,
-          title: '2020/09/08  李斯 / 1666666',
-          statust: '待上报',
-          update: '12233344',
-          carType: '李斯',
-          status: '郑州线路',
-          all: false
+      lists: [],
+      checkedList: []
 
-        },
-        {
-          id: 2,
-          title: '2020/09/08  张三 / 18888888888',
-          statust: '待上报',
-          yicahng: '有差异',
-          update: '12233344',
-          carType: '张三',
-          status: '北京线路',
-          all: false
-
-        },
-        {
-          id: 3,
-          title: '2020/09/08  张三 / 18888888888',
-          yicahng: '有差异',
-          statust: '3000.00',
-          update: '12233344',
-          carType: '张三',
-          status: '北京线路'
-        },
-        {
-          id: 4,
-          title: '2020/09/08  张三 / 18888888888',
-          yicahng: '',
-          statust: '300.00',
-          update: '12233344',
-          carType: '张三',
-          status: '北京线路'
-        }
-      ]
     }
   },
   computed: {
@@ -246,37 +282,160 @@ export default {
         return new Date(this.form.r)
       }
       return new Date()
+    },
+    checkedNum() {
+      return this.lists.filter(item => item.checked).length
+    },
+    checkedarr() {
+      return this.lists.filter(item => item.checked)
+    },
+    checkall: {
+      get: function() {
+        return (this.lists.length === this.checkedNum)
+      },
+      set: function(val) {
+        if (val) {
+          this.lists.forEach(item => {
+            item.checked = true
+          })
+        } else {
+          this.lists.forEach(item => {
+            item.checked = false
+          })
+        }
+      }
     }
   },
+
   mounted() {
-    console.log(typeof this.lists[3].all)
-    this.title = this.$route.query.name
+
   },
   methods: {
+
     onClickLeft() {
       this.$router.go(-1)
     },
-    batch(res) {
-      this.batchShow = !this.batchShow;
+    showPopup() {
+      this.show = true
     },
-    getMaxDate() {
-      let y = new Date().getFullYear()
-      let m = new Date().getMonth()
-      let d = new Date().getDate()
-      return new Date(y, m, d)
+    // 搜索
+    handleSearchClick() {
+      this.$router.push({
+        path: '/outlineSearch',
+        parmas: {
+          type: 1
+        }
+      })
     },
-    dateConfirm() {
-      console.log(this.currentDate)
+    // 状态切换
+    handleTabChange(tab) {
+      this.getConfirmInfoList(true)
     },
-    onRefresh() { // 下拉刷新
-      setTimeout(() => {
-        Toast('刷新成功');
-        this.isLoading = false;
-        this.count++;
-      }, 1000);
+    async getConfirmInfoList(isInit) {
+      try {
+        this.$loading(true)
+        this.$loading(true)
+        let params = {
+          page: this.page.current,
+          limit: this.page.size,
+          pageNumber: 20
+        }
+        let { data: res } = await getGmInfoList(params)
+        if (res.success) {
+          let newLists = res.data
+          newLists.forEach(item => {
+            item.checked = false
+          })
+          if (!isInit) {
+            newLists = this.lists.concat(newLists)
+          }
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach(item => {
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     },
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
+      }
+      let result = await this.getConfirmInfoList(isInit)
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
+        this.loading = false;
+        if (!result.hasMore) {
+          this.finished = true
+        }
+      }
+    },
+
     onQuery() {
-      console.log('submit', this.form);
+      this.getConf()
+      console.log('submit', this.form)
+    },
+    // 重置
+    onReset(form) {
+      this.text1 = ''
+      this.text2 = ''
+      this.text3 = ''
+      this.text4 = ''
+      this.text10 = ''
+      this.text11 = ''
+      this.form = {}
+      console.log('reset');
+    },
+    async getConf() {
+      try {
+        let parmas = {
+          customerCity: this.text1,
+          customer: this.text2,
+          project: this.text3,
+          dutyManagerId: this.text4,
+          startDate: this.text10
+        }
+        this.$loading(true)
+        let { data: res } = await getGmInfoList(parmas)
+        console.log(res)
+        if (res.success) {
+          this.lists = res.data
+          this.listQuery = ''
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
     },
     // 线路类型 ----右侧pop选中关闭
     onConfirm1(obj) {
@@ -350,7 +509,6 @@ export default {
 
   }
 }
-
 </script>
 <style lang='scss' scoped>
 .lineListContainer {
@@ -433,6 +591,9 @@ export default {
     text-align: center;
     border-top-color:#D8D8D8;
   }
+}
+.all{
+  margin-left: 20px;
 }
 
 </style>

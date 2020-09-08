@@ -12,7 +12,7 @@
       <!-- 搜索 -->
       <van-search show-action placeholder="请输入项目名称/编号" readonly @click="handleSearchClick">
         <template #action>
-          <div class="searchSelect" @click="showPopup=true">
+          <div class="searchSelect" @click="filter_left">
             筛选
             <van-icon name="play" color="#3C4353" />
           </div>
@@ -65,24 +65,13 @@
       @submit="onSubmit"
       @reset="onReset"
     >
-      <!-- <van-field
-        readonly
-        clickable
-        label-width="7em"
-        name="city"
-        :value="listQuery.city"
-        label="城市"
-        is-link
-        placeholder="请选择城市"
-        @click="showPickerFn('city')"
-      /> -->
       <van-field
         v-model="listQuery.name"
         colon
-        name="name1"
+        name="name"
         label-width="7em"
-        label="城市"
-        placeholder="请选择城市"
+        label="司机城市"
+        placeholder="请输入城市"
       />
       <van-field
         v-model="listQuery.name1"
@@ -94,7 +83,7 @@
       />
       <van-field
         v-model="listQuery.name2"
-        name="name5"
+        name="name2"
         colon
         label-width="7em"
         label="项目"
@@ -102,7 +91,7 @@
       />
       <van-field
         v-model="listQuery.name3"
-        name="name5"
+        name="name3"
         colon
         label-width="7em"
         label="上岗经理"
@@ -168,7 +157,8 @@ import CardItem from './components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
-import { getLineInfoList } from '@/api/freight'
+import { getGmInfoList } from '@/api/freight' // 结盟接口
+// import { getGmInfoList } from '@/api/freight' 外线接口
 export default {
   components: {
     CardItem,
@@ -177,7 +167,6 @@ export default {
   },
   data() {
     return {
-      sh: '',
       showPopup: false, // 打开查询抽屉
       showCalendar: false, // 打开日历
       refreshing: false, // 下拉刷新
@@ -240,11 +229,6 @@ export default {
       showPicker9: false,
       showPicker10: false,
       showPicker11: false,
-      page: {
-        current: 0,
-        total: 0,
-        size: 10
-      },
       columns1: [
         {
           label: '专车',
@@ -297,12 +281,22 @@ export default {
           name: '上海市',
           code: 0
         }
-      ]
+      ],
+      page: {
+        current: 0,
+        total: 0,
+        size: 10
+      }
+
     }
   },
   computed: {
   },
+  mounted() {
+    // console.log(getConfirmInfoList)
+  },
   methods: {
+
     onClickLeft() {
       this.$router.go(-1)
     },
@@ -311,21 +305,53 @@ export default {
         path: 'outsidebatch'
       })
     },
-    handleTabChange(tab) {
-      this.getLineInfoList(true)
+    filter_left() {
+      this.showPopup = true
     },
-    async getLineInfoList(isInit) {
+    async getConf() { // 首页加盟运费筛选
+      try {
+        let parmas = {
+          customerCity: this.listQuery.name,
+          customer: this.listQuery.name1,
+          project: this.listQuery.name2,
+          dutyManagerId: this.listQuery.name3,
+          startDate: this.listQuery.startDate
+        }
+        this.$loading(true)
+        let { data: res } = await getGmInfoList(parmas)
+        console.log(res)
+        if (res.success) {
+          this.lists = res.data
+          this.listQuery = ''
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    handleTabChange(tab) {
+      this.getConfirmInfoList(true)
+    },
+    async getConfirmInfoList(isInit) { // 首页加盟运费列表
       try {
         this.$loading(true)
-
-        let parmas = {
+        let params = {
           page: this.page.current,
           limit: this.page.size,
           pageNumber: 20
         }
-        let { data: res } = await getLineInfoList(parmas)
+        let { data: res } = await getGmInfoList(params)
+        console.log(res)
         if (res.success) {
           let newLists = res.data
+
           if (!isInit) {
             newLists = this.lists.concat(newLists)
           }
@@ -354,7 +380,6 @@ export default {
         this.$loading(false)
       }
     },
-
     // 选择线路
     onConfirm(obj) {
       this.showPicker = false;
@@ -384,7 +409,8 @@ export default {
       } else { // 上拉加载更多
         this.page.current++
       }
-      let result = await this.getLineInfoList(isInit)
+      let result = await this.getConfirmInfoList(isInit)
+
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -396,47 +422,23 @@ export default {
         }
       }
     },
-
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/outlineSearch'
+        path: '/outlineSearch',
+        query: {
+          type: 1
+        }
       })
     },
     /**
      * 提交查询
      */
     onSubmit(value) {
+      this.getConf()
       this.showPopup = false;
       this.refreshing = true;
-      // this.onRefresh();
-      this.getqurey()
-      console.log('submit', value);
-    },
-    async getqurey() {
-      try {
-        let parmas = {
-          customerCity: this.listQuery.name,
-          customer: this.listQuery.name1,
-          project: this.listQuery.name2,
-          startDate: this.pickerNames.date
-        }
-        this.$loading(true)
-        let { data: res } = await getLineInfoList(parmas)
-        if (res.success) {
-          res.data
-        } else {
-          this.loading = false;
-          this.error = true;
-          this.$toast.fail(res.errorMsg)
-        }
-      } catch (err) {
-        this.loading = false;
-        this.error = true;
-        console.log(`get list fail:${err}`)
-      } finally {
-        this.$loading(false)
-      }
+      // console.log('submit', value);
     },
     /**
      * 重置form

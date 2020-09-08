@@ -19,7 +19,7 @@ export function getGmInfoList(data) {
 
 export function shippingDetailByGM(data) {
   return request({
-    url: `${prefix}/v2/waybill/shipping/shippingDetailByGM`, // 加盟侧查询出车详情
+    url: `${prefix}/v2/waybill/shippingDetailByGM`, // 加盟侧查询出车详情
     method: 'post',
     data
   })

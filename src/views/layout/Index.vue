@@ -159,7 +159,7 @@ export default {
         [
           {
             title: '加盟运费上报',
-            url: '',
+            url: '/freight',
             icon: require('../../assets/Home/icon_8.png'),
             style: {
               width: '1.2267rem',

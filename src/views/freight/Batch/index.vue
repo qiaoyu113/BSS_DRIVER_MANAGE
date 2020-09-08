@@ -48,6 +48,7 @@
               <CardItem
                 class="items"
                 :obj="sub"
+                :checkedarr="checkedarr"
               />
             </div>
           </van-tab>
@@ -284,6 +285,9 @@ export default {
     },
     checkedNum() {
       return this.lists.filter(item => item.checked).length
+    },
+    checkedarr() {
+      return this.lists.filter(item => item.checked)
     },
     checkall: {
       get: function() {
