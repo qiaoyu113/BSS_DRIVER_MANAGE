@@ -462,7 +462,6 @@ export default {
         params.limit = this.page.limit;
         let { data: res } = await GetRunTestInfoList(params);
         if (res.success) {
-          this.$loading(false);
           let newLists = res.data;
           if (!isInit) {
             newLists = this.lists.concat(newLists);
@@ -486,13 +485,12 @@ export default {
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        this.$loading(false);
         this.page.current !== 1 && this.page.current--;
         this.loading = false;
         this.error = true;
         console.log(`get list fail:${err}`);
       } finally {
-        // this.$loading(false);
+        this.$loading(false);
       }
     }
   }
