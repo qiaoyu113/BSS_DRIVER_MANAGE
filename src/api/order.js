@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-let prefix = '/mock/88'
-// let prefix = '/api/business_center'
+// let prefix = '/mock/88'
+let prefix = '/api/business_center'
 let productPrefix = '/mock/111'
 
 /**

@@ -331,9 +331,7 @@
               @click="showPickerFn('carModel')"
             /> -->
 
-            <template
-              v-show="formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel"
-            >
+            <template v-show="formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel">
               <div>
                 <van-field
                   label="车辆信息"
@@ -867,11 +865,12 @@ export default {
         this.$loading(true);
         let { data: res } = await orderDetail({ driverId: id });
         if (res.success) {
-          this.formText.inspectionTime = res.data.inspectionTime;
-          this.formText.insuranceTime = res.data.insuranceTime;
-          this.formText.supplier = res.data.supplier;
-          this.formText.carModel = res.data.carModel;
-          this.formText.cooperationCar = res.data.cooperationCar;
+          // this.formText.inspectionTime = res.data.inspectionTime;
+          // this.formText.insuranceTime = res.data.insuranceTime;
+          // this.formText.supplier = res.data.supplier;
+          // this.formText.carModel = res.data.carModel;
+          // this.formText.cooperationCar = res.data.cooperationCar;
+          this.id = res.data.orderId
           this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
           this.formData = { ...this.formData, ...res.data };
           this.formData.driverInfoFORM = this.formData.driverInfoVO;
@@ -911,7 +910,25 @@ export default {
     async onSubmit1(values) {
       try {
         this.$loading(true);
-        let params = { ...this.formData };
+        let params = {
+          cooperationModel: this.formData.cooperationModel,
+          cooperationTime: this.formData.cooperationTime,
+          incomeGuarantee: this.formData.incomeGuarantee,
+          rake: this.formData.rake,
+          goodsAmount: this.formData.goodsAmount,
+          inspectionTime: this.formData.inspectionTime,
+          insuranceTime: this.formData.insuranceTime,
+          plateNo: this.formData.plateNo,
+          cooperationCar: this.formData.cooperationCar,
+          busiType: this.formData.busiType,
+          supplier: this.formData.supplier,
+          carModel: this.formData.carModel,
+          productId: this.formData.productId,
+          driverInfoFORM: this.formData.driverInfoFORM,
+          orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
+          orderId: this.id
+        }
+        // let params = { ...this.formData };
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {

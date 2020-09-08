@@ -61,10 +61,10 @@ export function getUserInfo(data) {
 }
 // -------------------------szjw 2.1-----------------------
 // 获取开通城市列表
-let prefix = '/mock/25'
-let corePrefix = '/mock/25'
-// let corePrefix = '/api/core'
-// let prefix = '/api/base'
+// let prefix = '/mock/25'
+// let corePrefix = '/mock/25'
+let corePrefix = '/api/core'
+let prefix = '/api/base'
 
 export function getOpenCitys(params) {
   return request({
