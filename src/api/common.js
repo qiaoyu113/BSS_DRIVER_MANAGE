@@ -61,10 +61,10 @@ export function getUserInfo(data) {
 }
 // -------------------------szjw 2.1-----------------------
 // 获取开通城市列表
-let prefix = '/mock/25'
-let corePrefix = '/mock/25'
-// let corePrefix = '/api/core'
-// let prefix = '/api/base'
+// let prefix = '/mock/25'
+// let corePrefix = '/mock/25'
+let corePrefix = '/api/core'
+let prefix = '/api/base'
 
 export function getOpenCitys(params) {
   return request({
@@ -77,7 +77,7 @@ export function getOpenCitys(params) {
 // 上传文件
 export function upload(params, data) {
   return request({
-    url: `${corePrefix}/v1/base/upload/uploadOSS/${params.folder}/${params.isEncode}/${params.expire}`,
+    url: `${corePrefix}/v1/upload/uploadOSS/${params.folder}/${params.isEncode}/${params.expire}`,
     method: 'post',
     data
   })
@@ -89,6 +89,15 @@ export function getDictData(params) {
     url: `${prefix}/v1/base/dict/dictData/list`,
     method: 'get',
     params
+  })
+}
+
+// 根据类型查询字典值--不分页
+export function getDictDataByKeyword(data) {
+  return request({
+    url: `${prefix}/v1/base/dict/getDictInfoByDictTypeAndKeyword`,
+    method: 'post',
+    data
   })
 }
 // 批量查询字典
@@ -103,8 +112,8 @@ export function GetDictionaryList(data) {
 // 获取省、市、县
 export const GetCityByCode = (data) =>
   request({
-    // url: `${prefix}/api/base/v1/base/area/getCityByCode`,
-    url: '/base/v1/base/area/getCityByCode',
+    url: `${prefix}/v1/base/area/getCityByCode`,
+    // url: '/base/v1/base/area/getCityByCode',
     method: 'post',
     data
   })

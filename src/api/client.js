@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-let prefix = '/mock/18'
-// let prefix = '/api/line_center'
+// let prefix = '/mock/18'
+let prefix = '/api/line_center'
 // 获客户列表
 export function getClientList(data) {
   return request({

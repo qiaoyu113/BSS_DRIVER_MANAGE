@@ -230,7 +230,8 @@ export default {
           this.$router.push({
             path: path,
             query: {
-              lineId: this.lineId
+              lineId: this.lineId,
+              isStable: this.form.lineCategory
             }
           })
         }
@@ -238,7 +239,8 @@ export default {
         this.$router.push({
           path: path,
           query: {
-            lineId: this.lineId
+            lineId: this.lineId,
+            isStable: this.form.lineCategory
           }
         })
       }
@@ -251,7 +253,7 @@ export default {
           conditionType
         }
         let { data: res } = await judgeMeetConditions(params)
-        if (res.success) {
+        if (res.success && res.data.success) {
           return true
         } else {
           Dialog.alert({
@@ -259,7 +261,7 @@ export default {
             message: res.data.msg
           }).then(() => {
             return false
-          });
+          })
         }
       } catch (err) {
         console.log('judgeMeetConditions fail:', err)

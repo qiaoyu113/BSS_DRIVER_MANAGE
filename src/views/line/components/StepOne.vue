@@ -9,6 +9,7 @@
         label-width="100"
         colon
         required
+        :disabled="type === 'edit'"
         label="线路名称"
         placeholder="请输入"
         maxlength="10"
@@ -104,7 +105,7 @@
       <van-field
         label-width="100"
         colon
-        :value="pickerNames['carType']"
+        :value="pickerNames['carType'] || form['carTypeName']"
         readonly
         clickable
         required
@@ -156,14 +157,14 @@
       />
       <van-field
         v-model="form.distance"
-        v-only-number="{min: 1, max: 999999, precision: 1}"
+        v-only-number="{min: 1, max: 999999}"
         label-width="100"
         colon
         required
         label="配送总里程数"
         placeholder="请输入"
         name="mileageValidator"
-        type="number"
+        type="digit"
         :rules="[
           { required: true, message: '请输入' },
           { validator: mileageValidator, message: '请输入1~9999' }
@@ -200,7 +201,7 @@
 
 <script>
 import Suggest from '@/components/SuggestSearch'
-import { getDictData } from '@/api/common'
+import { getDictDataByKeyword } from '@/api/common'
 import SelftPicker from '@/components/SelfPicker'
 import SelfDatetimePicker from '@/components/SelfDatetimePicker'
 import SelfArea from '@/components/SelfArea'
@@ -290,7 +291,7 @@ export default {
   },
   methods: {
     async init() {
-      let result = await this.getDictData('Intentional_compartment')
+      let result = await this.getDictDataByKeyword('Intentional_compartment')
       this.options = result
     },
     // 提交
@@ -314,7 +315,7 @@ export default {
     // 模糊搜索
     async handleSearchChange(value) {
       if (this.modalKey === 'carType') {
-        let result = await this.getDictData('Intentional_compartment', value)
+        let result = await this.getDictDataByKeyword('Intentional_compartment', value)
         this.options = result
       }
     },
@@ -329,19 +330,19 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (this.modalKey === 'carType') {
-        let result = await this.getDictData('Intentional_compartment')
+        let result = await this.getDictDataByKeyword('Intentional_compartment')
         this.options = result
       }
       this.showModal = true
     },
     // 从数据字典获取数据
-    async getDictData(dictType, keyword = '') {
+    async getDictDataByKeyword(type, keyword = '') {
       try {
         let params = {
-          dictType
+          type
         }
         keyword && (params.keyword = keyword)
-        let { data: res } = await getDictData(params)
+        let { data: res } = await getDictDataByKeyword(params)
         if (res.success) {
           return res.data.map(item => ({
             label: item.dictLabel,

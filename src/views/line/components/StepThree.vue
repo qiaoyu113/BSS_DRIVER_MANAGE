@@ -165,10 +165,11 @@ export default {
         }
         keyword && (params.keyword = keyword)
         let { data: res } = await getDictData(params)
+
         if (res.success) {
           return res.data.map(item => ({
             label: item.dictLabel,
-            value: item.dictValue
+            value: +item.dictValue
           }))
         } else {
           this.$fail(res.errorMsg)

@@ -13,15 +13,13 @@
 import StepOne from '../components/StepOne'
 import StepTwo from '../components/StepTwo'
 import StepThree from '../components/StepThree'
-import { Notify } from 'vant'
 import { editTemporaryLine, editStableLine, getLineDetail } from '@/api/line'
 import { delay } from '@/utils'
 export default {
   components: {
     StepOne,
     StepTwo,
-    StepThree,
-    [Notify.Component.name]: Notify.Component
+    StepThree
   },
   data() {
     return {
@@ -70,7 +68,15 @@ export default {
         carry: '', // 是否需要搬运
         dutyRemark: '', // 其他上岗要求
         lineId: ''
-      }
+      },
+      warehouseCity: '',
+      city: '',
+      lineSaleId: '',
+      dutyManagerId: '',
+      lineLogo: '',
+      createId: '',
+      createDate: '',
+      projectId: ''
     }
   },
   mounted() {
@@ -103,6 +109,13 @@ export default {
         ...this.stepThreeForm,
         lineDeliveryInfoFORMS: []
       }
+      params.warehouseCity = this.warehouseCity
+      params.city = this.city
+      params.lineSaleId = this.lineSaleId
+      params.dutyManagerId = this.dutyManagerId
+      params.lineLogo = this.lineLogo
+      params.createDate = this.createDate
+      params.createId = this.createId
       params.provinceArea = this.stepOneForm.area[0]
       params.cityArea = this.stepOneForm.area[1]
       params.countyArea = this.stepOneForm.area[2]
@@ -135,6 +148,8 @@ export default {
     // 编辑稳定线路
     async editStableLine(params) {
       try {
+        this.$loading(true)
+        params.lineCategory = 1
         let { data: res } = await editStableLine(params)
         if (res.success) {
           this.createSuc()
@@ -143,11 +158,15 @@ export default {
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 编辑临时线路
     async editTemporaryLine(params) {
       try {
+        this.$loading(true)
+        params.lineCategory = 2
         let { data: res } = await editTemporaryLine(params)
         if (res.success) {
           this.createSuc()
@@ -156,6 +175,8 @@ export default {
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 获取线路详情
@@ -169,6 +190,14 @@ export default {
         if (res.success) {
           let result = res.data
           this.isStable = +res.data.lineCategory === 1
+          this.warehouseCity = res.data.warehouseCity
+          this.lineLogo = res.data.lineLogo
+          this.city = res.data.city
+          this.lineSaleId = res.data.lineSaleId
+          this.dutyManagerId = res.data.dutyManagerId
+          this.createId = res.data.createId
+          this.createDate = res.data.createDate
+          this.projectId = res.data.projectId
           this.stepOneForm = {
             ...this.stepOneForm,
             ...{
@@ -208,8 +237,18 @@ export default {
               shipperOffer: result.shipperOffer,
               everyTripGuaranteed: result.everyTripGuaranteed,
               everyUnitPrice: result.everyUnitPrice,
-              lineId: result.lineId
+              lineId: result.lineId,
+              deliveryWeekCycle: result.deliveryWeekCycle
             }
+          }
+          if (this.isStable) {
+            this.stepTwoForm.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.split(',').map(item => +item)
+          } else {
+            this.stepTwoForm.deliveryWeekCycle = []
+            this.stepTwoForm.deliveryWeekCycle.push(
+              new Date(result.deliveryStartDate),
+              new Date(result.deliveryEndDate)
+            )
           }
 
           this.stepThreeForm = {
@@ -223,14 +262,6 @@ export default {
               dutyRemark: result.dutyRemark,
               lineId: result.lineId
             }
-          }
-          if (this.isStable) {
-            this.stepTwoForm.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.split(',')
-          } else {
-            this.stepTwoForm.deliveryWeekCycle.push(
-              result.deliveryStartDate,
-              result.deliveryEndDate
-            )
           }
 
           result.lineDeliveryInfoFORMS.forEach(item => {

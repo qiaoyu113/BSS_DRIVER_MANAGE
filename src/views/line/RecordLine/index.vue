@@ -103,10 +103,13 @@ export default {
         informationDescription: '' // 现场信息说明
       },
       show: false,
-      videoUrl: ''
+      videoUrl: '',
+      lineId: ''
     }
   },
-
+  mounted() {
+    this.lineId = this.$route.query.lineId
+  },
   methods: {
     /**
      *返回按钮
@@ -119,12 +122,15 @@ export default {
      */
     async onSubmit(values) {
       try {
-        let params = {}
+        this.$loading(true)
+        let params = {
+          lineId: this.lineId
+        }
         if (this.form.warehouseLoadingPictures.length > 0) {
-          params.warehouseLoadingPictures = this.form.warehouseLoadingPictures.join(',')
+          params.warehouseLoadingPictures = this.form.warehouseLoadingPictures
         }
         if (this.form.otherPictures.length > 0) {
-          params.otherPictures = this.form.otherPictures.join(',')
+          params.otherPictures = this.form.otherPictures
         }
         if (this.form.loadingVideo.length > 0) {
           params.loadingVideo = this.form.loadingVideo.join('')
@@ -141,6 +147,8 @@ export default {
         }
       } catch (err) {
         console.log(`submit fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     /**
@@ -156,6 +164,8 @@ export default {
     // 上传文件
     async uploadFile(file, key) {
       try {
+        file.status = 'uploading';
+        file.message = '上传中...';
         let formData = new FormData() // 创建form对象
         formData.append('file', file.file)
         let params = {
@@ -165,12 +175,17 @@ export default {
         }
         let { data: res } = await upload(params, formData)
         if (res.success) {
+          file.status = 'done';
           this.form[key].push(res.data.url)
         } else {
           this.$fail(res.errorMsg)
+          file.status = 'failed';
+          file.message = '上传失败';
         }
       } catch (err) {
         console.log(`upload file fail:${err}`)
+        file.status = 'failed';
+        file.message = '上传失败';
       }
     },
     /**

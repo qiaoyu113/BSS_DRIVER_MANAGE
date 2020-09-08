@@ -31,6 +31,7 @@ service.interceptors.request.use(
     if (token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
       config.headers['Authorization'] = getToken()
+      config.headers['userId'] = 1
     }
     let cookieName = localStorage.getItem('developer')
     if (cookieName) {

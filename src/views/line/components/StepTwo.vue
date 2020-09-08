@@ -294,13 +294,19 @@ export default {
         return this.deliveryWeekCycleArr.length === this.form['deliveryWeekCycle'].length
       },
       set(newVal) {
+        this.form['deliveryWeekCycle'] = []
         if (newVal) {
           let arrs = this.deliveryWeekCycleArr.map(item => item.value)
           this.form['deliveryWeekCycle'].push(...arrs)
-        } else {
-          this.form['deliveryWeekCycle'] = []
         }
         return newVal
+      }
+    }
+  },
+  watch: {
+    'form.incomeSettlementMethod'(val) {
+      if (val === 1) {
+        this.form.everyUnitPrice = ''
       }
     }
   },

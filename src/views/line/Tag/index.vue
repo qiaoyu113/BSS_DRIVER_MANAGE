@@ -51,7 +51,7 @@
 
 <script>
 import { tagging } from '@/api/line'
-import { getDictData } from '@/api/common'
+import { getDictDataByKeyword } from '@/api/common'
 export default {
   data() {
     return {
@@ -128,16 +128,16 @@ export default {
     },
     // 初始化数据
     async init() {
-      this.lineUrgentColumns = await this.getDictData('line_urgent')
-      this.lineAdapterColumns = await this.getDictData('line_adapter')
+      this.lineUrgentColumns = await this.getDictDataByKeyword('line_urgent')
+      this.lineAdapterColumns = await this.getDictDataByKeyword('line_adapter')
     },
     // 从数据字典获取数据
-    async getDictData(dictType) {
+    async getDictDataByKeyword(type) {
       try {
         let params = {
-          dictType
+          type
         }
-        let { data: res } = await getDictData(params)
+        let { data: res } = await getDictDataByKeyword(params)
         if (res.success) {
           return res.data.map(item => ({
             label: item.dictLabel,

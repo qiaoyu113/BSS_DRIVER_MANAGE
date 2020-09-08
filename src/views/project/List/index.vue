@@ -106,26 +106,23 @@
         @click="showPickerFn('date')"
       />
     </SelfPopup>
+
+    <!-- 选择日期 -->
+    <van-calendar
+      v-model="showCalendar"
+      type="range"
+      :min-date="minDate1"
+      @confirm="onConfirm"
+    />
     <van-popup v-model="showPicker" position="bottom">
-      <template v-if="isDateRange">
-        <!-- 选择日期区间 -->
-        <van-calendar
-          v-model="showPicker"
-          type="range"
-          :min-date="minDate1"
-          @confirm="onConfirm"
-        />
-      </template>
-      <template v-else>
-        <!-- picker选择器 -->
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
+      <!-- picker选择器 -->
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+      />
     </van-popup>
 
     <Suggest
@@ -240,6 +237,7 @@ export default {
         }
       ],
       showModal: false,
+      showCalendar: false,
       options: [],
       modalKey: '',
       pickerNames: { // picker选中显示的名字
@@ -373,7 +371,10 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'receivingPoint') {
+      if (key === 'date') {
+        this.showCalendar = true
+        return false
+      } else if (key === 'receivingPoint') {
         this.columns.push(...this.receivingPointArr);
       } else if (key === 'isDelivery') {
         this.columns.push(...this.isDeliveryArr);
@@ -390,6 +391,8 @@ export default {
         let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
         this.pickerNames[this.pickerKey] = `${startName}-${endName}`
         this.form[this.pickerKey] = obj
+        this.showCalendar = false
+        return false
       } else {
         this.pickerNames[this.pickerKey] = obj.label
         this.form[this.pickerKey] = obj.value
@@ -447,10 +450,12 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.projectState) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
+            if (item.name === '') {
+              item.num = res.title.all
+            } else if (item.name === 1) {
+              item.num = res.title.disableNumbers
+            } else if (item.name === 2) {
+              item.num = res.title.enableNumbers
             }
           })
           return result
