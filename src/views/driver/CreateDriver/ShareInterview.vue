@@ -323,39 +323,12 @@
           >
             取消
           </van-button>
-          <van-button
-            type="primary"
-          >
+          <van-button type="primary">
             提交
           </van-button>
         </div>
       </van-form>
     </div>
-    <!-- picker -->
-    <van-popup
-      v-model="showPicker"
-      round
-      position="bottom"
-    >
-      <van-picker
-        show-toolbar
-        value-key="name"
-        :columns="columns"
-        @cancel="showPicker = false"
-        @confirm="onConfirmPicker"
-      />
-    </van-popup>
-    <van-popup
-      v-model="showAddressPicker"
-      position="bottom"
-      round
-    >
-      <van-area
-        :area-list="areaList"
-        @confirm="onConfirmArea"
-        @cancel="showAddressPicker = false"
-      />
-    </van-popup>
   </div>
 </template>
 <script>
@@ -363,10 +336,10 @@ import { Dialog } from 'vant';
 import { phoneRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
-import { GetDictionaryList, getOpenCitys } from '@/api/common'
-import SelfArea from '@/components/SelfArea'
-import SelftPicker from '@/components/SelfPicker'
-import { shareInterview, getInterview } from '@/api/driver.js'
+import { GetDictionaryList, getOpenCitys } from '@/api/common';
+import SelfArea from '@/components/SelfArea';
+import SelftPicker from '@/components/SelfPicker';
+import { shareInterview, getInterview } from '@/api/driver.js';
 export default {
   name: 'ShareInterview',
   components: {
@@ -464,10 +437,10 @@ export default {
     'formData.hasCar'(val) {
       if (val === true) {
         this.formData.currentCarType = '';
-        this.pickerNames.currentCarType = ''
+        this.pickerNames.currentCarType = '';
       } else {
         this.formData.intentDrivingCarType = '';
-        this.pickerNames.intentDrivingCarType = ''
+        this.pickerNames.intentDrivingCarType = '';
       }
     }
   },
@@ -485,69 +458,100 @@ export default {
   },
   methods: {
     fetchData() {
-      GetDictionaryList(['Intentional_compartment', 'intent_cargo_type', 'source_channel', 'driving_licence_type', 'intent_work_duration'])
+      GetDictionaryList([
+        'Intentional_compartment',
+        'intent_cargo_type',
+        'source_channel',
+        'driving_licence_type',
+        'intent_work_duration'
+      ])
         .then(({ data }) => {
           if (data.success) {
-            this.columns_intentDrivingCarType = data.data.Intentional_compartment.map(ele => {
-              return { name: ele.dictLabel, code: ele.dictValue }
-            })
-            this.columns_intentCargoType = data.data.intent_cargo_type.map(ele => {
-              return { name: ele.dictLabel, code: ele.dictValue }
-            })
-            this.columns_sourceChannel = data.data.source_channel.map(ele => {
-              return { name: ele.dictLabel, code: ele.dictValue }
-            })
-            this.columns_intentWorkDuration = data.data.intent_work_duration.map(ele => {
-              return { name: ele.dictLabel, code: ele.dictValue }
-            })
-            this.columns_drivingLicenceType = data.data.driving_licence_type.map(ele => {
-              return { name: ele.dictLabel, code: ele.dictValue }
-            })
+            this.columns_intentDrivingCarType = data.data.Intentional_compartment.map(
+              (ele) => {
+                return { name: ele.dictLabel, code: ele.dictValue };
+              }
+            );
+            this.columns_intentCargoType = data.data.intent_cargo_type.map(
+              (ele) => {
+                return { name: ele.dictLabel, code: ele.dictValue };
+              }
+            );
+            this.columns_sourceChannel = data.data.source_channel.map((ele) => {
+              return { name: ele.dictLabel, code: ele.dictValue };
+            });
+            this.columns_intentWorkDuration = data.data.intent_work_duration.map(
+              (ele) => {
+                return { name: ele.dictLabel, code: ele.dictValue };
+              }
+            );
+            this.columns_drivingLicenceType = data.data.driving_licence_type.map(
+              (ele) => {
+                return { name: ele.dictLabel, code: ele.dictValue };
+              }
+            );
           }
-        }).catch((err) => {
-          console.log(err)
+        })
+        .catch((err) => {
+          console.log(err);
         });
       getOpenCitys()
         .then(({ data }) => {
           if (data.success) {
             this.columns_workCity = data.data;
           }
-        }).catch((err) => {
-          console.log(err)
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
     copyData(value) {
       if (value && value !== 0) {
-        this.formData[value] = this.editForm[value]
+        this.formData[value] = this.editForm[value];
       }
     },
     async getDetail(id) {
       try {
         let params = {
           driverId: id
-        }
-        this.$loading(true)
+        };
+        this.$loading(true);
         let { data: res } = await getInterview(params);
         if (res.success) {
-          console.log(res.data.isChange)
+          let areaData = res.data;
+          this.area.liveaddress = [
+            areaData.liveProvince,
+            areaData.liveCity,
+            areaData.liveCounty
+          ];
+          this.area.intentWork = [
+            areaData.intentWorkProvince,
+            areaData.intentWorkCity,
+            areaData.intentWorkCounty
+          ];
+          this.area.interview = [
+            areaData.interviewProvince,
+            areaData.interviewCity,
+            areaData.interviewCounty
+          ];
           if (res.data.isChange === false) {
-            this.editForm = res.data
+            this.editForm = res.data;
           } else {
-            this.formData = { ...this.formData, ...res.data }
+            this.formData = { ...this.formData, ...res.data };
           }
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     },
     async onSubmit(values) {
-      console.log(values)
+      console.log(values);
       try {
-        this.$loading(true)
+        this.$loading(true);
         let params = { ...this.formData };
         params.liveProvince = this.area.liveaddress[0]; // 居住地
         params.liveCity = this.area.liveaddress[1];
@@ -556,9 +560,9 @@ export default {
         params.intentWorkCity = this.area.intentWork[1];
         params.intentWorkCounty = this.area.intentWork[2];
         // 面试地址
-        params.interviewCity = this.area.interview[0]
-        params.interviewCounty = this.area.interview[1]
-        params.interviewProvince = this.area.interview[2]
+        params.interviewCity = this.area.interview[0];
+        params.interviewCounty = this.area.interview[1];
+        params.interviewProvince = this.area.interview[2];
         if (this.formData.hasCar === true) {
           params.currentCarType = '';
         } else {
@@ -568,81 +572,16 @@ export default {
         let { data: res } = await shareInterview(params);
         if (res.success) {
           Notify({ type: 'success', message: '面试成功' });
-          this.$router.go(-1)
+          this.$router.go(-1);
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     },
-    /**
-     * picker 选择
-     */
-    onConfirmPicker(value) {
-      this.pickerNames[this.pickerKey] = value.name;
-      this.formData[this.pickerKey] = value.code;
-      this.showPicker = false;
-    },
-    /**
-     * 显示picker
-     */
-    showPickerFn(key) {
-      this.pickerKey = key;
-      switch (key) {
-        case 'workCity':
-          this.columns = this.columns_workCity;
-          break;
-        case 'intentDrivingCarType':
-          this.columns = this.columns_intentDrivingCarType;
-          break;
-        case 'intentCargoType':
-          this.columns = this.columns_intentCargoType;
-          break;
-        case 'currentCarType':
-          this.columns = this.columns_currentCarType;
-          break;
-        case 'intentWorkDuration':
-          this.columns = this.columns_intentWorkDuration;
-          break;
-        case 'sourceChannel':
-          this.columns = this.columns_sourceChannel;
-          break;
-        case 'drivingLicenceType':
-          this.columns = this.columns_drivingLicenceType;
-          break;
-        default:
-          this.columns = this.isOrNot;
-      }
-      this.showPicker = true;
-    },
-    showPickerFnArea(key) {
-      this.pickerKey = key;
-      // switch (key) {
-      //   case 'workCity':
-      //     this.columns = this.columns_workCity;
-      //     break;
-      //   case 'intentDrivingCarType':
-      //     this.columns = this.columns_intentDrivingCarType;
-      //     break;
-      // }
-      this.showAddressPicker = true;
-    },
-    /**
-     * 地区选则
-     */
-    onConfirmArea(values) {
-      this.pickerNames[this.pickerKey] = values
-        .map((item) => item.name)
-        .join('/');
-      this[this.pickerKey] = values.map((item) => item.code);
-      this.showAddressPicker = false;
-    },
-    /**
-     * 取消
-     */
     cancelform() {
       Dialog.confirm({
         title: '取消',
