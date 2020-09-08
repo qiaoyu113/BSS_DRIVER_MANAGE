@@ -79,9 +79,9 @@ export default {
     },
     Add_to() {
       let arr = []
-      console.log(this.checkedarr)
+
       if (this.checkedarr !== '') {
-        this.checkedarr.every(item => {
+        this.checkedarr.filter(item => {
           arr.push(item.wayBillId)
         })
 

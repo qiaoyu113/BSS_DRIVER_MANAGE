@@ -302,7 +302,7 @@ export default {
     },
     batch() {
       this.$router.push({
-        path: 'batch'
+        path: '/outsidebatch'
       })
     },
     filter_left() {
