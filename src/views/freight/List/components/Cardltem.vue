@@ -16,7 +16,7 @@
       路线名称:{{ obj.lineName }}
     </p>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick()">
+      <van-button type="default" round hairline @click="handleDetailClick(obj.id)">
         详情
       </van-button>
     </div>
@@ -37,17 +37,18 @@ export default {
     /**
      * 线路详情
      */
-    handleDetailClick() {
-      this.getGmInfoList()
+    handleDetailClick(id) {
+      console.log(id)
+      this.getGmInfoList(id)
     },
-    async getGmInfoList() {
+    async getGmInfoList(id) {
       try {
         let parmas = {
-          wayBillAmountId: 'w090201'
+          wayBillAmountId: id
         }
         let { data: res } = await shippingDetailByGM(parmas)
         if (res.success) {
-          console.log(res)
+          console.log(res, !11111111111111111111)
           this.$router.push({
             path: '/Detail',
             query: { obj: res.data,

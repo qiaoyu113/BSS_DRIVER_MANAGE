@@ -95,3 +95,4 @@ export function shippingDetailBySale(data) {
     data
   })
 }
+

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 /* 线路货主 */
 export function getLineUser(data) {
   return request({
-    url: '/api/bss/v1/bss/line/customer/fuzzy/list',
+    url: '/bss/v1/bss/line/customer/fuzzy/list',
     method: 'get',
     params: data
   })
@@ -10,7 +10,7 @@ export function getLineUser(data) {
 /* 新建线路 */
 export function postCreatLine(data) {
   return request({
-    url: '/api/line/line/task/create',
+    url: '/line/line/task/create',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function postCreatLine(data) {
 /* 线路详情 */
 export function getLineDetail(data) {
   return request({
-    url: '/api/line/line/task/detail',
+    url: '/line/line/task/detail',
     method: 'get',
     params: data
   })
@@ -27,7 +27,7 @@ export function getLineDetail(data) {
 /* 编辑线路 */
 export function putCreatLine(data) {
   return request({
-    url: '/api/line/line/task/edit',
+    url: '/line/line/task/edit',
     method: 'post',
     data
   })
@@ -35,7 +35,7 @@ export function putCreatLine(data) {
 /* 标书审核 */
 export function NopassTender(data) {
   return request({
-    url: '/api/line/line/task/inspectNotPass',
+    url: '/line/line/task/inspectNotPass',
     method: 'post',
     data
   })
@@ -44,7 +44,7 @@ export function NopassTender(data) {
 /* 标书审核 */
 export function passTender(data) {
   return request({
-    url: '/api/line/line/task/inspectPass',
+    url: '/line/line/task/inspectPass',
     method: 'post',
     data
   })
