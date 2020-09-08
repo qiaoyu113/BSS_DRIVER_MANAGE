@@ -312,6 +312,5 @@ color:#0000ffa6;
   border: none;
   background: #fff;
   color: #A6AAB8;
-  font-size: ;
 }
 </style>

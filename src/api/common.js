@@ -99,7 +99,8 @@ export function GetDictionaryList(data) {
 // 获取省、市、县
 export const GetCityByCode = (data) =>
   request({
-    url: `${prefix}/api/base/v1/base/area/getCityByCode`,
+    // url: `${prefix}/api/base/v1/base/area/getCityByCode`,
+    url: '/base/v1/base/area/getCityByCode',
     method: 'post',
     data
   })

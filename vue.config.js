@@ -2,7 +2,7 @@ const path = require('path')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-const port = process.env.port || process.env.npm_config_port || 8888
+const port = process.env.port || process.env.npm_config_port || 8899
 const cdnDomian = '/' // cdn域名，如果有cdn修改成对应的cdn
 const name = '梧桐综合业务支撑平台' // page title
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
@@ -47,30 +47,32 @@ module.exports = {
     proxy: {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
-      // [process.env.VUE_APP_BASE_API]: {
-      //   target: `http://127.0.0.1:${port}/mock`,
-      //   // target: 'http://firmiana-open-api-d2.yunniao.cn/',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     ['^' + process.env.VUE_APP_BASE_API]: ''
-      //   }
+      '/api/mock': {
+        target: 'http://yapi.ynimg.cn:8888',
+        changeOrigin: true,
+        pathRewrite: {
+          '/api/mock': '/mock'
+        }
+      },
+      '[process.env.VUE_APP_BASE_API]': {
+        // target: `http://localhost:${mockServerPort}/mock-api/v1`,
+        target: 'https://szjw-bss-web.m1.yunniao.cn',
+        // target: `http://szjw-domain-gateway.d2.yunniao.cn`,
+        changeOrigin: true, // needed for virtual hosted sites
+        secure: false,
+        ws: true, // proxy websockets
+        pathRewrite: {
+          // ['^' + process.env.VUE_APP_BASE_API + '']: '/api'
+        }
+      }
+      // '/mock': {
+      //   target: 'http://yapi.ynimg.cn:8888',
+      //   changeOrigin: true
       // },
       // '/api': {
-      //   target: 'http://firmiana-open-api-m2.yunniao.cn/',
-      //   // target: 'http://firmiana-wechat.m1.yunniao.cn/',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     // ['^' + process.env.VUE_APP_BASE_API]: ''
-      //   }
-      // },
-      '/mock': {
-        target: 'http://yapi.ynimg.cn:8888',
-        changeOrigin: true
-      },
-      '/api': {
-        target: 'http://szjw-domain-gateway.d2.yunniao.cn',
-        changeOrigin: true
-      }
+      //   target: 'http://szjw-domain-gateway.d2.yunniao.cn',
+      //   changeOrigin: true
+      // }
     },
     after: require('./mock/mock-server.js')
   },
