@@ -113,7 +113,6 @@
           colon
           readonly
         />
-        <!-- :value="formData.inspectionTime.parseTime('{y}-{m}-{d}')" -->
         <van-field
           v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
           label="保险有效期"
@@ -122,7 +121,6 @@
           colon
           readonly
         />
-        <!-- :value="formData.insuranceTime.parseTime('{y}-{m}-{d}')" -->
         <van-field
           v-if="formData.cooperationModel === 2"
           label="租聘公司"
@@ -191,11 +189,10 @@
               :value="payInfo.money"
               readonly
             />
-            <!-- :value="payInfo.payDate.parseTime('{y}-{m}-{d}')" -->
             <van-field
               label="支付时间"
               colon
-              :value="payInfo.payDate | parseTime('{y}-{m}-{d}')"
+              :value="payInfo.payDate"
               readonly
             />
             <van-field
@@ -247,23 +244,19 @@
           label-align="right"
           label-width="120px"
         />
-        <!-- :value="formData.createDate| Timestamp" -->
-        <!-- :value="formData.createDate.parseTime('{y}-{m}-{d}')" -->
         <van-field
           label="订单生成时间"
           colon
-          :value="formData.createDate | parseTime('{y}-{m}-{d}')"
+          :value="formData.createDate"
           label-align="right"
           readonly
           label-width="120px"
         />
-        <!-- :value="formData.createDate| Timestamp" -->
-        <!-- :value="formData.updateDate.parseTime('{y}-{m}-{d}')" -->
         <van-field
           v-if="formData.confirmName"
           label="订单确定时间"
           colon
-          :value="formData.confirmTime | parseTime('{y}-{m}-{d}')"
+          :value="formData.confirmTime"
           readonly
           label-align="right"
           label-width="120px"
@@ -273,7 +266,7 @@
           label="订单审核通过时间"
           label-width="130px"
           colon
-          :value="formData.passTime | parseTime('{y}-{m}-{d}')"
+          :value="formData.passTime"
           readonly
           label-align="right"
         />
@@ -281,7 +274,7 @@
           v-if="formData.notPassName"
           label="订单审核不通过时间"
           colon
-          :value="formData.notPassTime | parseTime('{y}-{m}-{d}')"
+          :value="formData.notPassTime"
           readonly
           label-align="right"
           label-width="140px"
@@ -290,7 +283,7 @@
           v-if="formData.status === 10"
           label="订单取消时间"
           colon
-          :value="formData.updateDate | parseTime('{y}-{m}-{d}')"
+          :value="formData.updateDate"
           readonly
           label-align="right"
           label-width="120px"
