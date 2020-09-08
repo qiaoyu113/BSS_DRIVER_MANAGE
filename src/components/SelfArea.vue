@@ -1,5 +1,5 @@
 <template>
-  <div class="selfAreaContainer">
+  <div class="selfAreaContainer" :class="border ? 'van-hairline--bottom':''">
     <van-field
       :value="label"
       readonly
@@ -38,6 +38,10 @@ export default {
     isComputed: {
       type: Boolean,
       default: false
+    },
+    border: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -49,12 +53,13 @@ export default {
         province_list: {},
         city_list: {},
         county_list: {}
-      }
+      },
+      isEcho: true // 是否回显
     }
   },
   watch: {
     isComputed(val) {
-      if (val) {
+      if (val && this.isEcho) {
         this.getLable()
       }
     }
@@ -79,7 +84,9 @@ export default {
     onConfirm(obj) {
       this.form[this.pickerKey] = obj.map((item) => item.code)
       this.label = obj.map((item) => item.name).join('/');
+      console.log('xxx:', this.label)
       this.showPicker = false
+      this.isEcho = false
     },
     // 三级联动变化
     async handleAreaChange(vm, item, index) {

@@ -168,6 +168,7 @@ export default {
         let { data: res } = await getLineDetail(params)
         if (res.success) {
           let result = res.data
+          this.isStable = +res.data.lineCategory === 1
           this.stepOneForm = {
             ...this.stepOneForm,
             ...{

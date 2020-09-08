@@ -10,89 +10,37 @@
         </template>
       </van-nav-bar>
     </van-sticky>
-
-    <!-- <div class="CardItemcontainer">
-      <div>场景1</div>
-      <h4 class="title ellipsis">
-        2020/09/08  李斯 / 1666666 <span style="color:red;">待上报</span>
-      </h4>
-      <P class="text ellipsis">
-        出车编号：111111111
-      </P>
-      <p class="text ellipsis">
-        趟数1金额：1000
-      </p>
-      <p class="text ellipsis">
-        趟数2金额：1000
-      </p>
-      <p class="text ellipsis">
-        确认状态：已确认/确认的金额
-      </p>
-    </div> -->
-    <div v-for="item in dataAll" :key="item" class="CardItemcontainer megin">
-      <h4 class="title ellipsis">
-        2020/09/02 张山 1888888333 <span style="color: 0000ff73;">{{ dataAll.confirmMoney }}</span>
-      </h4>
-      <P class="text ellipsis">
-        出车单号：{{ dataAll.wayBillId }}
-      </P>
-      <P class="text ellipsis">
-        加盟经理：{{ dataAll.gmName }}/{{ dataAll.gmPhone }}
-      </P>
-      <P class="text ellipsis">
-        线路名称：{{ dataAll.lineName }}
-      </P>
-
-      <p class="text ellipsis">
-        上报人：{{ dataAll.gmReportName }}/{{ dataAll.gmReportPhone }}
-      </p>
-      <p class="text ellipsis">
-        上报时间：{{ dataAll.gmReportTime }}
-      </p>
-      <p class="text ellipsis">
-        趟数1金额：1000
-      </p>
-      <!-- <p class="text ellipsis">
-        趟数2金额：1000
-      </p> -->
-      <p class="text ellipsis">
-        备注：{{ dataAll.remark }}
-      </p>
-      <p class="text ellipsis">
-        确认状态：{{ dataAll.gmState }}
-      </p>
-    </div>
     <div class="CardItemcontainer megin">
       <h4 class="title ellipsis">
-        2020/09/02 张山 1888888333 <span style="color: 0000ff73;">500.00</span>
+        <span style="color: 0000ff73;">{{ obj.predictCost }}</span>
       </h4>
       <P class="text ellipsis">
-        出车单号：111111111
+        出车单号:{{ obj.wayBillId }}
       </P>
       <P class="text ellipsis">
-        加盟经理：马文涛/173333322
+        加盟经理:{{ obj.joinManagerName }}/{{ obj.gmPhone }}
       </P>
       <P class="text ellipsis">
-        线路名称：京东线路A
+        线路名称：{{ obj.lineName }}
       </P>
 
       <p class="text ellipsis">
-        上报人：马文涛/173333322
+        上报人：{{ obj.gmReportName }}/{{ obj.gmReportPhone }}
       </p>
       <p class="text ellipsis">
-        上报时间：2020/09/08 12:00:00
+        上报时间：{{ obj.gmReportTime }}
       </p>
       <p class="text ellipsis">
-        趟数1金额：1000
+        趟数1金额：{{ obj.gmFee }}
       </p>
       <!-- <p class="text ellipsis">
-        趟数2金额：1000
+        趟数2金额：{{}}
       </p> -->
       <p class="text ellipsis">
-        备注：
+        备注：{{ obj.remark }}
       </p>
       <p class="text ellipsis">
-        确认状态：已确认/确认的金额
+        确认状态：{{ obj.gmStatusCode }}
       </p>
     </div>
     <van-popup v-model="show">
@@ -134,7 +82,8 @@
 </template>
 
 <script>
-import { shippingDetailByGM, wayBillAmountDetail } from '@/api/freight'
+import { reportMoneyBatchByGM, reportMoneyBatchBySale } from '@/api/freight'
+import { Toast } from 'vant';
 export default {
   data() {
     return {
@@ -148,8 +97,7 @@ export default {
   },
   mounted() {
     this.obj = this.$route.query.obj
-    console.log(shippingDetailByGM)
-    this.shippingDetailByGM()
+    console.log(this.$route.query.type)
   },
 
   methods: {
@@ -163,24 +111,25 @@ export default {
       this.show = true;
     },
     footer_confirm() {
-      this.wayBillAmountDetail() // 运费上报
+      if (this.$route.query.type === '1') {
+        this.wayBillAmountDetail() // 加盟运费上报
+      } else {
+        this.reportMoneyBatchBySale() // 线外运费上报
+      }
     },
     async wayBillAmountDetail() {
       try {
         let parmas = {
-          driverName: '', // 司机名称
-          driverPhone: '', // 司机手机号
-          lineName: '', // 线路名称
-          wayBillId: '', // 出车单号
-          deliverTime: '', // 配送时间段
-          deliverNo: '', // 第几趟
-          preMoney: '' // 预估用费
+          moneys: this.value, // 运费
+          remark: this.message, // 备注
+          wayBillAmountIds: 'message'
         }
         this.$loading(true)
-        let { data: res } = await wayBillAmountDetail(parmas)
+        let { data: res } = await reportMoneyBatchByGM(parmas) // 加盟运费
         console.log(res)
         if (res.success) {
           res.data
+          Toast.success('上报成功');
         } else {
           this.error = true;
           this.$toast.fail(res.errorMsg)
@@ -188,27 +137,37 @@ export default {
       } catch (err) {
         this.error = true;
       } finally {
-        this.$loading(false)
-      }
-    },
-    async shippingDetailByGM() {
-      try {
-        this.$loading(true)
-        let { data: res } = await shippingDetailByGM()
-        if (res.success) {
-          this.dataAll = res.data
-        } else {
-          this.error = true;
-          this.$toast.fail(res.errorMsg)
-        }
-      } catch (err) {
-        this.error = true;
-      } finally {
-        this.$loading(false)
+        Toast.fail('上报失败');
+        // this.$loading(false)
       }
     }
 
+  },
+  async reportMoneyBatchBySale() {
+    try {
+      let parmas = {
+        moneys: this.value, // 运费
+        remark: this.message, // 备注
+        wayBillAmountIds: 'message'
+      }
+      this.$loading(true)
+      let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
+      console.log(res)
+      if (res.success) {
+        res.data
+        Toast.success('上报成功');
+      } else {
+        this.error = true;
+        this.$toast.fail(res.errorMsg)
+      }
+    } catch (err) {
+      this.error = true;
+    } finally {
+      Toast.fail('上报失败');
+      // this.$loading(false)
+    }
   }
+
 }
 
 </script>

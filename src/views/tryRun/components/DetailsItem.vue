@@ -15,7 +15,7 @@
           <van-cell title="客户名称：" :value="`${lineInfoVO.customerName}/${lineInfoVO.customerId}`"></van-cell>
           <van-cell title="项目名称：" :value="`${lineCloudProjectVO.projectName}/${lineCloudProjectVO.projectId}`"></van-cell>
           <van-cell title="线路名称：" :value="`${lineInfoVO.lineName}/${lineInfoVO.lineId}`"></van-cell>
-          <van-cell title="上岗经理：" :value="`${lineInfoVO.dutyManagerIdName}/${lineInfoVO.dutyManagerIdName}`"></van-cell>
+          <van-cell title="上岗经理：" :value="`${lineInfoVO.dutyManagerIdName}/${lineInfoVO.dutyManagerPhone}`"></van-cell>
           <van-cell title="外线销售：" :value="`${lineInfoVO.lineSaleName}/${lineInfoVO.lineSalePhone}`"></van-cell>
           <div class="bottom van-hairline--top flex flex align-center justify-center">
             <div class="details van-hairline--surround">
@@ -35,7 +35,7 @@
             <van-tag
               class="tag"
             >
-              {{ lineInfoVO.lineCategory }}
+              {{ lineInfoVO.lineCategoryName }}
             </van-tag>
             <van-tag
               class="tag"
@@ -45,7 +45,7 @@
           </template>
           <van-cell title="上岗时间：" :value="`${lineInfoVO.driverWorkTime}`"></van-cell>
           <van-cell title="到仓时间：" :value="`${lineInfoVO.deliveryStartDate}`"></van-cell>
-          <van-cell title="仓库位置：" :value="`${lineInfoVO.warehouseProvinceName}${lineInfoVO.warehouseCityName}${lineInfoVO.warehouseCountyName}${lineInfoVO.warehouseDistrict}`"></van-cell>
+          <van-cell title="仓库位置：" :value="`${lineCloudProjectVO.warehouseProvinceName}${lineCloudProjectVO.warehouseCityName}${lineCloudProjectVO.warehouseCountyName}${lineCloudProjectVO.warehouseDistrict}`"></van-cell>
           <van-cell title="配送车型：" :value="`${lineInfoVO.carTypeName}`"></van-cell>
           <van-cell title="配送区域：" :value="`${lineInfoVO.provinceAreaName}${lineInfoVO.cityAreaName}${lineInfoVO.countyAreaName	}`"></van-cell>
           <van-cell title="里程时间：" :value="`${lineInfoVO.distance}/${lineInfoVO.timeDiff}`"></van-cell>
@@ -62,7 +62,7 @@
         >
           <van-cell title="司机信息：" :value="`${driverBusiInfoVO.name}/${driverBusiInfoVO.phone}`"></van-cell>
           <van-cell title="车型：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="车牌号：" :value="``"></van-cell>
+          <van-cell title="车牌号：" :value="`${driverBusiInfoVO.carNo || ''}`"></van-cell>
           <van-cell title="现住址：" :value="`${driverBusiInfoVO.workCityName}`"></van-cell>
           <van-cell title="加盟经理：" :value="`${driverBusiInfoVO.gmName}/${driverBusiInfoVO.gmPhone}`"></van-cell>
           <div class="bottom van-hairline--top flex flex align-center justify-center">
@@ -71,45 +71,32 @@
             </div>
           </div>
         </van-collapse-item>
-        <!-- 试跑意向记录 -->
         <van-collapse-item
-          title="试跑意向记录"
-          :name="3"
+          v-for="(item, index) in runTestStatusRecordVOList"
+          :key="index"
+          :title="item.recordFlag"
+          :name="item.id+'-'+index"
         >
-          <van-cell title="操作人：" :value="`${driverBusiInfoVO.name}/${driverBusiInfoVO.phone}`"></van-cell>
-          <van-cell title="操作时间：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-        </van-collapse-item>
-        <!-- 上岗记录 -->
-        <van-collapse-item
-          title="上岗记录"
-          :name="4"
-        >
-          <van-cell title="操作人：" :value="`${driverBusiInfoVO.name}/${driverBusiInfoVO.phone}`"></van-cell>
-          <van-cell title="操作时间：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="到仓接待人：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="到仓时间：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="岗前叮嘱：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-        </van-collapse-item>
-        <!-- 转试跑记录 -->
-        <van-collapse-item
-          title="转试跑记录"
-          :name="5"
-        >
-          <van-cell title="操作人：" :value="`${driverBusiInfoVO.name}/${driverBusiInfoVO.phone}`"></van-cell>
-          <van-cell title="操作时间：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="到仓接待人：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="到仓时间：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="岗前叮嘱：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-        </van-collapse-item>
-        <!-- 掉线记录 -->
-        <van-collapse-item
-          title="掉线记录"
-          :name="6"
-        >
-          <van-cell title="操作人：" :value="`${driverBusiInfoVO.name}/${driverBusiInfoVO.phone}`"></van-cell>
-          <van-cell title="操作时间：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="掉线原因：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
-          <van-cell title="其他原因：" :value="`${driverBusiInfoVO.carTypeName}`"></van-cell>
+          <template v-if="item.recordFlag === '试跑意向记录'">
+            <!-- 试跑意向记录 -->
+            <van-cell title="操作人：" :value="`${item.dealIdMessage}`"></van-cell>
+            <van-cell title="操作时间：" :value="`${item.droppedTime}`"></van-cell>
+          </template>
+          <template v-else-if="item.recordFlag.includes('掉线记录')">
+            <!-- 掉线 -->
+            <van-cell title="操作人：" :value="`${item.dealIdMessage}`"></van-cell>
+            <van-cell title="操作时间：" :value="`${item.droppedTime}`"></van-cell>
+            <van-cell title="掉线原因：" :value="`${item.droppedReasonName}`"></van-cell>
+            <van-cell title="其他原因：" :value="`${item.otherReason}`"></van-cell>
+          </template>
+          <template v-else>
+            <!-- 上岗记录 &  -->
+            <van-cell title="操作人：" :value="`${item.dealIdMessage}`"></van-cell>
+            <van-cell title="操作时间：" :value="`${item.droppedTime}`"></van-cell>
+            <van-cell title="到仓接待人：" :value="`${item.receptionist}/${item.receptionistPhone}`"></van-cell>
+            <van-cell title="到仓时间：" :value="`${item.arrivalTime | parseTime}`"></van-cell>
+            <van-cell title="岗前叮嘱：" :value="`${item.preJobAdvice}`"></van-cell>
+          </template>
         </van-collapse-item>
       </div>
     </van-collapse>
@@ -142,6 +129,9 @@ export default {
     },
     driverBusiInfoVO() {
       return this.detail.driverBusiInfoVO
+    },
+    runTestStatusRecordVOList() {
+      return this.detail.runTestStatusRecordVOList
     }
   }
 }

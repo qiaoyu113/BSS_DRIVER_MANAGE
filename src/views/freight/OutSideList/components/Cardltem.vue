@@ -1,22 +1,22 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title ellipsis">
-      {{ obj.title }}
+      {{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
-    <p v-if="obj.yicahng != ''" class="dai">
-      {{ obj.yicahng }}
+    <p v-if="obj.statusName != ''" class="dai">
+      {{ obj.statusName }}
     </p>
     <p class="text ellipsis">
-      出车单号:{{ obj.update }}
+      出车单号:{{ obj.wayBillId }}
     </p>
     <p class="text ellipsis">
-      加盟经理:{{ obj.carType }}
+      加盟经理:{{ obj.joinManagerName }}
     </p>
     <p class="text ellipsis">
-      路线名称:{{ obj.status }}
+      路线名称:{{ obj.lineName }}
     </p>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick">
+      <van-button type="default" round hairline @click="handleDetailClick(obj)">
         详情
       </van-button>
     </div>
@@ -38,8 +38,9 @@ export default {
      */
     handleDetailClick(obj) {
       this.$router.push({
-        path: '/Detail',
-        query: { obj: obj }
+        path: '/detail',
+        query: { obj: obj,
+          type: '2' }
       })
     }
   }

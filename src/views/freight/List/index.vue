@@ -12,7 +12,7 @@
       <!-- 搜索 -->
       <van-search show-action placeholder="请输入项目名称/编号" readonly @click="handleSearchClick">
         <template #action>
-          <div class="searchSelect" @click="showPopup=true">
+          <div class="searchSelect" @click="filter_left">
             筛选
             <van-icon name="play" color="#3C4353" />
           </div>
@@ -66,15 +66,12 @@
       @reset="onReset"
     >
       <van-field
-        readonly
-        clickable
+        v-model="listQuery.name"
+        colon
+        name="name"
         label-width="7em"
-        name="city"
-        :value="listQuery.city"
-        label="城市"
-        is-link
-        placeholder="请选择城市"
-        @click="showPickerFn('city')"
+        label="司机城市"
+        placeholder="请输入城市"
       />
       <van-field
         v-model="listQuery.name1"
@@ -85,16 +82,16 @@
         placeholder="请输入客户"
       />
       <van-field
-        v-model="listQuery.name5"
-        name="name5"
+        v-model="listQuery.name2"
+        name="name2"
         colon
         label-width="7em"
         label="项目"
         placeholder="请输入项目"
       />
       <van-field
-        v-model="listQuery.name5"
-        name="name5"
+        v-model="listQuery.name3"
+        name="name3"
         colon
         label-width="7em"
         label="上岗经理"
@@ -160,7 +157,7 @@ import CardItem from './components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
-import { getConfirmInfoList } from '@/api/freight'
+import { getGmInfoList } from '@/api/freight'
 export default {
   components: {
     CardItem,
@@ -209,6 +206,7 @@ export default {
       },
       // search
       listQuery: {
+        name: '',
         name1: '',
         name2: '',
         name3: '',
@@ -282,7 +280,13 @@ export default {
           name: '上海市',
           code: 0
         }
-      ]
+      ],
+      page: {
+        current: 0,
+        total: 0,
+        size: 10
+      }
+
     }
   },
   computed: {
@@ -297,22 +301,56 @@ export default {
     },
     batch() {
       this.$router.push({
-        path: 'batch',
-        parmas: {
-          arr: this.lists
-        }
+        path: 'batch'
       })
     },
+    filter_left() {
+      this.showPopup = true
+    },
+    async getConf() { // 首页加盟运费筛选
+      try {
+        let parmas = {
+          customerCity: this.listQuery.name,
+          customer: this.listQuery.name1,
+          project: this.listQuery.name2,
+          dutyManagerId: this.listQuery.name3,
+          startDate: this.listQuery.startDate
+        }
+        this.$loading(true)
+        let { data: res } = await getGmInfoList(parmas)
+        console.log(res)
+        if (res.success) {
+          this.lists = res.data
+          this.listQuery = ''
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
     handleTabChange(tab) {
-      console.log(tab)
       this.getConfirmInfoList(true)
     },
-    async getConfirmInfoList(isInit) {
+    async getConfirmInfoList(isInit) { // 首页加盟运费列表
       try {
         this.$loading(true)
-        let { data: res } = await getConfirmInfoList()
+        let params = {
+          page: this.page.current,
+          limit: this.page.size,
+          pageNumber: 20
+        }
+        let { data: res } = await getGmInfoList(params)
+        console.log(res)
         if (res.success) {
           let newLists = res.data
+
           if (!isInit) {
             newLists = this.lists.concat(newLists)
           }
@@ -363,53 +401,25 @@ export default {
       this.listQuery.startDate = startDate;
       this.listQuery.endDate = endDate;
     },
-    // async onLoad(isInit = false) {
-    //   if (isInit === true) { // 下拉刷新
-    //     this.page.current = 1
-    //     this.lists = []
-    //   } else { // 上拉加载更多
-    //     this.page.current++
-    //   }
-    //   let result = await this.getLists(isInit)
-    //   this.lists = result.lists
-    //   if (isInit === true) { // 下拉刷新
-    //     this.refreshing = false
-    //     this.finished = false
-    //   } else { // 上拉加载更多
-    //     this.loading = false;
-    //     if (!result.hasMore) {
-    //       this.finished = true
-    //     }
-    //   }
-    // },
-    onLoad(isInit = false) {
-      if (isInit === true) {
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
         this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
       }
-      setTimeout(() => {
-        let id = this.lists.length
-        for (let i = 0; i < 5; i++) {
-          let obj = {
-            id: id + i,
-            driver: '2020/09/08  张三 / 18888888888',
-            yicahng: '异常',
-            statust: '未出车',
-            wayBillId: '12339223',
-            gmId: '张三',
-            line: '北京线路'
-          }
-          this.lists.push(obj)
-        }
-        if (isInit === true) {
-          this.refreshing = false
-          this.finished = false
-        }
+      let result = await this.getConfirmInfoList(isInit)
 
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-        if (this.lists.length > 15) {
+        if (!result.hasMore) {
           this.finished = true
         }
-      }, 500)
+      }
     },
     // 搜索
     handleSearchClick() {
@@ -424,10 +434,10 @@ export default {
      * 提交查询
      */
     onSubmit(value) {
+      this.getConf()
       this.showPopup = false;
       this.refreshing = true;
-      this.onRefresh();
-      console.log('submit', value);
+      // console.log('submit', value);
     },
     /**
      * 重置form

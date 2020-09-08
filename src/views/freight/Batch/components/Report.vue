@@ -10,16 +10,15 @@
       </van-nav-bar>
     </van-sticky>
     <div class="cont_ent">
-      <p>提示：一批量选择 <span class="blur_clor">{{ 3 }}</span> 个出单车</p>
+      <p>提示：一批量选择 <span class="blur_clor">{{ obj.length }}</span> 个出单车</p>
       <!-- 出车多趟 -->
-      <ul>
-        <li><span class="status">已出车</span> <span><van-switch v-model="checked" size="20px" /></span></li>
-        <li>出车单号：11100000000</li>
-        <li>司机姓名/手机号：方圆/17755668220</li>
+      <ul v-for="item in obj" :key="item.id">
+        <li><span class="status">已出车</span> <span><van-switch v-model="item.checked" size="20px" /></span></li>
+        <li>出车单号：{{ item.wayBillId }}</li>
+        <li>司机姓名/手机号：  {{ item.driverName }}/{{ item.driverPhone }}</li>
         <li class="Number_ong">
           <p>*趟数1:0:02 - 06:00</p>
           <div class="Number">
-            <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
             <input v-model="value" type="text" style="border:none" placeholder="350.00元">
 
             <van-button type="default">
@@ -27,29 +26,28 @@
             </van-button>
           </div>
         </li>
-        <li class="Number_ong">
+        <!-- <li class="Number_ong">
           <p>*趟数2:0:02 - 06:00</p>
           <div class="Number">
-            <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
             <input v-model="value" type="text" style="border:none" placeholder="350.00元">
 
             <van-button type="default">
               <van-icon name="arrow" color="#A6AAB8" />
             </van-button>
           </div>
-        </li>
+        </li> -->
       </ul>
       <!-- 单趟出车 -->
-      <ul>
+      <!-- <ul>
         <li><span class="status">已出车</span> <span><van-switch v-model="checked1" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
         <li>
           <div class="Number_ong">
             <p>*趟数1:0:02 - 06:00</p>
-            <div class="Number">
-              <!-- <van-field v-model="value" placeholder="" :border="fasle" /> -->
-              <input v-model="value" type="text" style="border:none" placeholder="350.00元">
+            <div class="Number"> -->
+
+      <!-- <input v-model="value" type="text" style="border:none" placeholder="350.00元">
 
               <van-button type="default">
                 <van-icon name="arrow" color="#A6AAB8" />
@@ -57,13 +55,13 @@
             </div>
           </div>
         </li>
-      </ul>
+      </ul> -->
       <!-- 未出车 -->
-      <ul>
+      <!-- <ul>
         <li><span class="status">已出车</span> <span><van-switch v-model="checked2" size="20px" /></span></li>
         <li>出车单号：11100000000</li>
         <li>司机姓名/手机号：方圆/17755668220</li>
-      </ul>
+      </ul> -->
     </div>
     <div class="Remarks">
       <van-field
@@ -80,21 +78,25 @@
       <button @click="cancel">
         全部未出车
       </button>
-      <button>全部上报</button>
+      <button @click="Report()">
+        全部上报
+      </button>
     </div>
   </div>
 </template>
 <script>
-import { noCarBatchByGM } from '@/api/freight'
+import { noCarBatchByGM, reportMoneyBatchByGM } from '@/api/freight'
+import { Toast } from 'vant';
+import { Dialog } from 'vant';
 export default {
   data() {
     return {
-      checked: true,
+      checked: false,
       value: '',
       message: '',
       checked1: '',
       checked2: '',
-      obj: ''
+      obj: []
     }
   },
   mounted() {
@@ -105,15 +107,47 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
-    cancel() {
-      // this.$router.go(-1)
-      this.noCarBatchByGM()
+    Report() {
+      this.obj.forEach(item => {
+        if (item.checked === true) {
+          this.reportMoneyBatchByGM()
+        }
+      });
+    },
+    async reportMoneyBatchByGM() {
+      try {
+        let parmas = {
+          remark: this.message, // 备注
+          moneys: this.value, // 上报金额
+          wayBillAmountIds: 'w090201'
+
+        }
+        let { data: res } = await reportMoneyBatchByGM(parmas)
+        console.log(res)
+        if (res.success) {
+          Toast.success('已提交成功'); // 全部批量上报
+          res.data
+        } else {
+          Toast.success('失败');
+          // this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
+    },
+    cancel() { // 全部未出车
+      Dialog.confirm({
+        title: '提示',
+        message: `确定全部的${this.obj.length}个出全部未出车`
+      }).then(() => {
+        this.noCarBatchByGM()
+      })
     },
     async noCarBatchByGM() {
       try {
         let { data: res } = await noCarBatchByGM()
         if (res.success) {
-          this.lists = res.data
+          res.data // 全部未出车
         } else {
           this.$toast.fail(res.errorMsg)
         }

@@ -103,8 +103,7 @@
 
 <script>
 import { parseTime, phoneRegExp, delay } from '@/utils'
-import { GetPersonInfo, TryRun, FollowCar } from '@/api/tryrun';
-import { getLineDetail } from '@/api/line'
+import { GetPersonInfo, TryRun, FollowCar, GetLineDetail } from '@/api/tryrun';
 export default {
   name: 'StepTwo',
   props: {
@@ -145,6 +144,7 @@ export default {
   },
   mounted() {
     this.lineId = this.$route.query.lineId;
+    this.driverId = this.$route.query.driverId;
     if (this.to) {
       this.actions = [
         { name: '确认跟车', value: 'followCar' },
@@ -171,8 +171,7 @@ export default {
       try {
         this.$loading(true);
         let { data: res } = await GetPersonInfo({
-          // lineId: this.lineId
-          lineId: 'XL202009010031'
+          lineId: this.lineId
         })
         if (res.success) {
           const arr = ['上岗经理', '外线销售']
@@ -197,18 +196,18 @@ export default {
     },
     async getLineDetail() {
       try {
-        let { data: res } = await getLineDetail({
-          lineId: 'XL202009010002'
+        let { data: res } = await GetLineDetail({
+          lineId: this.lineId
         })
         if (res.success) {
+          this.$loading(false)
           console.log(res.data)
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        console.log(`${err}`)
-      } finally {
         this.$loading(false)
+        console.log(`${err}`)
       }
     },
     /**
@@ -226,8 +225,8 @@ export default {
       try {
         this.$loading(true);
         let { data: res } = await SubmintForm({
-          lineId: 'XL202009010012',
-          driverId: 'SJ202009020002',
+          lineId: this.lineId,
+          driverId: this.driverId,
           operateFlag: this.operateFlag,
           runTestStatusRecordFORM: {
             ...this.form

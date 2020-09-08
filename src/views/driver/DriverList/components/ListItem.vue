@@ -83,6 +83,9 @@ export default {
       this.check = status
     }
   },
+  mounted() {
+    console.log(this.obj)
+  },
   methods: {
     checkChange() {
       if (this.checked) {

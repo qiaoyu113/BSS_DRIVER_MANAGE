@@ -20,9 +20,16 @@
             :key="index"
             :to="item.url"
           >
-            <img :src="item.icon" alt="" class="grid-pic">
-            <div class="grid-text">
-              {{ item.title }}
+            <div class="grid-ct flex-sub">
+              <img
+                :src="item.icon"
+                alt=""
+                :style="item.style"
+                class="grid-pic"
+              >
+              <div class="grid-text">
+                {{ item.title }}
+              </div>
             </div>
           </van-grid-item>
         </van-grid>
@@ -70,8 +77,8 @@ export default {
       actions: [
         { name: '线路云', value: 0 },
         { name: '司机云', value: 1 },
-        { name: '试跑', value: 2 }
-        // { name: '运费管理', value: 3 }
+        { name: '试跑', value: 2 },
+        { name: '运费管理', value: 3 }
       ],
       activeIndex: 0,
       show: false,
@@ -81,42 +88,115 @@ export default {
           {
             title: '客户管理',
             url: '/client',
-            icon: require('../../assets/Home/line_1.png')
+            icon: require('../../assets/Home/icon_1.png'),
+            style: {
+              width: '1.0933rem',
+              height: '1.0933rem'
+            }
           },
           {
             title: '项目管理',
             url: '/project',
-            icon: require('../../assets/Home/line_2.png')
+            icon: require('../../assets/Home/icon_2.png'),
+            style: {
+              width: '0.9333rem',
+              height: '1.0933rem'
+            }
           },
           {
             title: '线路管理',
             url: '/line',
-            icon: ''
-          },
-          {
-            title: '拼线',
-            url: '',
-            icon: require('../../assets/Home/line_4.png')
+            icon: require('../../assets/Home/icon_3.png'),
+            style: {
+              width: '1.0267rem',
+              height: '1.0933rem'
+            }
           }
+          // {
+          //   title: '拼线',
+          //   url: '',
+          //   icon: require('../../assets/Home/icon_4.png'),
+          //   style: {
+          //     width: '1.0133rem',
+          //     height: '1.0667rem'
+          //   }
+          // }
         ],
         // 司机云
         [
           {
             title: '司机管理',
-            url: '/driverList',
-            icon: ''
-          },
-          {
-            title: '车辆管理',
-            url: '',
-            icon: ''
+            url: '/driverlist',
+            icon: require('../../assets/Home/icon_5.png'),
+            style: {
+              width: '1.0933rem',
+              height: '1.0933rem'
+            }
           }
+          // {
+          //   title: '车辆管理',
+          //   url: '',
+          //   icon: require('../../assets/Home/icon_6.png'),
+          //   style: {
+          //     width: '1.3867rem',
+          //     height: '0.96rem'
+          //   }
+          // }
         ],
         // 试跑-在跑
         [
           {
             title: '试跑-在跑',
             url: '/try-run',
+            icon: require('../../assets/Home/icon_7.png'),
+            style: {
+              width: '1.28rem',
+              height: '1.0933rem'
+            }
+          }
+        ],
+        // 运费
+        [
+          {
+            title: '加盟运费上报',
+            url: '/freight',
+            icon: require('../../assets/Home/icon_8.png'),
+            style: {
+              width: '1.2267rem',
+              height: '1rem'
+            }
+          },
+          {
+            title: '外线运费上报',
+            url: '/outsidefreight',
+            icon: require('../../assets/Home/icon_9.png'),
+            style: {
+              width: '1.1733rem',
+              height: '0.9467rem',
+              marginTop: '0.1rem'
+            }
+          },
+          {
+            title: '运费确认',
+            url: '/report',
+            icon: require('../../assets/Home/icon_10.png'),
+            style: {
+              width: '1.04rem',
+              height: '1.1333rem',
+              marginTop: '-0.1rem'
+            }
+          }
+        ],
+        // 试跑-在跑
+        [
+          {
+            title: '运费管理',
+            url: '/freight',
+            icon: ''
+          },
+          {
+            title: '外线运费上报',
+            url: '/outsidefreight',
             icon: ''
           }
         ]
@@ -173,13 +253,20 @@ export default {
   }
   .list-content {
     padding: 0 23px;
+    .grid-ct{
+      position: relative;
+      width: 100%;
+      padding-top: 16px;
+    }
     .grid-pic {
       display: block;
-      margin-bottom: 10px;
-      width: 41px;
-      height: 41px;
+      margin: 0 auto;
     }
     .grid-text {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
       font-size: @font-size-xs-1;
       color: @gray-13;
     }

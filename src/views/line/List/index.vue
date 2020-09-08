@@ -153,7 +153,12 @@
     <van-popup v-model="showPicker" position="bottom">
       <template v-if="isDateRange">
         <!-- 选择日期 -->
-        <van-calendar v-model="showPicker" type="range" @confirm="onConfirm" />
+        <van-calendar
+          v-model="showPicker"
+          type="range"
+          :min-date="minDate1"
+          @confirm="onConfirm"
+        />
       </template>
       <template v-else-if="isDate">
         <van-datetime-picker
@@ -317,8 +322,9 @@ export default {
       maxTime: new Date(2125, 12, 31),
       page: {
         current: 0,
-        total: 0
-      }
+        size: 10
+      },
+      minDate1: new Date(2000, 0, 1)
     }
   },
   computed: {
@@ -339,6 +345,14 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
+    // 是否更多数据
+    isModeData() {
+      if (this.lists.length === 0) {
+        this.finished = true
+      } else {
+        this.finished = false
+      }
+    },
     // 加载列表
     async onLoad(isInit = false) {
       if (isInit === true) { // 下拉刷新
@@ -348,6 +362,7 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
+
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -366,8 +381,10 @@ export default {
       })
     },
     // 查询
-    onQuery() {
-      this.getLists()
+    async onQuery() {
+      let result = await this.getLists(true)
+      this.lists = result.lists
+      this.isModeData()
       this.show = false
     },
     // 重置
@@ -396,13 +413,13 @@ export default {
     handleSearchChange(value) {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
-          keyword: value,
+          nickname: value,
           roleId: 3
         }
         this.getOpenCityList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
-          keyword: value,
+          nickname: value,
           roleId: 2
         }
         this.getOpenCityList(params)
@@ -438,7 +455,7 @@ export default {
         let { data: res } = await GetSpecifiedRoleList(params)
         if (res.success) {
           this.options = res.data.map(item => ({
-            label: item.name,
+            label: item.nick,
             value: item.id
           }))
         } else {
@@ -512,6 +529,7 @@ export default {
     async handleTabChange(tab) {
       let result = await this.getLists(true)
       this.lists = result.lists
+      this.isModeData()
     },
     // 获取列表
     async getLists(isInit) {
@@ -546,9 +564,8 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.lineState) {
+            if (this.form.lineState === item.name) {
               item.num = res.page.total
-              console.log(item.num, res.page.total)
             } else {
               item.num = 0
             }

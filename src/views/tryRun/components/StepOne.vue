@@ -25,7 +25,7 @@
         <div class="flex flex-wrap">
           <div>上岗时间：</div>
           <div class="flex-sub">
-            {{ lineDetail.driverWorkTime }}
+            {{ lineDetail.driverWorkTime | parseTime('{y}-{m}-{d}') }}
           </div>
         </div>
         <div class="flex flex-wrap">
@@ -37,7 +37,7 @@
         <div class="flex flex-wrap">
           <div>里程时间：</div>
           <div class="flex-sub">
-            {{ lineDetail.timeDiff }}
+            {{ lineDetail.distance + '/' +lineDetail.timeDiff }}
           </div>
         </div>
         <div class="details-btn">
@@ -122,19 +122,19 @@
               <div class="flex flex-wrap">
                 <div>上岗时间：</div>
                 <div class="flex-sub">
-                  {{ item.driverWorkTime }}
+                  {{ item.driverWorkTime |parseTime('{y}-{m}-{d}') }}
                 </div>
               </div>
               <div class="flex flex-wrap">
                 <div>配送区域：</div>
                 <div class="flex-sub">
-                  XXX
+                  {{ item.provinceAreaName + item.cityAreaName + item.countyAreaName + item.districtArea }}
                 </div>
               </div>
               <div class="flex flex-wrap">
                 <div>里程时间：</div>
                 <div class="flex-sub">
-                  100.00KM/6小时12分钟
+                  {{ item.distance + '/' +item.timeDiff }}
                 </div>
               </div>
             </div>
@@ -195,7 +195,7 @@
               <div class="flex flex-wrap">
                 <div>车型/车牌号：</div>
                 <div class="flex-sub">
-                  {{ item.carTypeName }}/{{ item.plateNo }}
+                  {{ item.carTypeName }}{{ item.plateNo ? '/' + item.plateNo : '' }}
                 </div>
               </div>
             </div>
@@ -220,8 +220,7 @@
 
 <script>
 import { debounce, delay } from '@/utils/index';
-import { getLineList } from '@/api/line'
-import { CreateLntentionRun, GetDriverList } from '@/api/tryrun';
+import { CreateLntentionRun, GetDriverList, GetLine } from '@/api/tryrun';
 export default {
   name: 'StepOne',
   data() {
@@ -287,7 +286,8 @@ export default {
                 path: '/create-run',
                 query: {
                   step: '1',
-                  lineId: this.form.lineId
+                  lineId: this.form.lineId,
+                  driverId: this.form.driverId
                 }
               })
             }
@@ -296,6 +296,7 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
+        this.$loading(false)
         console.log(`${err}`)
       } finally {
         // this.$loading(false)
@@ -325,7 +326,10 @@ export default {
     async getLineList() {
       try {
         this.$loading(true);
-        let { data: res } = await getLineList({ key: this.lineValue });
+        let { data: res } = await GetLine({
+          key: this.lineValue,
+          dutyManagerId: ''
+        });
         if (res.success) {
           this.lineList = res.data;
         } else {

@@ -4,7 +4,7 @@ export default [
     name: 'line',
     component: resolve => require(['@/views/line/List'], resolve),
     meta: {
-      title: '线索管理',
+      title: '线路管理',
       keepAlive: false
     }
   },
@@ -13,7 +13,7 @@ export default [
     name: 'lineDetail',
     component: resolve => require(['@/views/line/Detail'], resolve),
     meta: {
-      title: '线索详情',
+      title: '线路详情',
       keepAlive: false
     }
   },

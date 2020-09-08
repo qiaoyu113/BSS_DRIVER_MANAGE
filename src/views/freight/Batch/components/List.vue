@@ -1,21 +1,19 @@
 <template>
   <div>
-    <P class="all">
-      <input v-model="checkedo" type="checkbox" @change="quanxian"><span>全选</span> <span>已选择{{ checkbox }} 个出车单位</span>
-    </P>
-    <div v-for="item in obj" :key="item.id" class="CardItemcontainer">
+    <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        {{ item.title }}
-        <span><input v-model="item.all" type="checkbox" @change="checkboxall(item)"></span>
+        <van-checkbox v-model="obj.checked">
+          {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
+        </van-checkbox>
       </h4>
       <p class="Pink">
-        {{ item.statust }}
+        {{ obj.statusName }}
       </p>
       <p class="text ellipsis">
-        出车单号:{{ item.update }}
+        出车单号:{{ obj.wayBillId }}
       </p>
       <p class="text ellipsis">
-        线路名称:{{ item.carType }}
+        线路名称:{{ obj.lineName }}
       </p>
 
       <div class="detail van-hairline--top">
@@ -36,95 +34,35 @@
 </template>
 
 <script>
-import { Toast } from 'vant'
+// import { Toast } from 'vant'
 export default {
   props: {
     obj: {
+      type: Object,
+      default: () => {}
+    },
+    checkedarr: {
       type: Array,
       default: () => {}
     }
   },
-  data() {
-    return {
-      checkedo: '',
-      checkedall: '',
-      checkbox: ''
-    }
-  },
-  computed: {
-
-  },
-
   methods: {
     /**
      * 线路详情
      */
     handleDetailClick() {
-      this.$router.push({
-        path: '/Details'
-      })
-    },
-    quanxian() {
-      if (this.checkedo === true) {
-        this.checkbox = this.obj.length
-      } else {
-        this.checkbox = 0
-      }
-      this.obj.forEach(item => {
-        item.all = this.checkedo
-      });
-      this.getLength()
-    },
-    checkboxall(v) {
-      this.obj.filter(res => {
-        if (res.all === true) {
-          this.checkedo = true
-        } else {
-          this.checkedo = false
-        }
-      })
-      this.obj.forEach(res => {
-        if (res.all === false) {
-          this.checkedo = false
-        }
-      })
-
-      this.getLength()
+      this.$router.push({ name: '/detail', params: { type: '1' }})
     },
     cancel() {
       this.$router.go(-1)
     },
     Add_to() {
-      let obje = []
-      if (!this.checkLength) {
-        Toast.fail('请选择上报运费');
-      } else {
-        this.obj.forEach(item => {
-          if (item.all === true) {
-            obje.push(item)
-          }
-        })
-        this.$router.push({
-          path: '/report',
-          query: {
-            obj: JSON.stringify(obje)
-          }
-        })
-      }
-
-      // this.$router.push({
-      //   name: 'report'
-      // })
-    },
-    // 获取选中数量
-    getLength() {
-      let num = 0;
-      this.obj.forEach(res => {
-        if (res.all === true) {
-          num = num + 1
+      this.$router.push({
+        path: '/report',
+        query: {
+          obj: JSON.stringify(this.checkedarr)
         }
       })
-      this.checkLength = num
     }
   }
 }
@@ -147,12 +85,7 @@ export default {
     margin: 10px 0px;
     font-size: 14px;
     color: #3C4353 ;
-  }
-  .title>span{
-   position: absolute;
-   left: 0px;
-   top: 60px;
-
+    position: relative;
   }
   .text {
     margin-top:0px;
@@ -189,9 +122,6 @@ export default {
     text-align: center;
     border-top-color:#D8D8D8;
   }
-}
-.all{
-  margin-left: 20px;
 }
 .Bulk{
   width: 100%;
