@@ -20,6 +20,7 @@ import * as directives from '@/directives'
 Vue.prototype.$toast = Toast
 let loading = null
 Vue.prototype.$loading = (status) => {
+  Toast.allowMultiple();
   if (status) {
     loading = Toast.loading({
       duration: 0,

@@ -79,6 +79,7 @@ export default {
     // 司机上岗时间
     onConfirm(obj) {
       this.$emit('date', obj.value, this.index)
+      this.label = obj.label
       this.showPicker = false
     },
     showPickerFn() {

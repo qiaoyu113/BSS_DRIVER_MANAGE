@@ -54,10 +54,10 @@ export default {
 
   data() {
     return {
-      projectId: '123',
+      projectId: '',
       projectName: '',
       title: '',
-      step: 0,
+      step: 1,
       isStable: true,
       stepOneForm: {
         lineName: '', // 线路名称
@@ -214,9 +214,7 @@ export default {
     },
     // 发布成功
     createSuc() {
-      Notify({
-        type: 'success', message: '发布成功'
-      })
+      this.$toast.success('操作成功')
       setTimeout(() => {
         this.$router.push({
           path: '/line'
