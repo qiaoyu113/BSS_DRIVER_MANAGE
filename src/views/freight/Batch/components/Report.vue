@@ -2,11 +2,6 @@
   <div class="lineListContainer">
     <van-sticky :offset-top="0">
       <van-nav-bar title="批量运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
-        <template #right>
-          <!-- <div class="headerRight" @click="batch">
-            批量上报
-          </div> -->
-        </template>
       </van-nav-bar>
     </van-sticky>
     <div class="cont_ent">
@@ -26,16 +21,6 @@
             </van-button>
           </div>
         </li>
-        <!-- <li class="Number_ong">
-          <p>*趟数2:0:02 - 06:00</p>
-          <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
-            <van-button type="default">
-              <van-icon name="arrow" color="#A6AAB8" />
-            </van-button>
-          </div>
-        </li> -->
       </ul>
       <!-- 单趟出车 -->
       <!-- <ul>
@@ -108,11 +93,10 @@ export default {
       this.$router.go(-1)
     },
     Report() {
+      console.log(this.value)
       this.obj.forEach(item => {
         if (item.checked === true) {
           this.reportMoneyBatchByGM()
-        } else {
-          Toast.success('选择需要上报的出车单');
         }
       });
     },
@@ -142,13 +126,27 @@ export default {
         title: '提示',
         message: `确定全部的${this.obj.length}个出全部未出车`
       }).then(() => {
-        this.noCarBatchByGM()
+        let arr = []
+        this.obj.forEach(item => {
+          if (item.checked === true) {
+            arr.push(item.id)
+          }
+        })
+        this.noCarBatchByGM(arr)
       })
     },
-    async noCarBatchByGM() {
+    async noCarBatchByGM(arr) {
       try {
-        let { data: res } = await noCarBatchByGM()
+        let parmas = {
+          wayBillAmountIds: arr
+        }
+        let { data: res } = await noCarBatchByGM(parmas)
         if (res.success) {
+          this.obj.forEach(item => {
+            if (item.checked === true) {
+              item.checked = false
+            }
+          })
           res.data // 全部未出车
         } else {
           this.$toast.fail(res.errorMsg)
