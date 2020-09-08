@@ -4,9 +4,9 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div class="headerRight" @click="batch">
+          <!-- <div class="headerRight" @click="batch">
             批量上报
-          </div>
+          </div> -->
         </template>
       </van-nav-bar>
       <!-- 搜索 -->

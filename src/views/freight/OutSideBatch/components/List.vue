@@ -47,6 +47,9 @@ export default {
       default: () => {}
     }
   },
+  mounted() {
+    console.log(this.$route.query.show)
+  },
   methods: {
     /**
      * 线路详情

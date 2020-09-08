@@ -135,8 +135,6 @@
     <van-calendar
       v-model="dateShow"
       type="range"
-      :min-date="minDate"
-      :max-data="maxDate"
       :allow-same-day="true"
       @confirm="onConfirm"
     />
@@ -191,7 +189,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -226,11 +224,7 @@ export default {
         { name: '共享二组', code: 0 },
         { name: '共享三组', code: 1 }
       ],
-      columns_GmManager: [
-        { name: '李威山', code: '' },
-        { name: '闫义杰', code: 0 },
-        { name: '高艳涛', code: 1 }
-      ],
+      columns_GmManager: [],
       columns_orderStatus: [
         { name: '全部', code: '' },
         { name: '已成交', code: '30' },
@@ -327,6 +321,14 @@ export default {
         .then(({ data }) => {
           if (data.success) {
             this.columns_workCity = data.data;
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+      GetSpecifiedRoleList({ roleId: 1 })
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_GmManager = data.data;
           }
         }).catch((err) => {
           console.log(err)
