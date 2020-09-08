@@ -79,11 +79,16 @@ export default {
     },
     Add_to() {
       let arr = []
-      this.checkedarr.forEach(item => {
-        arr.push(item.wayBillId)
-      })
-      console.log(arr)
-      this.reportMoneyBatchByGM(arr)
+
+      if (this.checkedarr !== '') {
+        this.checkedarr.filter(item => {
+          arr.push(item.wayBillId)
+        })
+
+        this.reportMoneyBatchByGM(arr)
+      } else {
+        this.$toast.fail('请选择上报的')
+      }
     },
     async reportMoneyBatchByGM(id) { // 确认运费回显
       try {
