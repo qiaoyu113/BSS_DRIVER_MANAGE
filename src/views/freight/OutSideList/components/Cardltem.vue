@@ -16,7 +16,7 @@
       路线名称:{{ obj.lineName }}
     </p>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick(obj.id)">
+      <van-button type="default" round hairline @click="handleDetailClick(obj)">
         详情
       </van-button>
     </div>
@@ -38,7 +38,7 @@ export default {
      * 线路详情
      */
     handleDetailClick(obj) {
-      this.getGmInfoList(obj.id)
+      this.getGmInfoList(obj.wayBillId)
     },
     async getGmInfoList(id) {
       try {

@@ -85,7 +85,7 @@
   </div>
 </template>
 <script>
-import { noCarBatchByGM, reportMoneyBatchByGM } from '@/api/freight'
+import { noCarBatchBySale, reportMoneyBatchBySale } from '@/api/freight'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
 export default {
@@ -108,21 +108,27 @@ export default {
       this.$router.go(-1)
     },
     Report() {
-      this.obj.forEach(item => {
+      // this.obj.forEach(item => {
+      //   if (item.checked === true) {
+      //     this.reportMoneyBatchByGM()
+      //   }
+      // });
+      this.obj.filter(item => {
         if (item.checked === true) {
-          this.reportMoneyBatchByGM()
+          this.reportMoneyBatchByGM(item.wayBillAmountId, item.preMoney)
         }
-      });
+      })
     },
-    async reportMoneyBatchByGM() {
+
+    async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
         let parmas = {
           remark: this.message, // 备注
-          moneys: this.value, // 上报金额
-          wayBillAmountIds: 'w090201'
+          moneys: preMoney, // 上报金额
+          wayBillAmountIds: wayBillAmountId
 
         }
-        let { data: res } = await reportMoneyBatchByGM(parmas)
+        let { data: res } = await reportMoneyBatchBySale(parmas)
         console.log(res)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
@@ -140,12 +146,21 @@ export default {
         title: '提示',
         message: `确定全部的${this.obj.length}个出全部未出车`
       }).then(() => {
-        this.noCarBatchByGM()
+        let arr = []
+        this.obj.filter(item => {
+          if (item.checked === undefined) {
+            arr.push(item.wayBillAmountId)
+          }
+        })
+        this.noCarBatchByGM(arr)
       })
     },
-    async noCarBatchByGM() {
+    async noCarBatchByGM(arr) {
       try {
-        let { data: res } = await noCarBatchByGM()
+        let parmas = {
+          wayBillAmountIds: arr
+        }
+        let { data: res } = await noCarBatchBySale(parmas)
         if (res.success) {
           res.data // 全部未出车
         } else {
