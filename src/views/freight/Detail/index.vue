@@ -50,9 +50,9 @@
         <div>
           <div v-for="item in arrstr" :key="item.id">
             <p>*{{ item.deliverNo }}</p>
-            <li style=" list-style: none;">
+            <li>
               <span>{{ item.deliverTime }}</span>
-              <input :value="Number(item.preMoney).toFixed(2)" type="text" style="border:none;width:100px">
+              <input v-model="value" type="text" style="border:none" :placeholder="item.preMoney">
               <van-button type="default">
                 元
               </van-button>
@@ -260,7 +260,6 @@ export default {
   .text_xiang{
     float: right;
     color: blue ;
-
   }
   .footer {
     margin-bottom:12.5px;
