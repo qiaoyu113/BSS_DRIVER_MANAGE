@@ -113,6 +113,9 @@ export default {
       } else {
         title = '发布临时线路'
       }
+      if (this.isProject) {
+        this.step = 1
+      }
       this.title = title
       document.title = title
       this.handleSearch()

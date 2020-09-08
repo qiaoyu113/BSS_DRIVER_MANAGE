@@ -10,7 +10,7 @@
     />
     <van-popup v-model="showPicker" position="bottom">
       <van-area
-        :value="form[pickerKey].length > 1 ? form['area'][2]+'' : ''"
+        :value="form[pickerKey].length > 1 ? form[pickerKey][2]+'' : ''"
         :area-list="areaList"
         :columns-placeholder="['请选择', '请选择', '请选择']"
         @confirm="onConfirm"
@@ -53,12 +53,13 @@ export default {
         province_list: {},
         city_list: {},
         county_list: {}
-      }
+      },
+      isEcho: true // 是否回显
     }
   },
   watch: {
     isComputed(val) {
-      if (val) {
+      if (val && this.isEcho) {
         this.getLable()
       }
     }
@@ -83,7 +84,9 @@ export default {
     onConfirm(obj) {
       this.form[this.pickerKey] = obj.map((item) => item.code)
       this.label = obj.map((item) => item.name).join('/');
+      console.log('xxx:', this.label)
       this.showPicker = false
+      this.isEcho = false
     },
     // 三级联动变化
     async handleAreaChange(vm, item, index) {
