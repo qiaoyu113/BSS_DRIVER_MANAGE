@@ -16,7 +16,7 @@
       路线名称:{{ obj.lineName }}
     </p>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick(obj)">
+      <van-button type="default" round hairline @click="handleDetailClick(obj.id)">
         详情
       </van-button>
     </div>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { shippingDetailBySale } from '@/api/freight'
 export default {
   props: {
     obj: {
@@ -37,11 +38,27 @@ export default {
      * 线路详情
      */
     handleDetailClick(obj) {
-      this.$router.push({
-        path: '/detail',
-        query: { obj: obj,
-          type: '2' }
-      })
+      this.getGmInfoList(obj.id)
+    },
+    async getGmInfoList(id) {
+      try {
+        let parmas = {
+          wayBillId: id
+        }
+        let { data: res } = await shippingDetailBySale(parmas)
+        if (res.success) {
+          this.$router.push({
+            path: '/detail',
+            query: { obj: res.data,
+              type: '2' }
+          })
+        } else {
+
+          // this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     }
   }
 }

@@ -17,7 +17,7 @@
       </p>
 
       <div class="detail van-hairline--top">
-        <van-button type="default" round hairline @click="handleDetailClick">
+        <van-button type="default" round hairline @click="handleDetailClick(obj.id)">
           详情
         </van-button>
       </div>
@@ -26,7 +26,7 @@
       <button @click="cancel()">
         取消批量上传
       </button>
-      <button @click="Add_to">
+      <button @click="Add_to(obj)">
         批量上报运费
       </button>
     </div>
@@ -35,6 +35,7 @@
 
 <script>
 // import { Toast } from 'vant'
+import { wayBillAmountDetail, shippingDetailByGM } from '@/api/freight'
 export default {
   props: {
     obj: {
@@ -50,20 +51,62 @@ export default {
     /**
      * 线路详情
      */
-    handleDetailClick() {
-      this.$router.push({ name: '/detail', params: { type: '1' }})
+    handleDetailClick(id) {
+      this.getGmInfoList(id)
+    },
+    async getGmInfoList(id) {
+      try {
+        let parmas = {
+          wayBillAmountId: id
+        }
+        let { data: res } = await shippingDetailByGM(parmas)
+        if (res.success) {
+          this.$router.push({
+            path: '/Detail',
+            query: { obj: res.data,
+              type: '1' }
+          })
+        } else {
+
+          // this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     },
     cancel() {
       this.$router.go(-1)
     },
     Add_to() {
-      this.$router.push({
-        path: '/report',
-        query: {
-          obj: JSON.stringify(this.checkedarr)
-        }
+      let arr = []
+      this.checkedarr.forEach(item => {
+        arr.push(item.wayBillId)
       })
+      console.log(arr)
+      this.reportMoneyBatchByGM(arr)
+    },
+    async reportMoneyBatchByGM(id) { // 确认运费回显
+      try {
+        let parmas = {
+          wayBillIds: id
+        }
+        let { data: res } = await wayBillAmountDetail(parmas)
+        console.log(res)
+        if (res.success) {
+          this.$router.push({
+            path: '/report',
+            query: {
+              obj: JSON.stringify(res.data)
+            }
+          })
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     }
+
   }
 }
 

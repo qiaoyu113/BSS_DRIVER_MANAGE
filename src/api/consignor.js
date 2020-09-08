@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function fetchList(data) {
   return request({
-    url: '/api/bss/v1/bss/line/customer/selectListByKey',
+    url: '/bss/v1/bss/line/customer/selectListByKey',
     method: 'post',
     data
   })
@@ -15,7 +15,7 @@ export function fetchList(data) {
 /* 获取货主详情 */
 export function getClientDetail(data) {
   return request({
-    url: '/api/line/line/customer/info',
+    url: '/line/line/customer/info',
     method: 'get',
     params: data
   })
@@ -24,7 +24,7 @@ export function getClientDetail(data) {
 /* 获取开通城市 */
 export function getCity(data) {
   return request({
-    url: '/api/line/line/customer/onlineCity',
+    url: '/line/line/customer/onlineCity',
     method: 'get',
     params: data
   })
@@ -35,7 +35,7 @@ export function getCity(data) {
  */
 export function uploadFile(data) {
   return request({
-    url: '/api/base/v1/upload/uploadOSS/img/true/-1',
+    url: '/base/v1/upload/uploadOSS/img/true/-1',
     method: 'post',
     headers: {
       'Content-Type': 'multipart/form-data'
@@ -47,7 +47,7 @@ export function uploadFile(data) {
 /* 客户来源一级二级 */
 export function getLineCustomerOneOrTwoCategory(data) {
   return request({
-    url: '/api/line/line/customer/getLineCustomerOneOrTwoCategory',
+    url: '/line/line/customer/getLineCustomerOneOrTwoCategory',
     methods: 'get',
     params: data
   })
@@ -56,7 +56,7 @@ export function getLineCustomerOneOrTwoCategory(data) {
 /* 创建货主 */
 export function creatCustomer(data) {
   return request({
-    url: '/api/line/line/customer/save',
+    url: '/line/line/customer/save',
     method: 'post',
     data
   })
@@ -65,7 +65,7 @@ export function creatCustomer(data) {
 /* 编辑货主 */
 export function editCustomer(data) {
   return request({
-    url: '/api/line/line/customer/edit',
+    url: '/line/line/customer/edit',
     method: 'post',
     data
   })
@@ -73,7 +73,7 @@ export function editCustomer(data) {
 /* 编辑时获取货主详情 */
 export function editClientDetail(data) {
   return request({
-    url: '/api/line/line/customer/editInfo',
+    url: '/line/line/customer/editInfo',
     method: 'get',
     params: data
   })
@@ -82,7 +82,7 @@ export function editClientDetail(data) {
 /* 编辑时获取货主详情 */
 export function searchCustomerByKeyword(data) {
   return request({
-    url: '/api/bss/v1/bss/line/customer/fuzzy/checkNames',
+    url: '/bss/v1/bss/line/customer/fuzzy/checkNames',
     method: 'post',
     data
   })
@@ -91,7 +91,7 @@ export function searchCustomerByKeyword(data) {
 /* 获取当前用户销售线路 */
 export function getSaleLine() {
   return request({
-    url: '/api/base/user/bss/getLineSaleUserManager',
+    url: '/base/user/bss/getLineSaleUserManager',
     method: 'get'
 
   })
