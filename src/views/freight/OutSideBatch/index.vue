@@ -166,7 +166,7 @@
 import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
-import { getLineInfoList } from '@/api/freight' // 外线接口
+import { getGmInfoList } from '@/api/freight'
 // import { Toast } from 'vant
 export default {
   components: {
@@ -334,12 +334,13 @@ export default {
     async getConfirmInfoList(isInit) {
       try {
         this.$loading(true)
+        this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size,
           pageNumber: 20
         }
-        let { data: res } = await getLineInfoList(params)
+        let { data: res } = await getGmInfoList(params)
         if (res.success) {
           let newLists = res.data
           newLists.forEach(item => {
@@ -418,7 +419,7 @@ export default {
           startDate: this.text10
         }
         this.$loading(true)
-        let { data: res } = await getLineInfoList(parmas)
+        let { data: res } = await getGmInfoList(parmas)
         console.log(res)
         if (res.success) {
           this.lists = res.data
