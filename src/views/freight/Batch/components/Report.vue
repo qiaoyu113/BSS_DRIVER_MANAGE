@@ -17,9 +17,9 @@
         <li>出车单号：{{ item.wayBillId }}</li>
         <li>司机姓名/手机号：  {{ item.driverName }}/{{ item.driverPhone }}</li>
         <li class="Number_ong">
-          <p>*趟数1:0:02 - 06:00</p>
+          <p>*趟数{{ item.deliverTime }}</p>
           <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
+            <input v-model="value" type="text" style="border:none" placeholder="item.preMoney">
 
             <van-button type="default">
               <van-icon name="arrow" color="#A6AAB8" />
@@ -111,6 +111,8 @@ export default {
       this.obj.forEach(item => {
         if (item.checked === true) {
           this.reportMoneyBatchByGM()
+        } else {
+          Toast.success('选择需要上报的出车单');
         }
       });
     },

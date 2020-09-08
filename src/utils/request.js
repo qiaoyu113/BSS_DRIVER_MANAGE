@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Toast } from 'vant'
 // import store from '@/store'
-import { getToken } from '@/utils/auth'
+// import { getToken } from '@/utils/auth'
 import JsCookie from 'js-cookie'
 
 // let url = 'http://firmiana-wechat.yunniao.cn/'
@@ -27,12 +27,12 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // Do something before request is sent
-    let token = localStorage.getItem('token')
-    if (token) {
-      // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-      config.headers['Authorization'] = getToken()
-      config.headers['Authorization'] = 'eyJhbGciOiJIUzI1NiJ9.eyJwcm9maWxlIjoibTEiLCJ1c2VySWQiOiI4NyIsInVzZXJuYW1lIjoiMTUwMjE1Nzg1MDIiLCJ0eXBlIjoiMyIsImJ1c2lQZXJtaXNzaW9uIjoiIiwidXNlckxvZ2luRmxhZyI6IjBkYWI1NjAzNTE0YTQyNTNhZjIzODdmNzIwYjBmNDliIiwiZXhwIjoxNjAyMDM2MjE2fQ.SyvJCfGkkGhWwC04jthROAjNIR3gydVvjNSszCNF9OM'
-    }
+    // let token = localStorage.getItem('token')
+    // if (token) {
+    //   // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+    //   config.headers['Authorization'] = getToken()
+    //   config.headers['Authorization'] = 'eyJhbGciOiJIUzI1NiJ9.eyJwcm9maWxlIjoibTEiLCJ1c2VySWQiOiI4NyIsInVzZXJuYW1lIjoiMTUwMjE1Nzg1MDIiLCJ0eXBlIjoiMyIsImJ1c2lQZXJtaXNzaW9uIjoiIiwidXNlckxvZ2luRmxhZyI6IjBkYWI1NjAzNTE0YTQyNTNhZjIzODdmNzIwYjBmNDliIiwiZXhwIjoxNjAyMDM2MjE2fQ.SyvJCfGkkGhWwC04jthROAjNIR3gydVvjNSszCNF9OM'
+    // }
     let cookieName = localStorage.getItem('developer')
     if (cookieName) {
       JsCookie.set('developer', cookieName);

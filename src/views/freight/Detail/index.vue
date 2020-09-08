@@ -4,7 +4,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div class="headerRight" @click="showPopup">
+          <div class="headerRight" @click="showPopup(obj)">
             上报
           </div>
         </template>
@@ -12,7 +12,8 @@
     </van-sticky>
     <div class="CardItemcontainer megin">
       <h4 class="title ellipsis">
-        <span style="color: 0000ff73;">{{ obj.predictCost }}</span>
+        {{ obj.customerName }}
+        <span style="color: 0000ff73;">{{ obj.confirmMoney }}</span>
       </h4>
       <P class="text ellipsis">
         出车单号:{{ obj.wayBillId }}
@@ -30,8 +31,8 @@
       <p class="text ellipsis">
         上报时间：{{ obj.gmReportTime }}
       </p>
-      <p class="text ellipsis">
-        趟数1金额：{{ obj.gmFee }}
+      <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
+        趟数{{ item.lineFee }}金额：{{ item.gmFee }}
       </p>
       <!-- <p class="text ellipsis">
         趟数2金额：{{}}
@@ -40,21 +41,24 @@
         备注：{{ obj.remark }}
       </p>
       <p class="text ellipsis">
-        确认状态：{{ obj.gmStatusCode }}
+        确认状态：{{ obj.confirmState }}
       </p>
     </div>
     <van-popup v-model="show">
       <div class="danceng" style=" border-radius:5px">
         <p>运费上报</p>
         <div>
-          <p>*趟数1</p>
-          <li>
-            <span>0:20-06:00</span>
-            <input v-model="value" type="text" style="border:none" placeholder="350.00">
-            <van-button type="default">
-              元
-            </van-button>
-          </li>
+          <div v-for="item in arrstr" :key="item.id">
+            <p>*{{ item.deliverNo }}</p>
+            <li>
+              <span>{{ item.deliverTime }}</span>
+              <input v-model="value" type="text" style="border:none" :placeholder="item.preMoney">
+              <van-button type="default">
+                元
+              </van-button>
+            </li>
+          </div>
+
           <div class="Remarks">
             <van-field
               v-model="message"
@@ -82,7 +86,7 @@
 </template>
 
 <script>
-import { reportMoneyBatchByGM, reportMoneyBatchBySale } from '@/api/freight'
+import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail } from '@/api/freight'
 import { Toast } from 'vant';
 export default {
   data() {
@@ -91,13 +95,13 @@ export default {
       obj: '',
       dataAll: [],
       value: '', // 上报金额
-      message: '' // 备注
+      message: '', // 备注
+      arrstr: ''
 
     }
   },
   mounted() {
     this.obj = this.$route.query.obj
-    console.log(this.$route.query.type)
   },
 
   methods: {
@@ -107,17 +111,17 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
-    showPopup() {
-      this.show = true;
+    showPopup(id) {
+      this.wayBillAmountDetail(this.obj.wayBillId)
     },
     footer_confirm() {
       if (this.$route.query.type === '1') {
-        this.wayBillAmountDetail() // 加盟运费上报
+        this.reportMoneyBatchByGM() // 加盟运费上报
       } else {
         this.reportMoneyBatchBySale() // 线外运费上报
       }
     },
-    async wayBillAmountDetail() {
+    async reportMoneyBatchByGM() {
       try {
         let parmas = {
           moneys: this.value, // 运费
@@ -140,32 +144,49 @@ export default {
         Toast.fail('上报失败');
         // this.$loading(false)
       }
+    },
+    async reportMoneyBatchBySale() {
+      try {
+        let parmas = {
+          moneys: this.value, // 运费
+          remark: this.message, // 备注
+          wayBillAmountIds: 'message'
+        }
+        this.$loading(true)
+        let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
+        console.log(res)
+        if (res.success) {
+          Toast.success('上报成功', res.data);
+        } else {
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.error = true;
+      } finally {
+
+      // this.$loading(false)
+      }
+    },
+    async wayBillAmountDetail(id) { // 确认运费回显
+      try {
+        let parmas = {
+          wayBillIds: id
+        }
+        let { data: res } = await wayBillAmountDetail(parmas)
+        console.log(res)
+        if (res.success) {
+          this.show = true;
+          this.arrstr = res.data
+          console.log(this.arrstr, 22222222222222222222)
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     }
 
-  },
-  async reportMoneyBatchBySale() {
-    try {
-      let parmas = {
-        moneys: this.value, // 运费
-        remark: this.message, // 备注
-        wayBillAmountIds: 'message'
-      }
-      this.$loading(true)
-      let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
-      console.log(res)
-      if (res.success) {
-        res.data
-        Toast.success('上报成功');
-      } else {
-        this.error = true;
-        this.$toast.fail(res.errorMsg)
-      }
-    } catch (err) {
-      this.error = true;
-    } finally {
-      Toast.fail('上报失败');
-      // this.$loading(false)
-    }
   }
 
 }
