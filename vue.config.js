@@ -6,6 +6,7 @@ const port = process.env.port || process.env.npm_config_port || 8899
 const cdnDomian = '/' // cdn域名，如果有cdn修改成对应的cdn
 const name = '梧桐综合业务支撑平台' // page title
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+console.log(IS_PRODUCTION)
 const cdn = {
   css: [],
   js: [
@@ -54,15 +55,15 @@ module.exports = {
           '/api/mock': '/mock'
         }
       },
-      '[process.env.VUE_APP_BASE_API]': {
+      '/api': {
         // target: `http://localhost:${mockServerPort}/mock-api/v1`,
-        target: IS_PRODUCTION ? cdnDomian : 'https://szjw-bss-web.m1.yunniao.cn',
+        target: IS_PRODUCTION ? cdnDomian : 'https://szjw-bss-h5.m1.yunniao.cn',
         // target: `http://szjw-domain-gateway.d2.yunniao.cn`,
         changeOrigin: true, // needed for virtual hosted sites
         secure: false,
         ws: true, // proxy websockets
         pathRewrite: {
-          // ['^' + process.env.VUE_APP_BASE_API + '']: '/api'
+          '/api': '/api'
         }
       }
       // '/mock': {
