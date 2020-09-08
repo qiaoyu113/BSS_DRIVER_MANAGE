@@ -171,7 +171,6 @@ export default {
           }
         })
         if (res.success) {
-          this.$loading(false);
           this.$dialog.confirm({
             title: '提示',
             message: '已成功操作试跑掉线，该线路是否需要激活？',
@@ -187,10 +186,9 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
       } finally {
-        // this.$loading(false)
+        this.$loading(false)
       }
     }
   }
