@@ -51,7 +51,7 @@
         type="number"
         :rules="[{ required: true, message: '请填写' }]"
       />
-      <van-field
+      <!-- <van-field
         label-width="120px"
         colon
         clickable
@@ -62,7 +62,7 @@
         placeholder="请选择"
         :rules="[{ required: true, message: '请选择' }]"
         @click="showPicker = true"
-      />
+      /> -->
       <van-field
         label="支付截图"
         colon
@@ -157,11 +157,7 @@ export default {
     return {
       showTime: false,
       showPicker: false,
-      columns: [
-        { name: '哈哈哈1', code: '1323' },
-        { name: '哈哈哈2', code: '1323' },
-        { name: '哈哈哈3', code: '1323' }
-      ],
+      columns: [],
       showForm: {
         payDate: '',
         payType: '',
@@ -216,9 +212,6 @@ export default {
       } else {
         this.$toast.fail(data);
       }
-      // if (this.routeName !== '/createOrder') {
-      this.getOrderDetail(this.$route.query.id);
-      // }
     },
     cancelform() {
       this.$router.go(-1)
@@ -271,8 +264,7 @@ export default {
     onSubmit(values) {
       try {
         let params = {};
-        params = { ...this.form, ...params };
-        params.payImageUrl = this.form.this.form[0]
+        params = { ...this.form };
         let arr = []
         arr.push(params)
         if (window.localStorage.getItem('payItemInfo')) {
