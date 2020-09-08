@@ -93,11 +93,16 @@ export default {
       this.$router.go(-1)
     },
     Report() {
+      let wayBillAmountId = []
+      let preMoney = []
       this.obj.filter(item => {
         if (item.checked === true) {
-          this.reportMoneyBatchByGM(item.wayBillAmountId, item.preMoney)
+          wayBillAmountId.push(item.wayBillAmountId)
+          preMoney.push(item.preMoney)
         }
       })
+      console.log(wayBillAmountId, preMoney)
+      this.reportMoneyBatchByGM(wayBillAmountId, preMoney)
     },
     async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
