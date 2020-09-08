@@ -69,11 +69,11 @@
         复制线路
       </van-button>
       <!-- 线路状态为已上架状态时显示此按钮 -->
-      <van-button type="primary" hairline block @click="handleLinkClick('edit')">
+      <van-button v-if="form.lineState ===1" type="primary" hairline block @click="handleLinkClick('edit')">
         编辑
       </van-button>
     </div>
-    <div class="btn">
+    <div v-if="[1,2].includes(form.lineState)" class="btn">
       <!-- 线路状态为已上架、已开跑状态时显示此按钮 -->
       <van-button type="plain" hairline block class="distance" @click="handleLinkClick('record')">
         采线
@@ -84,13 +84,13 @@
         打标签
       </van-button>
     </div>
-    <div class="btn">
+    <div v-if="[1,3,4].includes(form.lineState)" class="btn">
       <!-- 当线路状态为已上架的时候存在此按钮 -->
-      <van-button type="plain" hairline block class="distance" @click="handleOffShelf">
+      <van-button v-if="form.lineState ===1" type="plain" hairline block class="distance" @click="handleOffShelf">
         下架
       </van-button>
       <!-- 所有线路状态下显示此按钮 -->
-      <van-button type="primary" hairline block @click="handleLinkClick('active')">
+      <van-button v-if="[3,4].includes(form.lineState)" type="primary" hairline block @click="handleLinkClick('active')">
         激活线路
       </van-button>
     </div>
@@ -268,8 +268,8 @@ export default {
         }
         let { data: res } = await undercarriage(params)
         if (res.success) {
-          Notify({ type: 'success', message: '操作成功' });
           this.getLineDetail()
+          this.$toast.success('操作成功');
         } else {
           this.$fail(res.errorMsg)
         }

@@ -48,7 +48,7 @@ module.exports = {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       '/api/mock': {
-        target: 'http://yapi.ynimg.cn:8888',
+        target: IS_PRODUCTION ? cdnDomian : 'http://yapi.ynimg.cn:8888',
         changeOrigin: true,
         pathRewrite: {
           '/api/mock': '/mock'
@@ -56,7 +56,7 @@ module.exports = {
       },
       '[process.env.VUE_APP_BASE_API]': {
         // target: `http://localhost:${mockServerPort}/mock-api/v1`,
-        target: 'https://szjw-bss-web.m1.yunniao.cn',
+        target: IS_PRODUCTION ? cdnDomian : 'https://szjw-bss-web.m1.yunniao.cn',
         // target: `http://szjw-domain-gateway.d2.yunniao.cn`,
         changeOrigin: true, // needed for virtual hosted sites
         secure: false,

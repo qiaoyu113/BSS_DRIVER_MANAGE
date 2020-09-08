@@ -84,7 +84,6 @@ export default {
     onConfirm(obj) {
       this.form[this.pickerKey] = obj.map((item) => item.code)
       this.label = obj.map((item) => item.name).join('/');
-      console.log('xxx:', this.label)
       this.showPicker = false
       this.isEcho = false
     },

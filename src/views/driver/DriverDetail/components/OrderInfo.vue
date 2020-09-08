@@ -1,5 +1,5 @@
 <template>
-  <div class="OrderInfo">
+  <div v-if="obj.orderId" class="OrderInfo">
     <van-cell :title="obj.orderId">
       <template #right-icon>
         <span

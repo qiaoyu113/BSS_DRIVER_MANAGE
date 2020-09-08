@@ -124,11 +124,11 @@ export default {
       columns_gmId: [
         {
           name: '泽拉斯',
-          code: '123'
+          code: 1
         },
         {
           name: '阿兹尔',
-          code: '1223'
+          code: 2
         }
       ],
       managerStatus: false

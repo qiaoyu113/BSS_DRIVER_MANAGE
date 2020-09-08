@@ -261,13 +261,13 @@ export default {
         // GmGroup: '',
         GmManager: '',
         carType: '',
-        status: 'all',
+        status: '',
         startDate: '',
         endDate: '',
         orderStatus: ''
       },
       tabType: [
-        { type: '全部', code: 'all', num: '' },
+        { type: '全部', code: '', num: '' },
         { type: '已面试', code: '1', num: '' },
         { type: '待成交', code: '2', num: '' },
         { type: '已成交', code: '3', num: '' },
@@ -366,7 +366,7 @@ export default {
     // 状态切换
     async handleTabChange(tab) {
       if (tab === 0) {
-        this.ruleForm.status = 'all'
+        this.ruleForm.status = ''
       } else {
         this.ruleForm.status = String(tab)
       }
@@ -529,7 +529,7 @@ export default {
         this.checkedList.push(val.item);
       } else {
         let arr = this.checkedList.filter((ele) => {
-          return ele !== val;
+          return ele !== val.item;
         });
         this.checkedList = arr;
       }

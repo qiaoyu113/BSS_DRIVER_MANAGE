@@ -36,7 +36,7 @@ export default [
     name: 'shareinterview',
     component: resolve => require(['@/views/driver/CreateDriver/ShareInterview'], resolve),
     meta: {
-      title: '填写面试表单'
+      title: '填写共享面试表单'
     }
   },
   {
@@ -44,7 +44,7 @@ export default [
     name: 'tailoredinterview',
     component: resolve => require(['@/views/driver/CreateDriver/TailoredInterview'], resolve),
     meta: {
-      title: '填写面试表单'
+      title: '填写专车面试表单'
     }
   },
   {
