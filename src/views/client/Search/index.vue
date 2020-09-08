@@ -88,6 +88,7 @@ export default {
     // 搜索历史关键字
     handleItemClick(value) {
       this.keyWord = value
+      this.getLists(this.keyWord)
     },
     // 搜索
     async getLists(keyword = '') {

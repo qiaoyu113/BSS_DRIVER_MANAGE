@@ -139,6 +139,11 @@ export default {
           ]
           break;
         default:
+          this.actions = [
+            { name: '创建试跑', index: 0 },
+            { name: '转试跑', index: 1 },
+            { name: '转掉线', index: 2 }
+          ]
           break;
       }
     }

@@ -246,9 +246,7 @@ export default {
     },
     // 发布成功
     createSuc() {
-      Notify({
-        type: 'success', message: '发布成功'
-      })
+      this.$toast.success('操作成功')
       setTimeout(() => {
         this.$router.push({
           path: '/line'
@@ -260,9 +258,3 @@ export default {
 
 </script>
 
-<style lang='scss' scoped>
-.ActiveLineContainer {
-
-}
-
-</style>

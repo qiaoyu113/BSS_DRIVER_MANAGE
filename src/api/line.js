@@ -13,7 +13,7 @@ export function getLineList(data) {
 // 获取线路详情
 export function getLineDetail(params) {
   return request({
-    url: `${prefix}/v2/line/detail`,
+    url: `${prefix}/v2/line/lineInfo/detail`,
     method: 'get',
     params
   })
