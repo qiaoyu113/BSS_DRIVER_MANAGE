@@ -330,6 +330,7 @@ export default {
     // 状态切换
     handleTabChange(tab) {
       this.getConfirmInfoList(true)
+      console.log(true, 2222222222)
     },
     async getConfirmInfoList(isInit) {
       try {

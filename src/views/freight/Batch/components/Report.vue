@@ -93,19 +93,24 @@ export default {
       this.$router.go(-1)
     },
     Report() {
-      console.log(this.value)
+      let wayBillAmountId = []
+      let preMoney = []
       this.obj.forEach(item => {
+        wayBillAmountId.push(item.wayBillAmountId)
+        preMoney.push(item.preMoney)
+      })
+      this.obj.every(item => {
         if (item.checked === true) {
-          this.reportMoneyBatchByGM()
+          this.reportMoneyBatchByGM(wayBillAmountId, preMoney)
         }
-      });
+      })
     },
-    async reportMoneyBatchByGM() {
+    async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
         let parmas = {
           remark: this.message, // 备注
-          moneys: this.value, // 上报金额
-          wayBillAmountIds: 'w090201'
+          moneys: preMoney, // 上报金额
+          wayBillAmountIds: wayBillAmountId
 
         }
         let { data: res } = await reportMoneyBatchByGM(parmas)
@@ -127,9 +132,9 @@ export default {
         message: `确定全部的${this.obj.length}个出全部未出车`
       }).then(() => {
         let arr = []
-        this.obj.forEach(item => {
-          if (item.checked === true) {
-            arr.push(item.id)
+        this.obj.filter(item => {
+          if (item.checked === undefined) {
+            arr.push(item.wayBillAmountId)
           }
         })
         this.noCarBatchByGM(arr)
@@ -142,11 +147,6 @@ export default {
         }
         let { data: res } = await noCarBatchByGM(parmas)
         if (res.success) {
-          this.obj.forEach(item => {
-            if (item.checked === true) {
-              item.checked = false
-            }
-          })
           res.data // 全部未出车
         } else {
           this.$toast.fail(res.errorMsg)
