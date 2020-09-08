@@ -55,6 +55,7 @@
               is-link
             />
             <selftPicker
+              :props="keyValue"
               picker-key="busiType"
               :form="formData"
               :columns="columns_busiType"
@@ -79,6 +80,7 @@
               @click="showPickerFn('busiType')"
             /> -->
             <selftPicker
+              :props="keyValue"
               picker-key="cooperationModel"
               :form="formData"
               :columns="columns_cooperationModel"
@@ -182,6 +184,7 @@
             <selftPicker
               v-if="formData.cooperationModel === 2"
               :key="formData.cooperationModel"
+              :props="keyValue"
               picker-key="supplier"
               :form="formData"
               :columns="columns_supplier"
@@ -209,6 +212,7 @@
             <selftPicker
               v-if="formData.cooperationModel === 1"
               :key="formData.cooperationModel"
+              :props="keyValue"
               picker-key="supplier"
               :form="formData"
               :columns="columns_supplier"
@@ -237,6 +241,7 @@
             <selftPicker
               v-if="formData.supplier && formData.cooperationModel !== 3"
               :key="'cooperationCar1'+formStatus"
+              :props="keyValue"
               picker-key="cooperationCar"
               :form="formData"
               :columns="columns_cooperationCar1"
@@ -264,6 +269,7 @@
             <selftPicker
               v-if="formData.cooperationModel ===3"
               :key="'cooperationCar2'+formStatus"
+              :props="keyValue"
               picker-key="cooperationCar"
               :form="formData"
               :columns="columns_cooperationCar2"
@@ -291,6 +297,7 @@
             <selftPicker
               v-if="formData.supplier && formData.cooperationCar && formData.cooperationModel === 1"
               :key="'carModel'+formStatus"
+              :props="keyValue"
               picker-key="carModel"
               :form="formData"
               :columns="columns_carModel"
@@ -469,6 +476,10 @@ export default {
   },
   data() {
     return {
+      keyValue: {
+        label: 'name',
+        value: 'code'
+      },
       showPickerDate: false,
       showPicker: false,
       pickerKey: '',
@@ -855,8 +866,8 @@ export default {
     },
     async realSubmit() {
       try {
-        if (Number(this.payMoneyed) > Number(this.formData.goodsAmount)) {
-          Notify({ type: 'warning', message: '添加的支付金额，不能超过剩余添加金额' });
+        if (Number(this.payMoneyed) !== Number(this.formData.goodsAmount)) {
+          Notify({ type: 'warning', message: '添加的支付金额，不等于商品金额' });
           return
         }
         this.$loading(true);

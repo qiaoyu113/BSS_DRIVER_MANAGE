@@ -64,22 +64,10 @@ export default {
     }
   },
   watch: {
-    // isComputed(val) {
-    //   if (val) {
-    //     this.getLabel()
-    //   }
-    // },
-    value(val) {
-      this.value = val
-    },
-    isComputed: {
-      handler(val, oldName) {
-        if (val) {
-          this.getLabel()
-        }
-      },
-      immediate: true,
-      deep: true
+    isComputed(val) {
+      if (val) {
+        this.getLabel()
+      }
     }
   },
   methods: {
@@ -88,6 +76,7 @@ export default {
       let index = this.columns.findIndex(item => (item.value || item.code || item.dictValue) === this.form[this.pickerKey])
       if (index === -1) {
         index = 0
+        this.label = ''
       } else {
         this.index = index
         this.isFirst = true

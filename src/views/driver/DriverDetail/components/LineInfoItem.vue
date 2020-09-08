@@ -39,7 +39,7 @@
           title-class="cell-title"
           value-class="cell-value"
           title="外线销售："
-          :value="`${obj.dutyManagerIdName}/${obj.lineSalePhone}`"
+          :value="obj.lineSaleNamePhone"
         />
         <van-cell
           title-class="cell-title"

@@ -10,7 +10,7 @@
     />
     <van-popup v-model="showPicker" position="bottom">
       <van-area
-        :value="form[pickerKey].length > 1 ? form['area'][2]+'' : ''"
+        :value="form[pickerKey].length > 1 ? form[pickerKey][2]+'' : ''"
         :area-list="areaList"
         :columns-placeholder="['请选择', '请选择', '请选择']"
         @confirm="onConfirm"

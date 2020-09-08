@@ -21,6 +21,7 @@
           :rules="[{ required: true, message: '请填写司机姓名' }]"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="inviteType"
           :form="formData"
           :columns="columns_inviteType"
@@ -45,6 +46,7 @@
           @click="showPickerFn('inviteType')"
         /> -->
         <selftPicker
+          :props="{label:'name',value:'code'}"
           picker-key="workCity"
           :form="formData"
           :columns="columns_workCity"
@@ -69,6 +71,7 @@
           @click="showPickerFn('workCity')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="sourceChannel"
           :form="formData"
           :columns="columns_sourceChannel"
@@ -178,6 +181,7 @@
           @click="areaPickFn('intentWork')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="intentDeliveryMode"
           :form="formData"
           :columns="columns_intentDeliveryMode"
@@ -202,6 +206,7 @@
           @click="showPickerFn('intentDeliveryMode')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="intentCargoType"
           :form="formData"
           :columns="columns_intentCargoType"
@@ -226,6 +231,7 @@
           @click="showPickerFn('intentCargoType')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="intentWorkDuration"
           :form="formData"
           :columns="columns_intentWorkDuration"
@@ -268,6 +274,7 @@
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '期望收入应在0至25000元之间'}]"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="householdType"
           :form="formData"
           :columns="columns_householdType"
@@ -324,6 +331,7 @@
           :rules="[{ required: true, message: '请填写详细地址' }]"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="childNum"
           :form="formData"
           :columns="columns_childNum"
@@ -358,6 +366,7 @@
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '请填写0-500的数字'}]"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="currentHasWork"
           :form="formData"
           :columns="isOrNot"
@@ -403,6 +412,7 @@
           :rules="[{ required: true, message: '请填写0-730的数字' },{validator:validatorNum(0,730), message: '请填写0-730的数字'}]"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="drivingLicenceType"
           :form="formData"
           :columns="columns_drivingLicenceType"
@@ -427,6 +437,7 @@
           @click="showPickerFn('drivingLicenceType')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="hasCar"
           :form="formData"
           :columns="isOrNot"
@@ -451,12 +462,13 @@
           @click="showPickerFn('hasCar')"
         /> -->
         <selftPicker
-          v-if="formData.hasCar === '1'"
+          v-show="formData.hasCar === true"
+          :props="keyValue"
           picker-key="currentCarType"
           :form="formData"
-          :columns="columns_currentCarType"
+          :columns="columns_intentDrivingCarType"
           value="dictLabel"
-          :is-computed="formData['currentCarType']!==''"
+          :is-computed="formData.hasCar"
           required
           label="当前车型"
           placeholder="请选择"
@@ -464,24 +476,14 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          v-if="formData.hasCar === '1'"
-          readonly
-          clickable
-          required
-          name="currentCarType"
-          :value="pickerNames.currentCarType"
-          label="当前车型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('currentCarType')"
-        /> -->
         <selftPicker
+          v-show="formData.hasCar === false"
+          :props="keyValue"
           picker-key="intentDrivingCarType"
           :form="formData"
           :columns="columns_intentDrivingCarType"
           value="dictLabel"
-          :is-computed="formData['intentDrivingCarType']!==''"
+          :is-computed="!formData.hasCar"
           required
           label="意向驾驶车型"
           placeholder="请选择"
@@ -502,6 +504,7 @@
           @click="showPickerFn('intentDrivingCarType')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="maxAdvancePayment"
           :form="formData"
           :columns="columns_maxAdvancePayment"
@@ -526,6 +529,7 @@
           @click="showPickerFn('maxAdvancePayment')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="heavyLifting"
           :form="formData"
           :columns="isOrNot"
@@ -550,6 +554,7 @@
           @click="showPickerFn('heavyLifting')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="providePersonalCredit"
           :form="formData"
           :columns="isOrNot"
@@ -574,6 +579,7 @@
           @click="showPickerFn('providePersonalCredit')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="strategyRight"
           :form="formData"
           :columns="columns_strategyRight"
@@ -598,6 +604,7 @@
           @click="showPickerFn('strategyRight')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="cooperateFocusPoint"
           :form="formData"
           :columns="columns_cooperateFocusPoint"
@@ -622,6 +629,7 @@
           @click="showPickerFn('cooperateFocusPoint')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="cooperateKeyFactor"
           :form="formData"
           :columns="columns_cooperateKeyFactor"
@@ -646,6 +654,7 @@
           @click="showPickerFn('cooperateKeyFactor')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="isAdvancedIntention"
           :form="formData"
           :columns="isOrNot"
@@ -737,6 +746,10 @@ export default {
   },
   data() {
     return {
+      keyValue: {
+        label: 'dictLabel',
+        value: 'dictValue'
+      },
       username: '',
       password: '',
       value: '',
@@ -817,60 +830,16 @@ export default {
         householdDistrict: ''
       },
       isOrNot: [
-        { dictLabel: '是', dictValue: 1 },
-        { dictLabel: '否', dictValue: 0 }
+        { dictLabel: '是', dictValue: true },
+        { dictLabel: '否', dictValue: false }
       ],
       columns: [],
-      columns_inviteType: [
-        { dictLabel: '电话', dictValue: '123456' },
-        { dictLabel: '微信', dictValue: '123456' },
-        { dictLabel: '线下', dictValue: '123456' }
-      ],
-      columns_workCity: [
-        { dictLabel: '北京1', dictValue: '123456' },
-        { dictLabel: '北京2', dictValue: '123456' },
-        { dictLabel: '北京3', dictValue: '123456' }
-      ],
-      columns_intentDrivingCarType: [
-        {
-          dictLabel: '金杯',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '金2杯',
-          dictValue: '1223'
-        }
-      ],
-      columns_intentCargoType: [
-        {
-          dictLabel: '水果',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '家具',
-          dictValue: '1223'
-        }
-      ],
-      columns_intentWorkDuration: [
-        {
-          dictLabel: '12:00-15:00',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '16:00-23:00',
-          dictValue: '1223'
-        }
-      ],
-      columns_sourceChannel: [
-        {
-          dictLabel: '微信朋友圈',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '同行推荐',
-          dictValue: '1223'
-        }
-      ],
+      columns_inviteType: [],
+      columns_workCity: [],
+      columns_intentDrivingCarType: [],
+      columns_intentCargoType: [],
+      columns_intentWorkDuration: [],
+      columns_sourceChannel: [],
       columns_householdType: [
         {
           dictLabel: '城镇户口',
@@ -881,26 +850,8 @@ export default {
           dictValue: 1
         }
       ],
-      columns_drivingLicenceType: [
-        {
-          dictLabel: 'C1',
-          dictValue: '123'
-        },
-        {
-          dictLabel: 'B1',
-          dictValue: '1223'
-        }
-      ],
-      columns_intentDeliveryMode: [
-        {
-          dictLabel: '配送模式1',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '配送模式2',
-          dictValue: '1223'
-        }
-      ],
+      columns_drivingLicenceType: [],
+      columns_intentDeliveryMode: [],
       columns_childNum: [
         {
           dictLabel: 0,
@@ -919,64 +870,11 @@ export default {
           dictValue: 3
         }
       ],
-      columns_maxAdvancePayment: [
-        {
-          dictLabel: '3万',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '5万',
-          dictValue: '1223'
-        },
-        {
-          dictLabel: '10万',
-          dictValue: '1223'
-        }
-      ],
-      columns_currentCarType: [
-        {
-          dictLabel: '金杯1',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '金2杯3',
-          dictValue: '1223'
-        }
-      ],
-      columns_strategyRight: [
-        {
-          dictLabel: '自己拍板',
-          dictValue: '123'
-        },
-        {
-          dictLabel: '妻子拍板',
-          dictValue: '1223'
-        },
-        {
-          dictLabel: '协商决定',
-          dictValue: '1223'
-        }
-      ],
-      columns_cooperateFocusPoint: [
-        {
-          dictLabel: '稳定货源',
-          dictValue: '1223'
-        },
-        {
-          dictLabel: '依靠公司有保障',
-          dictValue: '1223'
-        }
-      ],
-      columns_cooperateKeyFactor: [
-        {
-          dictLabel: '资金',
-          dictValue: '1223'
-        },
-        {
-          dictLabel: '对云鸟的信任度',
-          dictValue: '1223'
-        }
-      ],
+      columns_maxAdvancePayment: [],
+      columns_currentCarType: [],
+      columns_strategyRight: [],
+      columns_cooperateFocusPoint: [],
+      columns_cooperateKeyFactor: [],
       areaList: {
         province_list: {
           110000: '北京市',
@@ -1012,12 +910,12 @@ export default {
   },
   watch: {
     'formData.hasCar'(val) {
-      if (val === 0) {
+      if (val === true) {
         this.formData.currentCarType = '';
-        this.pickerNames.currentCarType = ''
+        // this.pickerNames.currentCarType = ''
       } else {
         this.formData.intentDrivingCarType = '';
-        this.pickerNames.intentDrivingCarType = ''
+        // this.pickerNames.intentDrivingCarType = ''
       }
     }
   },
@@ -1035,7 +933,7 @@ export default {
   },
   methods: {
     fetchData() {
-      let params = ['source_channel', 'intent_cargo_type', 'accep_payment_range', 'driving_licence_type', 'invite_type', 'intent_delivery_mode', 'strategy_right', 'cooperate_focus_point', 'cooperate_key_factor', 'intent_work_duration', 'Intentional_compartment']
+      let params = ['source_channel', 'intent_cargo_type', 'accep_payment_range', 'driving_licence_type', 'invite_type', 'intent_delivery_mode', 'strategy_right', 'cooperate_focus_point', 'cooperate_key_factor', 'intent_work_duration', 'Intentional_compartment', 'accep_payment_range']
       GetDictionaryList(params)
         .then(({ data }) => {
           if (data.success) {
@@ -1050,11 +948,12 @@ export default {
             this.columns_strategyRight = data.data.strategy_right
             this.columns_cooperateFocusPoint = data.data.cooperate_focus_point
             this.columns_cooperateKeyFactor = data.data.cooperate_key_factor
+            this.columns_maxAdvancePayment = data.data.accep_payment_range
           }
         }).catch((err) => {
           console.log(err)
         });
-      getOpenCitys({})
+      getOpenCitys()
         .then(({ data }) => {
           if (data.success) {
             this.columns_workCity = data.data;
@@ -1101,7 +1000,7 @@ export default {
         params.householdProvince = this.area.householdAddress[0] // 户籍地址
         params.householdCity = this.area.householdAddress[1]
         params.householdCounty = this.area.householdAddress[2]
-        if (this.formData.hasCar === '0') {
+        if (this.formData.hasCar === true) {
           params.currentCarType = '';
         } else {
           params.intentDrivingCarType = '';

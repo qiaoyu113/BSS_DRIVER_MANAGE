@@ -1,7 +1,10 @@
 import request from '@/utils/request'
-let prefix = '/mock/81'
-let linePrefix = '/mock/74'
-let transportPrefix = '/mock/103'
+// let prefix = '/mock/81'
+let prefix = '/api/driver'
+// let linePrefix = '/mock/74'
+let linePrefix = '/api/waybill_center'
+// let transportPrefix = '/mock/103'
+let transportPrefix = '/api/carrier_center'
 
 /**
  * 司机列表
@@ -70,22 +73,22 @@ export function selectLabel(data) {
 /**
  * 标记成交
  */
-export function signDeal(data) {
+export function signDeal(params) {
   return request({
     url: `${prefix}/v2/driver/signDeal`,
     method: 'post',
-    data
+    params
   })
 }
 
 /**
  * 标记退出
  */
-export function signOut(data) {
+export function signOut(params) {
   return request({
     url: `${prefix}/v2/driver/signOut`,
     method: 'post',
-    data
+    params
   })
 }
 
@@ -112,17 +115,6 @@ export function orderLabel(data) {
 }
 
 /**
-  * 线路信息
-  */
-export function lineLabel(data) {
-  return request({
-    url: `${prefix}/v2/driver/selectLabel`,
-    method: 'get',
-    params: data
-  })
-}
-
-/**
  * 查询面试表某个时间点的历史数据
  */
 export function historyList(data) {
@@ -136,10 +128,11 @@ export function historyList(data) {
 /**
  * 查询所有操作时间点
  */
-export function getOperateTime() {
+export function getOperateTime(params) {
   return request({
     url: `${prefix}/v2/driver/getOperateTime`,
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

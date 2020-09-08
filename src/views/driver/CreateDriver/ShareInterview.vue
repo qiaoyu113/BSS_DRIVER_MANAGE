@@ -39,6 +39,7 @@
           @focus="copyData('interview','select')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="workCity"
           :form="formData"
           :columns="columns_workCity"
@@ -90,6 +91,7 @@
           :form="formData"
           :columns="isOrNot"
           value="name"
+          :props="keyValue"
           :is-computed="formData['hasCar']!==''"
           required
           label="是否有车"
@@ -112,12 +114,14 @@
           @focus="copyData('hasCar','select')"
         /> -->
         <selftPicker
-          v-if="formData.hasCar === '1'"
+          v-if="formData.hasCar === true"
+          :key="formData.currentCarType"
+          :props="keyValue"
           picker-key="currentCarType"
           :form="formData"
-          :columns="columns_currentCarType"
+          :columns="columns_intentDrivingCarType"
           value="name"
-          :is-computed="formData['currentCarType']!==''"
+          :is-computed="formData.hasCar"
           required
           label="当前车型"
           placeholder="请选择"
@@ -125,26 +129,15 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          v-if="formData.hasCar === '1'"
-          readonly
-          clickable
-          required
-          name="currentCarType"
-          :value="pickerNames.currentCarType"
-          label="当前车型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('currentCarType')"
-          @focus="copyData('currentCarType','select')"
-        /> -->
         <selftPicker
-          v-if="formData.hasCar === '0'"
+          v-if="formData.hasCar === false"
+          :key="formData.intentDrivingCarType"
+          :props="keyValue"
           picker-key="intentDrivingCarType"
           :form="formData"
           :columns="columns_intentDrivingCarType"
           value="name"
-          :is-computed="formData['intentDrivingCarType']!==''"
+          :is-computed="!formData.hasCar"
           required
           label="意向驾驶车型"
           placeholder="请选择"
@@ -202,6 +195,7 @@
           @focus="copyData('experience')"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="currentHasWork"
           :form="formData"
           :columns="isOrNot"
@@ -227,6 +221,7 @@
           @click="showPickerFn('currentHasWork')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="intentCargoType"
           :form="formData"
           :columns="columns_intentCargoType"
@@ -251,6 +246,7 @@
           @click="showPickerFn('intentCargoType')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="intentWorkDuration"
           :form="formData"
           :columns="columns_intentWorkDuration"
@@ -275,6 +271,7 @@
           @click="showPickerFn('intentWorkDuration')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="heavyLifting"
           label-width="150px"
           :form="formData"
@@ -301,6 +298,7 @@
           @click="showPickerFn('heavyLifting')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="sourceChannel"
           :form="formData"
           :columns="columns_sourceChannel"
@@ -325,6 +323,7 @@
           @click="showPickerFn('sourceChannel')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="drivingLicenceType"
           :form="formData"
           :columns="columns_drivingLicenceType"
@@ -349,6 +348,7 @@
           @click="showPickerFn('drivingLicenceType')"
         /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="isLocalPlate"
           :form="formData"
           :columns="isOrNot"
@@ -443,6 +443,7 @@
           @focus="copyData('scatteredJobRate')"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="isNewEnergy"
           :form="formData"
           :columns="isOrNot"
@@ -518,9 +519,10 @@ import { phoneRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { GetDictionaryList, getOpenCitys } from '@/api/common'
-// import SelfArea from '@/components/SelfArea'
+import SelfArea from '@/components/SelfArea'
 import SelftPicker from '@/components/SelfPicker'
 import { shareInterview, getInterview } from '@/api/driver.js'
+// import { delete } from 'vue/types/umd';
 export default {
   name: 'ShareInterview',
   components: {
@@ -530,11 +532,15 @@ export default {
     [Popup.name]: Popup,
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
-    SelftPicker
-    // SelfArea
+    SelftPicker,
+    SelfArea
   },
   data() {
     return {
+      keyValue: {
+        label: 'name',
+        value: 'code'
+      },
       pickerKey: '',
       showPicker: false,
       pickerNames: {
@@ -555,8 +561,8 @@ export default {
       },
       area: {
         liveaddress: [],
-        intentWork: [],
-        interview: []
+        interview: [],
+        intentWork: []
       },
       formData: {
         workCity: '',
@@ -590,52 +596,16 @@ export default {
       columns: [],
       showAddressPicker: false,
       isOrNot: [
-        { name: '是', code: 1 },
-        { name: '否', code: 0 }
+        { name: '是', code: true },
+        { name: '否', code: false }
       ],
       columns_workCity: [],
       columns_intentDrivingCarType: [],
       columns_currentCarType: [],
-      columns_intentCargoType: [
-        {
-          name: '水果',
-          code: '123'
-        },
-        {
-          name: '家具',
-          code: '1223'
-        }
-      ],
-      columns_intentWorkDuration: [
-        {
-          name: '12:00-15:00',
-          code: '123'
-        },
-        {
-          name: '16:00-23:00',
-          code: '1223'
-        }
-      ],
-      columns_sourceChannel: [
-        {
-          name: '微信朋友圈',
-          code: '123'
-        },
-        {
-          name: '同行推荐',
-          code: '1223'
-        }
-      ],
-      columns_drivingLicenceType: [
-        {
-          name: 'C1',
-          code: '123'
-        },
-        {
-          name: 'B1',
-          code: '1223'
-        }
-      ],
+      columns_intentCargoType: [],
+      columns_intentWorkDuration: [],
+      columns_sourceChannel: [],
+      columns_drivingLicenceType: [],
       areaList: {
         province_list: {
           110000: '北京市',
@@ -672,7 +642,7 @@ export default {
   },
   watch: {
     'formData.hasCar'(val) {
-      if (val === 0) {
+      if (val === true) {
         this.formData.currentCarType = '';
         this.pickerNames.currentCarType = ''
       } else {
@@ -683,7 +653,7 @@ export default {
   },
   mounted() {
     this.routeName = this.$route.path;
-    this.driverId = this.$route.id;
+    this.driverId = this.$route.query.id;
     this.fetchData();
     if (this.routeName === '/editShare') {
       this.getDetail(this.driverId);
@@ -695,7 +665,7 @@ export default {
   },
   methods: {
     fetchData() {
-      GetDictionaryList(['Intentional_compartment', 'intent_cargo_type', 'source_channel', 'driving_licence_type'])
+      GetDictionaryList(['Intentional_compartment', 'intent_cargo_type', 'source_channel', 'driving_licence_type', 'intent_work_duration'])
         .then(({ data }) => {
           if (data.success) {
             this.columns_intentDrivingCarType = data.data.Intentional_compartment.map(ele => {
@@ -707,7 +677,10 @@ export default {
             this.columns_sourceChannel = data.data.source_channel.map(ele => {
               return { name: ele.dictLabel, code: ele.dictValue }
             })
-            this.columns_drivingLicenceType = data.data.source_channel.map(ele => {
+            this.columns_intentWorkDuration = data.data.intent_work_duration.map(ele => {
+              return { name: ele.dictLabel, code: ele.dictValue }
+            })
+            this.columns_drivingLicenceType = data.data.driving_licence_type.map(ele => {
               return { name: ele.dictLabel, code: ele.dictValue }
             })
           }
@@ -752,6 +725,7 @@ export default {
       }
     },
     async onSubmit(values) {
+      console.log(values)
       try {
         this.$loading(true)
         let params = { ...this.formData };
@@ -765,10 +739,12 @@ export default {
         params.interviewCity = this.area.interview[0]
         params.interviewCounty = this.area.interview[1]
         params.interviewProvince = this.area.interview[2]
-        if (this.formData.hasCar === '0') {
+        if (this.formData.hasCar === true) {
           params.currentCarType = '';
+          // delete params.currentCarType
         } else {
           params.intentDrivingCarType = '';
+          // delete params.intentDrivingCarType
         }
         console.log(params, 'params');
         let { data: res } = await shareInterview(params);
