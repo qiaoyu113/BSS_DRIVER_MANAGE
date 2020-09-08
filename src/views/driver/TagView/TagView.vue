@@ -11,19 +11,19 @@
     <van-cell class="tagText" value="标签信息" size="large" />
     <van-form class="formText" @submit="onSubmit">
       <van-field
-        v-model="username"
+        v-model="isUrgent"
         readonly
         required
-        name="username"
+        name="isUrgent"
         label="是否为司急"
         placeholder="是否为司急"
         :rules="[{required: true, message: '请填写是否为司急'}]"
         @click="suggestShow = true"
       />
       <van-field
-        v-model="formData.message"
+        v-model="formData.remark"
         rows="2"
-        name="message"
+        name="remark"
         autosize
         required
         label="备注"
@@ -55,12 +55,13 @@ export default {
   data() {
     return {
       suggestShow: false,
-      username: '',
+      isUrgent: '',
       formData: {
-        username: '',
-        message: ''
+        isUrgent: '',
+        remark: '',
+        driverId: ''
       },
-      actions: [{ name: '是', value: 1 }, { name: '否', value: 0 }]
+      actions: [{ name: '是', value: 1 }, { name: '否', value: 2 }]
     };
   },
   computed: {
@@ -68,15 +69,18 @@ export default {
       return this.$route.meta.title;
     }
   },
-  mounted() {},
+  mounted() {
+    this.formData.driverId = this.$route.query.id
+  },
   methods: {
     async onSubmit(values) {
       let parmas = { ...this.formData }
+
       try {
         this.$loading(true)
         let { data: res } = await insertLabel(parmas);
         if (res.success) {
-          Notify({ type: 'success', message: '打标签成功' });
+          Notify({ type: 'success', remark: '打标签成功' });
           this.$router.go(-1)
         } else {
           this.$toast.fail(res.errorMsg)
@@ -91,8 +95,8 @@ export default {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
       this.suggestShow = false;
-      this.username = item.name
-      this.formData.username = item.value
+      this.isUrgent = item.name
+      this.formData.isUrgent = item.value
     }
   }
 };

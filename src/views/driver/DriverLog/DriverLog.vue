@@ -52,6 +52,7 @@
       <van-picker
         show-toolbar
         :columns="timeList"
+        value-key="time"
         @cancel="showDate = false"
         @confirm="onConfirmPicker"
       />
@@ -59,54 +60,46 @@
   </div>
 </template>
 <script>
-import { getOperateTime } from '@/api/driver.js';
-// import { getOperateTime, historyList } from '@/api/driver.js';
+import { getOperateTime, historyList } from '@/api/driver.js';
 export default {
   data() {
     return {
       showTime: '',
+      timeText: '',
       showDate: false,
       timeList: [],
-      tableList: [
-        {
-          name: 'lll',
-          info: 'sss',
-          time: 123
-        },
-        {
-          name: 'lll',
-          info: 'sss',
-          time: 123
-        },
-        {
-          name: 'lll',
-          info: 'sss',
-          time: 123
-        }
-      ]
+      tableList: [],
+      id: '',
+      busiType: ''
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
     }
-    // timeText(val) {
-    //   return val.parseTime('{y}-{m}-{d}')
-    // }
   },
   mounted() {
-    this.getTimeList();
+    let id = this.$route.query.id
+    let busiType = this.$route.query.busiType
+    let params = {
+      driverId: id,
+      busiType: busiType
+    }
+    this.id = id
+    this.getTimeList(params);
   },
   methods: {
-    async getTimeList(id) {
+    async getTimeList(params) {
+      console.log(params)
       try {
         this.$loading(true);
-        let { data: res } = await getOperateTime();
+        let { data: res } = await getOperateTime(params);
         if (res.success) {
           this.timeList = res.data;
           if (res.data.length > 0) {
-            this.showTime = res.data[0];
-            // this.timeText = res.data[0].parseTime('{y}-{m}-{d}')
+            this.showTime = res.data[0].id;
+            this.timeText = res.data[0].time
+            this.getHistoryList(this.showTime)
           }
           console.log(res.data);
         } else {
@@ -118,29 +111,27 @@ export default {
         this.$loading(false);
       }
     },
-    // async historyList(id) {
-    //   try {
-    //     this.$loading(true);
-    //     let { data: res } = await getOperateTime();
-    //     if (res.success) {
-    //       this.timeList = res.data;
-    //       if (res.data.length > 0) {
-    //         this.showTime = res.data[0];
-    //         // this.timeText = res.data[0].parseTime('{y}-{m}-{d}')
-    //       }
-    //       console.log(res.data);
-    //     } else {
-    //       this.$toast.fail(res.errorMsg);
-    //     }
-    //   } catch (err) {
-    //     console.log(`fail:${err}`);
-    //   } finally {
-    //     this.$loading(false);
-    //   }
-    // },
+    async getHistoryList(id) {
+      try {
+        this.$loading(true);
+        let { data: res } = await historyList({ id: id });
+        if (res.success) {
+          this.tableList = res.data;
+          console.log(res.data);
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+      } finally {
+        this.$loading(false);
+      }
+    },
     onConfirmPicker(val) {
+      console.log(val)
       this.showTime = val;
       this.showDate = false;
+      // this.getHistoryList()
     }
   }
 };

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 /* 上传图片 */
 export function upImgData(data) {
   return request({
-    url: '/api/base/v1/upload/uploadOSS/img/true/-1',
+    url: '/base/v1/upload/uploadOSS/img/true/-1',
     method: 'post',
     data
   })
@@ -13,7 +13,7 @@ export function upImgData(data) {
 根据父级城市code获取区县子列表 */
 export function getCityAreaByCode(data) {
   return request({
-    url: '/api/base/user/area/getCityAreaByCode',
+    url: '/base/user/area/getCityAreaByCode',
     method: 'get',
     params: data
   })
@@ -21,7 +21,7 @@ export function getCityAreaByCode(data) {
 /* 获取区 */
 export function GetReginByCityCode(data) {
   return request({
-    url: '/api/base/user/area/getCityByCode',
+    url: '/base/user/area/getCityByCode',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function GetReginByCityCode(data) {
 /* 获取乡镇 */
 export function getTownByCountryCode(data) {
   return request({
-    url: '/api/base/user/area/getTownByCountryCode',
+    url: '/base/user/area/getTownByCountryCode',
     method: 'get',
     params: data
   })
@@ -37,7 +37,7 @@ export function getTownByCountryCode(data) {
 /* 字典 */
 export function dictionary(data) {
   return request({
-    url: '/api/base/base/dict/qryDictByType',
+    url: '/base/base/dict/qryDictByType',
     method: 'get',
     params: data
   })
@@ -46,7 +46,7 @@ export function dictionary(data) {
 /* 产品介绍 */
 export function productIntroduce(data) {
   return request({
-    url: '/api/product/product/enterprise-weChat/patcher/product-introduce',
+    url: '/product/product/enterprise-weChat/patcher/product-introduce',
     method: 'get',
     params: data
   })
@@ -54,7 +54,7 @@ export function productIntroduce(data) {
 // 通过token 获取用户信息
 export function getUserInfo(data) {
   return request({
-    url: '/api/base/user/bss/getUserInfoByToken',
+    url: '/base/user/bss/getUserInfoByToken',
     method: 'get',
     params: data
   })
@@ -62,6 +62,10 @@ export function getUserInfo(data) {
 // -------------------------szjw 2.1-----------------------
 // 获取开通城市列表
 let prefix = '/mock/25'
+let corePrefix = '/mock/25'
+// let corePrefix = '/api/core'
+// let prefix = '/api/base'
+
 export function getOpenCitys(params) {
   return request({
     url: `${prefix}/v1/base/area/getOpenCityData`,
@@ -73,7 +77,7 @@ export function getOpenCitys(params) {
 // 上传文件
 export function upload(params, data) {
   return request({
-    url: `${prefix}/v1/base/upload/uploadOSS/${params.folder}/${params.isEncode}/${params.expire}`,
+    url: `${corePrefix}/v1/base/upload/uploadOSS/${params.folder}/${params.isEncode}/${params.expire}`,
     method: 'post',
     data
   })
@@ -99,7 +103,8 @@ export function GetDictionaryList(data) {
 // 获取省、市、县
 export const GetCityByCode = (data) =>
   request({
-    url: `${prefix}/api/base/v1/base/area/getCityByCode`,
+    // url: `${prefix}/api/base/v1/base/area/getCityByCode`,
+    url: '/base/v1/base/area/getCityByCode',
     method: 'post',
     data
   })
