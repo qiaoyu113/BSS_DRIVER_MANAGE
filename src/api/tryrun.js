@@ -1,9 +1,10 @@
 import request from '@/utils/request'
-let prefix = '/api'
+let prefix = '/mock/74'
 // 创建试跑
 export function CreateLntentionRun(data) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/creatIntentionRun`,
+    // url: `${prefix}/waybill/v2/runtest/creatIntentionRun`,
+    url: `${prefix}/v2/runtest/creatIntentionRun`,
     method: 'post',
     data
   })
@@ -11,7 +12,8 @@ export function CreateLntentionRun(data) {
 // 选择司机
 export function GetDriverList(data) {
   return request({
-    url: `${prefix}/carrier_center/v2/driver/getDriverList`,
+    // url: `${prefix}/carrier_center/v2/driver/getDriverList`,
+    url: '/mock/103/v2/driver/getDriverList',
     method: 'post',
     data
   })
@@ -19,7 +21,8 @@ export function GetDriverList(data) {
 // 选择到仓联系人
 export function GetPersonInfo(params) {
   return request({
-    url: `${prefix}/line/v2/line/findPersonInfo`,
+    // url: `${prefix}/line/v2/line/findPersonInfo`,
+    url: '/mock/32/v2/line/findPersonInfo',
     method: 'get',
     params
   })
@@ -27,7 +30,8 @@ export function GetPersonInfo(params) {
 // 试跑
 export function TryRun(data) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/tryRun`,
+    // url: `${prefix}/waybill/v2/runtest/tryRun`,
+    url: `${prefix}/v2/runtest/tryRun`,
     method: 'post',
     data
   })
@@ -35,7 +39,8 @@ export function TryRun(data) {
 // 跟车
 export function FollowCar(data) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/followCar`,
+    // url: `${prefix}/waybill/v2/runtest/followCar`,
+    url: `${prefix}/v2/runtest/followCar`,
     method: 'post',
     data
   })
@@ -43,7 +48,8 @@ export function FollowCar(data) {
 // 掉线
 export function SwitchTryRun(data) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/switchDropped`,
+    // url: `${prefix}/waybill/v2/runtest/switchDropped`,
+    url: `${prefix}/v2/runtest/switchDropped`,
     method: 'post',
     data
   })
@@ -51,7 +57,8 @@ export function SwitchTryRun(data) {
 // 试跑列表
 export function GetRunTestInfoList(data) {
   return request({
-    url: `${prefix}/waybill_center/v2/runtest/getRunTestInfoList`,
+    // url: `${prefix}/waybill_center/v2/runtest/getRunTestInfoList`,
+    url: `${prefix}/v2/runtest/getRunTestInfoList`,
     method: 'post',
     data
   })
@@ -59,7 +66,8 @@ export function GetRunTestInfoList(data) {
 // 试跑详情
 export function GetDetails(params) {
   return request({
-    url: `${prefix}/waybill/v2/runtest/runDetial`,
+    // url: `${prefix}/waybill/v2/runtest/runDetial`,
+    url: `${prefix}/v2/runtest/runDetial`,
     method: 'get',
     params
   })
@@ -67,7 +75,8 @@ export function GetDetails(params) {
 // 线路查询
 export function GetLine(data) {
   return request({
-    url: `${prefix}/line_center/v2/line/lineInfo/fuzzyCheck`,
+    // url: `${prefix}/line_center/v2/line/lineInfo/fuzzyCheck`,
+    url: '/mock/32/v2/line/lineInfo/fuzzyCheck',
     method: 'post',
     data
   })
@@ -75,7 +84,8 @@ export function GetLine(data) {
 // 获取线路详情
 export function GetLineDetail(params) {
   return request({
-    url: `${prefix}/line_center/v2/line/lineInfo/detail`,
+    // url: `${prefix}/line_center/v2/line/lineInfo/detail`,
+    url: '/mock/32/v2/line/lineInfo/detail',
     method: 'get',
     params
   })
