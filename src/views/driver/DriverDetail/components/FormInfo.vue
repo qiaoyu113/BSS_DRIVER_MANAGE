@@ -11,7 +11,7 @@
             <template #right-icon>
               <span
                 class="doBtn"
-                @click="goRouter"
+                @click="goRouter(type.driverId,type.busiType)"
               >操作记录</span>
             </template>
           </van-cell>
@@ -98,7 +98,7 @@
             <van-field
               label="是否能承担较重搬运"
               colon
-              :value="type.heavyLiftingName"
+              :value="type.heavyLifting ? '是' : '否'"
               readonly
             />
             <van-field
@@ -168,7 +168,7 @@
             <template #right-icon>
               <span
                 class="doBtn"
-                @click="goRouter"
+                @click="goRouter(type.driverId,type.busiType)"
               >操作记录</span>
             </template>
           </van-cell>
@@ -265,7 +265,7 @@
             />
             <van-field
               label="户籍类型"
-              :value="type.householdTypeName"
+              :value="type.householdTypeName === 1 ? '城镇户口' : '农村户口'"
               colon
               readonly
             />
@@ -378,6 +378,7 @@
               readonly
             />
             <van-field
+              v-if="type.remarks"
               label="备注"
               :value="type.remarks"
               readonly
@@ -402,8 +403,8 @@ export default {
     return {};
   },
   methods: {
-    goRouter() {
-      this.$router.push({ path: '/driverLog', query: { id: 'test' }});
+    goRouter(id, type) {
+      this.$router.push({ path: '/driverLog', query: { id: id, busiType: type }});
     }
   }
 };

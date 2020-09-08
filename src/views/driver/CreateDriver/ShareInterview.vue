@@ -14,31 +14,20 @@
         label-width="120px"
         @submit="onSubmit"
       >
-        <!-- <self-area
-        label-width="100"
-        picker-key="area"
-        :form="form"
-        :is-computed="form.area.length > 2"
-        required
-        label="主要配送区域"
-        placeholder="请选择"
-        :rules="[
-          { required: true, message: '请选择' },
-        ]"
-      /> -->
-        <van-field
-          readonly
-          clickable
+        <self-area
+          label-width="100"
+          picker-key="interview"
+          :form="area"
+          :is-computed="area.interview.length > 2"
           required
-          name="interview"
-          :value="pickerNames.interview"
           label="面试地址"
           placeholder="请选择"
-          :rules="[{ required: true, message: '请选择现居住地址' }]"
-          @click="showPickerFnArea('interview')"
-          @focus="copyData('interview','select')"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="workCity"
           :form="formData"
           :columns="columns_workCity"
@@ -90,6 +79,7 @@
           :form="formData"
           :columns="isOrNot"
           value="name"
+          :props="keyValue"
           :is-computed="formData['hasCar']!==''"
           required
           label="是否有车"
@@ -98,83 +88,47 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="hasCar"
-          :value="pickerNames.hasCar"
-          label="是否有车"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('hasCar')"
-          @focus="copyData('hasCar','select')"
-        /> -->
         <selftPicker
-          v-if="formData.hasCar === '1'"
+          v-show="formData.hasCar === true"
+          :props="keyValue"
           picker-key="currentCarType"
           :form="formData"
-          :columns="columns_currentCarType"
+          :columns="columns_intentDrivingCarType"
           value="name"
-          :is-computed="formData['currentCarType']!==''"
+          :is-computed="formData.hasCar"
           required
           label="当前车型"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: formData.hasCar, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          v-if="formData.hasCar === '1'"
-          readonly
-          clickable
-          required
-          name="currentCarType"
-          :value="pickerNames.currentCarType"
-          label="当前车型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('currentCarType')"
-          @focus="copyData('currentCarType','select')"
-        /> -->
         <selftPicker
-          v-if="formData.hasCar === '0'"
+          v-show="formData.hasCar === false"
+          :props="keyValue"
           picker-key="intentDrivingCarType"
           :form="formData"
           :columns="columns_intentDrivingCarType"
           value="name"
-          :is-computed="formData['intentDrivingCarType']!==''"
+          :is-computed="!formData.hasCar"
           required
           label="意向驾驶车型"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: !formData.hasCar, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          v-if="formData.hasCar === '0'"
-          readonly
-          clickable
+        <self-area
+          label-width="100"
+          picker-key="liveaddress"
+          :form="area"
+          :is-computed="area.liveaddress.length > 2"
           required
-          name="intentDrivingCarType"
-          :value="pickerNames.intentDrivingCarType"
-          label="意向驾驶车型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('intentDrivingCarType')"
-          @focus="copyData('currentCarType','select')"
-        /> -->
-        <van-field
-          readonly
-          clickable
-          required
-          name="liveaddress"
-          :value="pickerNames.liveaddress"
           label="现居住地址"
           placeholder="请选择"
-          :rules="[{ required: true, message: '请选择现居住地址' }]"
-          @click="showPickerFnArea('liveaddress')"
+          :rules="[
+            { required: true, message: '请选择' },
+          ]"
         />
         <van-field
           v-model="formData.experience"
@@ -190,6 +144,7 @@
           @focus="copyData('experience')"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="currentHasWork"
           :form="formData"
           :columns="isOrNot"
@@ -202,19 +157,8 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="currentHasWork"
-          :value="pickerNames.currentHasWork"
-          label="当前是否无业"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('currentHasWork')"
-        /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="intentCargoType"
           :form="formData"
           :columns="columns_intentCargoType"
@@ -227,18 +171,8 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="意向货物类型"
-          :value="pickerNames.intentCargoType"
-          label="意向货物类型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('intentCargoType')"
-        /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="intentWorkDuration"
           :form="formData"
           :columns="columns_intentWorkDuration"
@@ -251,18 +185,8 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="intentWorkDuration"
-          :value="pickerNames.intentWorkDuration"
-          label="意向工作时间段"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('intentWorkDuration')"
-        /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="heavyLifting"
           label-width="150px"
           :form="formData"
@@ -276,19 +200,8 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="heavyLifting"
-          :value="pickerNames.heavyLifting"
-          label="是否能承担较重搬运"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('heavyLifting')"
-        /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="sourceChannel"
           :form="formData"
           :columns="columns_sourceChannel"
@@ -301,18 +214,8 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="邀约渠道"
-          :value="pickerNames.sourceChannel"
-          label="邀约渠道"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('sourceChannel')"
-        /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="drivingLicenceType"
           :form="formData"
           :columns="columns_drivingLicenceType"
@@ -325,18 +228,8 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="驾照类型"
-          :value="pickerNames.drivingLicenceType"
-          label="驾照类型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('drivingLicenceType')"
-        /> -->
         <selftPicker
+          :props="keyValue"
           picker-key="isLocalPlate"
           :form="formData"
           :columns="isOrNot"
@@ -349,41 +242,17 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="isLocalPlate"
-          :value="pickerNames.isLocalPlate"
-          label="是否本地工作车牌"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('isLocalPlate')"
-        /> -->
-        <!-- <selftPicker
+        <self-area
+          label-width="100"
           picker-key="intentWork"
-          :form="formData"
-          :columns="columns_intentWork"
-          value="name"
-          :is-computed="formData['intentWork']!==''"
+          :form="area"
+          :is-computed="area.intentWork.length > 2"
           required
           label="高意向工作区域"
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
           ]"
-        /> -->
-        <van-field
-          readonly
-          clickable
-          required
-          name="高意向工作区域"
-          :value="pickerNames.intentWork"
-          label="高意向工作区域"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFnArea('intentWork')"
         />
         <van-field
           v-model="formData.originIncomeAvg"
@@ -432,6 +301,7 @@
           @focus="copyData('scatteredJobRate')"
         />
         <selftPicker
+          :props="keyValue"
           picker-key="isNewEnergy"
           :form="formData"
           :columns="isOrNot"
@@ -444,18 +314,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="isNewEnergy"
-          :value="pickerNames.isNewEnergy"
-          label="是否新能源"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('isNewEnergy')"
-        /> -->
         <div class="btnGroup">
           <van-button
             native-type="button"
@@ -467,7 +325,6 @@
           </van-button>
           <van-button
             type="primary"
-            native-type="submit"
           >
             提交
           </van-button>
@@ -507,7 +364,7 @@ import { phoneRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { GetDictionaryList, getOpenCitys } from '@/api/common'
-// import SelfArea from '@/components/SelfArea'
+import SelfArea from '@/components/SelfArea'
 import SelftPicker from '@/components/SelfPicker'
 import { shareInterview, getInterview } from '@/api/driver.js'
 export default {
@@ -519,11 +376,15 @@ export default {
     [Popup.name]: Popup,
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
-    SelftPicker
-    // SelfArea
+    SelftPicker,
+    SelfArea
   },
   data() {
     return {
+      keyValue: {
+        label: 'name',
+        value: 'code'
+      },
       pickerKey: '',
       showPicker: false,
       pickerNames: {
@@ -542,9 +403,11 @@ export default {
         intentCargoType: '',
         isNewEnergy: ''
       },
-      liveaddress: [],
-      intentWork: [],
-      interview: [],
+      area: {
+        liveaddress: [],
+        interview: [],
+        intentWork: []
+      },
       formData: {
         workCity: '',
         name: '',
@@ -577,76 +440,16 @@ export default {
       columns: [],
       showAddressPicker: false,
       isOrNot: [
-        { name: '是', code: 1 },
-        { name: '否', code: 0 }
+        { name: '是', code: true },
+        { name: '否', code: false }
       ],
       columns_workCity: [],
       columns_intentDrivingCarType: [],
       columns_currentCarType: [],
-      columns_intentCargoType: [
-        {
-          name: '水果',
-          code: '123'
-        },
-        {
-          name: '家具',
-          code: '1223'
-        }
-      ],
-      columns_intentWorkDuration: [
-        {
-          name: '12:00-15:00',
-          code: '123'
-        },
-        {
-          name: '16:00-23:00',
-          code: '1223'
-        }
-      ],
-      columns_sourceChannel: [
-        {
-          name: '微信朋友圈',
-          code: '123'
-        },
-        {
-          name: '同行推荐',
-          code: '1223'
-        }
-      ],
-      columns_drivingLicenceType: [
-        {
-          name: 'C1',
-          code: '123'
-        },
-        {
-          name: 'B1',
-          code: '1223'
-        }
-      ],
-      areaList: {
-        province_list: {
-          110000: '北京市',
-          120000: '天津市'
-        },
-        city_list: {
-          110100: '北京市',
-          110200: '县',
-          120100: '天津市',
-          120200: '县'
-        },
-        county_list: {
-          110101: '东城区',
-          110102: '西城区',
-          110105: '朝阳区',
-          110106: '丰台区',
-          120101: '和平区',
-          120102: '河东区',
-          120103: '河西区',
-          120104: '南开区',
-          120105: '河北区'
-          // ....
-        }
-      },
+      columns_intentCargoType: [],
+      columns_intentWorkDuration: [],
+      columns_sourceChannel: [],
+      columns_drivingLicenceType: [],
       routeName: '',
       driverId: '',
       editForm: {}
@@ -659,7 +462,7 @@ export default {
   },
   watch: {
     'formData.hasCar'(val) {
-      if (val === 0) {
+      if (val === true) {
         this.formData.currentCarType = '';
         this.pickerNames.currentCarType = ''
       } else {
@@ -670,7 +473,7 @@ export default {
   },
   mounted() {
     this.routeName = this.$route.path;
-    this.driverId = this.$route.id;
+    this.driverId = this.$route.query.id;
     this.fetchData();
     if (this.routeName === '/editShare') {
       this.getDetail(this.driverId);
@@ -682,7 +485,7 @@ export default {
   },
   methods: {
     fetchData() {
-      GetDictionaryList(['Intentional_compartment', 'intent_cargo_type', 'source_channel', 'driving_licence_type'])
+      GetDictionaryList(['Intentional_compartment', 'intent_cargo_type', 'source_channel', 'driving_licence_type', 'intent_work_duration'])
         .then(({ data }) => {
           if (data.success) {
             this.columns_intentDrivingCarType = data.data.Intentional_compartment.map(ele => {
@@ -694,7 +497,10 @@ export default {
             this.columns_sourceChannel = data.data.source_channel.map(ele => {
               return { name: ele.dictLabel, code: ele.dictValue }
             })
-            this.columns_drivingLicenceType = data.data.source_channel.map(ele => {
+            this.columns_intentWorkDuration = data.data.intent_work_duration.map(ele => {
+              return { name: ele.dictLabel, code: ele.dictValue }
+            })
+            this.columns_drivingLicenceType = data.data.driving_licence_type.map(ele => {
               return { name: ele.dictLabel, code: ele.dictValue }
             })
           }
@@ -739,20 +545,21 @@ export default {
       }
     },
     async onSubmit(values) {
+      console.log(values)
       try {
         this.$loading(true)
         let params = { ...this.formData };
-        params.liveProvince = this.liveaddress[0]; // 居住地
-        params.liveCity = this.liveaddress[1];
-        params.liveCounty = this.liveaddress[2];
-        params.intentWorkProvince = this.intentWork[0]; // 高意向工作地
-        params.intentWorkCity = this.intentWork[1];
-        params.intentWorkCounty = this.intentWork[2];
+        params.liveProvince = this.area.liveaddress[0]; // 居住地
+        params.liveCity = this.area.liveaddress[1];
+        params.liveCounty = this.area.liveaddress[2];
+        params.intentWorkProvince = this.area.intentWork[0]; // 高意向工作地
+        params.intentWorkCity = this.area.intentWork[1];
+        params.intentWorkCounty = this.area.intentWork[2];
         // 面试地址
-        params.interviewCity = this.interview[0]
-        params.interviewCounty = this.interview[1]
-        params.interviewProvince = this.interview[2]
-        if (this.formData.hasCar === '0') {
+        params.interviewCity = this.area.interview[0]
+        params.interviewCounty = this.area.interview[1]
+        params.interviewProvince = this.area.interview[2]
+        if (this.formData.hasCar === true) {
           params.currentCarType = '';
         } else {
           params.intentDrivingCarType = '';

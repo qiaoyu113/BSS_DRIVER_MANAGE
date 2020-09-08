@@ -15,7 +15,7 @@
         label-width="120px"
         @submit="onSubmit1"
       >
-        <div v-if="formStatus === 1">
+        <div v-show="formStatus === 1">
           <van-cell-group>
             <van-cell
               value="司机信息"
@@ -55,6 +55,7 @@
               is-link
             />
             <selftPicker
+              :props="keyValue"
               picker-key="busiType"
               :form="formData"
               :columns="columns_busiType"
@@ -79,6 +80,7 @@
               @click="showPickerFn('busiType')"
             /> -->
             <selftPicker
+              :props="keyValue"
               picker-key="cooperationModel"
               :form="formData"
               :columns="columns_cooperationModel"
@@ -151,14 +153,15 @@
           </van-cell-group>
         </div>
 
-        <div v-if="formStatus === 2">
+        <div v-show="formStatus === 2">
           <van-cell-group>
             <van-cell
               value="商品有效期"
               is-link
             />
+
             <van-field
-              v-if="formData.busiType !== 1 && formData.cooperationModel === 3"
+              v-show="formData.busiType !== 1 && formData.cooperationModel === 3"
               readonly
               clickable
               :value="formText.inspectionTime"
@@ -166,10 +169,14 @@
               colon
               required
               placeholder="请选择年检有效期"
+              :rules="[
+                { required: formData.busiType !== 1 && formStatus === 2, message: '请选择' },
+              ]"
               @click="changeDate('inspectionTime')"
             />
+
             <van-field
-              v-if="formData.busiType !== 1 && formData.cooperationModel === 3"
+              v-show="formData.busiType !== 1 && formData.cooperationModel === 3"
               readonly
               clickable
               colon
@@ -177,11 +184,15 @@
               :value="formText.insuranceTime"
               label="保险有效期"
               placeholder="请选择保险有效期"
+              :rules="[
+                { required: formData.busiType !== 1 && formStatus === 2, message: '请选择' },
+              ]"
               @click="changeDate('insuranceTime')"
             />
+
             <selftPicker
-              v-if="formData.cooperationModel === 2"
-              :key="formData.cooperationModel"
+              v-show="formData.cooperationModel === 2"
+              :props="keyValue"
               picker-key="supplier"
               :form="formData"
               :columns="columns_supplier"
@@ -191,7 +202,7 @@
               label="租赁公司"
               placeholder="请选择"
               :rules="[
-                { required: true, message: '请选择' },
+                { required: formData.cooperationModel === 2 && formStatus === 2, message: '请选择' },
               ]"
             />
             <!-- <van-field
@@ -206,9 +217,10 @@
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('supplier')"
             /> -->
+
             <selftPicker
-              v-if="formData.cooperationModel === 1"
-              :key="formData.cooperationModel"
+              v-show="formData.cooperationModel === 1"
+              :props="keyValue"
               picker-key="supplier"
               :form="formData"
               :columns="columns_supplier"
@@ -218,7 +230,7 @@
               label="购车公司"
               placeholder="请选择"
               :rules="[
-                { required: true, message: '请选择' },
+                { required: formData.cooperationModel === 1 && formStatus === 2, message: '请选择' },
               ]"
             />
             <!-- <van-field
@@ -233,10 +245,11 @@
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('supplier')"
             /> -->
+
             <!-- 购车与租车 -->
             <selftPicker
-              v-if="formData.supplier && formData.cooperationModel !== 3"
-              :key="'cooperationCar1'+formStatus"
+              v-show="formData.supplier && formData.cooperationModel !== 3"
+              :props="keyValue"
               picker-key="cooperationCar"
               :form="formData"
               :columns="columns_cooperationCar1"
@@ -246,7 +259,7 @@
               label="合作车型"
               placeholder="请选择"
               :rules="[
-                { required: true, message: '请选择' },
+                { required: formData.supplier && formData.cooperationModel !== 3 && formStatus === 2, message: '请选择' },
               ]"
             />
             <!-- <van-field
@@ -261,9 +274,10 @@
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('cooperationCar1')"
             /> -->
+
             <selftPicker
-              v-if="formData.cooperationModel ===3"
-              :key="'cooperationCar2'+formStatus"
+              v-show="formData.cooperationModel ===3"
+              :props="keyValue"
               picker-key="cooperationCar"
               :form="formData"
               :columns="columns_cooperationCar2"
@@ -273,7 +287,7 @@
               label="合作车型"
               placeholder="请选择"
               :rules="[
-                { required: true, message: '请选择' },
+                { required: formData.cooperationModel ===3 && formStatus === 2, message: '请选择' },
               ]"
             />
             <!-- <van-field
@@ -288,9 +302,10 @@
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('cooperationCar2')"
             /> -->
+
             <selftPicker
-              v-if="formData.supplier && formData.cooperationCar && formData.cooperationModel === 1"
-              :key="'carModel'+formStatus"
+              v-show="formData.supplier && formData.cooperationCar && formData.cooperationModel === 1"
+              :props="keyValue"
               picker-key="carModel"
               :form="formData"
               :columns="columns_carModel"
@@ -300,7 +315,7 @@
               label="车辆型号"
               placeholder="请选择"
               :rules="[
-                { required: true, message: '请选择' },
+                { required: formData.supplier && formData.cooperationCar && formData.cooperationModel === 1 && formStatus === 2, message: '请选择' },
               ]"
             />
             <!-- <van-field
@@ -315,29 +330,32 @@
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('carModel')"
             /> -->
-            <template v-if="formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel">
+
+            <template
+              v-show="formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel"
+            >
               <div>
                 <van-field
-                  :key="'describe'+formStatus"
                   label="车辆信息"
                   :value="formText.describe"
                   required
                   colon
+                  :rules="[{ required: formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel && formStatus === 2, message: '请选择' }]"
                 />
+
                 <van-field
-                  v-if="formData.supplier && formData.cooperationModel === 1"
-                  :key="'carPrice'+formStatus"
+                  v-show="formData.supplier && formData.cooperationModel === 1"
                   label="无税车价"
                   :value="formText.carPrice"
                   required
                   colon
+                  :rules="[{ required: formData.supplier && formData.cooperationModel === 1 && formStatus === 2, message: '请选择' }]"
                 />
               </div>
             </template>
 
             <van-field
-              v-if="formData.cooperationModel !== 1"
-              :key="'plateNo'+formStatus"
+              v-show="formData.cooperationModel !== 1"
               v-model="formData.plateNo"
               clickable
               label="车牌号"
@@ -345,7 +363,7 @@
               colon
               placeholder="请填写车牌号"
               :rules="[
-                { required: true, message: '请填写车牌号' },{pattern:carNoRegExp, message: '请填写正确的车牌号'}
+                { required: formData.cooperationModel !== 1 && formStatus === 2, message: '请填写车牌号' },{pattern:formData.cooperationModel !== 1 && formStatus === 2 ? carNoRegExp : '', message: '请填写正确的车牌号'}
               ]"
             />
           </van-cell-group>
@@ -369,12 +387,19 @@
               v-for="(item,index) in formData.orderPayRecordInfoFORMList"
               :key="index"
             >
-              <PayItem :obj="item" :index="index" @delete="deleteItem" />
+              <PayItem
+                :obj="item"
+                :index="index"
+                @delete="deleteItem"
+              />
             </div>
           </van-cell-group>
         </div>
 
-        <div :key="formStatus" class="bottomGroup">
+        <div
+          :key="formStatus"
+          class="bottomGroup"
+        >
           <div
             class="formStatus"
             v-text="`${formStatus}/3`"
@@ -469,6 +494,10 @@ export default {
   },
   data() {
     return {
+      keyValue: {
+        label: 'name',
+        value: 'code'
+      },
       showPickerDate: false,
       showPicker: false,
       pickerKey: '',
@@ -555,7 +584,7 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (to.path !== '/addPay') {
-      window.localStorage.removeItem('payItemInfo')
+      window.localStorage.removeItem('payItemInfo');
     }
     next();
   },
@@ -808,10 +837,12 @@ export default {
             return { name: ele.dictLabel, code: ele.dictValue };
           }
         );
-        let payItemInfo = JSON.parse(window.localStorage.getItem('payItemInfo'));
+        let payItemInfo = JSON.parse(
+          window.localStorage.getItem('payItemInfo')
+        );
         if (payItemInfo) {
           this.formData.orderPayRecordInfoFORMList.push(payItemInfo);
-          this.formStatus = 3
+          this.formStatus = 3;
         }
         // this.optionsPay = data.data.pay_type
         // this.columns_busitype = data.data.busi_type.splice(0, 2)
@@ -843,7 +874,7 @@ export default {
           this.formText.cooperationCar = res.data.cooperationCar;
           this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
           this.formData = { ...this.formData, ...res.data };
-          this.formData.driverInfoFORM = this.formData.driverInfoVO
+          this.formData.driverInfoFORM = this.formData.driverInfoVO;
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -855,9 +886,12 @@ export default {
     },
     async realSubmit() {
       try {
-        if (Number(this.payMoneyed) > Number(this.formData.goodsAmount)) {
-          Notify({ type: 'warning', message: '添加的支付金额，不能超过剩余添加金额' });
-          return
+        if (Number(this.payMoneyed) !== Number(this.formData.goodsAmount)) {
+          Notify({
+            type: 'warning',
+            message: '添加的支付金额，不等于商品金额'
+          });
+          return;
         }
         this.$loading(true);
         let params = { ...this.formData };
@@ -1027,11 +1061,11 @@ export default {
       }
     },
     deleteItem(index) {
-      console.log(index)
+      console.log(index);
       let list = this.formData.orderPayRecordInfoFORMList.filter((ele, ind) => {
-        return ind !== index
-      })
-      this.formData.orderPayRecordInfoFORMList = { ...list }
+        return ind !== index;
+      });
+      this.formData.orderPayRecordInfoFORMList = { ...list };
     }
   }
 };
