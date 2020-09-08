@@ -30,7 +30,7 @@ service.interceptors.request.use(
     let token = localStorage.getItem('token')
     if (token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-      config.headers['Authorization'] = getToken()
+      config.headers['Authorization'] = 'eyJhbGciOiJIUzI1NiJ9.eyJwcm9maWxlIjoibTEiLCJ1c2VySWQiOiI5NiIsInVzZXJuYW1lIjoiMTg4NDg4ODUxMzUiLCJ0eXBlIjoiMyIsImJ1c2lQZXJtaXNzaW9uIjoiIiwidXNlckxvZ2luRmxhZyI6IjdkZjUyOTY4M2ZhYTQ2OWE5ODM1Nzg5MzNhMjdmMzNiIiwiZXhwIjoxNjAyMTM1MjE2fQ.Zw25z--PaBQ8keRFIDiKWq-0x3ate8ZjlSxfgo3S6sQ'
     }
     let cookieName = localStorage.getItem('developer')
     if (cookieName) {
