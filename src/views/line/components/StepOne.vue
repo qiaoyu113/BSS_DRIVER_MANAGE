@@ -313,7 +313,6 @@ export default {
     },
     // 模糊搜索
     async handleSearchChange(value) {
-      console.log('这里面接口请求模糊查询:', value)
       if (this.modalKey === 'carType') {
         let result = await this.getDictData('Intentional_compartment', value)
         this.options = result

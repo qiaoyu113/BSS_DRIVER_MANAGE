@@ -372,10 +372,12 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
+            if (item.name === '') {
+              item.num = res.title.all
+            } else if (item.name === 1) {
+              item.num = res.title.enable
+            } else if (item.name === 2) {
+              item.num = res.title.prevent
             }
           })
           return result

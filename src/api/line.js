@@ -19,15 +19,6 @@ export function getLineDetail(params) {
   })
 }
 
-// 获取线路详情文件
-export function getLineDetailFiles(params) {
-  return request({
-    url: `${prefix}/v2/line/inLineDetail`,
-    method: 'get',
-    params
-  })
-}
-
 // 线路下架
 export function undercarriage(params) {
   return request({

@@ -34,7 +34,7 @@
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
         <van-field label="司机上岗时间" label-width="110" readonly :value="form.driverWorkTime | parseTime('{y}-{m}-{d}')" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="form.deliveryWeekCycle" :border="false" colon />
+        <van-field label="配送时间" label-width="110" readonly :value="deliveryWeekCycle" :border="false" colon />
         <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
           <van-field label="预计工作时间" label-width="110" readonly :value="`${item.workingTimeStart}-${item.workingTimeEnd}`" :border="false" colon />
@@ -101,7 +101,7 @@
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
 import { Dialog, Notify } from 'vant';
-import { getLineDetail, getLineDetailFiles, undercarriage, judgeMeetConditions } from '@/api/line'
+import { getLineDetail, undercarriage, judgeMeetConditions } from '@/api/line'
 export default {
   components: {
     ImagePreview,
@@ -121,13 +121,58 @@ export default {
   computed: {
     region() {
       return this.form.provinceAreaName + '/' + this.form.cityAreaName + '/' + this.form.countyAreaName
+    },
+    // 配送时间
+    deliveryWeekCycle() {
+      if (+this.form.lineCategory === 1) {
+        let arrs = [
+          {
+            label: '一',
+            value: 1
+          },
+          {
+            label: '二',
+            value: 2
+          },
+          {
+            label: '三',
+            value: 3
+          },
+          {
+            label: '四',
+            value: 4
+          },
+          {
+            label: '五',
+            value: 5
+          },
+          {
+            label: '六',
+            value: 6
+          },
+          {
+            label: '日',
+            value: 7
+          }
+        ]
+        let name = ''
+        arrs.forEach((item, idx) => {
+          if (this.form.deliveryWeekCycle.indexOf(item.value) > -1) {
+            if (idx !== 0) {
+              name += '、'
+            }
+            name += `周${item.label}`
+          }
+        })
+        return name
+      }
+      return this.form.lineCategory
     }
   },
   mounted() {
     this.lineId = this.$route.query.lineId
     if (this.lineId) {
       this.getLineDetail()
-      this.getLineFiles()
     }
   },
   methods: {
@@ -230,24 +275,7 @@ export default {
         let { data: res } = await getLineDetail(params)
         if (res.success) {
           this.form = res.data
-        } else {
-          this.$fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get client detail fail:${err}`)
-      } finally {
-        this.$loading(false)
-      }
-    },
-    // 获取线路详情的文件资源
-    async getLineFiles() {
-      try {
-        let params = {
-          lineId: this.lineId
-        }
-        let { data: res } = await getLineDetailFiles(params)
-        if (res.success) {
-          this.fileForm = res.data
+          this.fileForm = res.data.linePictureRelatedVO
           for (let key in this.fileForm) {
             if (['warehouseLoadingPicture', 'otherPicture'].includes(key)) {
               this.fileForm[key] = this.fileForm[key].split(',')
@@ -257,7 +285,9 @@ export default {
           this.$fail(res.errorMsg)
         }
       } catch (err) {
-        console.log(`get files fail:${err}`)
+        console.log(`get client detail fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 下架
