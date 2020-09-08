@@ -18,7 +18,9 @@ import JsCookie from 'js-cookie'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url url = base url + request url
+
+  baseURL: 'http://yapi.ynimg.cn:8888', // url url = base url + request url
+  // baseURL: process.env.VUE_APP_BASE_API, // url url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 50000 // request timeout
 })
@@ -27,7 +29,9 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // Do something before request is sent
+    // let token = localStorage.getItem('token')
     let token = localStorage.getItem('token')
+
     if (token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
       config.headers['Authorization'] = getToken()

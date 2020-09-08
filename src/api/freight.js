@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 // let prefix = '/api/waybill'
-let prefix = 'mock/95'
+// let prefix = '/api/way_bill'
+let prefix = '/mock/95'
 // 加盟运费接口
 export function getConfirmInfoList(data) {
   return request({
