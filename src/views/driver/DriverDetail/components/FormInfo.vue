@@ -378,6 +378,7 @@
               readonly
             />
             <van-field
+              v-if="type.remarks"
               label="备注"
               :value="type.remarks"
               readonly

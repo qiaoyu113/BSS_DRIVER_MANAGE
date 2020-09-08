@@ -1,10 +1,10 @@
 import request from '@/utils/request'
-// let prefix = '/mock/81'
-let prefix = '/api/driver'
-// let linePrefix = '/mock/74'
-let linePrefix = '/api/waybill_center'
-// let transportPrefix = '/mock/103'
-let transportPrefix = '/api/carrier_center'
+let prefix = '/mock/81'
+// let prefix = '/api/driver'
+let linePrefix = '/mock/74'
+// let linePrefix = '/api/waybill_center'
+let transportPrefix = '/mock/103'
+// let transportPrefix = '/api/carrier_center'
 
 /**
  * 司机列表

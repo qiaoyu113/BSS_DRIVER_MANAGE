@@ -26,18 +26,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="interview"
-          :value="pickerNames.interview"
-          label="面试地址"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择现居住地址' }]"
-          @click="showPickerFnArea('interview')"
-          @focus="copyData('interview','select')"
-        /> -->
         <selftPicker
           :props="keyValue"
           picker-key="workCity"
@@ -100,22 +88,8 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="hasCar"
-          :value="pickerNames.hasCar"
-          label="是否有车"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('hasCar')"
-          @focus="copyData('hasCar','select')"
-        /> -->
         <selftPicker
-          v-if="formData.hasCar === true"
-          :key="formData.currentCarType"
+          v-show="formData.hasCar === true"
           :props="keyValue"
           picker-key="currentCarType"
           :form="formData"
@@ -126,12 +100,11 @@
           label="当前车型"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: formData.hasCar, message: '请选择' },
           ]"
         />
         <selftPicker
-          v-if="formData.hasCar === false"
-          :key="formData.intentDrivingCarType"
+          v-show="formData.hasCar === false"
           :props="keyValue"
           picker-key="intentDrivingCarType"
           :form="formData"
@@ -142,22 +115,9 @@
           label="意向驾驶车型"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: !formData.hasCar, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          v-if="formData.hasCar === '0'"
-          readonly
-          clickable
-          required
-          name="intentDrivingCarType"
-          :value="pickerNames.intentDrivingCarType"
-          label="意向驾驶车型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('intentDrivingCarType')"
-          @focus="copyData('currentCarType','select')"
-        /> -->
         <self-area
           label-width="100"
           picker-key="liveaddress"
@@ -170,17 +130,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="liveaddress"
-          :value="pickerNames.liveaddress"
-          label="现居住地址"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择现居住地址' }]"
-          @click="showPickerFnArea('liveaddress')"
-        /> -->
         <van-field
           v-model="formData.experience"
           name="货物运输经验（月）"
@@ -208,18 +157,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="currentHasWork"
-          :value="pickerNames.currentHasWork"
-          label="当前是否无业"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('currentHasWork')"
-        /> -->
         <selftPicker
           :props="keyValue"
           picker-key="intentCargoType"
@@ -234,17 +171,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="意向货物类型"
-          :value="pickerNames.intentCargoType"
-          label="意向货物类型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('intentCargoType')"
-        /> -->
         <selftPicker
           :props="keyValue"
           picker-key="intentWorkDuration"
@@ -259,17 +185,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="intentWorkDuration"
-          :value="pickerNames.intentWorkDuration"
-          label="意向工作时间段"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('intentWorkDuration')"
-        /> -->
         <selftPicker
           :props="keyValue"
           picker-key="heavyLifting"
@@ -285,18 +200,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="heavyLifting"
-          :value="pickerNames.heavyLifting"
-          label="是否能承担较重搬运"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('heavyLifting')"
-        /> -->
         <selftPicker
           :props="keyValue"
           picker-key="sourceChannel"
@@ -311,17 +214,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="邀约渠道"
-          :value="pickerNames.sourceChannel"
-          label="邀约渠道"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('sourceChannel')"
-        /> -->
         <selftPicker
           :props="keyValue"
           picker-key="drivingLicenceType"
@@ -336,17 +228,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="驾照类型"
-          :value="pickerNames.drivingLicenceType"
-          label="驾照类型"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('drivingLicenceType')"
-        /> -->
         <selftPicker
           :props="keyValue"
           picker-key="isLocalPlate"
@@ -361,18 +242,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="isLocalPlate"
-          :value="pickerNames.isLocalPlate"
-          label="是否本地工作车牌"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('isLocalPlate')"
-        /> -->
         <self-area
           label-width="100"
           picker-key="intentWork"
@@ -385,17 +254,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="高意向工作区域"
-          :value="pickerNames.intentWork"
-          label="高意向工作区域"
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFnArea('intentWork')"
-        /> -->
         <van-field
           v-model="formData.originIncomeAvg"
           label-width="160px"
@@ -456,18 +314,6 @@
             { required: true, message: '请选择' },
           ]"
         />
-        <!-- <van-field
-          readonly
-          clickable
-          required
-          name="isNewEnergy"
-          :value="pickerNames.isNewEnergy"
-          label="是否新能源"
-          clearable
-          placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
-          @click="showPickerFn('isNewEnergy')"
-        /> -->
         <div class="btnGroup">
           <van-button
             native-type="button"
@@ -479,7 +325,6 @@
           </van-button>
           <van-button
             type="primary"
-            native-type="submit"
           >
             提交
           </van-button>
@@ -522,7 +367,6 @@ import { GetDictionaryList, getOpenCitys } from '@/api/common'
 import SelfArea from '@/components/SelfArea'
 import SelftPicker from '@/components/SelfPicker'
 import { shareInterview, getInterview } from '@/api/driver.js'
-// import { delete } from 'vue/types/umd';
 export default {
   name: 'ShareInterview',
   components: {
@@ -606,30 +450,6 @@ export default {
       columns_intentWorkDuration: [],
       columns_sourceChannel: [],
       columns_drivingLicenceType: [],
-      areaList: {
-        province_list: {
-          110000: '北京市',
-          120000: '天津市'
-        },
-        city_list: {
-          110100: '北京市',
-          110200: '县',
-          120100: '天津市',
-          120200: '县'
-        },
-        county_list: {
-          110101: '东城区',
-          110102: '西城区',
-          110105: '朝阳区',
-          110106: '丰台区',
-          120101: '和平区',
-          120102: '河东区',
-          120103: '河西区',
-          120104: '南开区',
-          120105: '河北区'
-          // ....
-        }
-      },
       routeName: '',
       driverId: '',
       editForm: {}
@@ -741,10 +561,8 @@ export default {
         params.interviewProvince = this.area.interview[2]
         if (this.formData.hasCar === true) {
           params.currentCarType = '';
-          // delete params.currentCarType
         } else {
           params.intentDrivingCarType = '';
-          // delete params.intentDrivingCarType
         }
         console.log(params, 'params');
         let { data: res } = await shareInterview(params);
