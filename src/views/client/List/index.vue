@@ -13,7 +13,6 @@
         </template>
       </van-search>
     </van-sticky>
-
     <!-- 下拉刷新  上拉加载 -->
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
       <van-list
