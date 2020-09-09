@@ -342,7 +342,9 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
-      this.lists = result.lists
+      if (!result) {
+        return false
+      }
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
         this.finished = false

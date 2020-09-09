@@ -206,9 +206,9 @@ export default {
           workCity: this.detailInfo.workCity }})
       } else if (item.url === '/resetOrder') {
         this.$router.push({ path: item.url, query: { id: this.driverId, driverName: this.detailInfo.name, driverPhone: this.detailInfo.phone, workCityName: this.detailInfo.workCityName,
-          workCity: this.detailInfo.workCity, orderId: '123' }})
-        // this.detailInfo.orderId
+          workCity: this.detailInfo.workCity, orderId: this.detailInfo.orderId }})
       } else {
+        console.log('this.driverId', this.driverId)
         this.$router.push({ path: item.url, query: { id: this.driverId }})
       }
     },

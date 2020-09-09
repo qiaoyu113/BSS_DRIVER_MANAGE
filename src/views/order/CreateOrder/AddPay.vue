@@ -51,7 +51,7 @@
         type="number"
         :rules="[{ required: true, message: '请填写' }]"
       />
-      <!-- <van-field
+      <van-field
         label-width="120px"
         colon
         clickable
@@ -62,7 +62,7 @@
         placeholder="请选择"
         :rules="[{ required: true, message: '请选择' }]"
         @click="showPicker = true"
-      /> -->
+      />
       <van-field
         label="支付截图"
         colon
@@ -169,6 +169,7 @@ export default {
         transactionId: '',
         payDate: '',
         payType: '',
+        payTypeName: '',
         money: '',
         payImageUrl: [], // 库房装货图片
         remarks: '' // 现场信息说明
@@ -222,15 +223,17 @@ export default {
     },
     onConfirm(time) {
       let timeText = parseTime(time, '{y}-{m}-{d} {h}:{i}:{s}');
-      let timeCode = time.getTime();
+      let timeCode = new Date(time).getTime();
       this.showForm.payDate = timeText;
       this.form.payDate = timeCode;
+      console.log(time, this.form.payDate, new Date(time).getTime())
       this.showTime = false;
     },
     onConfirmPicker(value) {
       this.showForm.payType = value.name;
       this.form.payType = value.code;
       this.showPicker = false;
+      this.form.payTypeName = value.name
     },
     moneyCheck2(val) {
       if (Number(val) < 0) {
@@ -274,7 +277,7 @@ export default {
         } else {
           window.localStorage.setItem('payItemInfo', JSON.stringify(arr))
         }
-        // this.$router.go(-1)
+        this.$router.go(-1)
       } catch (err) {
         console.log(`submit fail:${err}`);
       }
