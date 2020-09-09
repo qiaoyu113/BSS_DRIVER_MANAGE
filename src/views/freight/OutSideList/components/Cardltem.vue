@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { shippingDetailBySale } from '@/api/freight'
 export default {
   props: {
     obj: {
@@ -38,28 +37,15 @@ export default {
      * 线路详情
      */
     handleDetailClick(obj) {
-      this.getGmInfoList(obj.wayBillId)
-    },
-    async getGmInfoList(id) {
-      try {
-        let parmas = {
-          wayBillId: id
+      this.$router.push({
+        path: '/outsidebatch1',
+        query: { endDate: obj.startDate,
+          startDate: obj.endDate,
+          projectId: obj.projectId
         }
-        let { data: res } = await shippingDetailBySale(parmas)
-        if (res.success) {
-          this.$router.push({
-            path: '/detail',
-            query: { obj: res.data,
-              type: '2' }
-          })
-        } else {
-
-          // this.$toast.fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get search data fail:${err}`)
-      }
+      })
     }
+
   }
 }
 

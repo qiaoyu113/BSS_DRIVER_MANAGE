@@ -2,12 +2,13 @@
   <div>
     <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        <van-checkbox v-model="obj.checked">
-          {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
-        </van-checkbox>
+        {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
       </h4>
       <p class="Pink">
         {{ obj.statusName }}
+      </p>
+      <p class="checked">
+        <van-checkbox v-if="shipper" v-model="obj.checked" />
       </p>
       <p class="text ellipsis">
         出车单号:{{ obj.wayBillId }}
@@ -45,7 +46,14 @@ export default {
     checkedarr: {
       type: Array,
       default: () => {}
+    },
+    shipper: {
+      type: Boolean,
+      default: () => {}
     }
+  },
+  mounted() {
+    console.log(this.$route.query.show)
   },
   methods: {
     /**
@@ -210,6 +218,11 @@ export default {
 
   border: 1px solid #ff00008a;
   color: #ff00008a;
+}
+.checked{
+  position: absolute;
+  left: 0;
+  top: 30px;
 }
 </style>
 

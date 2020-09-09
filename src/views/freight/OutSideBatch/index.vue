@@ -4,9 +4,9 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <!-- <div class="headerRight" @click="batch">
+          <div v-if="shipperr" class="headerRight" @click="Shipper() ">
             批量上报
-          </div> -->
+          </div>
         </template>
       </van-nav-bar>
     </van-sticky>
@@ -38,18 +38,21 @@
                 {{ item.num }}
               </div>
             </template>
-            <P class="all">
+            <P v-if="shipper " class="all">
               <van-checkbox v-model="checkall" class="checked">
                 <span>全选</span>
                 <span>已选择{{ checkedNum }} 个出车单位</span>
               </van-checkbox>
             </P>
-            <div v-for="sub in lists" :key="sub.id">
-              <CardItem
-                class="items"
-                :obj="sub"
-                :checkedarr="checkedarr"
-              />
+            <div>
+              <div v-for="sub in lists" :key="sub.id">
+                <CardItem
+                  class="items"
+                  :obj="sub"
+                  :checkedarr="checkedarr"
+                  :shipper="shipper"
+                />
+              </div>
             </div>
           </van-tab>
         </van-tabs>
@@ -166,6 +169,7 @@
 import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
+
 import { getLineInfoList } from '@/api/freight' // 外线接口
 // import { Toast } from 'vant
 export default {
@@ -177,6 +181,7 @@ export default {
   },
   data() {
     return {
+      listst: [],
       value: '', // 搜索框
       active: '', // 当前激活的tab,
       refreshing: false, // 下拉刷新
@@ -212,6 +217,8 @@ export default {
         total: 0,
         size: 10
       },
+      shipper: false,
+      shipperr: true,
       // 筛选
       text1: '', // 城市选择
       text2: '', // 用户名
@@ -311,7 +318,10 @@ export default {
 
   },
   methods: {
-
+    Shipper() {
+      this.shipper = true
+      this.shipperr = false
+    },
     onClickLeft() {
       this.$router.go(-1)
     },
