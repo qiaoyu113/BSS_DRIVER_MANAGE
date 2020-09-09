@@ -17,7 +17,8 @@
         <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineBalance ===1 ? '有线路余额': '无线路余额'" :border="false" colon />
         <van-field label="线路状态" label-width="110" readonly :value="form.lineStateName" :border="false" colon />
         <van-field label="试跑状态" label-width="110" readonly :value="form.runTestStateName" :border="false" colon />
-        <van-field label="上架截止日期" label-width="110" readonly :value="form.waitDirveValidity | parseTime('{y}-{m}-{d}') " :border="false" colon />
+
+        <van-field label="上架截止日期" label-width="110" readonly :value="upTime" :border="false" colon />
         <van-field label="线路稳定性" label-width="110" readonly :value="form.stabilityRateName" :border="false" colon />
         <van-field label="对外销售" label-width="110" readonly :value="form.lineSaleName" :border="false" colon />
         <van-field label="上岗经理" label-width="110" readonly :value="form.dutyManagerIdName" :border="false" colon />
@@ -101,6 +102,7 @@
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
 import { Dialog, Notify } from 'vant';
+import dayjs from 'dayjs'
 import { getLineDetail, undercarriage, judgeMeetConditions } from '@/api/line'
 export default {
   components: {
@@ -119,6 +121,12 @@ export default {
     }
   },
   computed: {
+    upTime() {
+      if (this.form.waitDirveValidity) {
+        return dayjs(this.form.waitDirveValidity).format('YYYY/MM/DD')
+      }
+      return ''
+    },
     region() {
       return this.form.provinceAreaName + '/' + this.form.cityAreaName + '/' + this.form.countyAreaName
     },
@@ -278,11 +286,6 @@ export default {
         if (res.success) {
           this.form = res.data
           this.fileForm = res.data.linePictureRelatedVO
-          for (let key in this.fileForm) {
-            if (['warehouseLoadingPicture', 'otherPicture'].includes(key)) {
-              this.fileForm[key] = this.fileForm[key].split(',')
-            }
-          }
         } else {
           this.$fail(res.errorMsg)
         }
@@ -324,6 +327,9 @@ export default {
     flex-wrap: nowrap;
     .distance {
       margin-right:5px;
+    }
+    button {
+      width:170px;
     }
   }
 }

@@ -83,7 +83,7 @@
 
 <script>
 import { upload } from '@/api/common'
-import { collectLineInfo } from '@/api/line'
+import { insertCollectLineInfo, updateCollectLineInfo, getPictureDetail } from '@/api/line'
 import VideoPlay from '../components/video'
 export default {
   components: {
@@ -104,13 +104,74 @@ export default {
       },
       show: false,
       videoUrl: '',
-      lineId: ''
+      lineId: '',
+      isUpdate: false,
+      createDate: ''
     }
   },
+
   mounted() {
     this.lineId = this.$route.query.lineId
+    this.init()
   },
   methods: {
+    // 获取采线信息
+    async init() {
+      try {
+        this.$loading(true)
+        let params = {
+          lineId: this.lineId
+        }
+        let { data: res } = await getPictureDetail(params)
+        if (res.success) {
+          let result = res.data
+          this.form = {
+            ...this.form,
+            ...{
+              warehouseLoadingPictures: result.warehouseLoadingPictures,
+              otherPictures: result.otherPictures,
+              loadingVideo: result.loadingVideo && result.loadingVideo.split('') || [],
+              informationDescription: result.informationDescription
+            }
+          }
+          this.createDate = result.createDate
+          this.showFile(result)
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get data fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    // 显示文件
+    showFile(val) {
+      if (val.informationDescription) {
+        this.isUpdate = true
+      }
+      if (val.warehouseLoadingPictures && val.warehouseLoadingPictures.length > 0) {
+        this.isUpdate = true
+        this.showForm.warehouseLoadingPictures = val.warehouseLoadingPictures.map(item => ({
+          url: item,
+          isImage: true
+        }))
+      }
+      if (val.otherPictures && val.otherPictures.length > 0) {
+        this.isUpdate = true
+        this.showForm.otherPictures = val.otherPictures.map(item => ({
+          url: item,
+          isImage: true
+        }))
+      }
+      if (val.loadingVideo && val.loadingVideo.length > 0) {
+        this.isUpdate = true
+        this.showForm.loadingVideo = val.loadingVideo.map(item => ({
+          url: item
+        }))
+        this.videoUrl = this.showForm.loadingVideo[0]
+      }
+    },
     /**
      *返回按钮
      */
@@ -124,20 +185,21 @@ export default {
       try {
         this.$loading(true)
         let params = {
-          lineId: this.lineId
+          lineId: this.lineId,
+          warehouseLoadingPictures: this.form.warehouseLoadingPictures || [],
+          otherPictures: this.form.otherPictures || [],
+          loadingVideo: this.form.loadingVideo.join(''),
+          informationDescription: this.form.informationDescription
         }
-        if (this.form.warehouseLoadingPictures.length > 0) {
-          params.warehouseLoadingPictures = this.form.warehouseLoadingPictures
+        let res = ''
+        if (this.isUpdate) {
+          params.createDate = this.createDate
+          let response = await updateCollectLineInfo(params)
+          res = response.data
+        } else {
+          let response = await insertCollectLineInfo(params)
+          res = response.data
         }
-        if (this.form.otherPictures.length > 0) {
-          params.otherPictures = this.form.otherPictures
-        }
-        if (this.form.loadingVideo.length > 0) {
-          params.loadingVideo = this.form.loadingVideo.join('')
-        }
-
-        this.form.informationDescription && (params.informationDescription = this.form.informationDescription)
-        let { data: res } = await collectLineInfo(params)
         if (res.success) {
           this.$router.push({
             path: '/line'
@@ -176,6 +238,7 @@ export default {
         let { data: res } = await upload(params, formData)
         if (res.success) {
           file.status = 'done';
+          this.form[key] = []
           this.form[key].push(res.data.url)
         } else {
           this.$fail(res.errorMsg)

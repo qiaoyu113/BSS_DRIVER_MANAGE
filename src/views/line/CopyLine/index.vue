@@ -16,6 +16,7 @@ import StepThree from '../components/StepThree'
 import { getLineDetail, copyTemporaryLine, copyStableLine } from '@/api/line'
 import { Notify } from 'vant'
 import { delay } from '@/utils'
+import dayjs from 'dayjs'
 export default {
   components: {
     StepOne,
@@ -72,14 +73,16 @@ export default {
         dutyRemark: '', // 其他上岗要求
         lineId: ''
       },
-      warehouseCity: '',
-      city: '',
-      lineSaleId: '',
-      dutyManagerId: '',
-      lineLogo: '',
-      createId: '',
-      createDate: '',
-      projectId: ''
+      lineInfo: {
+        warehouseCity: '',
+        city: '',
+        lineSaleId: '',
+        dutyManagerId: '',
+        lineLogo: '',
+        createId: '',
+        createDate: '',
+        projectId: ''
+      }
     }
   },
   mounted() {
@@ -105,22 +108,18 @@ export default {
     // 复制线路
     handleSubmit() {
       let params = {
-        projectId: this.projectId,
+        ...this.lineInfo,
         ...this.stepOneForm,
         ...this.stepTwoForm,
         ...this.stepThreeForm,
         lineDeliveryInfoFORMS: []
       }
-      params.warehouseCity = this.warehouseCity
-      params.city = this.city
-      params.lineSaleId = this.lineSaleId
-      params.dutyManagerId = this.dutyManagerId
-      params.lineLogo = this.lineLogo
-      params.createDate = this.createDate
-      params.createId = this.createId
+      params.lineLogo = this.stepOneForm.lineName
       params.provinceArea = this.stepOneForm.area[0]
       params.cityArea = this.stepOneForm.area[1]
       params.countyArea = this.stepOneForm.area[2]
+      params.waitDirveValidity = new Date(params.waitDirveValidity).getTime()
+      params.driverWorkTime = new Date(params.driverWorkTime).getTime()
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
@@ -192,21 +191,26 @@ export default {
         if (res.success) {
           let result = res.data
           this.isStable = +res.data.lineCategory === 1
-          this.warehouseCity = res.data.warehouseCity
-          this.lineLogo = res.data.lineLogo
-          this.city = res.data.city
-          this.lineSaleId = res.data.lineSaleId
-          this.dutyManagerId = res.data.dutyManagerId
-          this.createId = res.data.createId
-          this.createDate = res.data.createDate
-          this.projectId = res.data.projectId
+          this.lineInfo = {
+            ...this.lineInfo,
+            ...{
+              warehouseCity: result.warehouseCity,
+              lineLogo: result.lineLogo,
+              city: result.city,
+              lineSaleId: result.lineSaleId,
+              dutyManagerId: result.dutyManagerId,
+              createId: result.createId,
+              createDate: result.createDate,
+              projectId: result.projectId
+            }
+          }
           this.stepOneForm = {
             ...this.stepOneForm,
             ...{
               lineName: result.lineName,
               lineNum: result.lineNum,
               lineBalance: result.lineBalance,
-              waitDirveValidity: result.waitDirveValidity,
+              waitDirveValidity: dayjs(result.waitDirveValidity).format('YYYY/MM/DD'),
               stabilityRate: result.stabilityRate,
               runSpeed: result.runSpeed,
               returnBill: result.returnBill,
@@ -230,7 +234,7 @@ export default {
           this.stepTwoForm = {
             ...this.stepTwoForm,
             ... {
-              driverWorkTime: result.driverWorkTime,
+              driverWorkTime: dayjs(result.driverWorkTime).format('YYYY/MM/DD'),
               monthNum: result.monthNum,
               dayNum: result.dayNum,
               incomeSettlementMethod: result.incomeSettlementMethod,
@@ -248,9 +252,11 @@ export default {
             this.stepTwoForm.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.split(',').map(item => +item)
           } else {
             this.stepTwoForm.deliveryWeekCycle = []
+            let startDate = dayjs(result.deliveryStartDate).format('YYYY/MM/DD')
+            let endDate = dayjs(result.deliveryEndDate).format('YYYY/MM/DD')
             this.stepTwoForm.deliveryWeekCycle.push(
-              new Date(result.deliveryStartDate),
-              new Date(result.deliveryEndDate)
+              new Date(startDate),
+              new Date(endDate)
             )
           }
 

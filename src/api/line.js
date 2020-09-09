@@ -37,10 +37,19 @@ export function tagging(data) {
   })
 }
 
-// 采线
-export function collectLineInfo(data) {
+// 新增采线
+export function insertCollectLineInfo(data) {
   return request({
     url: `${prefix}/v2/line/lineInfo/saveInLine`,
+    method: 'post',
+    data
+  })
+}
+
+// 修改采线
+export function updateCollectLineInfo(data) {
+  return request({
+    url: `${prefix}/v2/line/lineInfo/updateInLine`,
     method: 'post',
     data
   })
@@ -133,6 +142,42 @@ export function getLineSearch(data) {
     url: `${prefix}/v2/line/lineInfo/fuzzyCheck`,
     method: 'post',
     data
+  })
+}
+
+// 创建线路判断线路名
+export function judgeLineExist(params) {
+  return request({
+    url: `${prefix}/v2/line/lineInfo/judgeLineExist`,
+    method: 'get',
+    params
+  })
+}
+
+// 激活线路判断线路名
+export function judgeLineExistByLineName(params) {
+  return request({
+    url: `${prefix}/v2/line/lineInfo/judgeLineExistByLineName`,
+    method: 'get',
+    params
+  })
+}
+
+// 复制线路判断线路名
+export function judgeLineExistByLineNameAndLineLogo(params) {
+  return request({
+    url: `${prefix}/v2/line/lineInfo/judgeLineExistByLineNameAndLineLogo`,
+    method: 'get',
+    params
+  })
+}
+
+// 获取采线的信息
+export function getPictureDetail(params) {
+  return request({
+    url: `${prefix}/v2/line/lineInfo/pictureDetail`,
+    method: 'get',
+    params
   })
 }
 

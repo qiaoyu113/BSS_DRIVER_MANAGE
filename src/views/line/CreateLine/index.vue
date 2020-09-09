@@ -155,6 +155,16 @@ export default {
       this.city = obj.city
       this.lineSaleId = obj.lineSaleId
       this.dutyManagerId = obj.dutyManagerId
+      this.stepOneForm.runSpeed = obj.runSpeed
+      this.stepOneForm.returnBill = obj.returnBill
+      this.stepOneForm.carType = obj.carType
+      this.stepOneForm.deliveryNum = obj.deliveryNum
+      this.stepOneForm.distance = obj.distance
+      this.stepOneForm.limitRemark = obj.limitRemark
+      this.stepThreeForm.cargoType = obj.cargoType
+      this.stepThreeForm.cargoNum = obj.cargoNum
+      this.stepThreeForm.carry = obj.carry
+      this.stepThreeForm.dutyRemark = obj.dutyRemark
     },
     // 发布线路
     handleSubmit() {
@@ -257,7 +267,17 @@ export default {
             warehouseCity: item.warehouseCity,
             city: item.city,
             lineSaleId: item.lineSaleId,
-            dutyManagerId: item.dutyManagerId
+            dutyManagerId: item.dutyManagerId,
+            runSpeed: item.runSpeed,
+            returnBill: item.returnBill,
+            carType: item.carType,
+            deliveryNum: item.deliveryNum,
+            distance: item.distance,
+            limitRemark: item.limitRemark,
+            cargoType: item.cargoType,
+            cargoNum: item.cargoNum,
+            carry: item.carry,
+            dutyRemark: item.dutyRemark
           }))
         } else {
           this.$fail(res.errorMsg)

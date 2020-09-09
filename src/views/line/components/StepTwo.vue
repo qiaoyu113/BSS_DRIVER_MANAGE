@@ -5,7 +5,7 @@
         配送时间信息
       </h4>
       <SelfDatetimePicker
-        label-width="100"
+        label-width="110"
         picker-key="driverWorkTime"
         :is-computed="form['driverWorkTime']!==''"
         :form="form"
@@ -18,7 +18,7 @@
       />
       <template v-if="isStable">
         <van-field
-          label-width="100"
+          label-width="110"
           colon
           name="deliveryWeekCycleValidator"
           readonly
@@ -46,7 +46,7 @@
       </template>
       <template v-else>
         <self-calendar
-          label-width="100"
+          label-width="110"
           picker-key="deliveryWeekCycle"
           :is-computed="form['deliveryWeekCycle'].length> 0"
           :form="form"
@@ -67,7 +67,7 @@
         required
         label="预计月出车天数"
         placeholder="请输入"
-        label-width="100"
+        label-width="110"
         name="daysUseCarValidator"
         type="digit"
         :rules="[
@@ -77,7 +77,7 @@
       />
       <van-field
         v-model.number="form.dayNum"
-        label-width="100"
+        label-width="110"
         colon
         required
         label="每日配送趟数"
@@ -105,7 +105,7 @@
         value="label"
         :is-computed="form['incomeSettlementMethod']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="结算方式"
         placeholder="请选择"
         :rules="[
@@ -119,7 +119,7 @@
         value="label"
         :is-computed="form['settlementCycle']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="结算周期"
         placeholder="请选择"
         :rules="[
@@ -133,7 +133,7 @@
         value="label"
         :is-computed="form['settlementDays']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="结算天数"
         placeholder="请选择"
         :rules="[
@@ -147,7 +147,7 @@
         <van-field
           v-model="form.everyUnitPrice"
           v-only-number="{min: 1, max: 999999.99, precision: 2}"
-          label-width="100"
+          label-width="110"
           colon
           required
           label="每趟提成单价(元)"
@@ -160,7 +160,7 @@
       <van-field
         v-model="form.everyTripGuaranteed"
         v-only-number="{min: 1, max: 999999.99, precision: 2}"
-        label-width="100"
+        label-width="110"
         colon
         required
         :label="form.incomeSettlementMethod ===1 ? '单趟报价(元)':'每趟保底(元)'"
@@ -172,7 +172,7 @@
       <van-field
         v-model="form.shipperOffer"
         v-only-number="{min: 1, max: 99999999.99, precision: 2}"
-        label-width="100"
+        label-width="110"
         colon
         required
         label="预计月报价(元)"

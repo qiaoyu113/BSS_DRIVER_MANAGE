@@ -77,7 +77,7 @@ export default {
   methods: {
     // 回显第一次获取label和索引index
     getLabel() {
-      let index = this.columns.findIndex(item => (item.value || item.code || item.dictValue) === this.form[this.pickerKey])
+      let index = this.columns.findIndex(item => item[this.props.value] === this.form[this.pickerKey])
       if (index === -1) {
         index = 0
         this.label = ''

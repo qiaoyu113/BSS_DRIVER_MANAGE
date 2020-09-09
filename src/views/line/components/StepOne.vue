@@ -6,19 +6,23 @@
       </h4>
       <van-field
         v-model="form.lineName"
-        label-width="100"
+        label-width="110"
         colon
         required
         :disabled="type === 'edit'"
         label="线路名称"
+        name="asyncValidatorLineName"
         placeholder="请输入"
         maxlength="10"
-        :rules="[{ required: true, message: '请输入线路名称' }]"
+        :rules="[
+          { required: true, message: '请输入线路名称' },
+          { validator: asyncValidatorLineName, message: '线路名称重复' }
+        ]"
       />
       <template v-if="['copy','create'].includes(type)">
         <van-field
           v-model="form.lineNum"
-          label-width="100"
+          label-width="110"
           colon
           required
           label="线路数量"
@@ -38,7 +42,7 @@
         value="label"
         :is-computed="form['lineBalance']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="是否有线路余额"
         placeholder="请选择"
         :rules="[
@@ -46,7 +50,7 @@
         ]"
       />
       <selfDatetimePicker
-        label-width="100"
+        label-width="110"
         picker-key="waitDirveValidity"
         :is-computed="form['waitDirveValidity']!==''"
         :form="form"
@@ -64,7 +68,7 @@
         value="label"
         :is-computed="form['stabilityRate']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="线路稳定性"
         placeholder="请选择"
         :rules="[
@@ -81,7 +85,7 @@
         value="label"
         :is-computed="form['runSpeed']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="是否走高速"
         placeholder="请选择"
         :rules="[
@@ -95,7 +99,7 @@
         value="label"
         :is-computed="form['returnBill']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="是否需要回单"
         placeholder="请选择"
         :rules="[
@@ -103,7 +107,7 @@
         ]"
       />
       <van-field
-        label-width="100"
+        label-width="110"
         colon
         :value="pickerNames['carType'] || form['carTypeName']"
         readonly
@@ -117,7 +121,7 @@
         @click="handleShowModal('carType')"
       />
       <self-area
-        label-width="100"
+        label-width="110"
         picker-key="area"
         :form="form"
         :is-computed="form.area.length > 2"
@@ -131,7 +135,7 @@
       <van-field
         v-model="form.districtArea"
         colon
-        label-width="100"
+        label-width="110"
         rows="2"
         autosize
         label="详细地址"
@@ -143,7 +147,7 @@
       />
       <van-field
         v-model="form.deliveryNum"
-        label-width="100"
+        label-width="110"
         colon
         required
         label="配送点数量"
@@ -158,7 +162,7 @@
       <van-field
         v-model="form.distance"
         v-only-number="{min: 1, max: 999999}"
-        label-width="100"
+        label-width="110"
         colon
         required
         label="配送总里程数"
@@ -172,7 +176,7 @@
       />
       <van-field
         v-model="form.limitRemark"
-        label-width="100"
+        label-width="110"
         colon
         rows="2"
         autosize
@@ -205,6 +209,7 @@ import { getDictDataByKeyword } from '@/api/common'
 import SelftPicker from '@/components/SelfPicker'
 import SelfDatetimePicker from '@/components/SelfDatetimePicker'
 import SelfArea from '@/components/SelfArea'
+import { judgeLineExist, judgeLineExistByLineName, judgeLineExistByLineNameAndLineLogo } from '@/api/line'
 export default {
   components: {
     Suggest,
@@ -358,6 +363,53 @@ export default {
     // 重置表单
     reset() {
       this.$refs.stepOne.resetValidation()
+    },
+    // 校验线路名称
+    asyncValidatorLineName(val) {
+      return new Promise(async(resolve) => {
+        let result = await this.handleLineNameBlur()
+        resolve(result)
+      });
+    },
+    // 校验线路名称是否重复
+    async handleLineNameBlur() {
+      try {
+        if (this.type === 'create') {
+          let params = {
+            lineLogo: this.form.lineName
+          }
+          let { data: res } = await judgeLineExist(params)
+          if (res.success) {
+            return true
+          } else {
+            return false
+          }
+        } else if (['active'].includes(this.type)) {
+          let params = {
+            lineName: this.form.lineName,
+            lineId: this.form.lineId
+          }
+          let { data: res } = await judgeLineExistByLineName(params)
+          if (res.success) {
+            return true
+          } else {
+            return false
+          }
+        } else if (this.type === 'copy') {
+          let params = {
+            lineName: this.form.lineName
+          }
+          let { data: res } = await judgeLineExistByLineNameAndLineLogo(params)
+          if (res.success) {
+            return true
+          } else {
+            return false
+          }
+        }
+      } catch (err) {
+        console.log(`validate fail:${err}`)
+        return false
+      }
     }
   }
 }

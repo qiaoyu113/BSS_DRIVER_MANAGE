@@ -55,17 +55,10 @@ module.exports = {
           '/api/mock': '/mock'
         }
       },
-      '/api/line_center': {
-        target: 'http://192.168.0.197:10101',
-        changeOrigin: true,
-        pathRewrite: {
-          '/api/api/line_center': ''
-        }
-      },
       '/api': {
         // target: `http://localhost:${mockServerPort}/mock-api/v1`,
-        // target: IS_PRODUCTION ? cdnDomian : 'https://szjw-bss-h5.m1.yunniao.cn',
-        target: 'http://szjw-domain-gateway.d2.yunniao.cn',
+        target: IS_PRODUCTION ? cdnDomian : 'https://szjw-bss-h5.m1.yunniao.cn',
+        // target: 'http://szjw-domain-gateway.d2.yunniao.cn',
         changeOrigin: true, // needed for virtual hosted sites
         secure: false,
         ws: true, // proxy websockets

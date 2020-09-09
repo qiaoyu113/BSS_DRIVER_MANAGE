@@ -9,39 +9,34 @@
       标签信息
     </h4>
     <van-form ref="tagForm" :show-error="false" @submit="onSubmit">
-      <van-field
-        label-width="100"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="lineUrgent"
+        :form="form"
+        :columns="lineUrgentColumns"
+        value="label"
+        :is-computed="form['lineUrgent']!=='' && lineAdapterColumns.length > 0"
         required
-        name="picker"
-        :value="pickerNames['lineUrgent']"
+        label-width="100"
         label="线路紧急程度"
         placeholder="请选择"
-        :rules="[{ required: true, message: '请选择' }]"
-        @click="showPickerFn('lineUrgent')"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
       />
-      <van-field
-        label-width="100"
-        readonly
-        clickable
+      <selftPicker
+        picker-key="lineAdapter"
+        :form="form"
+        :columns="lineAdapterColumns"
+        value="label"
+        :is-computed="form['lineAdapter']!==''&&lineAdapterColumns.length > 0"
         required
-        name="picker"
-        :value="pickerNames['lineAdapter']"
+        label-width="100"
         label="适配性"
         placeholder="请选择"
-        :rules="[{ required: true, message: '请选择' }]"
-        @click="showPickerFn('lineAdapter')"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
       />
-      <van-popup v-model="showPicker" position="bottom">
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </van-popup>
       <van-button type="primary" block class="btn">
         提交
       </van-button>
@@ -50,27 +45,26 @@
 </template>
 
 <script>
-import { tagging } from '@/api/line'
-import { getDictDataByKeyword } from '@/api/common'
+import { tagging, getLineDetail } from '@/api/line'
+import { getDictData } from '@/api/common'
+import SelftPicker from '@/components/SelfPicker'
 export default {
+  components: {
+    SelftPicker
+  },
   data() {
     return {
       form: {
         lineAdapter: '',
         lineUrgent: ''
       },
-      pickerNames: {
-        lineAdapter: '',
-        lineUrgent: ''
-      },
-      pickerKey: '', // 显示picker的key
-      columns: [], // picker的列表
-      showPicker: false, // 是否打开picker,
+      lineId: '',
       lineUrgentColumns: [], // 线路紧急程度数组
       lineAdapterColumns: [] // 适配性数组
     }
   },
   mounted() {
+    this.lineId = this.$route.query.lineId
     this.init()
   },
   methods: {
@@ -86,9 +80,11 @@ export default {
      */
     async onSubmit(values) {
       try {
+        this.$loading(true)
         let params = {
           lineAdapter: this.form.lineAdapter,
-          lineUrgent: this.form.lineUrgent
+          lineUrgent: this.form.lineUrgent,
+          lineId: this.lineId
         }
         let { data: res } = await tagging(params)
         if (res.success) {
@@ -100,26 +96,12 @@ export default {
         }
       } catch (err) {
         console.log(`tag fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
       console.log('submit', values);
     },
-    // picker选择器
-    onConfirm(obj) {
-      this.pickerNames[this.pickerKey] = obj.label
-      this.form[this.pickerKey] = obj.value
-      this.showPicker = false;
-    },
-    // 显示picker
-    showPickerFn(key) {
-      this.columns = []
-      this.pickerKey = key;
-      if (key === 'lineUrgent') {
-        this.columns.push(...this.lineUrgentColumns);
-      } else if (key === 'lineAdapter') {
-        this.columns.push(...this.lineAdapterColumns);
-      }
-      this.showPicker = true;
-    },
+
     /**
      * 重置表单
      */
@@ -128,20 +110,44 @@ export default {
     },
     // 初始化数据
     async init() {
-      this.lineUrgentColumns = await this.getDictDataByKeyword('line_urgent')
-      this.lineAdapterColumns = await this.getDictDataByKeyword('line_adapter')
+      this.lineUrgentColumns = await this.getDictData('line_urgent')
+      this.lineAdapterColumns = await this.getDictData('line_adapter')
+      this.getLineDetail()
+    },
+    // 获取线路详情
+    async getLineDetail() {
+      try {
+        this.$loading(true)
+        let params = {
+          lineId: this.lineId
+        }
+        let { data: res } = await getLineDetail(params)
+        if (res.success) {
+          let result = res.data
+          this.form = {
+            lineAdapter: result.lineAdapter,
+            lineUrgent: result.lineUrgent
+          }
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.$fail()
+      } finally {
+        this.$loading(false)
+      }
     },
     // 从数据字典获取数据
-    async getDictDataByKeyword(type) {
+    async getDictData(dictType) {
       try {
         let params = {
-          type
+          dictType
         }
-        let { data: res } = await getDictDataByKeyword(params)
+        let { data: res } = await getDictData(params)
         if (res.success) {
           return res.data.map(item => ({
             label: item.dictLabel,
-            value: item.dictValue
+            value: +item.dictValue
           }))
         } else {
           this.$fail(res.errorMsg)
