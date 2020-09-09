@@ -225,7 +225,10 @@ export default {
   methods: {
     Shipper() {
       this.$router.push({
-        path: 'outsidebatch'
+        path: 'outsidebatch',
+        query: { endDate: this.$route.query.startDate,
+          startDate: this.$route.query.endDate,
+          projectId: this.$route.query.projectId }
       })
     },
     onClickLeft() {
@@ -251,13 +254,9 @@ export default {
       try {
         this.$loading(true)
         let params = {
-          page: this.page.current,
-          limit: this.page.size,
-          pageNumber: 20,
-          endDate: this.$route.query.endDate,
+          endDate: this.$route.query.startDate,
           startDate: this.$route.query.endDate,
           projectId: this.$route.query.projectId
-
         }
         let { data: res } = await getProjectWayBillList(params)
         if (res.success) {

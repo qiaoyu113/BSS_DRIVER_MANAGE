@@ -2,12 +2,13 @@
   <div>
     <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        <van-checkbox v-model="obj.checked">
-          {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
-        </van-checkbox>
+        {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
       </h4>
       <p class="Pink">
         {{ obj.statusName }}
+      </p>
+      <p class="checked">
+        <van-checkbox v-model="obj.checked" />
       </p>
       <p class="text ellipsis">
         出车单号:{{ obj.wayBillId }}
@@ -78,28 +79,23 @@ export default {
       this.$router.go(-1)
     },
     Add_to() {
-      let arr = []
-
       if (this.checkedarr !== '') {
-        this.checkedarr.filter(item => {
-          arr.push(item.wayBillId)
-        })
-
-        this.reportMoneyBatchByGM(arr)
+        let wayBillId = this.checkedarr.map(item => item.wayBillId)
+        console.log(wayBillId, 'xxxxxxxxxxxxxxx')
+        this.wayBillAmount(wayBillId)
       } else {
         this.$toast.fail('请选择上报的')
       }
     },
-    async reportMoneyBatchByGM(id) { // 确认运费回显
+    async wayBillAmount(wayBillId) { // 确认运费回显
       try {
-        let parmas = {
-          wayBillIds: id
-        }
-        let { data: res } = await wayBillAmountDetail(parmas)
-        console.log(res)
+        // let data = {
+        //   wayBillIds: wayBillId
+        // }
+        let { data: res } = await wayBillAmountDetail(wayBillId)
         if (res.success) {
           this.$router.push({
-            path: '/report',
+            path: '/outsidereport',
             query: {
               obj: JSON.stringify(res.data)
             }
@@ -203,6 +199,11 @@ export default {
 
   border: 1px solid #ff00008a;
   color: #ff00008a;
+}
+.checked{
+  position: absolute;
+  left: 0;
+  top: 30px;
 }
 </style>
 

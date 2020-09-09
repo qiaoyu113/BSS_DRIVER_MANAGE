@@ -2,19 +2,14 @@
   <div>
     <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        {{ obj.endDate }}/ {{ obj.startDate }}/{{ obj.driverPhone }}
+        {{ obj.departureDate |formatDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
       </h4>
-      <p class="Pink">
-        {{ obj.reportState }}
-      </p>
-      <p class="checked">
-        <van-checkbox v-if="shipper" v-model="obj.checked" />
+
+      <p class="text ellipsis">
+        出车单号:{{ obj.wayBillId }}
       </p>
       <p class="text ellipsis">
-        出车单号:{{ obj.wayBillNum }}
-      </p>
-      <p class="text ellipsis">
-        线路名称:{{ obj.customerName }} /{{ obj.customerCity }}
+        线路名称:{{ obj.lineName }} /{{ obj.lineId }}
       </p>
 
       <div class="detail van-hairline--top">
@@ -30,6 +25,17 @@
 // import { Toast } from 'vant'
 import { shippingDetailBySale } from '@/api/freight'
 export default {
+  filters: {
+    formatDate: function(value) {
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? ('0' + MM) : MM;
+      let d = date.getDate();
+      d = d < 10 ? ('0' + d) : d;
+      return y + '-' + MM + '-' + d;
+    }
+  },
   props: {
     obj: {
       type: Object,
