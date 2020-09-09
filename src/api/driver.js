@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-// let prefix = '/mock/81'
-let prefix = ''
+let prefix = '/mock/81'
+
 // let prefix = '/api/driver'
 let linePrefix = '/mock/74'
 // let linePrefix = '/api/waybill_center'
@@ -131,7 +131,7 @@ export function historyList(data) {
  */
 export function getOperateTime(params) {
   return request({
-    url: `${prefix || 'driver'}/v2/driver/getOperateTime`,
+    url: `${prefix}/v2/driver/getOperateTime`,
     method: 'get',
     params
   })
