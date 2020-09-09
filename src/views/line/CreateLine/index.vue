@@ -39,8 +39,8 @@ import StepTwo from '../components/StepTwo'
 import StepThree from '../components/StepThree'
 import Suggest from '@/components/SuggestSearch'
 import { createStableLine, createTemporaryLine } from '@/api/line'
-import { getProjectSearch } from '@/api/project'
-import { Notify, Dialog } from 'vant';
+import { getProjectSearch, getProjectDetail } from '@/api/project'
+import { Dialog } from 'vant';
 import { delay } from '@/utils'
 export default {
   components: {
@@ -48,7 +48,6 @@ export default {
     StepTwo,
     StepThree,
     Suggest,
-    [Notify.Component.name]: Notify.Component,
     [Dialog.Component.name]: Dialog.Component
   },
 
@@ -118,7 +117,9 @@ export default {
         title = '发布临时线路'
       }
       if (this.isProject) {
+        this.projectId = this.$route.query.projectId
         this.step = 1
+        this.getProjectDetail()
       }
       this.title = title
       document.title = title
@@ -284,6 +285,41 @@ export default {
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)
+      }
+    },
+    // 获取项目详情
+    async getProjectDetail() {
+      try {
+        this.$loading(true)
+        let params = {
+          projectId: this.projectId
+        }
+        let { data: res } = await getProjectDetail(params)
+        if (res.success) {
+          let obj = res.data
+          this.projectId = obj.value
+          this.projectName = obj.label
+          this.warehouseCity = obj.warehouseCity
+          this.city = obj.city
+          this.lineSaleId = obj.lineSaleId
+          this.dutyManagerId = obj.dutyManagerId
+          this.stepOneForm.runSpeed = obj.runSpeed
+          this.stepOneForm.returnBill = obj.returnBill
+          this.stepOneForm.carType = obj.carType
+          this.stepOneForm.deliveryNum = obj.deliveryNum
+          this.stepOneForm.distance = obj.distance
+          this.stepOneForm.limitRemark = obj.limitRemark
+          this.stepThreeForm.cargoType = obj.cargoType
+          this.stepThreeForm.cargoNum = obj.cargoNum
+          this.stepThreeForm.carry = obj.carry
+          this.stepThreeForm.dutyRemark = obj.dutyRemark
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get client detail fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     }
 

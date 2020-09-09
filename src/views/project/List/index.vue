@@ -313,6 +313,7 @@ export default {
     },
     // 查询
     async onQuery() {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -420,6 +421,7 @@ export default {
     },
     // 状态切换
     async handleTabChange(tab) {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -465,11 +467,13 @@ export default {
         } else {
           this.loading = false;
           this.error = true;
+          this.finished = true
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
+        this.finished = true
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)

@@ -40,8 +40,10 @@ export default {
   },
   beforeDestroy() {
     // 销毁播放器实例
-    this.player.destroy(true)
-    this.player = null
+    if (this.player) {
+      this.player.destroy(true)
+      this.player = null
+    }
   },
   methods: {
     // 初始化视频播放器

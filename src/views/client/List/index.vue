@@ -120,7 +120,7 @@ import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { getClientList } from '@/api/client'
-import { getOpenCitys } from '@/api/common'
+import { getOpenCitys, getDictData } from '@/api/common'
 export default {
   components: {
     CardItem,
@@ -143,12 +143,12 @@ export default {
         {
           text: '已启用',
           num: 0,
-          name: 1
+          name: 2
         },
         {
           text: '已禁用',
           num: 0,
-          name: 2
+          name: 1
         }
       ],
       lists: [],
@@ -160,30 +160,8 @@ export default {
         date: []
       },
       options: [], // 开通城市列表
-      customerTypeArr: [
-        {
-          label: '公司',
-          value: 1
-        },
-        {
-          label: '个体',
-          value: 2
-        }
-      ],
-      classificationArr: [
-        {
-          label: '外线客户',
-          value: 1
-        },
-        {
-          label: '自承运客户',
-          value: 2
-        },
-        {
-          label: '集团客户',
-          value: 3
-        }
-      ],
+      customerTypeArr: [],
+      classificationArr: [],
       showModal: false,
       showCalendar: false,
       modalKey: '',
@@ -215,7 +193,18 @@ export default {
       return this.dateLists.includes(this.pickerKey)
     }
   },
+  mounted() {
+    this.init()
+  },
   methods: {
+    async init() {
+      // 客户类型
+      let customerTypeArr = await this.getDictData('line_cloud_customerType')
+      this.customerTypeArr = customerTypeArr || []
+      // 客户属性
+      let classificationArr = await this.getDictData('line_cloud_classification')
+      this.classificationArr = classificationArr || []
+    },
     // 返回
     onClickLeft() {
       this.$router.go(-1)
@@ -259,6 +248,7 @@ export default {
     },
     // 查询
     async onQuery() {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -350,6 +340,7 @@ export default {
     },
     // 状态切换
     async handleTabChange(tab) {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -394,14 +385,36 @@ export default {
         } else {
           this.loading = false;
           this.error = true;
+          this.finished = true
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
+        this.finished = true
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)
+      }
+    },
+    // 从数据字典获取数据
+    async getDictData(dictType) {
+      try {
+        let params = {
+          dictType
+        }
+        let { data: res } = await getDictData(params)
+
+        if (res.success) {
+          return res.data.map(item => ({
+            label: item.dictLabel,
+            value: +item.dictValue
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get dict data fail:${err}`)
       }
     }
   }

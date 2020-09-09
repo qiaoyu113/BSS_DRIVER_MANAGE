@@ -34,7 +34,7 @@
         <van-field label="限行区域说明" label-width="110" readonly :value="form.limitRemark" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
-        <van-field label="司机上岗时间" label-width="110" readonly :value="form.driverWorkTime | parseTime('{y}-{m}-{d}')" :border="false" colon />
+        <van-field label="司机上岗时间" label-width="110" readonly :value="timeFormat(form.driverWorkTime,'YYYY-MM-DD')" :border="false" colon />
         <van-field label="配送时间" label-width="110" readonly :value="deliveryWeekCycle" :border="false" colon />
         <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
@@ -184,6 +184,10 @@ export default {
     }
   },
   methods: {
+    // YYYY-MM-DD dddd HH:mm:ss
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
+    },
     /**
      *返回按钮
      */
@@ -256,14 +260,17 @@ export default {
     // 判断激活和复制是否有权限
     async judgeMeetConditions(conditionType) {
       try {
+        this.$loading(true)
         let params = {
           lineId: this.lineId,
           conditionType
         }
         let { data: res } = await judgeMeetConditions(params)
         if (res.success && res.data.success) {
+          this.$loading(false)
           return true
         } else {
+          this.$loading(false)
           Dialog.alert({
             title: '提示',
             message: res.data.msg
@@ -272,6 +279,7 @@ export default {
           })
         }
       } catch (err) {
+        this.$loading(false)
         console.log('judgeMeetConditions fail:', err)
       }
     },
@@ -298,17 +306,21 @@ export default {
     // 下架
     async undercarriage() {
       try {
+        this.$loading(true)
         let params = {
           lineId: this.lineId
         }
         let { data: res } = await undercarriage(params)
         if (res.success) {
+          this.$loading(false)
           this.getLineDetail()
           this.$toast.success('操作成功');
         } else {
+          this.$loading(false)
           this.$fail(res.errorMsg)
         }
       } catch (err) {
+        this.$loading(false)
         console.log(`undercarriage fail:${err}`)
       }
     }

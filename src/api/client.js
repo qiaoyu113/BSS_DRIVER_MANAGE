@@ -18,3 +18,12 @@ export function getClientDetail(params) {
   })
 }
 
+// 获取客户搜索
+export function getClientSearch(data) {
+  return request({
+    url: `${prefix}/v2/line/customer/fuzzy/check`,
+    method: 'post',
+    data
+  })
+}
+
