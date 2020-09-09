@@ -87,7 +87,7 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value
-      this.getLists(this.keyWord)
+      this.handleSearch(this.keyWord)
     },
     // 搜索
     async handleSearch(keyword = '') {

@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 let prefix = '/mock/81'
+
 // let prefix = '/api/driver'
 let linePrefix = '/mock/74'
 // let linePrefix = '/api/waybill_center'

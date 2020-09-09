@@ -18,7 +18,9 @@
       <p class="tableName">
         操作人：李相赫（18848885135）
       </p>
-      <div class="tableBox">
+
+      <!--共享-->
+      <div v-if="detail.busiType === 1" class="tableBox">
         <van-grid :column-num="3">
           <van-grid-item>
             <span>字段名称</span>
@@ -29,17 +31,561 @@
           <van-grid-item>
             <span>{{ timeText }}</span>
           </van-grid-item>
-          <template v-for="(item,index) in tableList">
-            <van-grid-item :key="item.name + index">
-              <span>字段名称</span>
-            </van-grid-item>
-            <van-grid-item :key="item.info + index">
-              <span>现信息</span>
-            </van-grid-item>
-            <van-grid-item :key="item.time + index">
-              <span>2020/08/24 10:03:25</span>
-            </van-grid-item>
-          </template>
+
+          <van-grid-item>
+            <span>面试地址</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.interviewProvinceName + detail.interviewCityName + detail.interviewCountyName + detail.interviewDistrict }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.interviewProvinceName + newDetail.interviewCityName + newDetail.interviewCountyName + newDetail.interviewDistrict }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>工作城市</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.workCityName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.workCityName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>司机姓名</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.name }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.name }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>司机手机号</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.phone }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.phone }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>年龄</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.age }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.age }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>是否有车</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.hasCar }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.hasCar }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>当前车型</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.currentCarTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.currentCarTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>现居住地址</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.liveProvinceName + detail.liveCityName + detail.liveCountyName + detail.liveDistrict }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>货物运输经验（月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.experience }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.experience }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>当前是否无业</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>意向货物类型</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.intentCargoTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.intentCargoTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>意向工作时间段</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.intentWorkDurationName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.intentWorkDurationName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>是否能承重较重搬运</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.heavyLifting }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.heavyLifting }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>邀约渠道</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.inviteTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.inviteTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>驾照类型</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.drivingLicenceTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.drivingLicenceTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>是否工作地车牌</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.isLocalPlate }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.isLocalPlate }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>高意向工作区域</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.intentWorkProvinceName + detail.intentWorkCityName + detail.intentWorkCountyName + detail.intentWorkDistrict }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>原收入（去油）（元/月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.originIncomeAvg }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.originIncomeAvg }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>期望收入（去油）（元/月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.expIncomeAvg }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.expIncomeAvg }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>从业时间（月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.workDuration }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.workDuration }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>零散活占比（月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.scatteredJobRate }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.scatteredJobRate }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>是否新能源</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.isNewEnergy }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.isNewEnergy }}</span>
+          </van-grid-item>
+        </van-grid>
+      </div>
+
+      <!--专车-->
+      <div v-if="detail.busiType === 0" class="tableBox">
+        <van-grid :column-num="3">
+          <van-grid-item>
+            <span>字段名称</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>现信息</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ timeText }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>司机姓名</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.name }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.name }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>邀约方式</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.inviteTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.inviteTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>工作城市</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.workCityName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.workCityName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>邀约渠道</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.inviteTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.inviteTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>了解渠道</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.sourceChannelName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.sourceChannelName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>重代理姓名</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.heavyAgentName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.heavyAgentName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>司机手机号</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.phone }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.phone }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>年龄</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.age }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.age }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>现居住地址</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.liveProvinceName + detail.liveCityName + detail.liveCountyName + detail.liveDistrict }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>意向工作区域</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.intentWorkProvinceName + detail.intentWorkCityName + detail.intentWorkCountyName + detail.intentWorkDistrict }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>意向配送模式</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.intentDeliveryModeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.intentDeliveryModeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>意向货物类型</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.intentCargoTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.intentCargoTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>意向工作时间段</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.intentWorkDurationName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.intentWorkDurationName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>原收入（去油）（元/月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.originIncomeAvg }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.originIncomeAvg }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>期望收入（去油）（元/月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.expIncomeAvg }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.expIncomeAvg }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>户籍类型</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.householdType }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.householdType }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>子女数</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.childNum }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.childNum }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>货物运输经验（月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.experience }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.experience }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>当前是否无业</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>实际货车驾龄（月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.drivingAge }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.drivingAge }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>本城市居住时长（月）</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.livingAge }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.livingAge }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>驾照类型</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.drivingLicenceTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.drivingLicenceTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>是否有车</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.hasCar ? '是' : '否' }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.hasCar ? '是' : '否' }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>当前车型</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.currentCarTypeName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.currentCarTypeName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>最大可支付首付款</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.maxAdvancePaymentName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.maxAdvancePaymentName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>是否能承担较重搬运</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.heavyLifting }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.heavyLifting }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>能否提供个人征信</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.providePersonalCredit }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.providePersonalCredit }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>投资决策权</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.strategyRightName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.strategyRightName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>有机会合作，看中什么？</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.cooperateFocusPointName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.cooperateFocusPointName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>决定合作的因素</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.cooperateKeyFactorName }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.cooperateKeyFactorName }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>是否高意向司机</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.isAdvancedIntention }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.isAdvancedIntention }}</span>
+          </van-grid-item>
+
+          <van-grid-item>
+            <span>备注</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ detail.remarks }}</span>
+          </van-grid-item>
+          <van-grid-item>
+            <span>{{ newDetail.remarks }}</span>
+          </van-grid-item>
         </van-grid>
       </div>
     </div>
@@ -69,6 +615,8 @@ export default {
       showDate: false,
       timeList: [],
       tableList: [],
+      newDetail: {},
+      detail: {},
       id: '',
       busiType: ''
     };
