@@ -479,13 +479,13 @@ export default {
           });
           return result;
         } else {
-          this.page.current--;
+          this.page.current !== 1 && this.page.current--;
           this.loading = false;
           this.error = true;
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        this.page.current--;
+        this.page.current !== 1 && this.page.current--;
         this.loading = false;
         this.error = true;
         console.log(`get list fail:${err}`);
