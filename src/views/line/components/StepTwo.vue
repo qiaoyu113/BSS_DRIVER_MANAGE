@@ -169,16 +169,29 @@
         :rules="[{ required: true, message: '请输入' }]"
       />
       <!-- 输入数字限制精确到小数点后两位，小数点前8位 -->
-      <van-field
-        v-model="form.shipperOffer"
-        v-only-number="{min: 1, max: 99999999.99, precision: 2}"
-        label-width="110"
-        colon
-        required
-        label="预计月报价(元)"
-        placeholder="请输入"
-        :rules="[{ required: true, message: '请输入线路名称' }]"
-      />
+      <template v-if="form.incomeSettlementMethod===1">
+        <van-field
+          v-model="monthMoney"
+          label-width="110"
+          colon
+          required
+          disabled
+          label="预计月报价(元)"
+        />
+      </template>
+      <template v-else>
+        <van-field
+          v-model="form.shipperOffer"
+          v-only-number="{min: 1, max: 99999999.99, precision: 2}"
+          label-width="110"
+          colon
+          required
+          :disabled="form.incomeSettlementMethod ===1"
+          label="预计月报价(元)"
+          placeholder="请输入"
+          :rules="[{ required: true, message: '请输入线路名称' }]"
+        />
+      </template>
       <div class="btn">
         <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-one')">
           返回上一步
@@ -301,6 +314,12 @@ export default {
         }
         return newVal
       }
+    },
+    monthMoney() {
+      if (this.form.incomeSettlementMethod === 1) {
+        return (Number(this.form.monthNum) * Number(this.form.dayNum) * Number(this.form.everyTripGuaranteed)).toFixed(2)
+      }
+      return 0
     }
   },
   watch: {
