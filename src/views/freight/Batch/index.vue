@@ -64,13 +64,19 @@
       @submit="onQuery"
       @reset="onReset"
     >
-      <van-field
+      <!-- <van-field
         :value="text1"
         readonly
         clickable
         label="司机城市"
         placeholder="请选择"
         @click="showPicker1 = true"
+      /> -->
+      <van-field
+        v-model="text1"
+        name="username"
+        label="司机城市"
+        placeholder="请输入"
       />
       <van-field
         v-model="text2"
@@ -333,7 +339,6 @@ export default {
     },
     async getConfirmInfoList(isInit) {
       try {
-        this.$loading(true)
         this.$loading(true)
         let params = {
           page: this.page.current,

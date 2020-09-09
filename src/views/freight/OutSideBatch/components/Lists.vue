@@ -2,42 +2,40 @@
   <div>
     <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
+        {{ obj.departureDate |formatDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
       </h4>
-      <p class="Pink">
-        {{ obj.statusName }}
-      </p>
-      <p class="checked">
-        <van-checkbox v-model="obj.checked" />
-      </p>
+
       <p class="text ellipsis">
         出车单号:{{ obj.wayBillId }}
       </p>
       <p class="text ellipsis">
-        线路名称:{{ obj.lineName }}
+        线路名称:{{ obj.lineName }} /{{ obj.lineId }}
       </p>
 
       <div class="detail van-hairline--top">
-        <van-button type="default" round hairline @click="handleDetailClick(obj.id)">
+        <van-button type="default" round hairline @click="handleDetailClick(obj)">
           详情
         </van-button>
       </div>
-    </div>
-    <div class="Bulk">
-      <button @click="cancel()">
-        取消批量上传
-      </button>
-      <button @click="Add_to(obj)">
-        批量上报运费
-      </button>
     </div>
   </div>
 </template>
 
 <script>
 // import { Toast } from 'vant'
-import { wayBillAmountDetail, shippingDetailByGM } from '@/api/freight'
+import { shippingDetailBySale } from '@/api/freight'
 export default {
+  filters: {
+    formatDate: function(value) {
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? ('0' + MM) : MM;
+      let d = date.getDate();
+      d = d < 10 ? ('0' + d) : d;
+      return y + '-' + MM + '-' + d;
+    }
+  },
   props: {
     obj: {
       type: Object,
@@ -46,62 +44,37 @@ export default {
     checkedarr: {
       type: Array,
       default: () => {}
+    },
+    shipper: {
+      type: Boolean,
+      default: () => {}
     }
+  },
+  mounted() {
+
   },
   methods: {
     /**
      * 线路详情
      */
-    handleDetailClick(id) {
-      this.getGmInfoList(id)
+    handleDetailClick(obj) {
+      this.getGmInfoList(obj.wayBillId)
     },
     async getGmInfoList(id) {
       try {
         let parmas = {
-          wayBillAmountId: id
+          wayBillId: id
         }
-        let { data: res } = await shippingDetailByGM(parmas)
+        let { data: res } = await shippingDetailBySale(parmas)
         if (res.success) {
           this.$router.push({
-            path: '/Detail',
+            path: '/detail',
             query: { obj: res.data,
-              type: '1' }
+              type: '2' }
           })
         } else {
 
           // this.$toast.fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get search data fail:${err}`)
-      }
-    },
-    cancel() {
-      this.$router.go(-1)
-    },
-    Add_to() {
-      if (this.checkedarr !== '') {
-        let wayBillId = this.checkedarr.map(item => item.wayBillId)
-        console.log(wayBillId, 'xxxxxxxxxxxxxxx')
-        this.wayBillAmount(wayBillId)
-      } else {
-        this.$toast.fail('请选择上报的')
-      }
-    },
-    async wayBillAmount(wayBillId) { // 确认运费回显
-      try {
-        // let data = {
-        //   wayBillIds: wayBillId
-        // }
-        let { data: res } = await wayBillAmountDetail(wayBillId)
-        if (res.success) {
-          this.$router.push({
-            path: '/outsidereport',
-            query: {
-              obj: JSON.stringify(res.data)
-            }
-          })
-        } else {
-          this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)
@@ -196,6 +169,7 @@ export default {
   line-height: 20px;
   text-align: center;
   border-radius:10px ;
+  overflow: hidden;
 
   border: 1px solid #ff00008a;
   color: #ff00008a;

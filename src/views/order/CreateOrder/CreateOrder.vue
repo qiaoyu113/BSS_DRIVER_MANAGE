@@ -673,22 +673,6 @@ export default {
         this.getBuyCarPrice(); // 购车
       }
     }
-    // 'formData.goodsAmount'(value) {
-    //   if (value <= (Number(this.readyPay) + Number(this.notPay))) {
-    //   // this.ruleForm.goodsAmount = Number(this.readyPay) + Number(this.notPay)
-    //     this.orderPrice = Number(this.readyPay) + Number(this.notPay)
-    //     this.remain = Number(this.orderPrice) - (Number(this.notPay) + Number(this.readyPay))
-    //   } else {
-    //     this.orderPrice = value
-    //     this.notPay = this.getNotPay()
-    //     const orderPrice = numeral(this.orderPrice)
-    //     const remain = orderPrice.subtract(this.readyPay).subtract(this.notPay).value()
-    //     this.remain = remain
-    //   }
-    //   if (!this.id) {
-    //     this.payNumber = value
-    //   }
-    // }
   },
   created() {
     this.IdPattern = IdPattern;
@@ -710,8 +694,7 @@ export default {
         data
       } = await GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel({
         busType: this.formData.cooperationModel,
-        // city: this.formData.driverInfoFORM.workCity,
-        city: 410100,
+        city: this.formData.driverInfoFORM.workCity,
         supplier: this.formData.supplier,
         carType: this.formData.cooperationCar,
         model: this.formData.carModel
@@ -729,8 +712,7 @@ export default {
       if (str === '1') {
         let { data } = await GetSupplierByTypeAndCity({
           busType: this.formData.cooperationModel,
-          // city: this.formData.driverInfoFORM.workCity
-          city: 410100
+          city: this.formData.driverInfoFORM.workCity
         });
         res = data;
       } else if (str === '2') {
@@ -755,8 +737,7 @@ export default {
         // 购车
         let { data } = await GetCarTypeByTypeAndCityAndSupplier({
           busType: this.formData.cooperationModel,
-          // city: this.formData.driverInfoFORM.workCity,
-          city: 410100,
+          city: this.formData.driverInfoFORM.workCity,
           supplier: this.formData.supplier
         });
         res = data;
@@ -764,8 +745,7 @@ export default {
         // 租车
         let { data } = await GetRentalCarTypeByParams({
           busType: this.formData.cooperationModel,
-          // city: this.formData.driverInfoFORM.workCity,
-          city: 410100,
+          city: this.formData.driverInfoFORM.workCity,
           supplier: this.formData.supplier
         });
         res = data;
@@ -782,8 +762,7 @@ export default {
     async GetModelByTypeAndCityAndSupplierAndCarType() {
       let { data } = await GetModelByTypeAndCityAndSupplierAndCarType({
         busType: this.formData.cooperationModel,
-        // city: this.formData.driverInfoFORM.workCity,
-        city: 410100,
+        city: this.formData.driverInfoFORM.workCity,
         supplier: this.formData.supplier,
         carType: this.formData.cooperationCar
       });
@@ -798,8 +777,7 @@ export default {
     async getPrice() {
       let { data } = await GetPriceAndByTypeAndCityAndSupplierAndCarType({
         busType: this.formData.cooperationModel,
-        // city: this.formData.driverInfoFORM.workCity,
-        city: 410100,
+        city: this.formData.driverInfoFORM.workCity,
         supplier: this.formData.supplier,
         carType: this.formData.cooperationCar
       });

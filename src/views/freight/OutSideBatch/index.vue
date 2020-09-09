@@ -4,7 +4,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <!-- <div class="headerRight" @click="batch">
+          <!-- <div v-if="shipperr" class="headerRight" @click="Shipper() ">
             批量上报
           </div> -->
         </template>
@@ -44,12 +44,14 @@
                 <span>已选择{{ checkedNum }} 个出车单位</span>
               </van-checkbox>
             </P>
-            <div v-for="sub in lists" :key="sub.id">
-              <CardItem
-                class="items"
-                :obj="sub"
-                :checkedarr="checkedarr"
-              />
+            <div>
+              <div v-for="sub in lists" :key="sub.id">
+                <CardItem
+                  class="items"
+                  :obj="sub"
+                  :checkedarr="checkedarr"
+                />
+              </div>
             </div>
           </van-tab>
         </van-tabs>
@@ -166,7 +168,7 @@
 import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
-import { getGmInfoList } from '@/api/freight'
+import { getProjectWayBillList } from '@/api/freight' // 外线接口
 // import { Toast } from 'vant
 export default {
   components: {
@@ -334,13 +336,12 @@ export default {
     async getConfirmInfoList(isInit) {
       try {
         this.$loading(true)
-        this.$loading(true)
         let params = {
-          page: this.page.current,
-          limit: this.page.size,
-          pageNumber: 20
+          endDate: this.$route.query.startDate,
+          startDate: this.$route.query.endDate,
+          projectId: this.$route.query.projectId
         }
-        let { data: res } = await getGmInfoList(params)
+        let { data: res } = await getProjectWayBillList(params)
         if (res.success) {
           let newLists = res.data
           newLists.forEach(item => {
@@ -419,7 +420,7 @@ export default {
           startDate: this.text10
         }
         this.$loading(true)
-        let { data: res } = await getGmInfoList(parmas)
+        let { data: res } = await getProjectWayBillList(parmas)
         console.log(res)
         if (res.success) {
           this.lists = res.data

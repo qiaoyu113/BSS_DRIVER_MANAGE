@@ -2,12 +2,13 @@
   <div>
     <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        <van-checkbox v-model="obj.checked">
-          {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
-        </van-checkbox>
+        {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
       </h4>
       <p class="Pink">
-        {{ obj.statusName }}
+        {{ obj.gmStatusName }}
+      </p>
+      <p class="checked">
+        <van-checkbox v-model="obj.checked" />
       </p>
       <p class="text ellipsis">
         出车单号:{{ obj.wayBillId }}
@@ -35,6 +36,7 @@
 
 <script>
 // import { Toast } from 'vant'
+import { shippingDetailBySale, wayBillAmountDetail } from '@/api/freight'
 export default {
   props: {
     obj: {
@@ -44,29 +46,71 @@ export default {
     checkedarr: {
       type: Array,
       default: () => {}
+    },
+    shipper: {
+      type: Boolean,
+      default: () => {}
     }
+  },
+  mounted() {
+    console.log(this.$route.query.show)
   },
   methods: {
     /**
      * 线路详情
      */
     handleDetailClick(obj) {
-      this.$router.push({
-        path: '/detail',
-        query: { obj: obj,
-          type: '2' }
-      })
+      console.log(obj.wayBillId, 'xxxxxxxxxxxxxxxxxx')
+      this.getGmInfoList(obj.wayBillNum)
+    },
+    async getGmInfoList(id) {
+      try {
+        let parmas = {
+          wayBillId: id
+        }
+        let { data: res } = await shippingDetailBySale(parmas)
+        if (res.success) {
+          this.$router.push({
+            path: '/detail',
+            query: { obj: res.data,
+              type: '2' }
+          })
+        } else {
+
+          // this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     },
     cancel() {
       this.$router.go(-1)
     },
     Add_to() {
-      this.$router.push({
-        path: '/report',
-        query: {
-          obj: JSON.stringify(this.checkedarr)
+      if (this.checkedarr !== '') {
+        let wayBillId = this.checkedarr.map(item => item.wayBillId)
+        this.reportMoneyBatchByGM(wayBillId)
+      } else {
+        this.$toast.fail('请选择上报的')
+      }
+    },
+    async reportMoneyBatchByGM(wayBillId) { // 确认运费回显
+      try {
+        let { data: res } = await wayBillAmountDetail(wayBillId)
+        console.log(res)
+        if (res.success) {
+          this.$router.push({
+            path: '/report',
+            query: {
+              obj: JSON.stringify(res.data)
+            }
+          })
+        } else {
+          this.$toast.fail(res.errorMsg)
         }
-      })
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     }
   }
 }
@@ -159,6 +203,11 @@ export default {
 
   border: 1px solid #ff00008a;
   color: #ff00008a;
+}
+.checked{
+  position: absolute;
+  left: 0;
+  top: 30px;
 }
 </style>
 

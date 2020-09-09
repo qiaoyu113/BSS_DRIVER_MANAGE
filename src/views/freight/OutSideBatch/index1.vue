@@ -1,24 +1,24 @@
 <template>
-  <div class="OutSideList">
+  <div class="lineListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="外线运费" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="外线运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <!-- <div class="headerRight" @click="batch">
+          <div class="headerRight" @click="Shipper() ">
             批量上报
-          </div> -->
-        </template>
-      </van-nav-bar>
-      <!-- 搜索 -->
-      <van-search show-action placeholder="请输入项目名称/编号" readonly @click="handleSearchClick">
-        <template #action>
-          <div class="searchSelect" @click="filter_left">
-            筛选
-            <van-icon name="play" color="#3C4353" />
           </div>
         </template>
-      </van-search>
+      </van-nav-bar>
     </van-sticky>
+    <!-- 搜索 -->
+    <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly @click="handleSearchClick">
+      <template #action>
+        <div class="searchSelect">
+          日期
+          <van-icon name="play" color="#3C4353" />
+        </div>
+      </template>
+    </van-search>
 
     <!-- 下拉刷新  上拉加载 -->
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
@@ -38,95 +38,46 @@
                 {{ item.num }}
               </div>
             </template>
+
             <div v-for="sub in lists" :key="sub.id">
-              <CardItem :obj="sub" />
-              <div class="lineHeight"></div>
+              <CardItems
+                class="items"
+                :obj="sub"
+              />
             </div>
           </van-tab>
         </van-tabs>
       </van-list>
     </van-pull-refresh>
 
-    <!-- 选择临时线路or稳定线路 -->
-    <van-popup v-model="showPicker" position="bottom">
+    <!-- 右侧筛选抽屉 -->
+
+    <van-popup v-model="showPicker1" position="bottom">
       <van-picker
-        show-toolbar
         value-key="label"
-        :columns="columns"
-        @confirm="onConfirm"
-        @cancel="showPicker = false"
+        show-toolbar
+        :columns="columns1"
+        @confirm="onConfirm1"
+        @cancel="showPicker1 = false"
       />
     </van-popup>
 
-    <!-- 右侧筛选抽屉 -->
-    <SelfPopup
-      :show.sync="showPopup"
-      form-ref="form"
-      @submit="onSubmit"
-      @reset="onReset"
-    >
-      <van-field
-        v-model="listQuery.name"
-        colon
-        name="name"
-        label-width="7em"
-        label="司机城市"
-        placeholder="请输入城市"
-      />
-      <van-field
-        v-model="listQuery.name1"
-        colon
-        name="name1"
-        label-width="7em"
-        label="客户"
-        placeholder="请输入客户"
-      />
-      <van-field
-        v-model="listQuery.name2"
-        name="name2"
-        colon
-        label-width="7em"
-        label="项目"
-        placeholder="请输入项目"
-      />
-      <van-field
-        v-model="listQuery.name3"
-        name="name3"
-        colon
-        label-width="7em"
-        label="上岗经理"
-        placeholder="请输入上岗经理"
-      />
-      <van-field
-        readonly
-        colon
-        clickable
-        label="出车时间"
-        label-width="7em"
-        is-link
-        name="date"
-        :value="pickerNames.date"
-        placeholder="请选择出车时间"
-        @click="showCalendar = true"
-      />
-    </SelfPopup>
-    <!-- 日历 -->
-    <van-calendar
-      v-model="showCalendar"
-      type="range"
-      :min-date="minDate"
-      :max-data="maxDate"
-      :allow-same-day="true"
-      @confirm="onConfirmDate"
-    />
-    <!-- picker -->
-    <van-popup v-model="showPicker" round position="bottom">
+    <van-popup v-model="showPicker3" position="bottom">
       <van-picker
+        value-key="label"
         show-toolbar
-        value-key="name"
-        :columns="columns"
-        @cancel="showPicker = false"
+        :columns="columns3"
+        @confirm="onConfirm3"
+        @cancel="showPicker3 = false"
+      />
+    </van-popup>
+    <van-popup v-model="showPicker4" position="bottom">
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns4"
         @confirm="onConfirm4"
+        @cancel="showPicker4 = false"
       />
     </van-popup>
     <Suggest
@@ -153,29 +104,32 @@
 </template>
 
 <script>
-import CardItem from './components/Cardltem'
-import SelfPopup from '@/components/SelfPopup';
+// import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
-import { parseTime } from '@/utils'
-// import { getGmInfoList } from '@/api/freight' // 结盟接口
-import { getLineInfoList } from '@/api/freight' // 外线接口
+
+import CardItems from './components/Lists.vue'
+import { getProjectWayBillList } from '@/api/freight' // 外线接口
+// import { Toast } from 'vant
 export default {
   components: {
-    CardItem,
-    SelfPopup,
-    Suggest
+    Suggest,
+    CardItems
+
   },
   data() {
     return {
-      showPopup: false, // 打开查询抽屉
-      showCalendar: false, // 打开日历
+      value: '', // 搜索框
+      active: '', // 当前激活的tab,
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
-      active: '', // 当前激活的tab,
-      // picker
-      minDate: new Date(+new Date() - 86400000 * 365),
-      maxDate: new Date(+new Date() + 86400000 * 365),
+      show: false,
+      ruleForm: {
+        username: '',
+        password: ''
+      },
+      count: 0, // 下拉刷新次数
+      isLoading: false, // 下拉刷新状态
       tabArrs: [ // tabs数组
         {
           text: '全部',
@@ -189,38 +143,24 @@ export default {
           text: '已上报',
           num: 0
         }
-      ],
-      lists: [],
-      showPicker: false,
-      columns: [
-        {
-          label: '稳定线路',
-          value: 1
-        },
-        {
-          label: '临时线路',
-          value: 0
-        }
+
       ],
       form: { // 查询表单
 
       },
-      // search
-      listQuery: {
-        name: '',
-        name1: '',
-        name2: '',
-        name3: '',
-        name4: '',
-        name5: '',
-        name6: '',
-        name7: ''
+      page: {
+        current: 0,
+        total: 0,
+        size: 10
       },
-      pickerNames: {
-        name4: '',
-        name7: '',
-        date: ''
-      },
+
+      // 筛选
+      text1: '', // 城市选择
+      text2: '', // 用户名
+      text3: '', // 线路
+      text4: '', // 加盟经理
+      text10: '', // 开始时间
+      text11: '', // 结束时间
       showPicker1: false,
       showPicker2: false,
       showPicker3: false,
@@ -229,6 +169,7 @@ export default {
       showPicker9: false,
       showPicker10: false,
       showPicker11: false,
+
       columns1: [
         {
           label: '专车',
@@ -272,86 +213,57 @@ export default {
       showModal: false,
       options: [],
       type: '',
-      cityList: [
-        {
-          name: '北京市',
-          code: 1
-        },
-        {
-          name: '上海市',
-          code: 0
-        }
-      ],
-      page: {
-        current: 0,
-        total: 0,
-        size: 10
-      }
+      lists: [],
+      checkedList: []
 
     }
   },
-  computed: {
-  },
+
   mounted() {
-    // console.log(getConfirmInfoList)
+    console.log(this.$route.query.endDate)
   },
   methods: {
-
+    Shipper() {
+      this.$router.push({
+        path: 'outsidebatch',
+        query: { endDate: this.$route.query.startDate,
+          startDate: this.$route.query.endDate,
+          projectId: this.$route.query.projectId }
+      })
+    },
     onClickLeft() {
       this.$router.go(-1)
     },
-    batch() {
+    showPopup() {
+      this.show = true
+    },
+    // 搜索
+    handleSearchClick() {
       this.$router.push({
-        path: '/outsidebatch'
+        path: '/outlineSearch',
+        parmas: {
+          type: 1
+        }
       })
     },
-    filter_left() {
-      this.showPopup = true
-    },
-    async getConf() { // 首页加盟运费筛选
-      try {
-        let parmas = {
-          customerCity: this.listQuery.name,
-          customer: this.listQuery.name1,
-          project: this.listQuery.name2,
-          dutyManagerId: this.listQuery.name3,
-          startDate: this.listQuery.startDate
-        }
-        this.$loading(true)
-        let { data: res } = await getLineInfoList(parmas)
-        console.log(res)
-        if (res.success) {
-          this.lists = res.data
-          this.listQuery = ''
-        } else {
-          this.loading = false;
-          this.error = true;
-          this.$toast.fail(res.errorMsg)
-        }
-      } catch (err) {
-        this.loading = false;
-        this.error = true;
-        console.log(`get list fail:${err}`)
-      } finally {
-        this.$loading(false)
-      }
-    },
+    // 状态切换
     handleTabChange(tab) {
       this.getConfirmInfoList(true)
     },
-    async getConfirmInfoList(isInit) { // 首页加盟运费列表
+    async getConfirmInfoList(isInit) {
       try {
         this.$loading(true)
         let params = {
-          page: this.page.current,
-          limit: this.page.size,
-          pageNumber: 20
+          endDate: this.$route.query.startDate,
+          startDate: this.$route.query.endDate,
+          projectId: this.$route.query.projectId
         }
-        let { data: res } = await getLineInfoList(params)
-        console.log(res)
+        let { data: res } = await getProjectWayBillList(params)
         if (res.success) {
           let newLists = res.data
-
+          newLists.forEach(item => {
+            item.checked = false
+          })
           if (!isInit) {
             newLists = this.lists.concat(newLists)
           }
@@ -380,28 +292,6 @@ export default {
         this.$loading(false)
       }
     },
-    // 选择线路
-    onConfirm(obj) {
-      this.showPicker = false;
-      this.$router.push({
-        path: '/createLine',
-        query: {
-          isStable: obj.value
-        }
-      })
-    },
-    /**
-     * 日期选择
-     */
-    onConfirmDate(date) {
-      const [start, end] = date;
-      this.showCalendar = false;
-      let startDate = parseTime(start, '{y}-{m}-{d}');
-      let endDate = parseTime(end, '{y}-{m}-{d}');
-      this.pickerNames.date = `${startDate} - ${endDate}`;
-      this.listQuery.startDate = startDate;
-      this.listQuery.endDate = endDate;
-    },
     async onLoad(isInit = false) {
       if (isInit === true) { // 下拉刷新
         this.page.current = 1
@@ -410,7 +300,6 @@ export default {
         this.page.current++
       }
       let result = await this.getConfirmInfoList(isInit)
-
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -422,43 +311,49 @@ export default {
         }
       }
     },
-    // 搜索
-    handleSearchClick() {
-      this.$router.push({
-        path: '/outlineSearch',
-        query: {
-          type: 1
-        }
-      })
-    },
-    /**
-     * 提交查询
-     */
-    onSubmit(value) {
+
+    onQuery() {
       this.getConf()
-      this.showPopup = false;
-      this.refreshing = true;
-      // console.log('submit', value);
+      console.log('submit', this.form)
     },
-    /**
-     * 重置form
-     */
+    // 重置
     onReset(form) {
-      this.listQuery = this.$options.data().listQuery;
-      this.pickerNames = this.$options.data().pickerNames;
-      form.resetValidation();
+      this.text1 = ''
+      this.text2 = ''
+      this.text3 = ''
+      this.text4 = ''
+      this.text10 = ''
+      this.text11 = ''
+      this.form = {}
+      console.log('reset');
     },
-    /**
-     * 显示picker
-     */
-    showPickerFn(key) {
-      this.pickerKey = key;
-      if (key === 'city') {
-        this.columns = this.cityList;
-      } else {
-        this.columns = this.whyList;
+    async getConf() {
+      try {
+        let parmas = {
+          customerCity: this.text1,
+          customer: this.text2,
+          project: this.text3,
+          dutyManagerId: this.text4,
+          startDate: this.text10
+        }
+        this.$loading(true)
+        let { data: res } = await getProjectWayBillList(parmas)
+        console.log(res)
+        if (res.success) {
+          this.lists = res.data
+          this.listQuery = ''
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
-      this.showPicker = true;
     },
     // 线路类型 ----右侧pop选中关闭
     onConfirm1(obj) {
@@ -529,13 +424,12 @@ export default {
       this.form.s = date
       this.showPicker11 = false;
     }
+
   }
 }
-
 </script>
-
 <style lang='scss' scoped>
-.OutSideList {
+.lineListContainer {
   font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
@@ -563,6 +457,62 @@ export default {
     width:100%;
   }
 }
+.CardItemcontainer {
+  margin-top: 10px;
+  padding: 0px 15px;
+  font-family: PingFangSC-Semibold;
+  .ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .title {
+    margin: 10px 0px;
+    font-size: 14px;
+    color: #3C4353;
+  }
+  .title>span{
+    float: right;
+  }
+  .text {
+    margin-top:0px;
+    margin-bottom:8px;
+    font-size: 13px;
+    color: #3C4353;
+  }
+  .text_xiang{
+    float: right;
+    color: blue ;
+  }
+  .footer {
+    margin-bottom:12.5px;
+    display: flex;
+    flex-direction: column;
+    .time {
+      margin: 0px;
+      font-size: 11px;
+      color: #838A9D;
+      line-height: 20px;
+    }
+    .right {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      .tag {
+        margin-right:5px;
+        padding: 3px 10px;
+      }
+    }
+  }
+  .detail {
+    padding: 7px 0px;
+    text-align: center;
+    border-top-color:#D8D8D8;
+  }
+}
+.all{
+  margin-left: 20px;
+}
 
 </style>
 
@@ -571,10 +521,41 @@ export default {
     font-size: 12px;
     color: #3C4353;
   }
-  .OutSideList >>> .SelfPopup[data-v-7aa3f8c0] .van-popup {
+</style>
+<style scoped>
+  .lineListContainer >>>.SelfPopup[data-v-7aa3f8c0] .van-popup {
     width: 80%;
     height: 94vh;
-    margin-top: 26px;
     box-sizing: border-box;
 }
+.lineListContainer >>>.van-popup--right {
+    top: 54%;
+    right: 0;
+    /* -webkit-transform: translate3d(0, -50%, 0); */
+    transform: translate3d(0, -50%, 0);
+}
+.lineListContainer >>>.van-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.19);
+}
+.lineListContainer>>>.van-cell {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    box-sizing: border-box;
+    width: 90%;
+    padding: 0.26667rem 0.42667rem;
+    overflow: hidden;
+    color: #3C4353;
+    font-size: 0.34667rem;
+    line-height: 0.64rem;
+    background-color: #fff;
+}
 </style>
+

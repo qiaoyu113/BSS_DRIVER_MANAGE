@@ -21,7 +21,7 @@
     <div class="footer">
       <div class="right">
         <p class="time">
-          预计工作时间:{{ obj.timeDiff | parseTime('{y}-{m}-{d}') }}
+          预计工作时间:{{ obj.timeDiff }}
         </p>
         <div>
           <van-tag

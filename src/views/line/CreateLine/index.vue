@@ -39,8 +39,8 @@ import StepTwo from '../components/StepTwo'
 import StepThree from '../components/StepThree'
 import Suggest from '@/components/SuggestSearch'
 import { createStableLine, createTemporaryLine } from '@/api/line'
-import { getProjectSearch } from '@/api/project'
-import { Notify, Dialog } from 'vant';
+import { getProjectSearch, getProjectDetail } from '@/api/project'
+import { Dialog } from 'vant';
 import { delay } from '@/utils'
 export default {
   components: {
@@ -48,7 +48,6 @@ export default {
     StepTwo,
     StepThree,
     Suggest,
-    [Notify.Component.name]: Notify.Component,
     [Dialog.Component.name]: Dialog.Component
   },
 
@@ -57,7 +56,7 @@ export default {
       projectId: '',
       projectName: '',
       title: '',
-      step: 1,
+      step: 0,
       isStable: true,
       stepOneForm: {
         lineName: '', // 线路名称
@@ -97,7 +96,11 @@ export default {
       },
       showModal: false,
       isProject: false, // 是否从项目过来的
-      projectOptions: [] // 项目列表
+      projectOptions: [], // 项目列表
+      warehouseCity: '',
+      city: '',
+      lineSaleId: '',
+      dutyManagerId: ''
     }
   },
   mounted() {
@@ -114,7 +117,9 @@ export default {
         title = '发布临时线路'
       }
       if (this.isProject) {
+        this.projectId = this.$route.query.projectId
         this.step = 1
+        this.getProjectDetail()
       }
       this.title = title
       document.title = title
@@ -147,6 +152,20 @@ export default {
     handlepProjectClick(obj) {
       this.projectId = obj.value
       this.projectName = obj.label
+      this.warehouseCity = obj.warehouseCity
+      this.city = obj.city
+      this.lineSaleId = obj.lineSaleId
+      this.dutyManagerId = obj.dutyManagerId
+      this.stepOneForm.runSpeed = obj.runSpeed
+      this.stepOneForm.returnBill = obj.returnBill
+      this.stepOneForm.carType = obj.carType
+      this.stepOneForm.deliveryNum = obj.deliveryNum
+      this.stepOneForm.distance = obj.distance
+      this.stepOneForm.limitRemark = obj.limitRemark
+      this.stepThreeForm.cargoType = obj.cargoType
+      this.stepThreeForm.cargoNum = obj.cargoNum
+      this.stepThreeForm.carry = obj.carry
+      this.stepThreeForm.dutyRemark = obj.dutyRemark
     },
     // 发布线路
     handleSubmit() {
@@ -177,9 +196,14 @@ export default {
           }
         )
       })
-
+      params.lineLogo = params.lineName
+      params.warehouseCity = this.warehouseCity
+      params.city = this.city
+      params.lineSaleId = this.lineSaleId
+      params.dutyManagerId = this.dutyManagerId
       delete params.area
       delete params.workingTime
+      delete params.lineName
       if (this.isStable) {
         this.createStableLine(params)
       } else {
@@ -189,6 +213,8 @@ export default {
     // 发布稳定线路
     async createStableLine(params) {
       try {
+        this.$loading(true)
+        params.lineCategory = 1
         let { data: res } = await createStableLine(params)
         if (res.success) {
           this.createSuc()
@@ -197,11 +223,15 @@ export default {
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 发布临时线路
     async createTemporaryLine(params) {
       try {
+        this.$loading(true)
+        params.lineCategory = 2
         let { data: res } = await createTemporaryLine(params)
         if (res.success) {
           this.createSuc()
@@ -210,6 +240,8 @@ export default {
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 发布成功
@@ -232,13 +264,62 @@ export default {
         if (res.success) {
           this.projectOptions = res.data.map(item => ({
             label: item.projectName,
-            value: item.projectId
+            value: item.projectId,
+            warehouseCity: item.warehouseCity,
+            city: item.city,
+            lineSaleId: item.lineSaleId,
+            dutyManagerId: item.dutyManagerId,
+            runSpeed: item.runSpeed,
+            returnBill: item.returnBill,
+            carType: item.carType,
+            deliveryNum: item.deliveryNum,
+            distance: item.distance,
+            limitRemark: item.limitRemark,
+            cargoType: item.cargoType,
+            cargoNum: item.cargoNum,
+            carry: item.carry,
+            dutyRemark: item.dutyRemark
           }))
         } else {
           this.$fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)
+      }
+    },
+    // 获取项目详情
+    async getProjectDetail() {
+      try {
+        this.$loading(true)
+        let params = {
+          projectId: this.projectId
+        }
+        let { data: res } = await getProjectDetail(params)
+        if (res.success) {
+          let obj = res.data
+          this.projectId = obj.value
+          this.projectName = obj.label
+          this.warehouseCity = obj.warehouseCity
+          this.city = obj.city
+          this.lineSaleId = obj.lineSaleId
+          this.dutyManagerId = obj.dutyManagerId
+          this.stepOneForm.runSpeed = obj.runSpeed
+          this.stepOneForm.returnBill = obj.returnBill
+          this.stepOneForm.carType = obj.carType
+          this.stepOneForm.deliveryNum = obj.deliveryNum
+          this.stepOneForm.distance = obj.distance
+          this.stepOneForm.limitRemark = obj.limitRemark
+          this.stepThreeForm.cargoType = obj.cargoType
+          this.stepThreeForm.cargoNum = obj.cargoNum
+          this.stepThreeForm.carry = obj.carry
+          this.stepThreeForm.dutyRemark = obj.dutyRemark
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get client detail fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     }
 

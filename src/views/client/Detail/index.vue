@@ -24,8 +24,8 @@
     <van-field label="身份证号" label-width="100" readonly :value="form.bussinessCard" :border="false" colon />
     <van-field label="客户意向度" label-width="100" readonly :value="form.customerIntentionName" :border="false" colon />
     <van-field label="客户体量" label-width="100" readonly :value="form.customerSize" :border="false" colon />
-    <van-field label="合同止期" label-width="100" readonly :value="form.contractEnd | parseTime('{y}-{m}-{d}')" :border="false" colon />
-    <van-field label="创建日期" label-width="100" readonly :value="form.createDate | parseTime('{y}-{m}-{d}')" :border="false" colon />
+    <van-field label="合同止期" label-width="100" readonly :value="timeFormat(form.contractEnd,'YYYY-MM-DD')" :border="false" colon />
+    <van-field label="创建日期" label-width="100" readonly :value="timeFormat(form.contractEnd,'YYYY-MM-DD HH:mm:ss')" :border="false" colon />
     <van-field label="所在区域" label-width="100" readonly :value="region" :border="false" colon />
     <van-field label="详细地址" label-width="100" readonly :value="form.address" :border="false" colon />
     <van-field label="备注" label-width="100" readonly :value="form.remark" colon />
@@ -39,6 +39,7 @@
 <script>
 import ImagePreview from '../../line/Detail/components/ImagePreview'
 import { getClientDetail } from '@/api/client'
+import dayjs from 'dayjs'
 export default {
   components: {
     ImagePreview
@@ -61,6 +62,10 @@ export default {
     }
   },
   methods: {
+    // YYYY-MM-DD dddd HH:mm:ss
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
+    },
     /**
      *返回按钮
      */

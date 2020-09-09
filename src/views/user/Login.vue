@@ -171,13 +171,19 @@ export default {
      * 校验密码
      */
     validatorPassword(val) {
-      return true
+      if (/^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){8,16}$/.test(val)) {
+        return true
+      }
+      return false
     },
     /**
      * 校验账号
      */
     validatorAccount(val) {
-      return true
+      if (phoneRegExp.test(val)) {
+        return true
+      }
+      return false
     }
   }
 };

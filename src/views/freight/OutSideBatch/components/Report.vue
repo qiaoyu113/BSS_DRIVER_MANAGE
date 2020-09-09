@@ -20,48 +20,12 @@
           <p>*趟数1:0:02 - 06:00</p>
           <div class="Number">
             <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
             <van-button type="default">
               <van-icon name="arrow" color="#A6AAB8" />
             </van-button>
           </div>
         </li>
-        <!-- <li class="Number_ong">
-          <p>*趟数2:0:02 - 06:00</p>
-          <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
-            <van-button type="default">
-              <van-icon name="arrow" color="#A6AAB8" />
-            </van-button>
-          </div>
-        </li> -->
       </ul>
-      <!-- 单趟出车 -->
-      <!-- <ul>
-        <li><span class="status">已出车</span> <span><van-switch v-model="checked1" size="20px" /></span></li>
-        <li>出车单号：11100000000</li>
-        <li>司机姓名/手机号：方圆/17755668220</li>
-        <li>
-          <div class="Number_ong">
-            <p>*趟数1:0:02 - 06:00</p>
-            <div class="Number"> -->
-
-      <!-- <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
-              <van-button type="default">
-                <van-icon name="arrow" color="#A6AAB8" />
-              </van-button>
-            </div>
-          </div>
-        </li>
-      </ul> -->
-      <!-- 未出车 -->
-      <!-- <ul>
-        <li><span class="status">已出车</span> <span><van-switch v-model="checked2" size="20px" /></span></li>
-        <li>出车单号：11100000000</li>
-        <li>司机姓名/手机号：方圆/17755668220</li>
-      </ul> -->
     </div>
     <div class="Remarks">
       <van-field
@@ -85,7 +49,7 @@
   </div>
 </template>
 <script>
-import { noCarBatchByGM, reportMoneyBatchByGM } from '@/api/freight'
+import { noCarBatchBySale, reportMoneyBatchBySale } from '@/api/freight'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
 export default {
@@ -108,21 +72,29 @@ export default {
       this.$router.go(-1)
     },
     Report() {
-      this.obj.forEach(item => {
+      // this.obj.forEach(item => {
+      //   if (item.checked === true) {
+      //     this.reportMoneyBatchByGM()
+      //   }
+      // });
+      // let wayBillAmountId = this.checkedarr.map(item => item.wayBillAmountId)
+      // let preMoney = this.checkedarr.map(item => item.preMoney)
+      this.obj.filter(item => {
         if (item.checked === true) {
-          this.reportMoneyBatchByGM()
+          this.reportMoneyBatchByGM(item.wayBillAmountId, item.preMoney)
         }
-      });
+      })
     },
-    async reportMoneyBatchByGM() {
+
+    async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
         let parmas = {
           remark: this.message, // 备注
-          moneys: this.value, // 上报金额
-          wayBillAmountIds: 'w090201'
+          moneys: preMoney, // 上报金额
+          wayBillAmountIds: wayBillAmountId
 
         }
-        let { data: res } = await reportMoneyBatchByGM(parmas)
+        let { data: res } = await reportMoneyBatchBySale(parmas)
         console.log(res)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
@@ -140,12 +112,21 @@ export default {
         title: '提示',
         message: `确定全部的${this.obj.length}个出全部未出车`
       }).then(() => {
-        this.noCarBatchByGM()
+        let arr = []
+        this.obj.filter(item => {
+          if (item.checked === undefined) {
+            arr.push(item.wayBillAmountId)
+          }
+        })
+        this.noCarBatchByGM(arr)
       })
     },
-    async noCarBatchByGM() {
+    async noCarBatchByGM(arr) {
       try {
-        let { data: res } = await noCarBatchByGM()
+        let parmas = {
+          wayBillAmountIds: arr
+        }
+        let { data: res } = await noCarBatchBySale(parmas)
         if (res.success) {
           res.data // 全部未出车
         } else {

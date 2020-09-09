@@ -2,11 +2,6 @@
   <div class="lineListContainer">
     <van-sticky :offset-top="0">
       <van-nav-bar title="批量运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
-        <template #right>
-          <!-- <div class="headerRight" @click="batch">
-            批量上报
-          </div> -->
-        </template>
       </van-nav-bar>
     </van-sticky>
     <div class="cont_ent">
@@ -19,23 +14,13 @@
         <li class="Number_ong">
           <p>*趟数{{ item.deliverTime }}</p>
           <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="item.preMoney">
+            <input v-model="item.preMoney" type="text" style="border:none" placeholder="">
 
             <van-button type="default">
               <van-icon name="arrow" color="#A6AAB8" />
             </van-button>
           </div>
         </li>
-        <!-- <li class="Number_ong">
-          <p>*趟数2:0:02 - 06:00</p>
-          <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
-            <van-button type="default">
-              <van-icon name="arrow" color="#A6AAB8" />
-            </van-button>
-          </div>
-        </li> -->
       </ul>
       <!-- 单趟出车 -->
       <!-- <ul>
@@ -108,24 +93,27 @@ export default {
       this.$router.go(-1)
     },
     Report() {
-      this.obj.forEach(item => {
+      // let wayBillAmountId = this.checkedarr.map(item => item.wayBillAmountId)
+      // let preMoney = this.checkedarr.map(item => item.preMoney)
+      let wayBillAmountId = []
+      let preMoney = []
+      this.obj.filter(item => {
         if (item.checked === true) {
-          this.reportMoneyBatchByGM()
-        } else {
-          Toast.success('选择需要上报的出车单');
+          wayBillAmountId.push(item.wayBillAmountId)
+          preMoney.push(item.preMoney)
         }
-      });
+      })
+      this.reportMoneyBatchByGM(wayBillAmountId, preMoney)
     },
-    async reportMoneyBatchByGM() {
+    async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
         let parmas = {
           remark: this.message, // 备注
-          moneys: this.value, // 上报金额
-          wayBillAmountIds: 'w090201'
+          moneys: preMoney, // 上报金额
+          wayBillAmountIds: wayBillAmountId
 
         }
         let { data: res } = await reportMoneyBatchByGM(parmas)
-        console.log(res)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
           res.data
@@ -142,12 +130,21 @@ export default {
         title: '提示',
         message: `确定全部的${this.obj.length}个出全部未出车`
       }).then(() => {
-        this.noCarBatchByGM()
+        let arr = []
+        this.obj.filter(item => {
+          if (item.checked === undefined) {
+            arr.push(item.wayBillAmountId)
+          }
+        })
+        this.noCarBatchByGM(arr)
       })
     },
-    async noCarBatchByGM() {
+    async noCarBatchByGM(arr) {
       try {
-        let { data: res } = await noCarBatchByGM()
+        let parmas = {
+          wayBillAmountIds: arr
+        }
+        let { data: res } = await noCarBatchByGM(parmas)
         if (res.success) {
           res.data // 全部未出车
         } else {

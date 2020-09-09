@@ -49,7 +49,7 @@
 <script>
 import CardItem from '../List/components/Cardltem'
 import { debounce } from '@/utils/index'
-import { getGmInfoListByKeyWorld } from '@/api/freight'
+import { getGmInfoListByKeyWord } from '@/api/freight'
 export default {
   components: {
     CardItem
@@ -100,10 +100,11 @@ export default {
       try {
         let params = {
           page: 1,
-          pageNumber: 9999
+          pageNumber: 20
+
         }
         keyword && (params.key = keyword)
-        let { data: res } = await getGmInfoListByKeyWorld(params)
+        let { data: res } = await getGmInfoListByKeyWord(params)
         if (res.success) {
           this.lists = res.data
           if (keyword) {

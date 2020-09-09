@@ -79,7 +79,7 @@ export default {
         return false
       }
       this.handleSearch(this.keyWord)
-    }, 200),
+    }, 1000),
     // 取消
     onCancel() {
       this.keyWord = ''
@@ -87,7 +87,7 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value
-      this.getLists(this.keyWord)
+      this.handleSearch(this.keyWord)
     },
     // 搜索
     async handleSearch(keyword = '') {

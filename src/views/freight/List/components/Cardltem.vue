@@ -1,7 +1,7 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title ellipsis">
-      {{ obj.driverName }}/{{ obj.driverPhone }}
+      {{ obj.departureDate |formatDate }} /{{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
     <p v-if="obj.statusName != ''" class="dai">
       {{ obj.statusName }}
@@ -16,7 +16,7 @@
       路线名称:{{ obj.lineName }}
     </p>
     <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick(obj.id)">
+      <van-button type="default" round hairline @click="handleDetailClick(obj.wayBillId)">
         详情
       </van-button>
     </div>
@@ -25,7 +25,19 @@
 
 <script>
 import { shippingDetailByGM } from '@/api/freight'
+
 export default {
+  filters: {
+    formatDate: function(value) {
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? ('0' + MM) : MM;
+      let d = date.getDate();
+      d = d < 10 ? ('0' + d) : d;
+      return y + '-' + MM + '-' + d;
+    }
+  },
   props: {
     obj: {
       type: Object,
@@ -38,19 +50,17 @@ export default {
      * 线路详情
      */
     handleDetailClick(id) {
-      console.log(id)
       this.getGmInfoList(id)
     },
     async getGmInfoList(id) {
       try {
         let parmas = {
-          wayBillAmountId: id
+          wayBillId: id
         }
         let { data: res } = await shippingDetailByGM(parmas)
         if (res.success) {
-          console.log(res, !11111111111111111111)
           this.$router.push({
-            path: '/Detail',
+            path: '/detail',
             query: { obj: res.data,
               type: '1' }
           })
