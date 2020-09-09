@@ -59,8 +59,8 @@
         <van-field label="适配性" label-width="110" readonly :value="form.lineAdapterName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="现场信息" name="7">
-        <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPicture" />
-        <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPicture" />
+        <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />
+        <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPictures" />
         <VideoPreview :video-url="fileForm.loadingVideo" label="装货视频:" />
       </van-collapse-item>
     </van-collapse>

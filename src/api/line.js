@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // let prefix = '/mock/32'
-let prefix = '/api/line_center'
+let prefix = '/line_center'
 // 获取线路列表
 export function getLineList(data) {
   return request({
