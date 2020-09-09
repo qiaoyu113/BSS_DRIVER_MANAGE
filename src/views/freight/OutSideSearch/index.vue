@@ -100,7 +100,8 @@ export default {
       try {
         let params = {
           page: 1,
-          pageNumber: 9999
+          pageNumber: 20,
+          wayBillGMSaLeStatus: 0
         }
         keyword && (params.key = keyword)
         let { data: res } = await getGmInfoListByKeyWorld(params)

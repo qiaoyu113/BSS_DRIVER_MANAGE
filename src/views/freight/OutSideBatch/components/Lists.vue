@@ -2,14 +2,9 @@
   <div>
     <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        {{ obj.endDate }}/ {{ obj.startDate }}/{{ obj.driverPhone }}
+        {{ obj.projectName }}
       </h4>
-      <p class="Pink">
-        {{ obj.reportState }}
-      </p>
-      <p class="checked">
-        <van-checkbox v-if="shipper" v-model="obj.checked" />
-      </p>
+
       <p class="text ellipsis">
         出车单号:{{ obj.wayBillNum }}
       </p>

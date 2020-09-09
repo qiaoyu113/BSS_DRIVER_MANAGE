@@ -49,7 +49,7 @@
 <script>
 import CardItem from '../List/components/CardItem'
 import { debounce } from '@/utils/index'
-import { getLineSearch } from '@/api/line'
+import { getLineList } from '@/api/line'
 export default {
   components: {
     CardItem
@@ -87,7 +87,6 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value
-      this.getLists(this.keyWord)
     },
     // 搜索
     async getLists(keyword = '') {
@@ -97,20 +96,17 @@ export default {
           pageNumber: 9999
         }
         keyword && (params.key = keyword)
-        this.$loading(true)
-        let { data: res } = await getLineSearch(params)
+        let { data: res } = await getLineList(params)
         if (res.success) {
           this.lists = res.data
           if (keyword) {
             this.setHistory(keyword)
           }
         } else {
-          this.$fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)
-      } finally {
-        this.$loading(false)
       }
     },
     // 存localStorage
