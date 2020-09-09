@@ -10,14 +10,15 @@
     </van-sticky>
     <div class="formBox">
       <van-form
-        :show-error="false"
         label-width="120px"
         @submit="onSubmit"
+        @failed="onFailed"
       >
         <self-area
           label-width="100"
           picker-key="interview"
           :form="area"
+          :props="{provinceAreaName:'interviewProvinceName',cityAreaName:'interviewCityName',countyAreaName:'interviewCountyName'}"
           :is-computed="area.interview.length > 2"
           required
           label="面试地址"
@@ -32,7 +33,7 @@
           :form="formData"
           :columns="columns_workCity"
           value="name"
-          :is-computed="formData['workCity']!==''"
+          :is-computed="formData['workCity']!=='' && columns_workCity.length > 0 "
           required
           label="工作城市"
           placeholder="请选择"
@@ -59,7 +60,7 @@
           type="tel"
           required
           placeholder="请输入"
-          :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'}]"
+          :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'},{validator:phonePatternIshas, message: `该手机号暂不能使用`}]"
           @focus="copyData('phone')"
         />
         <van-field
@@ -88,6 +89,7 @@
             { required: true, message: '请选择' },
           ]"
         />
+
         <selftPicker
           v-show="formData.hasCar === true"
           :props="keyValue"
@@ -95,7 +97,7 @@
           :form="formData"
           :columns="columns_intentDrivingCarType"
           value="name"
-          :is-computed="formData.hasCar"
+          :is-computed="columns_intentDrivingCarType.length > 0 &&formData.currentCarType!==''"
           required
           label="当前车型"
           placeholder="请选择"
@@ -103,6 +105,7 @@
             { required: formData.hasCar, message: '请选择' },
           ]"
         />
+
         <selftPicker
           v-show="formData.hasCar === false"
           :props="keyValue"
@@ -110,7 +113,7 @@
           :form="formData"
           :columns="columns_intentDrivingCarType"
           value="name"
-          :is-computed="!formData.hasCar"
+          :is-computed="columns_intentDrivingCarType.length > 0 &&formData.intentDrivingCarType!==''"
           required
           label="意向驾驶车型"
           placeholder="请选择"
@@ -122,6 +125,7 @@
           label-width="100"
           picker-key="liveaddress"
           :form="area"
+          :props="{provinceAreaName:'liveProvinceName',cityAreaName:'liveCityName',countyAreaName:'liveCountyName'}"
           :is-computed="area.liveaddress.length > 2"
           required
           label="现居住地址"
@@ -220,7 +224,7 @@
           :form="formData"
           :columns="columns_drivingLicenceType"
           value="name"
-          :is-computed="formData['drivingLicenceType']!==''"
+          :is-computed="formData['drivingLicenceType'] ? true : false "
           required
           label="驾照类型"
           placeholder="请选择"
@@ -246,6 +250,7 @@
           label-width="100"
           picker-key="intentWork"
           :form="area"
+          :props="{provinceAreaName:'intentWorkProvinceName',cityAreaName:'intentWorkCityName',countyAreaName:'intentWorkCountyName'}"
           :is-computed="area.intentWork.length > 2"
           required
           label="高意向工作区域"
@@ -323,10 +328,10 @@
           >
             取消
           </van-button>
-          <van-button type="primary">
-            提交
-          </van-button>
         </div>
+        <van-button type="primary" native-type="submit">
+          提交11111111111
+        </van-button>
       </van-form>
     </div>
   </div>
@@ -339,7 +344,7 @@ import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import SelfArea from '@/components/SelfArea';
 import SelftPicker from '@/components/SelfPicker';
-import { shareInterview, getInterview } from '@/api/driver.js';
+import { shareInterview, getInterview, unqPhone, editInterview } from '@/api/driver.js';
 export default {
   name: 'ShareInterview',
   components: {
@@ -354,6 +359,7 @@ export default {
   },
   data() {
     return {
+      errMsg: '',
       keyValue: {
         label: 'name',
         value: 'code'
@@ -379,6 +385,15 @@ export default {
       area: {
         liveaddress: [],
         interview: [],
+        liveProvinceName: '',
+        liveCityName: '',
+        liveCountyName: '',
+        interviewProvinceName: '',
+        interviewCityName: '',
+        interviewCountyName: '',
+        intentWorkProvinceName: '',
+        intentWorkCityName: '',
+        intentWorkCountyName: '',
         intentWork: []
       },
       formData: {
@@ -425,7 +440,8 @@ export default {
       columns_drivingLicenceType: [],
       routeName: '',
       driverId: '',
-      editForm: {}
+      editForm: {},
+      phone: ''
     };
   },
   computed: {
@@ -436,11 +452,9 @@ export default {
   watch: {
     'formData.hasCar'(val) {
       if (val === true) {
-        this.formData.currentCarType = '';
-        this.pickerNames.currentCarType = '';
-      } else {
         this.formData.intentDrivingCarType = '';
-        this.pickerNames.intentDrivingCarType = '';
+      } else {
+        this.formData.currentCarType = '';
       }
     }
   },
@@ -448,15 +462,57 @@ export default {
     this.routeName = this.$route.path;
     this.driverId = this.$route.query.id;
     this.fetchData();
-    if (this.routeName === '/editShare') {
-      this.getDetail(this.driverId);
-    }
   },
   created() {
     this.phonePattern = phoneRegExp;
     this.validatorNum = validatorNum;
   },
   methods: {
+    phonePatternIshas(val) {
+      // Toast.loading('验证中...');
+      return new Promise((resolve) => {
+        if (this.routeName === '/editShare') {
+          if (this.phone === val) {
+            resolve(true);
+          } else {
+            unqPhone({ phone: val }).then(
+              ({ data }) => {
+                if (data.success) {
+                  if (data.data.flag) {
+                    resolve(true);
+                    this.errMsg = ''
+                  } else {
+                    this.errMsg = data.data.msg
+                    resolve(false);
+                    Toast.fail(this.errMsg);
+                  }
+                } else {
+                  this.$toast.fail(data);
+                  resolve(false);
+                }
+              }
+            )
+          }
+        } else {
+          unqPhone({ phone: val }).then(
+            ({ data }) => {
+              if (data.success) {
+                if (data.data.flag) {
+                  resolve(true);
+                  this.errMsg = ''
+                } else {
+                  resolve(false);
+                  this.errMsg = data.data.msg
+                }
+              } else {
+                this.$toast.fail(data);
+                resolve(false);
+              }
+            }
+          )
+        }
+      });
+    },
     fetchData() {
       GetDictionaryList([
         'Intentional_compartment',
@@ -469,27 +525,30 @@ export default {
           if (data.success) {
             this.columns_intentDrivingCarType = data.data.Intentional_compartment.map(
               (ele) => {
-                return { name: ele.dictLabel, code: ele.dictValue };
+                return { name: ele.dictLabel, code: Number(ele.dictValue) };
               }
             );
             this.columns_intentCargoType = data.data.intent_cargo_type.map(
               (ele) => {
-                return { name: ele.dictLabel, code: ele.dictValue };
+                return { name: ele.dictLabel, code: Number(ele.dictValue) };
               }
             );
             this.columns_sourceChannel = data.data.source_channel.map((ele) => {
-              return { name: ele.dictLabel, code: ele.dictValue };
+              return { name: ele.dictLabel, code: Number(ele.dictValue) };
             });
             this.columns_intentWorkDuration = data.data.intent_work_duration.map(
               (ele) => {
-                return { name: ele.dictLabel, code: ele.dictValue };
+                return { name: ele.dictLabel, code: Number(ele.dictValue) };
               }
             );
             this.columns_drivingLicenceType = data.data.driving_licence_type.map(
               (ele) => {
-                return { name: ele.dictLabel, code: ele.dictValue };
+                return { name: ele.dictLabel, code: Number(ele.dictValue) };
               }
             );
+            if (this.routeName === '/editShare') {
+              this.getDetail(this.driverId);
+            }
           }
         })
         .catch((err) => {
@@ -498,7 +557,9 @@ export default {
       getOpenCitys()
         .then(({ data }) => {
           if (data.success) {
-            this.columns_workCity = data.data;
+            this.columns_workCity = data.data.map(ele => {
+              return { name: ele.name, code: Number(ele.code) }
+            });
           }
         })
         .catch((err) => {
@@ -519,25 +580,42 @@ export default {
         let { data: res } = await getInterview(params);
         if (res.success) {
           let areaData = res.data;
+          this.phone = res.data.phone
+          // 面试地址label回显
+          this.area.interviewProvinceName = res.data.interviewProvinceName;
+          this.area.interviewCityName = res.data.interviewCityName;
+          this.area.interviewCountyName = res.data.interviewCountyName;
+          // 现居住地址label回显
+          this.area.liveProvinceName = res.data.liveProvinceName;
+          this.area.liveCityName = res.data.liveCityName;
+          this.area.liveCountyName = res.data.liveCountyName;
+          // 意向工作地址label回显
+          this.area.intentWorkProvinceName = res.data.intentWorkProvinceName;
+          this.area.intentWorkCityName = res.data.intentWorkCityName;
+          this.area.intentWorkCountyName = res.data.intentWorkCountyName;
           this.area.liveaddress = [
-            areaData.liveProvince,
-            areaData.liveCity,
-            areaData.liveCounty
+            String(areaData.liveProvince),
+            String(areaData.liveCity),
+            String(areaData.liveCounty)
           ];
           this.area.intentWork = [
-            areaData.intentWorkProvince,
-            areaData.intentWorkCity,
-            areaData.intentWorkCounty
+            String(areaData.intentWorkProvince),
+            String(areaData.intentWorkCity),
+            String(areaData.intentWorkCounty)
           ];
           this.area.interview = [
-            areaData.interviewProvince,
-            areaData.interviewCity,
-            areaData.interviewCounty
+            String(areaData.interviewProvince),
+            String(areaData.interviewCity),
+            String(areaData.interviewCounty)
           ];
+
           if (res.data.isChange === false) {
             this.editForm = res.data;
           } else {
-            this.formData = { ...this.formData, ...res.data };
+            this.formData = {
+              ...this.formData,
+              ...res.data
+            };
           }
         } else {
           this.$toast.fail(res.errorMsg);
@@ -548,39 +626,74 @@ export default {
         this.$loading(false);
       }
     },
+    async editShared() {
+      this.$loading(true);
+      let params = { ...this.formData };
+      params.liveProvince = this.area.liveaddress[0]; // 居住地
+      params.liveCity = this.area.liveaddress[1];
+      params.liveCounty = this.area.liveaddress[2];
+      params.intentWorkProvince = this.area.intentWork[0]; // 高意向工作地
+      params.intentWorkCity = this.area.intentWork[1];
+      params.intentWorkCounty = this.area.intentWork[2];
+      // 面试地址
+      params.interviewCity = this.area.interview[0];
+      params.interviewCounty = this.area.interview[1];
+      params.interviewProvince = this.area.interview[2];
+      if (this.formData.hasCar === true) {
+        params.intentDrivingCarType = '';
+      } else {
+        params.currentCarType = '';
+      }
+      let { data: res } = await editInterview(params);
+      if (res.success) {
+        Notify({ type: 'success', message: '编辑面试成功' });
+        this.$router.go(-1);
+      } else {
+        this.$toast.fail(res.errorMsg);
+      }
+    },
+    async buildShared() {
+      this.$loading(true);
+      let params = { ...this.formData };
+      params.liveProvince = this.area.liveaddress[0]; // 居住地
+      params.liveCity = this.area.liveaddress[1];
+      params.liveCounty = this.area.liveaddress[2];
+      params.intentWorkProvince = this.area.intentWork[0]; // 高意向工作地
+      params.intentWorkCity = this.area.intentWork[1];
+      params.intentWorkCounty = this.area.intentWork[2];
+      // 面试地址
+      params.interviewCity = this.area.interview[0];
+      params.interviewCounty = this.area.interview[1];
+      params.interviewProvince = this.area.interview[2];
+      if (this.formData.hasCar === true) {
+        params.intentDrivingCarType = '';
+      } else {
+        params.currentCarType = '';
+      }
+      let { data: res } = await shareInterview(params);
+      if (res.success) {
+        Notify({ type: 'success', message: '新建面试成功' });
+        this.$router.go(-1);
+      } else {
+        this.$toast.fail(res.errorMsg);
+      }
+    },
     async onSubmit(values) {
-      console.log(values);
+      console.log(123456);
       try {
-        this.$loading(true);
-        let params = { ...this.formData };
-        params.liveProvince = this.area.liveaddress[0]; // 居住地
-        params.liveCity = this.area.liveaddress[1];
-        params.liveCounty = this.area.liveaddress[2];
-        params.intentWorkProvince = this.area.intentWork[0]; // 高意向工作地
-        params.intentWorkCity = this.area.intentWork[1];
-        params.intentWorkCounty = this.area.intentWork[2];
-        // 面试地址
-        params.interviewCity = this.area.interview[0];
-        params.interviewCounty = this.area.interview[1];
-        params.interviewProvince = this.area.interview[2];
-        if (this.formData.hasCar === true) {
-          params.currentCarType = '';
+        if (this.routeName === '/editShare') {
+          this.editShared()
         } else {
-          params.intentDrivingCarType = '';
-        }
-        console.log(params, 'params');
-        let { data: res } = await shareInterview(params);
-        if (res.success) {
-          Notify({ type: 'success', message: '面试成功' });
-          this.$router.go(-1);
-        } else {
-          this.$toast.fail(res.errorMsg);
+          this.buildShared()
         }
       } catch (err) {
         console.log(`fail:${err}`);
       } finally {
         this.$loading(false);
       }
+    },
+    onFailed(error) {
+      console.log('xxxxx:', error)
     },
     cancelform() {
       Dialog.confirm({

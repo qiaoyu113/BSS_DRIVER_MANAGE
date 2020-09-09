@@ -23,7 +23,7 @@
             />
             <van-field
               label="司机姓名"
-              :value="`${formData.driverInfoFORM.name}（${formData.driverInfoFORM.driverId}）`"
+              :value="`${formData.driverInfoFORM.name}（${formData.driverInfoFORM.driverId || formData.driverId }）`"
               required
               readonly
               colon
@@ -60,7 +60,7 @@
               :form="formData"
               :columns="columns_busiType"
               value="name"
-              :is-computed="formData['busiType']!==''"
+              :is-computed="formData['busiType']!=='' && columns_busiType.length > 0"
               required
               label="商品分类"
               placeholder="请选择"
@@ -68,24 +68,13 @@
                 { required: true, message: '请选择' },
               ]"
             />
-            <!-- <van-field
-              readonly
-              clickable
-              colon
-              required
-              :value="formText.busiType"
-              label="商品分类"
-              placeholder="请选择"
-              :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('busiType')"
-            /> -->
             <selftPicker
               :props="keyValue"
               picker-key="cooperationModel"
               :form="formData"
               :columns="columns_cooperationModel"
               value="name"
-              :is-computed="formData['cooperationModel']!==''"
+              :is-computed="formData['cooperationModel']!=='' && columns_busiType.length > 0"
               required
               label="合作模式"
               placeholder="请选择"
@@ -164,28 +153,27 @@
               v-show="formData.busiType !== 1 && formData.cooperationModel === 3"
               readonly
               clickable
-              :value="formText.inspectionTime"
+              :value="timeFormat(formText.inspectionTime,'YYYY-MM-DD dddd HH:mm:ss')"
               label="年检有效期"
               colon
               required
               placeholder="请选择年检有效期"
               :rules="[
-                { required: formData.busiType !== 1 && formStatus === 2, message: '请选择' },
+                { required: formData.busiType !== 1 && formData.cooperationModel === 3 && formStatus === 2, message: '请选择' },
               ]"
               @click="changeDate('inspectionTime')"
             />
-
             <van-field
               v-show="formData.busiType !== 1 && formData.cooperationModel === 3"
               readonly
               clickable
               colon
               required
-              :value="formText.insuranceTime"
+              :value="timeFormat(formText.insuranceTimeData,'YYYY-MM-DD dddd HH:mm:ss')"
               label="保险有效期"
               placeholder="请选择保险有效期"
               :rules="[
-                { required: formData.busiType !== 1 && formStatus === 2, message: '请选择' },
+                { required: formData.busiType !== 1 && formData.cooperationModel === 3 && formStatus === 2, message: '请选择' },
               ]"
               @click="changeDate('insuranceTime')"
             />
@@ -197,7 +185,7 @@
               :form="formData"
               :columns="columns_supplier"
               value="name"
-              :is-computed="formData['supplier']!==''"
+              :is-computed="formData['supplier']!=='' && columns_supplier.length > 0"
               required
               label="租赁公司"
               placeholder="请选择"
@@ -225,7 +213,7 @@
               :form="formData"
               :columns="columns_supplier"
               value="name"
-              :is-computed="formData['supplier']!==''"
+              :is-computed="formData['supplier']!=='' && columns_supplier.length > 0"
               required
               label="购车公司"
               placeholder="请选择"
@@ -245,16 +233,15 @@
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('supplier')"
             /> -->
-
             <!-- 购车与租车 -->
             <selftPicker
-              v-show="formData.supplier && formData.cooperationModel !== 3"
+              v-show="formData.cooperationModel !== 3"
               :props="keyValue"
               picker-key="cooperationCar"
               :form="formData"
               :columns="columns_cooperationCar1"
               value="name"
-              :is-computed="formData['cooperationCar']!==''"
+              :is-computed="formData['cooperationCar']!=='' && columns_cooperationCar1.length > 0"
               required
               label="合作车型"
               placeholder="请选择"
@@ -282,7 +269,7 @@
               :form="formData"
               :columns="columns_cooperationCar2"
               value="name"
-              :is-computed="formData['cooperationCar']!==''"
+              :is-computed="formData['cooperationCar']!=='' && columns_cooperationCar2.length > 0"
               required
               label="合作车型"
               placeholder="请选择"
@@ -310,7 +297,7 @@
               :form="formData"
               :columns="columns_carModel"
               value="name"
-              :is-computed="formData['carModel']!==''"
+              :is-computed="formData['carModel']!=='' && columns_carModel.length > 0"
               required
               label="车辆型号"
               placeholder="请选择"
@@ -330,20 +317,21 @@
               :rules="[{ required: true, message: '请选择' }]"
               @click="showPickerFn('carModel')"
             /> -->
-
-            <template v-show="formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel">
-              <div>
+            <template>
+              <div v-show="formData.cooperationModel !== 3 ">
                 <van-field
                   label="车辆信息"
                   :value="formText.describe"
                   required
+                  placeholder="请输入"
                   colon
-                  :rules="[{ required: formData.cooperationModel !== 3 && formData.cooperationCar && formData.carModel && formStatus === 2, message: '请选择' }]"
+                  :rules="[{ required: formData.cooperationModel !== 3 && formStatus === 2, message: '请选择' }]"
                 />
 
                 <van-field
                   v-show="formData.supplier && formData.cooperationModel === 1"
                   label="无税车价"
+                  placeholder="请输入"
                   :value="formText.carPrice"
                   required
                   colon
@@ -388,7 +376,7 @@
               <PayItem
                 :obj="item"
                 :index="index"
-                @delete="deleteItem"
+                @delete="deleteItem(index)"
               />
             </div>
           </van-cell-group>
@@ -467,6 +455,7 @@
   </div>
 </template>
 <script>
+import dayjs from 'dayjs'
 import { parseTime } from '@/utils';
 import { Notify } from 'vant';
 import { IdPattern, carNoRegExp } from '@/utils/index';
@@ -520,7 +509,8 @@ export default {
           phone: '',
           workCity: ''
         },
-        orderPayRecordInfoFORMList: []
+        orderPayRecordInfoFORMList: [],
+        driverId: ''
       },
       formText: {
         busiType: '',
@@ -552,12 +542,28 @@ export default {
       editors: false,
       id: '',
       editorsCar: false,
-      editorsSupplier: false
+      editorsSupplier: false,
+      driverId: '',
+      orderId: ''
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    insuranceTimeData() {
+      if (this.formData.busiType !== 1 && this.formData.cooperationModel === 3) {
+        return this.formText.insuranceTime
+      } else {
+        return this.clearData('insuranceTime')
+      }
+    },
+    inspectionTimeData() {
+      if (this.formData.busiType !== 1 && this.formData.cooperationModel === 3) {
+        return this.formText.inspectionTime
+      } else {
+        return this.clearData('inspectionTime')
+      }
     },
     operateFlag() {
       if (this.formStatus === 1) {
@@ -589,50 +595,34 @@ export default {
   watch: {
     'formData.cooperationModel'(value) {
       if (value === 1) {
-        if (!this.id) {
-          this.formData.supplier = '';
-          this.formData.cooperationCar = '';
-          this.formData.carModel = '';
-          this.formText.supplier = '';
-          this.formText.cooperationCar = '';
-        } else {
-          if (this.editors) {
-            this.formData.supplier = '';
-            this.formData.cooperationCar = '';
-            this.formData.carModel = '';
-            this.formText.supplier = '';
-            this.formText.cooperationCar = '';
-          }
-          this.editors = true;
-        }
+        // if (!this.id) {
+        //   this.formData.supplier = '';
+        //   this.formData.cooperationCar = '';
+        //   this.formData.carModel = '';
+        //   this.formText.supplier = '';
+        //   this.formText.cooperationCar = '';
+        // } else {
+        //   if (this.editors) {
+        //     this.formData.supplier = '';
+        //     this.formData.cooperationCar = '';
+        //     this.formData.carModel = '';
+        //     this.formText.supplier = '';
+        //     this.formText.cooperationCar = '';
+        //   }
+        //   this.editors = true;
+        // }
         this.getCompany('1');
       } else if (value === 2) {
-        if (!this.id) {
-          this.formData.supplier = '';
-          this.formData.cooperationCar = '';
-          this.formText.supplier = '';
-          this.formData.carModel = '';
-          this.formText.cooperationCar = '';
-        } else {
-          if (this.editors) {
-            this.formData.supplier = '';
-            this.formData.cooperationCar = '';
-            this.formText.supplier = '';
-            this.formData.carModel = '';
-            this.formText.cooperationCar = '';
-          }
-          this.editors = true;
-        }
         this.getCompany('2');
       } else {
         if (!this.id) {
           this.formText.cooperationCar = '';
-          this.formData.cooperationCar = '';
+          // this.formData.cooperationCar = '';
           this.formData.carModel = '';
         } else {
           if (this.editors) {
             this.formText.cooperationCar = '';
-            this.formData.cooperationCar = '';
+            // this.formData.cooperationCar = '';
             this.formData.carModel = '';
           }
           this.editors = true;
@@ -640,16 +630,16 @@ export default {
       }
     },
     'formData.supplier'(value) {
-      if (!this.id) {
-        this.formData.cooperationCar = '';
-        this.formData.carModel = '';
-      } else {
-        if (this.editorsSupplier) {
-          this.formData.cooperationCar = '';
-          this.formData.carModel = '';
-        }
-        this.editorsSupplier = true;
-      }
+      // if (!this.id) {
+      //   this.formData.cooperationCar = '';
+      //   this.formData.carModel = '';
+      // } else {
+      //   if (this.editorsSupplier) {
+      //     this.formData.cooperationCar = '';
+      //     this.formData.carModel = '';
+      //   }
+      //   this.editorsSupplier = true;
+      // }
       if (value) {
         this.getCar();
       }
@@ -660,16 +650,16 @@ export default {
         this.formData.cooperationModel === 2
       ) {
         if (value) {
-          if (this.id) {
-            if (this.editorsCar) {
-              this.formData.carModel = '';
-            }
-            this.editorsCar = true;
-          } else {
-            this.formData.carModel = '';
-          }
-          this.formData.carModel = '';
-          this.formText.carModel = '';
+          // if (this.id) {
+          //   if (this.editorsCar) {
+          //     this.formData.carModel = '';
+          //   }
+          //   this.editorsCar = true;
+          // } else {
+          //   this.formData.carModel = '';
+          // }
+          // this.formData.carModel = '';
+          // this.formText.carModel = '';
           if (this.formData.cooperationModel === 1 && value) {
             this.GetModelByTypeAndCityAndSupplierAndCarType();
           } else if (this.formData.cooperationModel === 2) {
@@ -709,12 +699,19 @@ export default {
     this.updataFrom();
   },
   methods: {
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
+    },
+    clearData(name) {
+      return this.formText['name'] = ''
+    },
     async getBuyCarPrice() {
       let {
         data
       } = await GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel({
         busType: this.formData.cooperationModel,
-        city: this.formData.driverInfoFORM.workCity,
+        // city: this.formData.driverInfoFORM.workCity,
+        city: 410100,
         supplier: this.formData.supplier,
         carType: this.formData.cooperationCar,
         model: this.formData.carModel
@@ -732,7 +729,8 @@ export default {
       if (str === '1') {
         let { data } = await GetSupplierByTypeAndCity({
           busType: this.formData.cooperationModel,
-          city: this.formData.driverInfoFORM.workCity
+          // city: this.formData.driverInfoFORM.workCity
+          city: 410100
         });
         res = data;
       } else if (str === '2') {
@@ -757,7 +755,8 @@ export default {
         // 购车
         let { data } = await GetCarTypeByTypeAndCityAndSupplier({
           busType: this.formData.cooperationModel,
-          city: this.formData.driverInfoFORM.workCity,
+          // city: this.formData.driverInfoFORM.workCity,
+          city: 410100,
           supplier: this.formData.supplier
         });
         res = data;
@@ -765,7 +764,8 @@ export default {
         // 租车
         let { data } = await GetRentalCarTypeByParams({
           busType: this.formData.cooperationModel,
-          city: this.formData.driverInfoFORM.workCity,
+          // city: this.formData.driverInfoFORM.workCity,
+          city: 410100,
           supplier: this.formData.supplier
         });
         res = data;
@@ -782,7 +782,8 @@ export default {
     async GetModelByTypeAndCityAndSupplierAndCarType() {
       let { data } = await GetModelByTypeAndCityAndSupplierAndCarType({
         busType: this.formData.cooperationModel,
-        city: this.formData.driverInfoFORM.workCity,
+        // city: this.formData.driverInfoFORM.workCity,
+        city: 410100,
         supplier: this.formData.supplier,
         carType: this.formData.cooperationCar
       });
@@ -797,7 +798,8 @@ export default {
     async getPrice() {
       let { data } = await GetPriceAndByTypeAndCityAndSupplierAndCarType({
         busType: this.formData.cooperationModel,
-        city: this.formData.driverInfoFORM.workCity,
+        // city: this.formData.driverInfoFORM.workCity,
+        city: 410100,
         supplier: this.formData.supplier,
         carType: this.formData.cooperationCar
       });
@@ -811,28 +813,28 @@ export default {
     },
     updataFrom() {
       this.routeName = this.$route.path;
-      // const id = this.$route.query.id;
-      // this.formData.driverInfoFORM.driverId = id;
-      // this.formData.driverInfoFORM.name = this.$route.query.driverName;
-      // this.formData.driverInfoFORM.phone = this.$route.query.driverPhone;
-      // this.formData.driverInfoFORM.workCity = this.$route.query.workCity;
-      this.workCityName = this.$route.query.workCityName;
+      const id = this.$route.query.id;
+      this.driverId = id
+      this.formData.driverId = id
+      this.formData.driverInfoFORM.driverId = id;
+      this.formData.driverInfoFORM.name = this.$route.query.driverName;
+      this.formData.driverInfoFORM.phone = this.$route.query.driverPhone;
+      this.formData.driverInfoFORM.workCity = this.$route.query.workCity;
+      this.formData.driverInfoFORM.workCityName = this.$route.query.workCityName;
       let orderId = this.$route.query.orderId;
       if (orderId) {
-        this.id = orderId;
+        this.orderId = orderId;
       }
       this.fetchData();
     },
     async fetchData() {
       const { data } = await GetDictionaryList([
-        'Intentional_compartment',
-        'busi_type',
-        'pay_type'
+        'Intentional_compartment'
       ]);
       if (data.success) {
         this.columns_cooperationCar2 = data.data.Intentional_compartment.map(
           (ele) => {
-            return { name: ele.dictLabel, code: ele.dictValue };
+            return { name: ele.dictLabel, code: Number(ele.dictValue) };
           }
         );
         let payItemInfo = JSON.parse(
@@ -865,15 +867,17 @@ export default {
         this.$loading(true);
         let { data: res } = await orderDetail({ driverId: id });
         if (res.success) {
-          // this.formText.inspectionTime = res.data.inspectionTime;
-          // this.formText.insuranceTime = res.data.insuranceTime;
-          // this.formText.supplier = res.data.supplier;
-          // this.formText.carModel = res.data.carModel;
-          // this.formText.cooperationCar = res.data.cooperationCar;
-          this.id = res.data.orderId
-          this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
-          this.formData = { ...this.formData, ...res.data };
-          this.formData.driverInfoFORM = this.formData.driverInfoVO;
+          if (res.data !== null) {
+            console.log(res.data.orderId, res.data.orderId, 1, res.data.supplier)
+            this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
+            this.formData = { ...this.formData, ...res.data };
+            this.formData.driverInfoFORM = this.formData.driverInfoVO;
+            this.formData.driverId = this.driverId
+            this.orderId = res.data.orderId
+            this.formData.supplier = res.data.supplier
+            this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
+            console.log('supplier', this.formData.supplier)
+          }
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -893,14 +897,15 @@ export default {
           return;
         }
         this.$loading(true);
+        console.log('tag', this.formData.cooperationTime)
         let params = {
           cooperationModel: this.formData.cooperationModel,
-          cooperationTime: this.formData.cooperationTime,
+          cooperationTime: this.formData.cooperationTimenew,
           incomeGuarantee: this.formData.incomeGuarantee,
           rake: this.formData.rake,
           goodsAmount: this.formData.goodsAmount,
-          inspectionTime: this.formData.inspectionTime,
-          insuranceTime: this.formData.insuranceTime,
+          inspectionTime: new Date(this.formData.inspectionTime).getTime(),
+          insuranceTime: new Date(this.formData.insuranceTime).getTime(),
           plateNo: this.formData.plateNo,
           cooperationCar: this.formData.cooperationCar,
           busiType: this.formData.busiType,
@@ -909,12 +914,15 @@ export default {
           productId: this.formData.productId,
           driverInfoFORM: this.formData.driverInfoFORM,
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
-          orderId: this.id
+          orderId: this.orderId,
+          driverId: this.driverId
         }
+        params.driverInfoFORM.driverId = this.driverId
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
           Notify({ type: 'success', message: '订单录入成功' });
+          this.$router.push('/driverdetail')
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -933,8 +941,8 @@ export default {
           incomeGuarantee: this.formData.incomeGuarantee,
           rake: this.formData.rake,
           goodsAmount: this.formData.goodsAmount,
-          inspectionTime: this.formData.inspectionTime,
-          insuranceTime: this.formData.insuranceTime,
+          inspectionTime: new Date(this.formData.inspectionTime).getTime(),
+          insuranceTime: new Date(this.formData.insuranceTime).getTime(),
           plateNo: this.formData.plateNo,
           cooperationCar: this.formData.cooperationCar,
           busiType: this.formData.busiType,
@@ -943,15 +951,15 @@ export default {
           productId: this.formData.productId,
           driverInfoFORM: this.formData.driverInfoFORM,
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
-          orderId: this.id
+          orderId: this.orderId,
+          driverId: this.driverId
         }
-        // let params = { ...this.formData };
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
           this.formStatus++;
           console.log(res.data)
-          this.id = res.data
+          this.orderId = res.data
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -1097,11 +1105,9 @@ export default {
       }
     },
     deleteItem(index) {
-      console.log(index);
-      let list = this.formData.orderPayRecordInfoFORMList.filter((ele, ind) => {
-        return ind !== index;
-      });
-      this.formData.orderPayRecordInfoFORMList = { ...list };
+      console.log('this.formDatathis.orderPayRecordInfoFORMList', this.formData.orderPayRecordInfoFORMList, index)
+      this.formData.orderPayRecordInfoFORMList.splice(index, 1);
+      window.localStorage.setItem('payItemInfo', JSON.stringify(this.formData.orderPayRecordInfoFORMList))
     }
   }
 };
