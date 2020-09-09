@@ -95,4 +95,11 @@ export function shippingDetailBySale(data) {
     data
   })
 }
+export function getProjectWayBillList(data) {
+  return request({
+    url: `${prefix}/v2/waybill/getProjectWayBillList`, // 外线测列表-查询项目下的运单列表[productId必传]
+    method: 'post',
+    data
+  })
+}
 
