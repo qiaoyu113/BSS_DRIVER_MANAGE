@@ -200,14 +200,28 @@ export default {
           lineId: this.lineId
         })
         if (res.success) {
-          this.$loading(false)
-          console.log(res.data)
+          // driverWorkTime
+          // 判断配送时间大小
+          const timeList = res.data.lineDeliveryInfoFORMS;
+          if (timeList.length > 0) {
+            timeList.sort((a, b) => {
+              const aTime = +new Date(2020, 1, 1, a.workingTimeStart.split(':')[0], a.workingTimeStart.split(':')[1]);
+              const bTime = +new Date(2020, 1, 1, b.workingTimeStart.split(':')[0], b.workingTimeStart.split(':')[1])
+              return bTime - aTime;
+            })
+          }
+          const date = res.data.driverWorkTime.split(' ')[0] + ' ' + timeList[0].workingTimeStart
+          console.log((+new Date(date.replace(/\-/g, '/'))))
+          this.formStr.arrivalTime = date;
+          this.formStr.date = new Date(date.replace(/\-/g, '/'));
+          this.form.arrivalTime = +new Date(date.replace(/\-/g, '/'));
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     /**
@@ -221,7 +235,7 @@ export default {
      * 点击提交
      */
     async onSubmit() {
-      const SubmintForm = this.form.operateFlag === 'followCar' ? FollowCar : TryRun;
+      const SubmintForm = this.operateFlag === 'followCar' ? FollowCar : TryRun;
       try {
         this.$loading(true);
         let { data: res } = await SubmintForm({
@@ -233,7 +247,7 @@ export default {
           }
         })
         if (res.success) {
-          if (this.form.operateFlag === 'followCar') {
+          if (this.operateFlag === 'followCar') {
             this.$toast.success('确认跟车成功！');
           } else {
             this.$toast.success('确认试跑成功！');
@@ -245,14 +259,13 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
       } finally {
-        // this.$loading(false)
+        this.$loading(false)
       }
     },
     onConfirm(value) {
-      this.formStr.arrivalTime = parseTime(value, '{y}-{m}-{d} {h}:{m}');
+      this.formStr.arrivalTime = parseTime(value, '{y}-{m}-{d} {h}:{i}');
       this.form.arrivalTime = +new Date(value)
       this.showPicker = false;
     }

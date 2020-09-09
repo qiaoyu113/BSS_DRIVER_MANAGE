@@ -334,7 +334,6 @@ export default {
     async getConfirmInfoList(isInit) {
       try {
         this.$loading(true)
-        this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size,

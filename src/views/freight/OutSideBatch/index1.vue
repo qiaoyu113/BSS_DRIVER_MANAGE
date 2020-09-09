@@ -4,17 +4,17 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <!-- <div class="headerRight" @click="batch">
+          <div class="headerRight" @click="Shipper() ">
             批量上报
-          </div> -->
+          </div>
         </template>
       </van-nav-bar>
     </van-sticky>
     <!-- 搜索 -->
     <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly @click="handleSearchClick">
       <template #action>
-        <div class="searchSelect" @click="showPopup">
-          筛选
+        <div class="searchSelect">
+          日期
           <van-icon name="play" color="#3C4353" />
         </div>
       </template>
@@ -38,17 +38,11 @@
                 {{ item.num }}
               </div>
             </template>
-            <P class="all">
-              <van-checkbox v-model="checkall" class="checked">
-                <span>全选</span>
-                <span>已选择{{ checkedNum }} 个出车单位</span>
-              </van-checkbox>
-            </P>
+
             <div v-for="sub in lists" :key="sub.id">
-              <CardItem
+              <CardItems
                 class="items"
                 :obj="sub"
-                :checkedarr="checkedarr"
               />
             </div>
           </van-tab>
@@ -57,60 +51,7 @@
     </van-pull-refresh>
 
     <!-- 右侧筛选抽屉 -->
-    <SelfPopup
-      ref="lineLineForm"
-      :show.sync="show"
-      form-ref="form"
-      @submit="onQuery"
-      @reset="onReset"
-    >
-      <van-field
-        :value="text1"
-        readonly
-        clickable
-        label="司机城市"
-        placeholder="请选择"
-        @click="showPicker1 = true"
-      />
-      <van-field
-        v-model="text2"
-        name="username"
-        label="司机"
-        placeholder="请输入"
-      />
-      <van-field
-        v-model="text3"
-        name="username"
-        label="线路"
-        placeholder="请输入"
-      />
-      <van-field
-        :value="text4"
-        readonly
-        clickable
-        label="加盟经理"
-        placeholder="请选择"
-        @click="handleShowModal('manager')"
-      />
 
-      <van-field
-        :value="text10"
-        readonly
-        clickable
-        label="创建时间"
-        placeholder="开始日期"
-        :min-date="minDate"
-        @click="showPicker10 = true"
-      />
-      <van-field
-        :value="text11"
-        readonly
-        clickable
-        input-align="center"
-        placeholder="结束日期"
-        @click="showPicker11 = true"
-      />
-    </SelfPopup>
     <van-popup v-model="showPicker1" position="bottom">
       <van-picker
         value-key="label"
@@ -163,16 +104,16 @@
 </template>
 
 <script>
-import SelfPopup from '@/components/SelfPopup'
+// import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
-import CardItem from './components/List'
-import { getLineInfoList } from '@/api/freight' // 外线接口
+
+import CardItems from './components/Lists.vue'
+import { getProjectWayBillList } from '@/api/freight' // 外线接口
 // import { Toast } from 'vant
 export default {
   components: {
-    CardItem,
-    SelfPopup,
-    Suggest
+    Suggest,
+    CardItems
 
   },
   data() {
@@ -212,6 +153,7 @@ export default {
         total: 0,
         size: 10
       },
+
       // 筛选
       text1: '', // 城市选择
       text2: '', // 用户名
@@ -276,42 +218,16 @@ export default {
 
     }
   },
-  computed: {
-    minDate() {
-      if (this.form.r) {
-        return new Date(this.form.r)
-      }
-      return new Date()
-    },
-    checkedNum() {
-      return this.lists.filter(item => item.checked).length
-    },
-    checkedarr() {
-      return this.lists.filter(item => item.checked)
-    },
-    checkall: {
-      get: function() {
-        return (this.lists.length === this.checkedNum)
-      },
-      set: function(val) {
-        if (val) {
-          this.lists.forEach(item => {
-            item.checked = true
-          })
-        } else {
-          this.lists.forEach(item => {
-            item.checked = false
-          })
-        }
-      }
-    }
-  },
 
   mounted() {
-
+    console.log(this.$route.query.endDate)
   },
   methods: {
-
+    Shipper() {
+      this.$router.push({
+        path: 'outsidebatch'
+      })
+    },
     onClickLeft() {
       this.$router.go(-1)
     },
@@ -337,9 +253,13 @@ export default {
         let params = {
           page: this.page.current,
           limit: this.page.size,
-          pageNumber: 20
+          pageNumber: 20,
+          endDate: this.$route.query.endDate,
+          startDate: this.$route.query.endDate,
+          projectId: this.$route.query.projectId
+
         }
-        let { data: res } = await getLineInfoList(params)
+        let { data: res } = await getProjectWayBillList(params)
         if (res.success) {
           let newLists = res.data
           newLists.forEach(item => {
@@ -418,7 +338,7 @@ export default {
           startDate: this.text10
         }
         this.$loading(true)
-        let { data: res } = await getLineInfoList(parmas)
+        let { data: res } = await getProjectWayBillList(parmas)
         console.log(res)
         if (res.success) {
           this.lists = res.data

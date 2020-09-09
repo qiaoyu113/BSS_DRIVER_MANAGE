@@ -35,6 +35,7 @@
 
 <script>
 // import { Toast } from 'vant'
+import { shippingDetailBySale, wayBillAmountDetail } from '@/api/freight'
 export default {
   props: {
     obj: {
@@ -46,28 +47,81 @@ export default {
       default: () => {}
     }
   },
+  mounted() {
+    console.log(this.$route.query.show)
+  },
   methods: {
     /**
      * 线路详情
      */
     handleDetailClick(obj) {
-      this.$router.push({
-        path: '/detail',
-        query: { obj: obj,
-          type: '2' }
-      })
+      this.getGmInfoList(obj.wayBillId)
+    },
+    async getGmInfoList(id) {
+      try {
+        let parmas = {
+          wayBillId: id
+        }
+        let { data: res } = await shippingDetailBySale(parmas)
+        if (res.success) {
+          this.$router.push({
+            path: '/detail',
+            query: { obj: res.data,
+              type: '2' }
+          })
+        } else {
+
+          // this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     },
     cancel() {
       this.$router.go(-1)
     },
     Add_to() {
-      this.$router.push({
-        path: '/report',
-        query: {
-          obj: JSON.stringify(this.checkedarr)
+      let arr = []
+      console.log(this.checkedarr)
+      if (this.checkedarr !== '') {
+        this.checkedarr.filter(item => {
+          arr.push(item.wayBillId)
+        })
+
+        this.reportMoneyBatchByGM(arr)
+      } else {
+        this.$toast.fail('请选择上报的')
+      }
+    },
+    async reportMoneyBatchByGM(id) { // 确认运费回显
+      try {
+        let parmas = {
+          wayBillIds: id
         }
-      })
+        let { data: res } = await wayBillAmountDetail(parmas)
+        console.log(res)
+        if (res.success) {
+          this.$router.push({
+            path: '/report',
+            query: {
+              obj: JSON.stringify(res.data)
+            }
+          })
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get search data fail:${err}`)
+      }
     }
+    // Add_to() {
+    //   this.$router.push({
+    //     path: '/report',
+    //     query: {
+    //       obj: JSON.stringify(this.checkedarr)
+    //     }
+    //   })
+    // }
   }
 }
 

@@ -50,16 +50,18 @@
             <van-field
               label="是否有车"
               colon
-              :value="type.hasCar===0?'否':'是'"
+              :value="type.hasCar=== false ?'否':'是'"
               readonly
             />
             <van-field
+              v-if="type.hasCar === true"
               label="当前车型"
               :value="type.currentCarTypeName"
               readonly
               colon
             />
             <van-field
+              v-if="type.hasCar === false"
               label="意向驾驶车型"
               :value="type.intentDrivingCarTypeName"
               readonly
@@ -319,17 +321,19 @@
             />
             <van-field
               label="是否有车"
-              :value="type.hasCar===0?'否':'是'"
+              :value="type.hasCar=== false ? '否' : '是'"
               readonly
               colon
             />
             <van-field
+              v-if="type.hasCar=== true"
               label="当前车型"
               :value="type.currentCarTypeName"
               colon
               readonly
             />
             <van-field
+              v-if="type.hasCar=== false"
               label="意向驾驶车型"
               :value="type.intentDrivingCarTypeName"
               readonly

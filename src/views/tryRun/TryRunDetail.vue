@@ -80,9 +80,11 @@ export default {
       const { index } = item;
       let path = '';
       let query = {
-        lineId: 'XL202009010002',
-        driverId: 'ceshi'
+        lineId: this.detail.lineId,
+        driverId: this.detail.driverId,
+        runTestId: this.detail.runTestId
       };
+      const list = this.detail.runTestStatusRecordVOList
       switch (index) {
         case 0:
           path = '/create-run';
@@ -93,6 +95,13 @@ export default {
           break;
         case 2:
           path = '/off-try';
+          if (list && list.length > 0) {
+            const item = list.find(item => item.recordFlag.includes('掉线记录'));
+            if (item) {
+              query.id = item.id;
+            }
+          }
+          query.status = this.detail.status
           break;
       }
       this.$router.push({
@@ -107,7 +116,6 @@ export default {
         const runTestId = this.id;
         let { data: res } = await GetDetails({ runTestId })
         if (res.success) {
-          this.$loading(false)
           this.detail = res.data;
           this.setRightBtn();
         } else {
@@ -116,6 +124,8 @@ export default {
       } catch (err) {
         this.$loading(false)
         console.log(`${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 设置右侧按钮list

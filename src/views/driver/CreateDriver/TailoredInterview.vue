@@ -458,28 +458,6 @@
         </div>
       </van-form>
     </div>
-
-    <!-- picker -->
-    <van-popup
-      v-model="showPicker"
-      round
-      position="bottom"
-    >
-      <van-picker
-        show-toolbar
-        value-key="label"
-        :columns="columns"
-        @cancel="showPicker = false"
-        @confirm="onConfirmPicker"
-      />
-    </van-popup>
-    <van-popup v-model="showAddressPicker" position="bottom">
-      <van-area
-        :area-list="areaList"
-        @confirm="onConfirmArea"
-        @cancel="showAddressPicker = false"
-      />
-    </van-popup>
   </div>
 </template>
 <script>

@@ -102,7 +102,7 @@ export default {
         date: new Date(),
         droppedTime: ''
       },
-      minDate: new Date(+new Date() - 86400000 * 365 * 10),
+      minDate: new Date(),
       maxDate: new Date(+new Date() + 86400000 * 365 * 10),
       showModal: false,
       whyList: []
@@ -116,9 +116,21 @@ export default {
   mounted() {
     this.lineId = this.$route.query.lineId;
     this.driverId = this.$route.query.driverId;
+    this.runTestId = this.$route.query.runTestId;
+    this.id = this.$route.query.id;
+    this.status = this.$route.query.status;
     this.fetchData();
+    this.setDate();
   },
   methods: {
+    setDate() {
+      const myDate = new Date(+new Date() + 86400000);
+      let year = myDate.getFullYear();
+      let month = myDate.getMonth();
+      let day = myDate.getDate();
+      this.formStr.date = new Date(year, month, day);
+      this.minDate = new Date(year, month, day);
+    },
     /**
      * 请求字典接口
      */
@@ -152,7 +164,7 @@ export default {
     },
     // 选择时间
     onConfirm(value) {
-      this.formStr.droppedTime = parseTime(value, '{y}-{m}-{d} {h}:{m}');
+      this.formStr.droppedTime = parseTime(value, '{y}-{m}-{d} {h}:{i}');
       this.form.droppedTime = +new Date(value)
       this.showModal = false;
     },
@@ -165,13 +177,15 @@ export default {
         let { data: res } = await SwitchTryRun({
           lineId: this.lineId, // 线路Id
           driverId: this.driverId, // 司机Id
+          runTestId: this.runTestId,
           operateFlag: 'switchDropped',
+          status: this.status,
           runTestStatusRecordFORM: {
-            ...this.form
+            ...this.form,
+            id: this.id // 掉线Id
           }
         })
         if (res.success) {
-          this.$loading(false);
           this.$dialog.confirm({
             title: '提示',
             message: '已成功操作试跑掉线，该线路是否需要激活？',
@@ -187,10 +201,9 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
       } finally {
-        // this.$loading(false)
+        this.$loading(false)
       }
     }
   }

@@ -4,9 +4,9 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div class="headerRight" @click="batch">
+          <!-- <div class="headerRight" @click="batch">
             批量上报
-          </div>
+          </div> -->
         </template>
       </van-nav-bar>
       <!-- 搜索 -->
@@ -157,8 +157,8 @@ import CardItem from './components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
-import { getGmInfoList } from '@/api/freight' // 结盟接口
-// import { getGmInfoList } from '@/api/freight' 外线接口
+// import { getGmInfoList } from '@/api/freight' // 结盟接口
+import { getLineInfoList } from '@/api/freight' // 外线接口
 export default {
   components: {
     CardItem,
@@ -302,7 +302,7 @@ export default {
     },
     batch() {
       this.$router.push({
-        path: 'batch'
+        path: '/outsidebatch'
       })
     },
     filter_left() {
@@ -318,7 +318,7 @@ export default {
           startDate: this.listQuery.startDate
         }
         this.$loading(true)
-        let { data: res } = await getGmInfoList(parmas)
+        let { data: res } = await getLineInfoList(parmas)
         console.log(res)
         if (res.success) {
           this.lists = res.data
@@ -347,7 +347,7 @@ export default {
           limit: this.page.size,
           pageNumber: 20
         }
-        let { data: res } = await getGmInfoList(params)
+        let { data: res } = await getLineInfoList(params)
         console.log(res)
         if (res.success) {
           let newLists = res.data

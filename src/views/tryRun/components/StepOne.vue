@@ -44,7 +44,7 @@
           详情
         </div>
       </div>
-      <van-cell-group :class="{'border-none': !lineDetail.lineId}">
+      <van-cell-group v-show="lineDetail.lineId" :class="{'border-none': !lineDetail.lineId}">
         <van-field
           :value="formDetails.driver"
           readonly
@@ -55,7 +55,7 @@
           label="选择司机"
           placeholder="请选择司机"
           :rules="[{required: true, message: '请选择司机'}]"
-          @click="showModaldDriver = true"
+          @click="showModalDriver = true"
         />
       </van-cell-group>
       <div class="btn-container">
@@ -149,14 +149,14 @@
       </div>
       <div
         class="cancel flex align-center justify-center"
-        @click="showModald = false"
+        @click="showModal = false"
       >
         取消
       </div>
     </van-popup>
     <!-- 选择司机 -->
     <van-popup
-      v-model="showModaldDriver"
+      v-model="showModalDriver"
       round
       position="bottom"
       :style="{height: '90%', width: '100%'}"
@@ -210,7 +210,7 @@
       </div>
       <div
         class="cancel flex align-center justify-center"
-        @click="showModaldDriver = false"
+        @click="showModalDriver = false"
       >
         取消
       </div>
@@ -226,7 +226,7 @@ export default {
   data() {
     return {
       showModal: false,
-      showModaldDriver: false,
+      showModalDriver: false,
       showActionSheet: false,
       list: [],
       form: {
@@ -296,10 +296,9 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
       } finally {
-        // this.$loading(false)
+        this.$loading(false)
       }
     },
     /**
@@ -328,7 +327,7 @@ export default {
         this.$loading(true);
         let { data: res } = await GetLine({
           key: this.lineValue,
-          dutyManagerId: ''
+          select: true
         });
         if (res.success) {
           this.lineList = res.data;
@@ -345,7 +344,14 @@ export default {
     async getDriver() {
       try {
         this.$loading(true);
-        let { data: res } = await GetDriverList({ key: this.driverValue });
+        const postData = {
+          key: this.driverValue,
+          status: 3
+        }
+        if (this.lineDetail.busiType !== 1 && this.lineDetail.busiType !== 9) {
+          postData.busiType = this.lineDetail.busiType
+        }
+        let { data: res } = await GetDriverList(postData);
         if (res.success) {
           this.driverList = res.data;
         } else {
@@ -362,7 +368,7 @@ export default {
       this.form.driverId = item.driverId;
       this.driverDetail = item;
       this.formDetails.driver = `${item.name}/${item.phone}`;
-      this.showModaldDriver = false;
+      this.showModalDriver = false;
     }
   }
 };

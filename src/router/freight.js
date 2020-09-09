@@ -66,6 +66,14 @@ export default [
     }
   },
   {
+    path: '/outsidebatch1',
+    name: 'outsidebatch1',
+    component: resolve => require(['@/views/freight/OutSideBatch/index1'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
+  },
+  {
     path: '/outsidereport',
     name: 'outsidereport',
     component: resolve => require(['@/views/freight/OutSideBatch/components/Report'], resolve),
