@@ -31,7 +31,7 @@
       >
         <!-- tabs -->
         <van-tabs v-model="active" swipeable @change="handleTabChange">
-          <van-tab v-for="item in tabArrs" :key="item.text">
+          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
               <div v-if="item.num" class="van-info">
@@ -65,6 +65,17 @@
       @submit="onSubmit"
       @reset="onReset"
     >
+      <!-- <van-field
+        readonly
+        clickable
+        label-width="7em"
+        name="city"
+        :value="listQuery.city"
+        label="城市"
+        is-link
+        placeholder="请选择城市"
+        @click="showPickerFn('city')"
+      /> -->
       <van-field
         v-model="listQuery.name"
         colon
@@ -178,7 +189,7 @@ export default {
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 100
+          num: 0
         },
         {
           text: '待上报',
@@ -238,36 +249,7 @@ export default {
           value: 0
         }
       ],
-      columns2: [
-        {
-          label: '有线路余额',
-          value: 1
-        },
-        {
-          label: '无线路余额',
-          value: 0
-        }
-      ],
-      columns3: [
-        {
-          label: '稳定线路',
-          value: 1
-        },
-        {
-          label: '临时线路',
-          value: 0
-        }
-      ],
-      columns4: [
-        {
-          label: '城配线',
-          value: 1
-        },
-        {
-          label: '支线',
-          value: 0
-        }
-      ],
+
       showModal: false,
       options: [],
       type: '',
@@ -286,12 +268,12 @@ export default {
         total: 0,
         size: 10
       }
-
     }
   },
   computed: {
   },
   mounted() {
+
     // console.log(getConfirmInfoList)
   },
   methods: {
@@ -318,8 +300,8 @@ export default {
         }
         this.$loading(true)
         let { data: res } = await getGmInfoList(parmas)
-        console.log(res)
         if (res.success) {
+          console.log(res.data, 'xccccccccccccc')
           this.lists = res.data
           this.listQuery = ''
         } else {
@@ -328,14 +310,15 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.loading = false;
-        this.error = true;
+        // this.loading = false;
+        // this.error = true;
         console.log(`get list fail:${err}`)
       } finally {
-        this.$loading(false)
+        // this.$loading(false)
       }
     },
     handleTabChange(tab) {
+      console.log(this.active, 'xxxxxxxxxxxxxxx')
       this.getConfirmInfoList(true)
     },
     async getConfirmInfoList(isInit) { // 首页加盟运费列表
@@ -345,9 +328,9 @@ export default {
           page: this.page.current,
           limit: this.page.size,
           pageNumber: 20
+
         }
         let { data: res } = await getGmInfoList(params)
-        console.log(res)
         if (res.success) {
           let newLists = res.data
 
@@ -408,8 +391,8 @@ export default {
       } else { // 上拉加载更多
         this.page.current++
       }
-      let result = await this.getConfirmInfoList(isInit)
 
+      let result = await this.getConfirmInfoList(isInit)
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false

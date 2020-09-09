@@ -1,19 +1,17 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title ellipsis">
-      {{ obj.driverName }}/{{ obj.driverPhone }}
+      {{ obj.projectName }}
     </h4>
-    <p v-if="obj.statusName != ''" class="dai">
-      {{ obj.statusName }}
+
+    <p class="text ellipsis">
+      上岗经理:{{ obj.dutyManagerName }}/{{ obj.dutyManagerPhone }}
     </p>
     <p class="text ellipsis">
-      出车单号:{{ obj.wayBillId }}
+      出车单数:{{ obj.wayBillNum }}
     </p>
     <p class="text ellipsis">
-      加盟经理:{{ obj.joinManagerName }}
-    </p>
-    <p class="text ellipsis">
-      路线名称:{{ obj.lineName }}
+      上报单数:{{ obj.lineReportedNum }}
     </p>
     <div class="detail van-hairline--top">
       <van-button type="default" round hairline @click="handleDetailClick(obj)">
@@ -24,7 +22,6 @@
 </template>
 
 <script>
-import { getProjectWayBillList } from '@/api/freight'
 export default {
   props: {
     obj: {
@@ -39,31 +36,14 @@ export default {
      */
     handleDetailClick(obj) {
       this.$router.push({
-        path: '/outsidebatch'
-
+        path: '/outsidebatch',
+        query: { endDate: obj.startDate,
+          startDate: obj.endDate,
+          projectId: obj.projectId
+        }
       })
-      this.getGmInfoList(obj.project)
-    },
-    async getGmInfoList(id) {
-      try {
-        let parmas = {
-
-          projectId: id
-        }
-        let { data: res } = await getProjectWayBillList(parmas)
-        if (res.success) {
-          this.$router.push({
-            path: '/outsidebatch',
-            query: { obj: res.data }
-          })
-        } else {
-
-          // this.$toast.fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get search data fail:${err}`)
-      }
     }
+
   }
 }
 

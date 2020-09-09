@@ -20,48 +20,12 @@
           <p>*趟数1:0:02 - 06:00</p>
           <div class="Number">
             <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
             <van-button type="default">
               <van-icon name="arrow" color="#A6AAB8" />
             </van-button>
           </div>
         </li>
-        <!-- <li class="Number_ong">
-          <p>*趟数2:0:02 - 06:00</p>
-          <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
-            <van-button type="default">
-              <van-icon name="arrow" color="#A6AAB8" />
-            </van-button>
-          </div>
-        </li> -->
       </ul>
-      <!-- 单趟出车 -->
-      <!-- <ul>
-        <li><span class="status">已出车</span> <span><van-switch v-model="checked1" size="20px" /></span></li>
-        <li>出车单号：11100000000</li>
-        <li>司机姓名/手机号：方圆/17755668220</li>
-        <li>
-          <div class="Number_ong">
-            <p>*趟数1:0:02 - 06:00</p>
-            <div class="Number"> -->
-
-      <!-- <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-
-              <van-button type="default">
-                <van-icon name="arrow" color="#A6AAB8" />
-              </van-button>
-            </div>
-          </div>
-        </li>
-      </ul> -->
-      <!-- 未出车 -->
-      <!-- <ul>
-        <li><span class="status">已出车</span> <span><van-switch v-model="checked2" size="20px" /></span></li>
-        <li>出车单号：11100000000</li>
-        <li>司机姓名/手机号：方圆/17755668220</li>
-      </ul> -->
     </div>
     <div class="Remarks">
       <van-field
@@ -113,6 +77,8 @@ export default {
       //     this.reportMoneyBatchByGM()
       //   }
       // });
+      // let wayBillAmountId = this.checkedarr.map(item => item.wayBillAmountId)
+      // let preMoney = this.checkedarr.map(item => item.preMoney)
       this.obj.filter(item => {
         if (item.checked === true) {
           this.reportMoneyBatchByGM(item.wayBillAmountId, item.preMoney)

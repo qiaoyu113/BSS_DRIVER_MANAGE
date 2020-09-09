@@ -32,7 +32,7 @@
         上报时间：{{ obj.gmReportTime }}
       </p>
       <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
-        趟数{{ item.lineFee }}金额：{{ item.gmFee }}
+        趟数{{ item.tripNo }}金额：{{ item.gmFee }}
       </p>
       <!-- <p class="text ellipsis">
         趟数2金额：{{}}
@@ -41,7 +41,7 @@
         备注：{{ obj.remark }}
       </p>
       <p class="text ellipsis">
-        确认状态：{{ obj.confirmState }}
+        确认状态：{{ obj.confirmStateName }}
       </p>
     </div>
     <van-popup v-model="show">
@@ -49,7 +49,7 @@
         <p>运费上报</p>
         <div>
           <div v-for="item in arrstr" :key="item.id">
-            <p>*{{ item.deliverNo }}</p>
+            <p>*第{{ item.deliverNo }}趟</p>
             <li style=" list-style: none;">
               <span>{{ item.deliverTime }}</span>
               <input :value="Number(item.preMoney).toFixed(2)" type="text" style="border:none;width:100px">
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail } from '@/api/freight'
+import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, shippingDetailByGM } from '@/api/freight'
 import { Toast } from 'vant';
 export default {
   data() {
@@ -102,6 +102,9 @@ export default {
   },
   mounted() {
     this.obj = this.$route.query.obj
+
+    ;
+    this.getGmInfoList(this.obj)
   },
 
   methods: {
@@ -115,22 +118,29 @@ export default {
       this.wayBillAmountDetail(this.obj.wayBillId)
     },
     footer_confirm() {
+      let wayBillAmountIds = []
+      let gmFee = []
+
       if (this.$route.query.type === '1') {
-        this.reportMoneyBatchByGM() // 加盟运费上报
+        this.obj.wayBillAmountVOS.forEach(item => {
+          console.lgo(item.wayBillAmountId)
+          wayBillAmountIds.push(item.wayBillAmountId)
+          gmFee.push(item.gmFee)
+        })
+        this.reportMoneyBatchByGM(wayBillAmountIds, gmFee) // 加盟运费上报
       } else {
         this.reportMoneyBatchBySale() // 线外运费上报
       }
     },
-    async reportMoneyBatchByGM() {
+    async reportMoneyBatchByGM(wayBillAmountIds, gmFee) {
       try {
         let parmas = {
-          moneys: this.value, // 运费
+          moneys: gmFee, // 运费
           remark: this.message, // 备注
-          wayBillAmountIds: 'message'
+          wayBillAmountIds: wayBillAmountIds
         }
         this.$loading(true)
         let { data: res } = await reportMoneyBatchByGM(parmas) // 加盟运费
-        console.log(res)
         if (res.success) {
           res.data
           Toast.success('上报成功');
@@ -145,6 +155,7 @@ export default {
         // this.$loading(false)
       }
     },
+
     async reportMoneyBatchBySale() {
       try {
         let parmas = {
@@ -178,7 +189,6 @@ export default {
         if (res.success) {
           this.show = true;
           this.arrstr = res.data
-          console.log(this.arrstr, 22222222222222222222)
         } else {
           this.$toast.fail(res.errorMsg)
         }
