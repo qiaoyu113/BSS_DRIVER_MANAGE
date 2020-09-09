@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 let prefix = '/waybill_center'
+let waybill = '/waybill'
 // let prefix = 'mock/95'
 // 加盟运费接口
 export function getConfirmInfoList(data) {
@@ -24,18 +25,17 @@ export function shippingDetailByGM(params) {
     params
   })
 }
-export function getGmInfoListByKeyWorld(data) {
+export function getGmInfoListByKeyWord(data) {
   return request({
-    url: `${prefix}/v2/waybill/getGmInfoListByKeyWorld`, // 加盟测列表-搜索框查询
+    url: `${prefix}/v2/waybill/getGmInfoListByKeyWord`, // 加盟测列表-搜索框查询
     method: 'post',
     data
   })
 }
 export function wayBillAmountDetail(data) {
   return request({
-    url: `${prefix}/v2/waybill/wayBillAmountDetail`, // 批量上报/确认运费回显
+    url: `${waybill}/v2/waybill/shipping/wayBillAmountDetail`, // 批量上报/确认运费回显
     method: 'post',
-
     data
   })
 }
@@ -51,6 +51,7 @@ export function reportMoneyBatchByGM(data) {
     url: `${prefix}//v2/waybill/reportMoneyBatchByGM `, // 加盟侧批量上报出车金额
     method: 'post',
     data
+
   })
 }
 // 线外列表运费接口

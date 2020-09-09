@@ -168,8 +168,7 @@
 import SelfPopup from '@/components/SelfPopup'
 import Suggest from '@/components/SuggestSearch.vue'
 import CardItem from './components/List'
-
-import { getLineInfoList } from '@/api/freight' // 外线接口
+import { getProjectWayBillList } from '@/api/freight' // 外线接口
 // import { Toast } from 'vant
 export default {
   components: {
@@ -215,7 +214,6 @@ export default {
         total: 0,
         size: 10
       },
-
       // 筛选
       text1: '', // 城市选择
       text2: '', // 用户名
@@ -339,11 +337,11 @@ export default {
       try {
         this.$loading(true)
         let params = {
-          page: this.page.current,
-          limit: this.page.size,
-          pageNumber: 20
+          endDate: this.$route.query.startDate,
+          startDate: this.$route.query.endDate,
+          projectId: this.$route.query.projectId
         }
-        let { data: res } = await getLineInfoList(params)
+        let { data: res } = await getProjectWayBillList(params)
         if (res.success) {
           let newLists = res.data
           newLists.forEach(item => {
@@ -422,7 +420,7 @@ export default {
           startDate: this.text10
         }
         this.$loading(true)
-        let { data: res } = await getLineInfoList(parmas)
+        let { data: res } = await getProjectWayBillList(parmas)
         console.log(res)
         if (res.success) {
           this.lists = res.data

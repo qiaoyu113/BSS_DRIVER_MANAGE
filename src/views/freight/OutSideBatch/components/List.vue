@@ -2,10 +2,10 @@
   <div>
     <div class="CardItemcontainer">
       <h4 class="title ellipsis">
-        {{ obj.customerName }}/{{ obj.customerPhone }}
+        {{ obj.departureDate }}/ {{ obj.driverName }}/{{ obj.driverPhone }}
       </h4>
       <p class="Pink">
-        {{ obj.startDate }}
+        {{ obj.gmStatusName }}
       </p>
       <p class="checked">
         <van-checkbox v-model="obj.checked" />
@@ -88,7 +88,7 @@ export default {
     },
     Add_to() {
       if (this.checkedarr !== '') {
-        let wayBillId = this.checkedarr.map(item => item.wayBillNum)
+        let wayBillId = this.checkedarr.map(item => item.wayBillId)
         this.reportMoneyBatchByGM(wayBillId)
       } else {
         this.$toast.fail('请选择上报的')
@@ -96,10 +96,7 @@ export default {
     },
     async reportMoneyBatchByGM(wayBillId) { // 确认运费回显
       try {
-        let parmas = {
-          wayBillIds: wayBillId
-        }
-        let { data: res } = await wayBillAmountDetail(parmas)
+        let { data: res } = await wayBillAmountDetail(wayBillId)
         console.log(res)
         if (res.success) {
           this.$router.push({
@@ -115,7 +112,6 @@ export default {
         console.log(`get search data fail:${err}`)
       }
     }
-
   }
 }
 

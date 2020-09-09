@@ -14,7 +14,7 @@
         <li class="Number_ong">
           <p>*趟数{{ item.deliverTime }}</p>
           <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="item.preMoney">
+            <input v-model="item.preMoney" type="text" style="border:none" placeholder="">
 
             <van-button type="default">
               <van-icon name="arrow" color="#A6AAB8" />
@@ -93,6 +93,8 @@ export default {
       this.$router.go(-1)
     },
     Report() {
+      // let wayBillAmountId = this.checkedarr.map(item => item.wayBillAmountId)
+      // let preMoney = this.checkedarr.map(item => item.preMoney)
       let wayBillAmountId = []
       let preMoney = []
       this.obj.filter(item => {
@@ -101,7 +103,6 @@ export default {
           preMoney.push(item.preMoney)
         }
       })
-      console.log(wayBillAmountId, preMoney)
       this.reportMoneyBatchByGM(wayBillAmountId, preMoney)
     },
     async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
@@ -113,7 +114,6 @@ export default {
 
         }
         let { data: res } = await reportMoneyBatchByGM(parmas)
-        console.log(res)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
           res.data

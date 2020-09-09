@@ -160,10 +160,6 @@
     <van-popup v-model="showPicker11" position="bottom">
       <van-calendar v-model="showPicker11" @confirm="onConfirm11" />
     </van-popup>
-    </van-tab>
-    </van-tabs>
-    </van-list>
-    </van-pull-refresh></van-list></van-tabs></van-tab>
   </div>
 </template>
 
@@ -193,7 +189,7 @@ export default {
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 100
+          num: 0
         },
         {
           text: '待上报',
@@ -305,6 +301,7 @@ export default {
         this.$loading(true)
         let { data: res } = await getGmInfoList(parmas)
         if (res.success) {
+          console.log(res.data, 'xccccccccccccc')
           this.lists = res.data
           this.listQuery = ''
         } else {
@@ -321,6 +318,7 @@ export default {
       }
     },
     handleTabChange(tab) {
+      console.log(this.active, 'xxxxxxxxxxxxxxx')
       this.getConfirmInfoList(true)
     },
     async getConfirmInfoList(isInit) { // 首页加盟运费列表
@@ -330,6 +328,7 @@ export default {
           page: this.page.current,
           limit: this.page.size,
           pageNumber: 20
+
         }
         let { data: res } = await getGmInfoList(params)
         if (res.success) {

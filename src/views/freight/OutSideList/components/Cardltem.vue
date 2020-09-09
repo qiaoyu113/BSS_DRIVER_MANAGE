@@ -36,7 +36,7 @@ export default {
      */
     handleDetailClick(obj) {
       this.$router.push({
-        path: '/outsidebatch1',
+        path: '/outsidebatch',
         query: { endDate: obj.startDate,
           startDate: obj.endDate,
           projectId: obj.projectId

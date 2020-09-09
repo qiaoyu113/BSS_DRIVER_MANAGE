@@ -82,22 +82,20 @@ export default {
       if (this.checkedarr !== '') {
         let wayBillId = this.checkedarr.map(item => item.wayBillId)
         console.log(wayBillId, 'xxxxxxxxxxxxxxx')
-        this.reportMoneyBatchByGM(wayBillId)
+        this.wayBillAmount(wayBillId)
       } else {
         this.$toast.fail('请选择上报的')
       }
     },
-    async reportMoneyBatchByGM(wayBillId) { // 确认运费回显
+    async wayBillAmount(wayBillId) { // 确认运费回显
       try {
-        let bodyParams = {
-          wayBillIds: wayBillId
-
-        }
-        console.log(bodyParams, 'zzzzzzzzzzzzzzzzzz')
-        let { data: res } = await wayBillAmountDetail(bodyParams)
+        // let data = {
+        //   wayBillIds: wayBillId
+        // }
+        let { data: res } = await wayBillAmountDetail(wayBillId)
         if (res.success) {
           this.$router.push({
-            path: '/report',
+            path: '/outsidereport',
             query: {
               obj: JSON.stringify(res.data)
             }
