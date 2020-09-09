@@ -296,10 +296,9 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
       } finally {
-        // this.$loading(false)
+        this.$loading(false)
       }
     },
     /**

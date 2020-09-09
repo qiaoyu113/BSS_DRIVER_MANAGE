@@ -200,14 +200,14 @@ export default {
           lineId: this.lineId
         })
         if (res.success) {
-          this.$loading(false)
           console.log(res.data)
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     /**
@@ -245,10 +245,9 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        this.$loading(false)
         console.log(`${err}`)
       } finally {
-        // this.$loading(false)
+        this.$loading(false)
       }
     },
     onConfirm(value) {

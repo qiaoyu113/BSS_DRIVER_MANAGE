@@ -272,9 +272,17 @@ export default {
       try {
         let params = {};
         params = { ...this.form, ...params };
-        params.payTypeName = this.showForm.payType
-        window.localStorage.setItem('payItemInfo', JSON.stringify(params))
-        this.$router.go(-1)
+        params.payImageUrl = this.form.this.form[0]
+        let arr = []
+        arr.push(params)
+        if (window.localStorage.getItem('payItemInfo')) {
+          let itemArr = JSON.parse(window.localStorage.getItem('payItemInfo'))
+          let allArr = arr.concat(itemArr)
+          window.localStorage.setItem('payItemInfo', JSON.stringify(allArr))
+        } else {
+          window.localStorage.setItem('payItemInfo', JSON.stringify(arr))
+        }
+        // this.$router.go(-1)
       } catch (err) {
         console.log(`submit fail:${err}`);
       }
