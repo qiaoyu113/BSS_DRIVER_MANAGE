@@ -85,22 +85,23 @@
         @click="showPickerFn('date')"
       />
     </SelfPopup>
+    <!-- 选择日期 -->
+    <van-calendar
+      v-model="showCalendar"
+      type="range"
+      :min-date="minDate1"
+      @confirm="onConfirm"
+    />
     <!-- 底部弹出框 -->
     <van-popup v-model="showPicker" position="bottom">
-      <template v-if="isDateRange">
-        <!-- 选择日期 -->
-        <van-calendar v-model="showPicker" type="range" :min-date="minDate1" @confirm="onConfirm" />
-      </template>
-      <template v-else>
-        <!-- picker选择器 -->
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
+      <!-- picker选择器 -->
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+      />
     </van-popup>
     <!-- 模糊搜索组件 -->
     <Suggest
@@ -184,6 +185,7 @@ export default {
         }
       ],
       showModal: false,
+      showCalendar: false,
       modalKey: '',
       pickerNames: { // picker选中显示的名字
         city: '',
@@ -235,6 +237,9 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
+      if (!result) {
+        return false
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -300,7 +305,10 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'customerType') {
+      if (key === 'date') {
+        this.showCalendar = true
+        return false
+      } else if (key === 'customerType') {
         this.columns.push(...this.customerTypeArr);
       } else if (key === 'classification') {
         this.columns.push(...this.classificationArr);
@@ -315,6 +323,8 @@ export default {
         let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
         this.pickerNames[this.pickerKey] = `${startName}-${endName}`
         this.form[this.pickerKey] = obj
+        this.showCalendar = false
+        return false
       } else {
         this.pickerNames[this.pickerKey] = obj.label
         this.form[this.pickerKey] = obj.value
@@ -372,10 +382,12 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
+            if (item.name === '') {
+              item.num = res.title.all
+            } else if (item.name === 1) {
+              item.num = res.title.enable
+            } else if (item.name === 2) {
+              item.num = res.title.prevent
             }
           })
           return result

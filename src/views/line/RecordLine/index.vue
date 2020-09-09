@@ -83,7 +83,7 @@
 
 <script>
 import { upload } from '@/api/common'
-import { collectLineInfo } from '@/api/line'
+import { insertCollectLineInfo, updateCollectLineInfo, getPictureDetail } from '@/api/line'
 import VideoPlay from '../components/video'
 export default {
   components: {
@@ -103,11 +103,75 @@ export default {
         informationDescription: '' // 现场信息说明
       },
       show: false,
-      videoUrl: ''
+      videoUrl: '',
+      lineId: '',
+      isUpdate: false,
+      createDate: ''
     }
   },
 
+  mounted() {
+    this.lineId = this.$route.query.lineId
+    this.init()
+  },
   methods: {
+    // 获取采线信息
+    async init() {
+      try {
+        this.$loading(true)
+        let params = {
+          lineId: this.lineId
+        }
+        let { data: res } = await getPictureDetail(params)
+        if (res.success) {
+          let result = res.data
+          this.form = {
+            ...this.form,
+            ...{
+              warehouseLoadingPictures: result.warehouseLoadingPictures,
+              otherPictures: result.otherPictures,
+              loadingVideo: result.loadingVideo && result.loadingVideo.split('') || [],
+              informationDescription: result.informationDescription
+            }
+          }
+          this.createDate = result.createDate
+          this.showFile(result)
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get data fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
+    // 显示文件
+    showFile(val) {
+      if (val.informationDescription) {
+        this.isUpdate = true
+      }
+      if (val.warehouseLoadingPictures && val.warehouseLoadingPictures.length > 0) {
+        this.isUpdate = true
+        this.showForm.warehouseLoadingPictures = val.warehouseLoadingPictures.map(item => ({
+          url: item,
+          isImage: true
+        }))
+      }
+      if (val.otherPictures && val.otherPictures.length > 0) {
+        this.isUpdate = true
+        this.showForm.otherPictures = val.otherPictures.map(item => ({
+          url: item,
+          isImage: true
+        }))
+      }
+      if (val.loadingVideo && val.loadingVideo.length > 0) {
+        this.isUpdate = true
+        this.showForm.loadingVideo = val.loadingVideo.map(item => ({
+          url: item
+        }))
+        this.videoUrl = this.showForm.loadingVideo[0]
+      }
+    },
     /**
      *返回按钮
      */
@@ -119,19 +183,23 @@ export default {
      */
     async onSubmit(values) {
       try {
-        let params = {}
-        if (this.form.warehouseLoadingPictures.length > 0) {
-          params.warehouseLoadingPictures = this.form.warehouseLoadingPictures.join(',')
+        this.$loading(true)
+        let params = {
+          lineId: this.lineId,
+          warehouseLoadingPictures: this.form.warehouseLoadingPictures || [],
+          otherPictures: this.form.otherPictures || [],
+          loadingVideo: this.form.loadingVideo.join(''),
+          informationDescription: this.form.informationDescription
         }
-        if (this.form.otherPictures.length > 0) {
-          params.otherPictures = this.form.otherPictures.join(',')
+        let res = ''
+        if (this.isUpdate) {
+          params.createDate = this.createDate
+          let response = await updateCollectLineInfo(params)
+          res = response.data
+        } else {
+          let response = await insertCollectLineInfo(params)
+          res = response.data
         }
-        if (this.form.loadingVideo.length > 0) {
-          params.loadingVideo = this.form.loadingVideo.join('')
-        }
-
-        this.form.informationDescription && (params.informationDescription = this.form.informationDescription)
-        let { data: res } = await collectLineInfo(params)
         if (res.success) {
           this.$router.push({
             path: '/line'
@@ -141,6 +209,8 @@ export default {
         }
       } catch (err) {
         console.log(`submit fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     /**
@@ -156,6 +226,8 @@ export default {
     // 上传文件
     async uploadFile(file, key) {
       try {
+        file.status = 'uploading';
+        file.message = '上传中...';
         let formData = new FormData() // 创建form对象
         formData.append('file', file.file)
         let params = {
@@ -165,12 +237,18 @@ export default {
         }
         let { data: res } = await upload(params, formData)
         if (res.success) {
+          file.status = 'done';
+          this.form[key] = []
           this.form[key].push(res.data.url)
         } else {
           this.$fail(res.errorMsg)
+          file.status = 'failed';
+          file.message = '上传失败';
         }
       } catch (err) {
         console.log(`upload file fail:${err}`)
+        file.status = 'failed';
+        file.message = '上传失败';
       }
     },
     /**

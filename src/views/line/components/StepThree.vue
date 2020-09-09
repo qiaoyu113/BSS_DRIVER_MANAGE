@@ -68,7 +68,7 @@
         :form="form"
         :columns="carryArr"
         value="label"
-        :is-computed="form['carry']!==''"
+        :is-computed="form['carry']!==''&&carryArr.length > 0"
         required
         label-width="100"
         label="是否需要搬运"
@@ -165,10 +165,11 @@ export default {
         }
         keyword && (params.keyword = keyword)
         let { data: res } = await getDictData(params)
+
         if (res.success) {
           return res.data.map(item => ({
             label: item.dictLabel,
-            value: item.dictValue
+            value: +item.dictValue
           }))
         } else {
           this.$fail(res.errorMsg)

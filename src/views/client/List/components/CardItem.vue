@@ -10,7 +10,7 @@
       手机:{{ obj.bussinessPhone }}
     </p>
     <p class="text van-ellipsis">
-      客户属性:{{ obj.customerTypeName }}
+      客户属性:{{ obj.classificationName }}
     </p>
     <div class="footer">
       <div class="right">

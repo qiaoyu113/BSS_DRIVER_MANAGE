@@ -13,15 +13,14 @@
 import StepOne from '../components/StepOne'
 import StepTwo from '../components/StepTwo'
 import StepThree from '../components/StepThree'
-import { Notify } from 'vant'
 import { editTemporaryLine, editStableLine, getLineDetail } from '@/api/line'
 import { delay } from '@/utils'
+import dayjs from 'dayjs'
 export default {
   components: {
     StepOne,
     StepTwo,
-    StepThree,
-    [Notify.Component.name]: Notify.Component
+    StepThree
   },
   data() {
     return {
@@ -70,6 +69,16 @@ export default {
         carry: '', // 是否需要搬运
         dutyRemark: '', // 其他上岗要求
         lineId: ''
+      },
+      lineInfo: {
+        warehouseCity: '',
+        city: '',
+        lineSaleId: '',
+        dutyManagerId: '',
+        lineLogo: '',
+        createId: '',
+        createDate: '',
+        projectId: ''
       }
     }
   },
@@ -97,7 +106,7 @@ export default {
     // 编辑线路
     handleSubmit() {
       let params = {
-        projectId: this.projectId,
+        ...this.lineInfo,
         ...this.stepOneForm,
         ...this.stepTwoForm,
         ...this.stepThreeForm,
@@ -106,6 +115,8 @@ export default {
       params.provinceArea = this.stepOneForm.area[0]
       params.cityArea = this.stepOneForm.area[1]
       params.countyArea = this.stepOneForm.area[2]
+      params.waitDirveValidity = new Date(params.waitDirveValidity).getTime()
+      params.driverWorkTime = new Date(params.driverWorkTime).getTime()
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
@@ -135,6 +146,8 @@ export default {
     // 编辑稳定线路
     async editStableLine(params) {
       try {
+        this.$loading(true)
+        params.lineCategory = 1
         let { data: res } = await editStableLine(params)
         if (res.success) {
           this.createSuc()
@@ -143,11 +156,15 @@ export default {
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 编辑临时线路
     async editTemporaryLine(params) {
       try {
+        this.$loading(true)
+        params.lineCategory = 2
         let { data: res } = await editTemporaryLine(params)
         if (res.success) {
           this.createSuc()
@@ -156,6 +173,8 @@ export default {
         }
       } catch (err) {
         console.log(`create stable line fail:${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 获取线路详情
@@ -169,13 +188,26 @@ export default {
         if (res.success) {
           let result = res.data
           this.isStable = +res.data.lineCategory === 1
+          this.lineInfo = {
+            ...this.lineInfo,
+            ...{
+              warehouseCity: result.warehouseCity,
+              lineLogo: result.lineLogo,
+              city: result.city,
+              lineSaleId: result.lineSaleId,
+              dutyManagerId: result.dutyManagerId,
+              createId: result.createId,
+              createDate: result.createDate,
+              projectId: result.projectId
+            }
+          }
           this.stepOneForm = {
             ...this.stepOneForm,
             ...{
               lineName: result.lineName,
               lineNum: result.lineNum,
               lineBalance: result.lineBalance,
-              waitDirveValidity: result.waitDirveValidity,
+              waitDirveValidity: dayjs(result.waitDirveValidity).format('YYYY/MM/DD'),
               stabilityRate: result.stabilityRate,
               runSpeed: result.runSpeed,
               returnBill: result.returnBill,
@@ -199,7 +231,7 @@ export default {
           this.stepTwoForm = {
             ...this.stepTwoForm,
             ... {
-              driverWorkTime: result.driverWorkTime,
+              driverWorkTime: dayjs(result.driverWorkTime).format('YYYY/MM/DD'),
               monthNum: result.monthNum,
               dayNum: result.dayNum,
               incomeSettlementMethod: result.incomeSettlementMethod,
@@ -208,8 +240,20 @@ export default {
               shipperOffer: result.shipperOffer,
               everyTripGuaranteed: result.everyTripGuaranteed,
               everyUnitPrice: result.everyUnitPrice,
-              lineId: result.lineId
+              lineId: result.lineId,
+              deliveryWeekCycle: result.deliveryWeekCycle
             }
+          }
+          if (this.isStable) {
+            this.stepTwoForm.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.split(',').map(item => +item)
+          } else {
+            this.stepTwoForm.deliveryWeekCycle = []
+            let startDate = dayjs(result.deliveryStartDate).format('YYYY/MM/DD')
+            let endDate = dayjs(result.deliveryEndDate).format('YYYY/MM/DD')
+            this.stepTwoForm.deliveryWeekCycle.push(
+              new Date(startDate),
+              new Date(endDate)
+            )
           }
 
           this.stepThreeForm = {
@@ -223,14 +267,6 @@ export default {
               dutyRemark: result.dutyRemark,
               lineId: result.lineId
             }
-          }
-          if (this.isStable) {
-            this.stepTwoForm.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.split(',')
-          } else {
-            this.stepTwoForm.deliveryWeekCycle.push(
-              result.deliveryStartDate,
-              result.deliveryEndDate
-            )
           }
 
           result.lineDeliveryInfoFORMS.forEach(item => {

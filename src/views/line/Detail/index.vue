@@ -17,7 +17,8 @@
         <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineBalance ===1 ? '有线路余额': '无线路余额'" :border="false" colon />
         <van-field label="线路状态" label-width="110" readonly :value="form.lineStateName" :border="false" colon />
         <van-field label="试跑状态" label-width="110" readonly :value="form.runTestStateName" :border="false" colon />
-        <van-field label="上架截止日期" label-width="110" readonly :value="form.waitDirveValidity | parseTime('{y}-{m}-{d}') " :border="false" colon />
+
+        <van-field label="上架截止日期" label-width="110" readonly :value="upTime" :border="false" colon />
         <van-field label="线路稳定性" label-width="110" readonly :value="form.stabilityRateName" :border="false" colon />
         <van-field label="对外销售" label-width="110" readonly :value="form.lineSaleName" :border="false" colon />
         <van-field label="上岗经理" label-width="110" readonly :value="form.dutyManagerIdName" :border="false" colon />
@@ -34,7 +35,7 @@
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
         <van-field label="司机上岗时间" label-width="110" readonly :value="form.driverWorkTime | parseTime('{y}-{m}-{d}')" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="form.deliveryWeekCycle" :border="false" colon />
+        <van-field label="配送时间" label-width="110" readonly :value="deliveryWeekCycle" :border="false" colon />
         <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
           <van-field label="预计工作时间" label-width="110" readonly :value="`${item.workingTimeStart}-${item.workingTimeEnd}`" :border="false" colon />
@@ -58,8 +59,8 @@
         <van-field label="适配性" label-width="110" readonly :value="form.lineAdapterName" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="现场信息" name="7">
-        <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPicture" />
-        <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPicture" />
+        <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />
+        <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPictures" />
         <VideoPreview :video-url="fileForm.loadingVideo" label="装货视频:" />
       </van-collapse-item>
     </van-collapse>
@@ -101,7 +102,8 @@
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
 import { Dialog, Notify } from 'vant';
-import { getLineDetail, getLineDetailFiles, undercarriage, judgeMeetConditions } from '@/api/line'
+import dayjs from 'dayjs'
+import { getLineDetail, undercarriage, judgeMeetConditions } from '@/api/line'
 export default {
   components: {
     ImagePreview,
@@ -119,15 +121,66 @@ export default {
     }
   },
   computed: {
+    upTime() {
+      if (this.form.waitDirveValidity) {
+        return dayjs(this.form.waitDirveValidity).format('YYYY/MM/DD')
+      }
+      return ''
+    },
     region() {
       return this.form.provinceAreaName + '/' + this.form.cityAreaName + '/' + this.form.countyAreaName
+    },
+    // 配送时间
+    deliveryWeekCycle() {
+      if (+this.form.lineCategory === 1) {
+        let arrs = [
+          {
+            label: '一',
+            value: 1
+          },
+          {
+            label: '二',
+            value: 2
+          },
+          {
+            label: '三',
+            value: 3
+          },
+          {
+            label: '四',
+            value: 4
+          },
+          {
+            label: '五',
+            value: 5
+          },
+          {
+            label: '六',
+            value: 6
+          },
+          {
+            label: '日',
+            value: 7
+          }
+        ]
+        let name = ''
+        arrs.forEach((item, idx) => {
+          if (this.form.deliveryWeekCycle.indexOf(item.value) > -1) {
+            if (idx !== 0) {
+              name += '、'
+            }
+            name += `周${item.label}`
+          }
+        })
+        return name
+      }
+      return this.form.lineCategory
     }
   },
   mounted() {
     this.lineId = this.$route.query.lineId
     if (this.lineId) {
       this.getLineDetail()
-      this.getLineFiles()
     }
   },
   methods: {
@@ -185,7 +238,8 @@ export default {
           this.$router.push({
             path: path,
             query: {
-              lineId: this.lineId
+              lineId: this.lineId,
+              isStable: this.form.lineCategory
             }
           })
         }
@@ -193,7 +247,8 @@ export default {
         this.$router.push({
           path: path,
           query: {
-            lineId: this.lineId
+            lineId: this.lineId,
+            isStable: this.form.lineCategory
           }
         })
       }
@@ -206,7 +261,7 @@ export default {
           conditionType
         }
         let { data: res } = await judgeMeetConditions(params)
-        if (res.success) {
+        if (res.success && res.data.success) {
           return true
         } else {
           Dialog.alert({
@@ -214,7 +269,7 @@ export default {
             message: res.data.msg
           }).then(() => {
             return false
-          });
+          })
         }
       } catch (err) {
         console.log('judgeMeetConditions fail:', err)
@@ -230,6 +285,7 @@ export default {
         let { data: res } = await getLineDetail(params)
         if (res.success) {
           this.form = res.data
+          this.fileForm = res.data.linePictureRelatedVO
         } else {
           this.$fail(res.errorMsg)
         }
@@ -237,27 +293,6 @@ export default {
         console.log(`get client detail fail:${err}`)
       } finally {
         this.$loading(false)
-      }
-    },
-    // 获取线路详情的文件资源
-    async getLineFiles() {
-      try {
-        let params = {
-          lineId: this.lineId
-        }
-        let { data: res } = await getLineDetailFiles(params)
-        if (res.success) {
-          this.fileForm = res.data
-          for (let key in this.fileForm) {
-            if (['warehouseLoadingPicture', 'otherPicture'].includes(key)) {
-              this.fileForm[key] = this.fileForm[key].split(',')
-            }
-          }
-        } else {
-          this.$fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get files fail:${err}`)
       }
     },
     // 下架
@@ -292,6 +327,9 @@ export default {
     flex-wrap: nowrap;
     .distance {
       margin-right:5px;
+    }
+    button {
+      width:170px;
     }
   }
 }
