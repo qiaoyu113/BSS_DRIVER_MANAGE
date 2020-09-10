@@ -83,13 +83,20 @@ export default {
     }
   },
   mounted() {
-    this.lineId = this.$route.query.lineId
     this.init()
   },
 
   methods: {
     init() {
-      this.isStable = +this.$route.query.isStable === 1
+      this.lineId = this.$route.query.lineId
+      this.getTitle()
+      this.getLineDetail()
+    },
+    onClickLeft() {
+      this.$router.go(-1)
+    },
+    // 获取title
+    getTitle() {
       let title = ''
       if (this.isStable) {
         title = '编辑稳定线路'
@@ -98,10 +105,6 @@ export default {
       }
       this.title = title
       document.title = title
-      this.getLineDetail()
-    },
-    onClickLeft() {
-      this.$router.go(-1)
     },
     // 编辑线路
     handleSubmit() {
@@ -188,6 +191,7 @@ export default {
         if (res.success) {
           let result = res.data
           this.isStable = +res.data.lineCategory === 1
+          this.getTitle()
           this.lineInfo = {
             ...this.lineInfo,
             ...{
@@ -244,7 +248,6 @@ export default {
               deliveryWeekCycle: result.deliveryWeekCycle
             }
           }
-          debugger
           if (this.isStable) {
             this.stepTwoForm.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.split(',').map(item => +item)
           } else {

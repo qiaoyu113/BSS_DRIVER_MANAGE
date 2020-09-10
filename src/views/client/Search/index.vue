@@ -34,7 +34,12 @@
     </template>
     <template v-else>
       <div v-show="options.length === 0" class="history">
-        <h4>历史记录</h4>
+        <div class="subTitle">
+          <h4>
+            历史记录
+          </h4>
+          <van-icon v-if="historyItems.length > 0" name="delete" size="20" color="#7F8FBD" @click="deleteHistory" />
+        </div>
         <div class="historyContainer">
           <div v-for="item in historyItems" :key="item" class="item" @click="handleItemClick(item)">
             {{ item }}
@@ -63,12 +68,17 @@ export default {
     }
   },
   mounted() {
-    let historyData = this.getHistory()
-    if (historyData) {
-      this.historyItems = JSON.parse(historyData)
-    }
+    this.getHistoryFromDisk()
   },
   methods: {
+    getHistoryFromDisk() {
+      let historyData = this.getHistory()
+      if (historyData) {
+        this.historyItems = JSON.parse(historyData)
+      } else {
+        this.historyItems = []
+      }
+    },
     // 返回上一页
     onClickLeft() {
       this.$router.go(-1)
@@ -132,6 +142,11 @@ export default {
       if (history) {
         return history
       }
+    },
+    // 删除历史
+    deleteHistory() {
+      localStorage.removeItem('clent')
+      this.getHistoryFromDisk()
     }
   }
 
@@ -167,6 +182,12 @@ export default {
         font-size: 13px;
         color: #838A9D;
       }
+    }
+    .subTitle {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 }

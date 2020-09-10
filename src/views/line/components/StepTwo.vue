@@ -5,7 +5,7 @@
         配送时间信息
       </h4>
       <SelfDatetimePicker
-        label-width="110"
+        label-width="130"
         picker-key="driverWorkTime"
         :is-computed="form['driverWorkTime']!==''"
         :form="form"
@@ -18,7 +18,7 @@
       />
       <template v-if="isStable">
         <van-field
-          label-width="110"
+          label-width="130"
           colon
           name="deliveryWeekCycleValidator"
           readonly
@@ -46,7 +46,7 @@
       </template>
       <template v-else>
         <self-calendar
-          label-width="110"
+          label-width="130"
           picker-key="deliveryWeekCycle"
           :is-computed="form['deliveryWeekCycle'].length> 0"
           :form="form"
@@ -62,12 +62,12 @@
       </template>
       <van-field
         v-model="form.monthNum"
-        v-only-number="{min: 1, max: 31}"
+        :formatter="_formatter"
         colon
         required
-        label="预计月出车天数"
+        label="预计月出车天数(天)"
         placeholder="请输入"
-        label-width="110"
+        label-width="130"
         name="daysUseCarValidator"
         type="digit"
         :rules="[
@@ -77,10 +77,11 @@
       />
       <van-field
         v-model.number="form.dayNum"
-        label-width="110"
+        label-width="130"
         colon
         required
         label="每日配送趟数"
+        :formatter="_formatter"
         placeholder="请输入"
         name="countByDayValidator"
         type="digit"
@@ -105,7 +106,7 @@
         value="label"
         :is-computed="form['incomeSettlementMethod']!==''"
         required
-        label-width="110"
+        label-width="130"
         label="结算方式"
         placeholder="请选择"
         :rules="[
@@ -119,7 +120,7 @@
         value="label"
         :is-computed="form['settlementCycle']!==''"
         required
-        label-width="110"
+        label-width="130"
         label="结算周期"
         placeholder="请选择"
         :rules="[
@@ -133,7 +134,7 @@
         value="label"
         :is-computed="form['settlementDays']!==''"
         required
-        label-width="110"
+        label-width="130"
         label="结算天数"
         placeholder="请选择"
         :rules="[
@@ -146,8 +147,8 @@
         <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
         <van-field
           v-model="form.everyUnitPrice"
-          v-only-number="{min: 1, max: 999999.99, precision: 2}"
-          label-width="110"
+          v-only-number.lazy="{min: 1, max: 999999.99, precision: 2}"
+          label-width="130"
           colon
           required
           label="每趟提成单价(元)"
@@ -159,8 +160,8 @@
       <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
       <van-field
         v-model="form.everyTripGuaranteed"
-        v-only-number="{min: 1, max: 999999.99, precision: 2}"
-        label-width="110"
+        v-only-number.lazy="{min: 1, max: 999999.99, precision: 2}"
+        label-width="130"
         colon
         required
         :label="form.incomeSettlementMethod ===1 ? '单趟报价(元)':'每趟保底(元)'"
@@ -172,7 +173,7 @@
       <template v-if="form.incomeSettlementMethod===1">
         <van-field
           v-model="monthMoney"
-          label-width="110"
+          label-width="130"
           colon
           required
           disabled
@@ -182,8 +183,8 @@
       <template v-else>
         <van-field
           v-model="form.shipperOffer"
-          v-only-number="{min: 1, max: 99999999.99, precision: 2}"
-          label-width="110"
+          v-only-number.lazy="{min: 1, max: 99999999.99, precision: 2}"
+          label-width="130"
           colon
           required
           :disabled="form.incomeSettlementMethod ===1"
@@ -201,6 +202,9 @@
         </van-button>
       </div>
     </van-form>
+    <div class="cycle">
+      2/3
+    </div>
   </div>
 </template>
 
@@ -209,6 +213,7 @@ import CustomSelect from './Select'
 import SelftPicker from '@/components/SelfPicker'
 import SelfCalendar from '@/components/SelfCalendar'
 import SelfDatetimePicker from '@/components/SelfDatetimePicker'
+import { formatter } from '@/utils/index'
 export default {
   components: {
     CustomSelect,
@@ -330,8 +335,8 @@ export default {
       if (val === 1) {
         this.form.everyUnitPrice = ''
       } else {
-        if (['edit', 'copy', 'active'].this.isFirst) {
-          this.isFirst = true
+        if (['edit', 'copy', 'active'].includes(this.type)) {
+          this.isFirst = false
         } else {
           this.form.shipperOffer = ''
         }
@@ -344,6 +349,9 @@ export default {
     this.generaTimelist()
   },
   methods: {
+    _formatter(val) {
+      return formatter(val)
+    },
     init() {
       this.isStable = +this.$route.query.isStable === 1
       if (this.isStable) {
@@ -468,6 +476,7 @@ export default {
 
 <style lang='scss' scoped>
 .StepTwoContainer {
+  position: relative;
   font-family: PingFangSC-Medium;
   .title {
     margin: 0px;
@@ -484,6 +493,22 @@ export default {
     .lastStep {
       margin-right:5px;
     }
+  }
+  .cycle {
+    position: absolute;
+    right:30px;
+    bottom:80px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #2f448a;
+    color: #2f448a;
+    z-index: 99;
+    font-size: 13px;
+    text-align: center;
+    line-height: 40px;
+    margin-right: 15px;
+    margin-top: 15px;
   }
 }
 

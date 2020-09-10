@@ -4,13 +4,13 @@
       {{ obj.customerCompanyName }} ({{ obj.customerId }}) {{ obj.customerTypeName }}
     </h4>
     <p class="text van-ellipsis">
-      联系人:{{ obj.bussinessName }}
+      联系人:{{ obj.bussinessName | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      手机:{{ obj.bussinessPhone }}
+      手机:{{ obj.bussinessPhone | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      客户属性:{{ obj.classificationName }}
+      客户属性:{{ obj.classificationName | DataIsNull }}
     </p>
     <div class="footer">
       <div class="right">

@@ -4,24 +4,24 @@
       {{ obj.projectName }}({{ obj.projectId }})
     </h4>
     <p class="text van-ellipsis">
-      联系人:{{ obj.bussinessName }}
+      联系人:{{ obj.bussinessName | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      手机:{{ obj.bussinessPhone }}
+      手机:{{ obj.bussinessPhone | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      配送车型:{{ obj.carTypeName }}
+      配送车型:{{ obj.carTypeName | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      仓名称:{{ obj.warehouseName }}
+      仓名称:{{ obj.warehouseName | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      线路数:{{ obj.lineNum }}条线
+      线路数:{{ obj.lineNum | DataIsNull }}条线
     </p>
     <div class="footer">
       <div class="right">
         <p class="time">
-          预计工作时间:{{ obj.timeDiff }}
+          预计工作时间:{{ obj.createDate | parseTime('{y}-{m}-{d}') }}
         </p>
         <div>
           <van-tag

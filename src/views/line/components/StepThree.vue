@@ -22,6 +22,7 @@
         v-model="form.cargoNum"
         label-width="100"
         colon
+        :formatter="_formatter"
         label="货物件数"
         type="digit"
         name="numValidator"
@@ -34,7 +35,7 @@
       <!-- 精确小数点后一位 -->
       <van-field
         v-model="form.volume"
-        v-only-number="{min: 1, max: 999999, precision: 1}"
+        v-only-number.lazy="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
@@ -50,7 +51,7 @@
       <!-- 精确小数点后一位 -->
       <van-field
         v-model="form.goodsWeight"
-        v-only-number="{min: 1, max: 999999, precision: 1}"
+        v-only-number.lazy="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
@@ -99,12 +100,16 @@
         </van-button>
       </div>
     </van-form>
+    <div class="cycle">
+      3/3
+    </div>
   </div>
 </template>
 
 <script>
 import { getDictData } from '@/api/common'
 import SelftPicker from '@/components/SelfPicker'
+import { formatter } from '@/utils/index'
 export default {
   components: {
     SelftPicker
@@ -142,6 +147,9 @@ export default {
     this.init()
   },
   methods: {
+    _formatter(val) {
+      return formatter(val)
+    },
     async init() {
       let result = await this.getDictData('type_of_goods')
       this.cargoTypeArr = result
@@ -185,6 +193,7 @@ export default {
 
 <style lang='scss' scoped>
 .StepThireeContainer {
+  position: relative;
   font-family: PingFangSC-Medium;
   .title {
     margin: 0px;
@@ -201,6 +210,22 @@ export default {
     .lastStep {
       margin-right:5px;
     }
+  }
+  .cycle {
+    position: absolute;
+    right:30px;
+    bottom:80px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #2f448a;
+    color: #2f448a;
+    z-index: 99;
+    font-size: 13px;
+    text-align: center;
+    line-height: 40px;
+    margin-right: 15px;
+    margin-top: 15px;
   }
 }
 
