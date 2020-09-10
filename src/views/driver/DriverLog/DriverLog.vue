@@ -165,10 +165,10 @@
             <span>邀约渠道</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.inviteTypeName }}</span>
+            <span>{{ detail.sourceChannelName }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.inviteTypeName }}</span>
+            <span>{{ newDetail.sourceChannelName }}</span>
           </van-grid-item>
 
           <van-grid-item>
