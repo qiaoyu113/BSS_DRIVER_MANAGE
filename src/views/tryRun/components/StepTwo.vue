@@ -9,6 +9,7 @@
           name="receptionist"
           label="到仓接待人："
           placeholder="请选择到仓接待人"
+          maxlength="10"
           :rules="[
             {required: true, message: '请选择到仓接待人'}
           ]"

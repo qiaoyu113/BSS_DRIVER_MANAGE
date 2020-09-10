@@ -27,6 +27,11 @@
         :key="index"
         :item="item"
       />
+      <van-empty
+        v-if="lists.length === 0"
+        image="search"
+        description="抱歉，未找到相关数据！"
+      />
     </div>
   </div>
 </template>
