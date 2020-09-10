@@ -278,7 +278,7 @@ export default {
         } else {
           window.localStorage.setItem('payItemInfo', JSON.stringify(arr))
         }
-        // this.$router.go(-1)
+        this.$router.go(-1)
       } catch (err) {
         console.log(`submit fail:${err}`);
       }

@@ -488,7 +488,7 @@ export default {
     phonePatternIshas(val) {
       // Toast.loading('验证中...');
       return new Promise((resolve) => {
-        if (this.routeName === '/editShare') {
+        if (this.routeName === '/editShare' && this.editForm.isChange !== null) {
           if (this.phone === val) {
             resolve(true);
           } else {
@@ -720,9 +720,9 @@ export default {
       params.intentWorkCity = this.area.intentWork[1];
       params.intentWorkCounty = this.area.intentWork[2];
       // 面试地址
-      params.interviewCity = this.area.interview[0];
+      params.interviewCity = this.area.interview[2];
       params.interviewCounty = this.area.interview[1];
-      params.interviewProvince = this.area.interview[2];
+      params.interviewProvince = this.area.interview[0];
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';
       } else {

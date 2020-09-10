@@ -251,12 +251,12 @@
           :form="formData"
           :columns="columns_childNum"
           value="dictLabel"
-          :is-computed="formData['childNum']!=='' && columns_childNum.length>0 "
+          :is-computed="formData['childNum']!=='' "
           required
           label="子女数"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: true , message: '请选择' },
           ]"
           @click.native="copyData('childNum')"
         />
@@ -749,7 +749,7 @@ export default {
     phonePatternIshas(val) {
       // Toast.loading('验证中...');
       return new Promise((resolve) => {
-        if (this.routeName === '/editTailored') {
+        if (this.routeName === '/editTailored' && this.editForm.isChange !== null) {
           if (this.phone === val) {
             resolve(true);
           } else {

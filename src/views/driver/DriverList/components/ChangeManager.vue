@@ -95,7 +95,7 @@
 <script>
 import { Popup, Notify } from 'vant';
 import { updateGmByDriverId } from '@/api/driver.js'
-import { getCurrentLowerOfficeCityData } from '@/api/common'
+import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -121,16 +121,7 @@ export default {
       pickerKey: '',
       showPicker: false,
       columns_workCity: [],
-      columns_gmId: [
-        {
-          name: '泽拉斯',
-          code: 1
-        },
-        {
-          name: '阿兹尔',
-          code: 2
-        }
-      ],
+      columns_gmId: [],
       managerStatus: false
     };
   },
@@ -140,6 +131,11 @@ export default {
     },
     active(val) {
       this.resetform();
+    },
+    'formData.workCity'(val) {
+      if (val) {
+        this.getGmId(val)
+      }
     }
   },
   mounted() {
@@ -147,6 +143,17 @@ export default {
     this.fetchData();
   },
   methods: {
+    async getGmId(val) {
+      console.log(val)
+      GetSpecifiedRoleList({ roleId: 1 })
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_gmId = data.data.map(ele => {
+              return { name: ele.nick, code: ele.id }
+            });
+          }
+        })
+    },
     fetchData() {
       getCurrentLowerOfficeCityData({})
         .then(({ data }) => {
