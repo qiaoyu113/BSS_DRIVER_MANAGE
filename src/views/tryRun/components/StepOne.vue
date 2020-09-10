@@ -37,7 +37,7 @@
         <div class="flex flex-wrap">
           <div>里程时间：</div>
           <div class="flex-sub">
-            {{ lineDetail.distance + '/' +lineDetail.timeDiff }}
+            {{ lineDetail.distance + 'km/' +lineDetail.timeDiff }}
           </div>
         </div>
         <div class="details-btn" @click="goLineDetail(lineDetail.lineId)">
@@ -134,7 +134,7 @@
               <div class="flex flex-wrap">
                 <div>里程时间：</div>
                 <div class="flex-sub">
-                  {{ item.distance + '/' +item.timeDiff }}
+                  {{ item.distance + 'km/' +item.timeDiff }}
                 </div>
               </div>
             </div>

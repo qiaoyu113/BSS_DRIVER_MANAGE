@@ -489,12 +489,16 @@ export default {
           this.page.current--;
           this.loading = false;
           this.error = true;
+          this.refreshing = false;
+          this.finished = true;
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
         this.page.current--;
         this.loading = false;
         this.error = true;
+        this.refreshing = false;
+        this.finished = true;
         console.log(`get list fail:${err}`);
       } finally {
         toast.clear();
