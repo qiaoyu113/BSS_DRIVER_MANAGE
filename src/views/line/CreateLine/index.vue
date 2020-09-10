@@ -120,10 +120,11 @@ export default {
         this.projectId = this.$route.query.projectId
         this.step = 1
         this.getProjectDetail()
+      } else {
+        this.handleSearch()
       }
       this.title = title
       document.title = title
-      this.handleSearch()
     },
     onClickLeft() {
       if (this.isProject) {
@@ -156,6 +157,7 @@ export default {
       this.city = obj.city
       this.lineSaleId = obj.lineSaleId
       this.dutyManagerId = obj.dutyManagerId
+      this.stepOneForm.lineBalance = 1
       this.stepOneForm.runSpeed = obj.runSpeed
       this.stepOneForm.returnBill = obj.returnBill
       this.stepOneForm.carType = obj.carType
@@ -303,6 +305,7 @@ export default {
           this.city = obj.city
           this.lineSaleId = obj.lineSaleId
           this.dutyManagerId = obj.dutyManagerId
+          this.stepOneForm.lineBalance = 1
           this.stepOneForm.runSpeed = obj.runSpeed
           this.stepOneForm.returnBill = obj.returnBill
           this.stepOneForm.carType = obj.carType

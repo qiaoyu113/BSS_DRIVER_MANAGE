@@ -230,6 +230,7 @@ export default {
   },
   data() {
     return {
+      isFirst: true,
       // 配送时间
       deliveryWeekCycleArr: [],
       // 结算方式
@@ -317,7 +318,9 @@ export default {
     },
     monthMoney() {
       if (this.form.incomeSettlementMethod === 1) {
-        return (Number(this.form.monthNum) * Number(this.form.dayNum) * Number(this.form.everyTripGuaranteed)).toFixed(2)
+        let num = (Number(this.form.monthNum) * Number(this.form.dayNum) * Number(this.form.everyTripGuaranteed)).toFixed(2)
+        this.generatorMoney(num)
+        return num
       }
       return 0
     }
@@ -326,6 +329,12 @@ export default {
     'form.incomeSettlementMethod'(val) {
       if (val === 1) {
         this.form.everyUnitPrice = ''
+      } else {
+        if (['edit', 'copy', 'active'].this.isFirst) {
+          this.isFirst = true
+        } else {
+          this.form.shipperOffer = ''
+        }
       }
     }
   },
@@ -370,6 +379,13 @@ export default {
           }
         ]
       }
+    },
+    // 预计月报价(元)
+    generatorMoney(num) {
+      if (Number(num) > 99999999.99) {
+        return this.$fail('预计月报价应小于等于99999999.99')
+      }
+      this.form.shipperOffer = num
     },
     // 生成时间段
     generaTimelist() {

@@ -8,7 +8,7 @@
       v-bind="$attrs"
       @click="showPickerFn"
     />
-    <van-calendar v-model="showPicker" :default-date="form[pickerKey]" type="range" @confirm="onConfirm" />
+    <van-calendar v-model="showPicker" :default-date="form[pickerKey]" type="range" :allow-same-day="true" @confirm="onConfirm" />
   </div>
 </template>
 
