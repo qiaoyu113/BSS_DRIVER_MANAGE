@@ -212,7 +212,6 @@ export default {
             })
           }
           const date = res.data.driverWorkTime.split(' ')[0] + ' ' + timeList[0].workingTimeStart
-          console.log((+new Date(date.replace(/\-/g, '/'))))
           this.formStr.arrivalTime = date;
           this.formStr.date = new Date(date.replace(/\-/g, '/'));
           this.form.arrivalTime = +new Date(date.replace(/\-/g, '/'));

@@ -7,7 +7,7 @@
       <p class="Pink">
         {{ obj.gmStatusName }}
       </p>
-      <p class="checked">
+      <p v-if="checkalls" class="checked">
         <van-checkbox v-model="obj.checked" />
       </p>
       <p class="text ellipsis">
@@ -47,7 +47,7 @@ export default {
       type: Array,
       default: () => {}
     },
-    shipper: {
+    checkalls: {
       type: Boolean,
       default: () => {}
     }
@@ -200,7 +200,7 @@ export default {
   line-height: 20px;
   text-align: center;
   border-radius:10px ;
-
+  overflow: hidden;
   border: 1px solid #ff00008a;
   color: #ff00008a;
 }

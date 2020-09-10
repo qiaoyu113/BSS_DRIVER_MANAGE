@@ -18,7 +18,7 @@
       </p>
 
       <div class="detail van-hairline--top">
-        <van-button type="default" round hairline @click="handleDetailClick(obj.id)">
+        <van-button type="default" round hairline @click="handleDetailClick(obj.wayBillId)">
           详情
         </van-button>
       </div>
@@ -58,7 +58,7 @@ export default {
     async getGmInfoList(id) {
       try {
         let parmas = {
-          wayBillAmountId: id
+          wayBillId: id
         }
         let { data: res } = await shippingDetailByGM(parmas)
         if (res.success) {
