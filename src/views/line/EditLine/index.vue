@@ -244,6 +244,7 @@ export default {
               deliveryWeekCycle: result.deliveryWeekCycle
             }
           }
+          debugger
           if (this.isStable) {
             this.stepTwoForm.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.split(',').map(item => +item)
           } else {

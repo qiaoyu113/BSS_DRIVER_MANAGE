@@ -137,6 +137,7 @@
         colon
         label-width="110"
         rows="2"
+        required
         autosize
         label="详细地址"
         placeholder="请输入..."
@@ -144,6 +145,9 @@
         maxlength="30"
         show-word-limit
         class="textarea"
+        :rules="[
+          { required: true, message: '请输入详细地址！' }
+        ]"
       />
       <van-field
         v-model="form.deliveryNum"

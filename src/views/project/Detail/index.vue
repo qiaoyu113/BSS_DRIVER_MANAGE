@@ -130,7 +130,7 @@ export default {
         }
         let { data: res } = await getProjectDetail(params)
         if (res.success) {
-          this.form = res.data
+          this.form = res.data || {}
         } else {
           this.$toast.fail(res.errorMsg)
         }
