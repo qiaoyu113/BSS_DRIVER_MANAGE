@@ -292,8 +292,8 @@ export default {
         }
         let { data: res } = await getLineDetail(params)
         if (res.success) {
-          this.form = res.data
-          this.fileForm = res.data.linePictureRelatedVO
+          this.form = res.data || {}
+          this.fileForm = res.data && res.data.linePictureRelatedVO || {}
         } else {
           this.$fail(res.errorMsg)
         }

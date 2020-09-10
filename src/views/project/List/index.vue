@@ -110,6 +110,7 @@
     <!-- 选择日期 -->
     <van-calendar
       v-model="showCalendar"
+      :allow-same-day="true"
       type="range"
       :min-date="minDate1"
       @confirm="onConfirm"
@@ -365,9 +366,9 @@ export default {
     handleShowModal(key) {
       this.modalKey = key
       if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2 })
+        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
       } else if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3 })
+        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
       }
       this.showModal = true
     },
@@ -468,12 +469,14 @@ export default {
           this.loading = false;
           this.error = true;
           this.finished = true
+          this.refreshing = false
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
         this.finished = true
+        this.refreshing = false
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)

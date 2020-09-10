@@ -13,7 +13,6 @@
         </template>
       </van-search>
     </van-sticky>
-
     <!-- 下拉刷新  上拉加载 -->
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
       <van-list
@@ -88,6 +87,7 @@
     <!-- 选择日期 -->
     <van-calendar
       v-model="showCalendar"
+      :allow-same-day="true"
       type="range"
       :min-date="minDate1"
       @confirm="onConfirm"
@@ -137,7 +137,7 @@ export default {
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 100,
+          num: 0,
           name: ''
         },
         {
@@ -386,12 +386,14 @@ export default {
           this.loading = false;
           this.error = true;
           this.finished = true
+          this.refreshing = false
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
         this.finished = true
+        this.refreshing = false
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)

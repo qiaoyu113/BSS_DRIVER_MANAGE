@@ -32,7 +32,7 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="form.lineState" swipeable @change="handleTabChange">
+        <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
           <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
@@ -153,6 +153,7 @@
     <!-- 选择日期 -->
     <van-calendar
       v-model="showCalendar"
+      :allow-same-day="true"
       type="range"
       :min-date="minDate1"
       @confirm="onConfirm"
@@ -419,13 +420,13 @@ export default {
           nickname: value,
           roleId: 3
         }
-        this.getOpenCityList(params)
+        this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
           nickname: value,
           roleId: 2
         }
-        this.getOpenCityList(params)
+        this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'carType') {
         let params = {
           keyword: value
@@ -444,9 +445,9 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3 })
+        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2 })
+        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
       } else if (key === 'carType') {
         this.getOpenCityList()
       }
@@ -590,12 +591,14 @@ export default {
           this.loading = false;
           this.error = true;
           this.finished = true
+          this.refreshing = false
           this.$fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
         this.finished = true
+        this.refreshing = false
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)

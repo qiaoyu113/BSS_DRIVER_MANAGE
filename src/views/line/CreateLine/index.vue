@@ -11,7 +11,7 @@
           label="选择项目"
           required
           placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
+          :rules="[{ required: true, message: '请选择项目' }]"
           @click="showModal=true"
         />
         <van-button type="primary" block class="btn">
@@ -112,24 +112,25 @@ export default {
       this.isStable = +this.$route.query.isStable === 1
       this.isProject = +this.$route.query.isProject === 1
       if (this.isStable) {
-        title = '发布稳定线路'
+        title = '创建稳定线路'
       } else {
-        title = '发布临时线路'
+        title = '创建临时线路'
       }
       if (this.isProject) {
         this.projectId = this.$route.query.projectId
         this.step = 1
         this.getProjectDetail()
+      } else {
+        this.handleSearch()
       }
       this.title = title
       document.title = title
-      this.handleSearch()
     },
     onClickLeft() {
       if (this.isProject) {
         Dialog.confirm({
           title: '提示',
-          message: '已填写相关信息,请确定要返回至项目详情吗?'
+          message: '确定要返回上一页面吗？'
         })
           .then(() => {
             this.$router.go(-1)
@@ -156,6 +157,7 @@ export default {
       this.city = obj.city
       this.lineSaleId = obj.lineSaleId
       this.dutyManagerId = obj.dutyManagerId
+      this.stepOneForm.lineBalance = 1
       this.stepOneForm.runSpeed = obj.runSpeed
       this.stepOneForm.returnBill = obj.returnBill
       this.stepOneForm.carType = obj.carType
@@ -297,12 +299,13 @@ export default {
         let { data: res } = await getProjectDetail(params)
         if (res.success) {
           let obj = res.data
-          this.projectId = obj.value
-          this.projectName = obj.label
+          this.projectId = obj.projectId
+          this.projectName = obj.projectName
           this.warehouseCity = obj.warehouseCity
           this.city = obj.city
           this.lineSaleId = obj.lineSaleId
           this.dutyManagerId = obj.dutyManagerId
+          this.stepOneForm.lineBalance = 1
           this.stepOneForm.runSpeed = obj.runSpeed
           this.stepOneForm.returnBill = obj.returnBill
           this.stepOneForm.carType = obj.carType
