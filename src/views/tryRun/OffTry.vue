@@ -193,6 +193,13 @@ export default {
           })
             .then(() => {
               // 去激活线路页面
+              const lineId = this.lineId;
+              this.$router.push({
+                path: '/lineDetail',
+                query: {
+                  lineId
+                }
+              })
             })
             .catch(() => {
               // 关闭弹窗
