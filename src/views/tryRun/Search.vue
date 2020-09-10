@@ -9,7 +9,7 @@
       />
       <!-- 搜索 -->
       <van-search
-        v-model="keyWord"
+        v-model.trim="keyWord"
         show-action
         placeholder="请输入搜索关键词"
         @input="onSearch"
@@ -151,8 +151,8 @@ export default {
         this.historyItems.splice(index, 1);
       }
 
-      if (this.historyItems.length >= 5) {
-        this.historyItems.shift();
+      if (this.historyItems.length >= 10) {
+        this.historyItems.pop();
       }
       this.historyItems.unshift(keyword);
       localStorage.setItem('tryrun', JSON.stringify(this.historyItems));

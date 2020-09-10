@@ -13,7 +13,7 @@
     </van-field>
     <van-field
       label="支付时间"
-      :value="obj.payDate"
+      :value="obj.payDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}')"
       colon
       readonly
       :border="false"
@@ -38,6 +38,7 @@
       readonly
     />
     <van-field
+      v-if="obj.remarks !== ''"
       style="border-bottom: 1px solid #c8c9cc;"
       label="备注"
       :value="obj.remarks"

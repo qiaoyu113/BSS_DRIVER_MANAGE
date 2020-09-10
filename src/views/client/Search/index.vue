@@ -49,7 +49,7 @@
 <script>
 import CardItem from '../List/components/CardItem'
 import { debounce } from '@/utils/index'
-import { getClientList } from '@/api/client'
+import { getClientSearch } from '@/api/client'
 export default {
   components: {
     CardItem
@@ -79,7 +79,7 @@ export default {
         return false
       }
       this.getLists(this.keyWord)
-    }, 200),
+    }, 1000),
     // 取消
     onCancel() {
       this.keyWord = ''
@@ -99,7 +99,7 @@ export default {
         }
         keyword && (params.key = keyword)
         this.$loading(true)
-        let { data: res } = await getClientList(params)
+        let { data: res } = await getClientSearch(params)
         if (res.success) {
           this.lists = res.data
           if (keyword) {

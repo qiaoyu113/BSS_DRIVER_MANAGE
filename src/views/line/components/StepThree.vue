@@ -2,7 +2,7 @@
   <div class="StepThireeContainer">
     <van-form ref="stepThree" :show-error="false" @submit="onSubmit">
       <h4 class="title van-hairline--bottom">
-        配送时间信息
+        货物信息
       </h4>
       <selftPicker
         picker-key="cargoType"
@@ -15,7 +15,7 @@
         label="货物类型"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择货物类型！' },
         ]"
       />
       <van-field
@@ -27,7 +27,7 @@
         name="numValidator"
         placeholder="请输入"
         :rules="[
-          { required: false, message: '请输入' },
+          { required: false, message: '请输入货物件数！' },
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
@@ -43,7 +43,7 @@
         name="numValidator"
         placeholder="请输入"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入货物体积！' },
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
@@ -59,7 +59,7 @@
         placeholder="请输入"
         maxlength="10"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入货物重量！' },
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
@@ -68,13 +68,13 @@
         :form="form"
         :columns="carryArr"
         value="label"
-        :is-computed="form['carry']!==''"
+        :is-computed="form['carry']!==''&&carryArr.length > 0"
         required
         label-width="100"
         label="是否需要搬运"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择是否需要搬运！' },
         ]"
       />
       <van-field
@@ -165,10 +165,11 @@ export default {
         }
         keyword && (params.keyword = keyword)
         let { data: res } = await getDictData(params)
+
         if (res.success) {
           return res.data.map(item => ({
             label: item.dictLabel,
-            value: item.dictValue
+            value: +item.dictValue
           }))
         } else {
           this.$fail(res.errorMsg)

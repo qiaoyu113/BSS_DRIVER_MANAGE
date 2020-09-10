@@ -42,6 +42,14 @@ export default {
     border: {
       type: Boolean,
       default: true
+    },
+    props: {
+      type: Object,
+      default: () => ({
+        provinceAreaName: 'provinceAreaName',
+        cityAreaName: 'cityAreaName',
+        countyAreaName: 'countyAreaName'
+      })
     }
   },
   data() {
@@ -74,7 +82,7 @@ export default {
     },
     // 获取label
     getLable() {
-      this.label = `${this.form.provinceAreaName}/${this.form.cityAreaName}/${this.form.countyAreaName}`
+      this.label = `${this.form[this.props.provinceAreaName]}/${this.form[this.props.cityAreaName]}/${this.form[this.props.countyAreaName]}`
     },
     // 打开picker
     showPickerFn() {

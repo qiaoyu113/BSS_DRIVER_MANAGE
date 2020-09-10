@@ -10,7 +10,7 @@
       {{ line }}
     </p>
     <p class="text van-ellipsis">
-      配送类型:{{ obj.carTypeName }}
+      配送车型:{{ obj.carTypeName }}
     </p>
     <p class="text van-ellipsis">
       试跑状态:{{ obj.runTestStateName }}
@@ -22,8 +22,8 @@
       </p>
       <div class="right">
         <div>
-          <p v-for="(item,idx) in obj.workingTimeRegin.split(',')" :key="idx" class="time">
-            预计工作时间:{{ item }}
+          <p class="time">
+            每日配送趟数:{{ obj.dayNum }}
           </p>
         </div>
         <div>

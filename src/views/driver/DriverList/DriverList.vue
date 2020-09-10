@@ -135,6 +135,8 @@
     <van-calendar
       v-model="dateShow"
       type="range"
+      :min-date="minTime"
+      :max-date="maxTime"
       :allow-same-day="true"
       @confirm="onConfirm"
     />
@@ -205,6 +207,8 @@ export default {
   },
   data() {
     return {
+      minTime: new Date(2000, 12, 31),
+      maxTime: new Date(2125, 12, 31),
       checkedList: [],
       lists: [],
       loading: false,
@@ -328,7 +332,9 @@ export default {
       GetSpecifiedRoleList({ roleId: 1 })
         .then(({ data }) => {
           if (data.success) {
-            this.columns_GmManager = data.data;
+            this.columns_GmManager = data.data.map(ele => {
+              return { name: ele.nick, code: ele.id }
+            });
           }
         }).catch((err) => {
           console.log(err)
@@ -342,6 +348,10 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
+      if (!result || result.lists.length === 0) {
+        result.hasMore = false
+        return false
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -406,7 +416,11 @@ export default {
           }
           this.tabType.forEach(item => {
             if (item.code === this.ruleForm.status) {
-              item.num = res.title[item.code]
+              if (item.type === '全部') {
+                item.num = res.title.all
+              } else {
+                item.num = res.title[item.code]
+              }
             } else {
               item.num = ''
             }

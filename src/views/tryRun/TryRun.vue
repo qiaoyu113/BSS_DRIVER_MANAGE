@@ -184,6 +184,7 @@ import { GetRunTestInfoList } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
 import { parseTime } from '@/utils';
+import dayjs from 'dayjs'
 export default {
   name: 'TryRun',
   components: {
@@ -375,8 +376,8 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.pickerNames.date = `${startDate} - ${endDate}`;
-      this.form.startDate = startDate;
-      this.form.endDate = endDate;
+      this.form.startDate = +dayjs(startDate);
+      this.form.endDate = +dayjs(endDate);
     },
     /**
      * 提交查询
@@ -455,8 +456,14 @@ export default {
     },
     // 获取列表
     async getLists(isInit) {
+      let toast;
       try {
-        this.$loading(true);
+        toast = this.$toast.loading({
+          duration: 0,
+          message: '加载中...',
+          forbidClick: true,
+          loadingType: 'spinner'
+        })
         const params = this.delForm(this.form);
         params.page = this.page.current;
         params.limit = this.page.limit;
@@ -479,18 +486,22 @@ export default {
           });
           return result;
         } else {
-          this.page.current !== 1 && this.page.current--;
+          this.page.current--;
           this.loading = false;
           this.error = true;
+          this.refreshing = false;
+          this.finished = true;
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        this.page.current !== 1 && this.page.current--;
+        this.page.current--;
         this.loading = false;
         this.error = true;
+        this.refreshing = false;
+        this.finished = true;
         console.log(`get list fail:${err}`);
       } finally {
-        this.$loading(false);
+        toast.clear();
       }
     }
   }

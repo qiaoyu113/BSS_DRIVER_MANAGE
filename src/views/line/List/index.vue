@@ -32,7 +32,7 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="form.lineState" swipeable @change="handleTabChange">
+        <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
           <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
@@ -149,18 +149,18 @@
         @click="showPickerFn('date')"
       />
     </SelfPopup>
+
+    <!-- 选择日期 -->
+    <van-calendar
+      v-model="showCalendar"
+      :allow-same-day="true"
+      type="range"
+      :min-date="minDate1"
+      @confirm="onConfirm"
+    />
     <!-- 底部弹出框 -->
     <van-popup v-model="showPicker" position="bottom">
-      <template v-if="isDateRange">
-        <!-- 选择日期 -->
-        <van-calendar
-          v-model="showPicker"
-          type="range"
-          :min-date="minDate1"
-          @confirm="onConfirm"
-        />
-      </template>
-      <template v-else-if="isDate">
+      <template v-if="isDate">
         <van-datetime-picker
           v-model="form[pickerKey]"
           type="date"
@@ -302,6 +302,7 @@ export default {
         }
       ],
       showModal: false,
+      showCalendar: false,
       options: [],
       modalKey: '',
       pickerNames: { // picker选中显示的名字
@@ -362,7 +363,9 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
-
+      if (!result) {
+        return false
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -382,6 +385,7 @@ export default {
     },
     // 查询
     async onQuery() {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -416,13 +420,13 @@ export default {
           nickname: value,
           roleId: 3
         }
-        this.getOpenCityList(params)
+        this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
           nickname: value,
           roleId: 2
         }
-        this.getOpenCityList(params)
+        this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'carType') {
         let params = {
           keyword: value
@@ -441,9 +445,9 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3 })
+        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2 })
+        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
       } else if (key === 'carType') {
         this.getOpenCityList()
       }
@@ -485,7 +489,10 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'selectLine') {
+      if (key === 'date') {
+        this.showCalendar = true
+        return false
+      } else if (key === 'selectLine') {
         this.columns.push(...this.lineColumns);
       } else if (key === 'busiType') {
         this.columns.push(...this.busiTypeArr);
@@ -515,6 +522,8 @@ export default {
           this.pickerNames[this.pickerKey] = `${startName}-${endName}`
           this.form[this.pickerKey] = obj
         }
+        this.showCalendar = false
+        return false
       } else if (this.isDate) {
         this.pickerNames[this.pickerKey] = `${obj.getMonth() + 1}/${obj.getDate()}`;
         this.form[this.pickerKey] = obj
@@ -527,6 +536,7 @@ export default {
     },
     // 状态切换
     async handleTabChange(tab) {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -564,21 +574,31 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (this.form.lineState === item.name) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
+            if (item.name === '') {
+              item.num = res.title.all
+            } else if (item.name === 1) {
+              item.num = res.title.isShelvesNum
+            } else if (item.name === 2) {
+              item.num = res.title.isRunningNum
+            } else if (item.name === 3) {
+              item.num = res.title.isRunningShelvesNum
+            } else if (item.name === 4) {
+              item.num = res.title.noRunningShelvesNum
             }
           })
           return result
         } else {
           this.loading = false;
           this.error = true;
+          this.finished = true
+          this.refreshing = false
           this.$fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
+        this.finished = true
+        this.refreshing = false
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)

@@ -177,7 +177,10 @@ export default {
      * 校验账号
      */
     validatorAccount(val) {
-      return true
+      if (phoneRegExp.test(val)) {
+        return true
+      }
+      return false
     }
   }
 };

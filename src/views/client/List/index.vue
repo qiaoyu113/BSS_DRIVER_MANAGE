@@ -13,7 +13,6 @@
         </template>
       </van-search>
     </van-sticky>
-
     <!-- 下拉刷新  上拉加载 -->
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
       <van-list
@@ -85,22 +84,24 @@
         @click="showPickerFn('date')"
       />
     </SelfPopup>
+    <!-- 选择日期 -->
+    <van-calendar
+      v-model="showCalendar"
+      :allow-same-day="true"
+      type="range"
+      :min-date="minDate1"
+      @confirm="onConfirm"
+    />
     <!-- 底部弹出框 -->
     <van-popup v-model="showPicker" position="bottom">
-      <template v-if="isDateRange">
-        <!-- 选择日期 -->
-        <van-calendar v-model="showPicker" type="range" :min-date="minDate1" @confirm="onConfirm" />
-      </template>
-      <template v-else>
-        <!-- picker选择器 -->
-        <van-picker
-          value-key="label"
-          show-toolbar
-          :columns="columns"
-          @confirm="onConfirm"
-          @cancel="showPicker = false"
-        />
-      </template>
+      <!-- picker选择器 -->
+      <van-picker
+        value-key="label"
+        show-toolbar
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+      />
     </van-popup>
     <!-- 模糊搜索组件 -->
     <Suggest
@@ -119,7 +120,7 @@ import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { getClientList } from '@/api/client'
-import { getOpenCitys } from '@/api/common'
+import { getOpenCitys, getDictData } from '@/api/common'
 export default {
   components: {
     CardItem,
@@ -136,18 +137,18 @@ export default {
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 100,
+          num: 0,
           name: ''
         },
         {
           text: '已启用',
           num: 0,
-          name: 1
+          name: 2
         },
         {
           text: '已禁用',
           num: 0,
-          name: 2
+          name: 1
         }
       ],
       lists: [],
@@ -159,31 +160,10 @@ export default {
         date: []
       },
       options: [], // 开通城市列表
-      customerTypeArr: [
-        {
-          label: '公司',
-          value: 1
-        },
-        {
-          label: '个体',
-          value: 2
-        }
-      ],
-      classificationArr: [
-        {
-          label: '外线客户',
-          value: 1
-        },
-        {
-          label: '自承运客户',
-          value: 2
-        },
-        {
-          label: '集团客户',
-          value: 3
-        }
-      ],
+      customerTypeArr: [],
+      classificationArr: [],
       showModal: false,
+      showCalendar: false,
       modalKey: '',
       pickerNames: { // picker选中显示的名字
         city: '',
@@ -213,7 +193,18 @@ export default {
       return this.dateLists.includes(this.pickerKey)
     }
   },
+  mounted() {
+    this.init()
+  },
   methods: {
+    async init() {
+      // 客户类型
+      let customerTypeArr = await this.getDictData('line_cloud_customerType')
+      this.customerTypeArr = customerTypeArr || []
+      // 客户属性
+      let classificationArr = await this.getDictData('line_cloud_classification')
+      this.classificationArr = classificationArr || []
+    },
     // 返回
     onClickLeft() {
       this.$router.go(-1)
@@ -235,6 +226,9 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
+      if (!result) {
+        return false
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -254,6 +248,7 @@ export default {
     },
     // 查询
     async onQuery() {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -300,7 +295,10 @@ export default {
     showPickerFn(key) {
       this.columns = []
       this.pickerKey = key;
-      if (key === 'customerType') {
+      if (key === 'date') {
+        this.showCalendar = true
+        return false
+      } else if (key === 'customerType') {
         this.columns.push(...this.customerTypeArr);
       } else if (key === 'classification') {
         this.columns.push(...this.classificationArr);
@@ -315,6 +313,8 @@ export default {
         let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
         this.pickerNames[this.pickerKey] = `${startName}-${endName}`
         this.form[this.pickerKey] = obj
+        this.showCalendar = false
+        return false
       } else {
         this.pickerNames[this.pickerKey] = obj.label
         this.form[this.pickerKey] = obj.value
@@ -340,6 +340,7 @@ export default {
     },
     // 状态切换
     async handleTabChange(tab) {
+      this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
@@ -372,24 +373,50 @@ export default {
             hasMore: res.page.total > newLists.length
           }
           this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
+            if (item.name === '') {
+              item.num = res.title.all
+            } else if (item.name === 1) {
+              item.num = res.title.enable
+            } else if (item.name === 2) {
+              item.num = res.title.prevent
             }
           })
           return result
         } else {
           this.loading = false;
           this.error = true;
+          this.finished = true
+          this.refreshing = false
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
+        this.finished = true
+        this.refreshing = false
         console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)
+      }
+    },
+    // 从数据字典获取数据
+    async getDictData(dictType) {
+      try {
+        let params = {
+          dictType
+        }
+        let { data: res } = await getDictData(params)
+
+        if (res.success) {
+          return res.data.map(item => ({
+            label: item.dictLabel,
+            value: +item.dictValue
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get dict data fail:${err}`)
       }
     }
   }

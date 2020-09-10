@@ -5,20 +5,20 @@
         配送时间信息
       </h4>
       <SelfDatetimePicker
-        label-width="100"
+        label-width="110"
         picker-key="driverWorkTime"
         :is-computed="form['driverWorkTime']!==''"
         :form="form"
         required
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择司机上岗时间！' },
         ]"
         label="司机上岗时间"
         placeholder="点击选择日期"
       />
       <template v-if="isStable">
         <van-field
-          label-width="100"
+          label-width="110"
           colon
           name="deliveryWeekCycleValidator"
           readonly
@@ -27,7 +27,7 @@
           label="配送时间"
           placeholder="请选择"
           :rules="[
-            { validator: deliveryWeekCycleValidator, message: '请选择' }
+            { validator: deliveryWeekCycleValidator, message: '请选择配送时间！' }
           ]"
         >
           <div slot="input">
@@ -46,7 +46,7 @@
       </template>
       <template v-else>
         <self-calendar
-          label-width="100"
+          label-width="110"
           picker-key="deliveryWeekCycle"
           :is-computed="form['deliveryWeekCycle'].length> 0"
           :form="form"
@@ -56,7 +56,7 @@
           label="配送时间"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: true, message: '请选择配送时间！' },
           ]"
         />
       </template>
@@ -67,17 +67,17 @@
         required
         label="预计月出车天数"
         placeholder="请输入"
-        label-width="100"
+        label-width="110"
         name="daysUseCarValidator"
         type="digit"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入预计月出车天数！' },
           { validator: daysUseCarValidator, message: '请输入1~31' }
         ]"
       />
       <van-field
         v-model.number="form.dayNum"
-        label-width="100"
+        label-width="110"
         colon
         required
         label="每日配送趟数"
@@ -85,7 +85,7 @@
         name="countByDayValidator"
         type="digit"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入每日配送趟数！' },
           { validator: countByDayValidator, message: '请输入1~9' }
         ]"
         @input="handleInput"
@@ -105,11 +105,11 @@
         value="label"
         :is-computed="form['incomeSettlementMethod']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="结算方式"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择结算方式！' },
         ]"
       />
       <selftPicker
@@ -119,11 +119,11 @@
         value="label"
         :is-computed="form['settlementCycle']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="结算周期"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '结算周期不能为空！' },
         ]"
       />
       <selftPicker
@@ -133,11 +133,11 @@
         value="label"
         :is-computed="form['settlementDays']!==''"
         required
-        label-width="100"
+        label-width="110"
         label="结算天数"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择结算天数！' },
         ]"
       />
 
@@ -147,38 +147,51 @@
         <van-field
           v-model="form.everyUnitPrice"
           v-only-number="{min: 1, max: 999999.99, precision: 2}"
-          label-width="100"
+          label-width="110"
           colon
           required
           label="每趟提成单价(元)"
           placeholder="请输入"
           type="number"
-          :rules="[{ required: true, message: '请输入' }]"
+          :rules="[{ required: true, message: '请输入单趟报价！' }]"
         />
       </template>
       <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
       <van-field
         v-model="form.everyTripGuaranteed"
         v-only-number="{min: 1, max: 999999.99, precision: 2}"
-        label-width="100"
+        label-width="110"
         colon
         required
         :label="form.incomeSettlementMethod ===1 ? '单趟报价(元)':'每趟保底(元)'"
         placeholder="请输入"
         type="number"
-        :rules="[{ required: true, message: '请输入' }]"
+        :rules="[{ required: true, message: '请输入单趟报价！' }]"
       />
       <!-- 输入数字限制精确到小数点后两位，小数点前8位 -->
-      <van-field
-        v-model="form.shipperOffer"
-        v-only-number="{min: 1, max: 99999999.99, precision: 2}"
-        label-width="100"
-        colon
-        required
-        label="预计月报价(元)"
-        placeholder="请输入"
-        :rules="[{ required: true, message: '请输入线路名称' }]"
-      />
+      <template v-if="form.incomeSettlementMethod===1">
+        <van-field
+          v-model="monthMoney"
+          label-width="110"
+          colon
+          required
+          disabled
+          label="预计月报价(元)"
+        />
+      </template>
+      <template v-else>
+        <van-field
+          v-model="form.shipperOffer"
+          v-only-number="{min: 1, max: 99999999.99, precision: 2}"
+          label-width="110"
+          colon
+          required
+          :disabled="form.incomeSettlementMethod ===1"
+          label="预计月报价(元)"
+          placeholder="请输入"
+          :rules="[{ required: true, message: '请输入月报价！' }]"
+        />
+      </template>
       <div class="btn">
         <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-one')">
           返回上一步
@@ -217,6 +230,7 @@ export default {
   },
   data() {
     return {
+      isFirst: true,
       // 配送时间
       deliveryWeekCycleArr: [],
       // 结算方式
@@ -294,13 +308,33 @@ export default {
         return this.deliveryWeekCycleArr.length === this.form['deliveryWeekCycle'].length
       },
       set(newVal) {
+        this.form['deliveryWeekCycle'] = []
         if (newVal) {
           let arrs = this.deliveryWeekCycleArr.map(item => item.value)
           this.form['deliveryWeekCycle'].push(...arrs)
-        } else {
-          this.form['deliveryWeekCycle'] = []
         }
         return newVal
+      }
+    },
+    monthMoney() {
+      if (this.form.incomeSettlementMethod === 1) {
+        let num = (Number(this.form.monthNum) * Number(this.form.dayNum) * Number(this.form.everyTripGuaranteed)).toFixed(2)
+        this.generatorMoney(num)
+        return num
+      }
+      return 0
+    }
+  },
+  watch: {
+    'form.incomeSettlementMethod'(val) {
+      if (val === 1) {
+        this.form.everyUnitPrice = ''
+      } else {
+        if (['edit', 'copy', 'active'].this.isFirst) {
+          this.isFirst = true
+        } else {
+          this.form.shipperOffer = ''
+        }
       }
     }
   },
@@ -345,6 +379,13 @@ export default {
           }
         ]
       }
+    },
+    // 预计月报价(元)
+    generatorMoney(num) {
+      if (Number(num) > 99999999.99) {
+        return this.$fail('预计月报价应小于等于99999999.99')
+      }
+      this.form.shipperOffer = num
     },
     // 生成时间段
     generaTimelist() {

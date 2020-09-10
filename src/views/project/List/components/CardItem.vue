@@ -21,13 +21,13 @@
     <div class="footer">
       <div class="right">
         <p class="time">
-          预计工作时间:{{ obj.timeDiff | parseTime('{y}-{m}-{d}') }}
+          预计工作时间:{{ obj.timeDiff }}
         </p>
         <div>
           <van-tag
             v-if="obj.projectState ===2"
             class="tag"
-            color="#3acb8d1a"
+            color="rgba(58, 203, 141, 0.1)"
             text-color="#3ACB8D"
           >
             已启用
@@ -35,7 +35,7 @@
           <van-tag
             v-else-if="obj.projectState ===1"
             class="tag"
-            color="#ffa0001a"
+            color="rgba(255, 160, 0, 0.1)"
             text-color="#FFA000"
           >
             已禁用

@@ -144,6 +144,7 @@
           colon
         />
         <van-field
+          v-if="formData.cooperationModel === 1"
           label="车辆型号"
           :value="formData.carModel"
           readonly

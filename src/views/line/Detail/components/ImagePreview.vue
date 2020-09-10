@@ -3,17 +3,19 @@
     <van-field :label="label" label-width="100">
       <span slot="input"></span>
     </van-field>
-    <van-image
-      v-for="(item,index) in imageArrs"
-      :key="label+index"
-      :style="{
-        marginRight:index % 4 === 3 ? '0px':'',
-        marginLeft:index % 4 ===0 ? '0.43rem':''
-      }"
-      class="image"
-      :src="item"
-      @click="handleImagePreview(index)"
-    />
+    <template v-if="imageArrs.length > 0">
+      <van-image
+        v-for="(item,index) in imageArrs"
+        :key="label+index"
+        :style="{
+          marginRight:index % 4 === 3 ? '0px':'',
+          marginLeft:index % 4 ===0 ? '0.43rem':''
+        }"
+        class="image"
+        :src="item"
+        @click="handleImagePreview(index)"
+      />
+    </template>
   </div>
 </template>
 

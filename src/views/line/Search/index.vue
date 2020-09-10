@@ -79,7 +79,7 @@ export default {
         return false
       }
       this.getLists(this.keyWord)
-    }, 200),
+    }, 1000),
     // 取消
     onCancel() {
       this.keyWord = ''
