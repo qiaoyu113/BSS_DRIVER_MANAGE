@@ -24,15 +24,26 @@
         <li class="li_value">
           司机姓名/手机号：  {{ item.driverName }}/{{ item.driverPhone }}
         </li>
-        <li class="Number_ong">
-          <p>趟数{{ index + 1 }}: {{ item.deliverTime }}</p>
-          <div class="Number">
-            <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-            <van-button type="default">
-              <van-icon name="arrow" color="#A6AAB8" />
-            </van-button>
-          </div>
-        </li>
+        <van-form @submit="onSubmit">
+          <li class="Number_ong">
+            <div v-for="(i, ins) in item.list" :key="i.id">
+              <!-- <p>趟数{{ ins + 1 }}: {{ i.deliverTime }}</p>
+              <div class="Number">
+                <input v-model="value" type="text" style="border:none" placeholder="350.00元">
+                <van-button type="default">
+                  <van-icon name="arrow" color="#A6AAB8" />
+                </van-button>
+              </div> -->
+              <van-field
+                v-model="i.deliverTime"
+                :name="'趟数' + ( ins + 1 )"
+                :label="'趟数' + ( ins + 1 )"
+                placeholder="请输入"
+                :rules="[{ required: true, message: '请输入正确内容' }]"
+              />
+            </div>
+          </li>
+        </van-form>
       </ul>
     </div>
     <div class="Remarks">
