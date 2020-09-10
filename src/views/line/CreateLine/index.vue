@@ -297,8 +297,8 @@ export default {
         let { data: res } = await getProjectDetail(params)
         if (res.success) {
           let obj = res.data
-          this.projectId = obj.value
-          this.projectName = obj.label
+          this.projectId = obj.projectId
+          this.projectName = obj.projectName
           this.warehouseCity = obj.warehouseCity
           this.city = obj.city
           this.lineSaleId = obj.lineSaleId
