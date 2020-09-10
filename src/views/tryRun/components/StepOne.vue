@@ -282,7 +282,7 @@ export default {
               this.$router.push('/try-run')
             } else {
             // 进入创建试跑
-              this.$router.push({
+              this.$router.replace({
                 path: '/create-run',
                 query: {
                   step: '1',
