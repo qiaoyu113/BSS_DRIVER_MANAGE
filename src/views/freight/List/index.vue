@@ -89,36 +89,36 @@
         @click="showPickerFn('city')"
       /> -->
       <van-field
-        v-model="listQuery.name"
+        v-model="listQuery.driverCity"
         colon
-        name="name"
+        name="driverCity"
         label-width="7em"
         label="司机城市"
-        placeholder="请输入城市"
+        placeholder="请输入司机城市"
       />
       <van-field
-        v-model="listQuery.name1"
+        v-model="listQuery.driver"
         colon
-        name="name1"
+        name="driver"
         label-width="7em"
-        label="客户"
-        placeholder="请输入客户"
+        label="司机"
+        placeholder="请输入司机"
       />
       <van-field
-        v-model="listQuery.name2"
-        name="name2"
+        v-model="listQuery.line"
+        name="line"
         colon
         label-width="7em"
-        label="项目"
-        placeholder="请输入项目"
+        label="线路"
+        placeholder="请输入线路"
       />
       <van-field
-        v-model="listQuery.name3"
-        name="name3"
+        v-model="listQuery.gmId"
+        name="gmId"
         colon
         label-width="7em"
-        label="上岗经理"
-        placeholder="请输入上岗经理"
+        label="加盟经理"
+        placeholder="请输入加盟经理"
       />
       <van-field
         readonly
@@ -399,7 +399,6 @@ export default {
           limit: this.page.size,
           pageNumber: 20,
           wayBillGMSaleStatus: this.active
-
         }
         let { data: res } = await getGmInfoList(params)
         if (res.success) {
@@ -708,8 +707,7 @@ export default {
   }
   .OutSideList >>> .SelfPopup[data-v-7aa3f8c0] .van-popup {
     width: 80%;
-    height: 94vh;
-    margin-top: 26px;
+    height: 100vh;
     box-sizing: border-box;
 }
 .OutSideList >>>.van-button--primary:nth-child(2){

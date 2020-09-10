@@ -17,7 +17,7 @@
         路线名称:{{ obj.lineName }}
       </p>
     </div>
-    <div class="detail van-hairline--top">
+    <div class="detail">
       <van-button type="default" round hairline @click="handleDetailClick(obj.wayBillId)">
         详情
       </van-button>
@@ -86,6 +86,7 @@ export default {
   font-family: PingFangSC-Semibold;
   background: #fff;
   width: 100%;
+  box-sizing: border-box;
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -134,7 +135,7 @@ export default {
   .detail {
     padding: 10px 0px;
     text-align: center;
-    border-top-color:#D8D8D8;
+    border-top: 1px solid #D8D8D8;
   }
 }
 .dai{
@@ -153,7 +154,10 @@ export default {
   .CardItemcontainer >>> .van-button--default  {
     color:#838A9D;
     background: #fff;
-    height:70px;
-    height:20px;
+    width: 70px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    border: 1px solid #D8D8D8;
   }
 </style>
