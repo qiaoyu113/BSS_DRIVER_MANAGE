@@ -32,7 +32,7 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="form.lineState" swipeable @change="handleTabChange">
+        <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
           <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
@@ -444,9 +444,9 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3 })
+        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2 })
+        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
       } else if (key === 'carType') {
         this.getOpenCityList()
       }

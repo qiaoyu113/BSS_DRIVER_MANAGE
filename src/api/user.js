@@ -136,7 +136,8 @@ export function getMediaIdOfActivationQrCode(data) {
 }
 // -------------------------szjw 2.1-----------------------
 
-let prefix = '/mock/25'
+// let prefix = '/mock/25'
+let prefix = '/auth'
 // 账号登录
 export function loginByAccount(data) {
   return request({

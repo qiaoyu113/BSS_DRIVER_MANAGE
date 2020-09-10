@@ -11,7 +11,7 @@
           label="选择项目"
           required
           placeholder="请选择"
-          :rules="[{ required: true, message: '请选择' }]"
+          :rules="[{ required: true, message: '请选择项目' }]"
           @click="showModal=true"
         />
         <van-button type="primary" block class="btn">
@@ -112,9 +112,9 @@ export default {
       this.isStable = +this.$route.query.isStable === 1
       this.isProject = +this.$route.query.isProject === 1
       if (this.isStable) {
-        title = '发布稳定线路'
+        title = '创建稳定线路'
       } else {
-        title = '发布临时线路'
+        title = '创建临时线路'
       }
       if (this.isProject) {
         this.projectId = this.$route.query.projectId
@@ -129,7 +129,7 @@ export default {
       if (this.isProject) {
         Dialog.confirm({
           title: '提示',
-          message: '已填写相关信息,请确定要返回至项目详情吗?'
+          message: '确定要返回上一页面吗？'
         })
           .then(() => {
             this.$router.go(-1)

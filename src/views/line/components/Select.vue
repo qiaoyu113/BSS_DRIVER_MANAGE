@@ -9,7 +9,7 @@
       label="预计工作时间"
       placeholder="请选择"
       :rules="[
-        { required: true, message: '请选择' },
+        { required: true, message: '请选择预计工作时间！' },
       ]"
       @click="showPickerFn"
     />
