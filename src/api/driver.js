@@ -1,12 +1,10 @@
 import request from '@/utils/request'
-let prefix = '/mock/81'
-
-// let prefix = '/api/driver'
-let linePrefix = '/mock/74'
-// let linePrefix = '/api/waybill_center'
-let transportPrefix = '/mock/103'
-// let transportPrefix = '/api/carrier_center'
-
+// let prefix = '/mock/81'
+let prefix = '/driver'
+// let linePrefix = '/mock/74'
+let linePrefix = '/waybill_center'
+// let transportPrefix = '/mock/103'
+let transportPrefix = '/carrier_center'
 /**
  * 司机列表
  */
@@ -41,6 +39,17 @@ export function getInterview(data) {
 }
 
 /**
+ * 编辑面试表单
+ */
+export function editInterview(data) {
+  return request({
+    url: `${prefix}/v2/driver/edit/interview`,
+    method: 'post',
+    data
+  })
+}
+
+/**
  * 新建专车面试表单
  */
 export function specialInterview(data) {
@@ -48,6 +57,17 @@ export function specialInterview(data) {
     url: `${prefix}/v2/driver/special/interview`,
     method: 'post',
     data
+  })
+}
+
+/** *
+ * 面试表单手机号唯一效验
+ */
+export function unqPhone(params) {
+  return request({
+    url: `${prefix}/v2/driver/check/unq/phone`,
+    method: 'post',
+    params
   })
 }
 

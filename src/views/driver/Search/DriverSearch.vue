@@ -265,7 +265,7 @@ export default {
       // if (this.keyWord === 'd') {
       //   this.options = ['京东', '京东12121', '京东121212ddasddasd'];
       this.getLists(this.keyWord)
-    }, 200),
+    }, 1000),
     // 取消
     onCancel() {
       this.keyWord = '';

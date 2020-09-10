@@ -26,6 +26,7 @@
         v-model="loading"
         :finished="finished"
         finished-text="没有更多了"
+        :error.sync="error"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
@@ -91,13 +92,19 @@
         placeholder="请输入"
       />
       <van-field
+        v-model="text4"
+        name="username"
+        label="加盟经理"
+        placeholder="请输入"
+      />
+      <!-- <van-field
         :value="text4"
         readonly
         clickable
         label="加盟经理"
         placeholder="请选择"
         @click="handleShowModal('manager')"
-      />
+      /> -->
 
       <van-field
         :value="text10"
@@ -335,37 +342,51 @@ export default {
     },
     // 状态切换
     handleTabChange(tab) {
-      this.getConfirmInfoList(true)
+      if (tab === 0) {
+        this.getConfirmInfoList(true, null)
+      } else if (tab === 1) {
+        this.getConfirmInfoList(true, 0)
+      } else if (tab === 2) {
+        this.getConfirmInfoList(true, 1)
+      }
     },
-    async getConfirmInfoList(isInit) {
+    async getConfirmInfoList(isInit, tab) {
       try {
         this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size,
-          pageNumber: 20
+          pageNumber: 20,
+          wayBillGMSaleStatus: tab
         }
         let { data: res } = await getGmInfoList(params)
         if (res.success) {
-          let newLists = res.data
-          newLists.forEach(item => {
-            item.checked = false
-          })
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
+          this.lists = res.data
+          if (tab === 0) {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.all
+              } else {
+                item.num = null
+              }
+            })
+          } else if (tab === 1) {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.reported
+              } else {
+                item.num = 0
+              }
+            })
+          } else {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.notReport
+              } else {
+                item.num = 1
+              }
+            })
           }
-          let result = {
-            lists: newLists,
-            hasMore: res.page.total > newLists.length
-          }
-          this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
-            }
-          })
-          return result
         } else {
           this.loading = false;
           this.error = true;
@@ -387,6 +408,9 @@ export default {
         this.page.current++
       }
       let result = await this.getConfirmInfoList(isInit)
+      if (!result) {
+        return
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -417,17 +441,18 @@ export default {
     async getConf() {
       try {
         let parmas = {
-          customerCity: this.text1,
-          customer: this.text2,
-          project: this.text3,
-          dutyManagerId: this.text4,
-          startDate: this.text10
+          driverCity: this.text1,
+          driver: this.text2,
+          line: this.text3,
+          gmId: this.text4,
+          startDate: Date.parse(this.text10)
         }
         this.$loading(true)
         let { data: res } = await getGmInfoList(parmas)
         console.log(res)
         if (res.success) {
           this.lists = res.data
+          this.show = false
           this.listQuery = ''
         } else {
           this.loading = false;

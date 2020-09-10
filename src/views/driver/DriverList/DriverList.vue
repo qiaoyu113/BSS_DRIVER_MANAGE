@@ -83,12 +83,12 @@
         @click="showPickerFn('workCity')"
       />
       <van-field
-        v-model="formText.businessType"
+        v-model="formText.busiType"
         readonly
-        name="businessType"
+        name="busiType"
         label="业务线"
         placeholder="请选择"
-        @click="showPickerFn('businessType')"
+        @click="showPickerFn('busiType')"
       />
       <!-- <van-field
         v-model="formText.GmGroup"
@@ -135,6 +135,8 @@
     <van-calendar
       v-model="dateShow"
       type="range"
+      :min-date="minTime"
+      :max-date="maxTime"
       :allow-same-day="true"
       @confirm="onConfirm"
     />
@@ -205,6 +207,8 @@ export default {
   },
   data() {
     return {
+      minTime: new Date(2000, 12, 31),
+      maxTime: new Date(2125, 12, 31),
       checkedList: [],
       lists: [],
       loading: false,
@@ -213,7 +217,7 @@ export default {
       refreshing: false,
       columns: [],
       pickerKey: '',
-      columns_businessType: [
+      columns_busiType: [
         { name: '全部', code: '' },
         { name: '专车', code: 0 },
         { name: '共享', code: 1 }
@@ -227,10 +231,10 @@ export default {
       columns_GmManager: [],
       columns_orderStatus: [
         { name: '全部', code: '' },
-        { name: '已成交', code: '30' },
-        { name: '审核不通过', code: '25' },
-        { name: '待审核', code: '20' },
-        { name: '待确认', code: '15' }
+        { name: '已成交', code: 30 },
+        { name: '审核不通过', code: 25 },
+        { name: '待审核', code: 20 },
+        { name: '待确认', code: 15 }
         // { label: '已退出', value: '5' }
       ],
       columns_carType: [],
@@ -242,7 +246,7 @@ export default {
       active: 0,
       formText: {
         workCity: '',
-        businessType: '',
+        busiType: '',
         GmGroup: '',
         GmManager: '',
         carType: '',
@@ -251,7 +255,7 @@ export default {
       },
       ruleForm: {
         workCity: '',
-        businessType: '',
+        busiType: '',
         // GmGroup: '',
         GmManager: '',
         carType: '',
@@ -328,7 +332,9 @@ export default {
       GetSpecifiedRoleList({ roleId: 1 })
         .then(({ data }) => {
           if (data.success) {
-            this.columns_GmManager = data.data;
+            this.columns_GmManager = data.data.map(ele => {
+              return { name: ele.nick, code: ele.id }
+            });
           }
         }).catch((err) => {
           console.log(err)
@@ -342,6 +348,10 @@ export default {
         this.page.current++
       }
       let result = await this.getLists(isInit)
+      if (!result || result.lists.length === 0) {
+        result.hasMore = false
+        return false
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -384,15 +394,15 @@ export default {
           page: this.page.current,
           limit: this.page.size
         }
-        this.ruleForm.workCity && (params.workCity = this.ruleForm.workCity)
-        this.ruleForm.businessType && (params.businessType = this.ruleForm.businessType)
+        this.ruleForm.workCity && (params.workCity = Number(this.ruleForm.workCity))
+        this.ruleForm.busiType && (params.busiType = this.ruleForm.busiType)
         this.ruleForm.GmManager && (params.GmManager = this.ruleForm.GmManager)
-        this.ruleForm.carType && (params.carType = this.ruleForm.carType)
-        this.ruleForm.status && (params.status = this.ruleForm.status)
+        this.ruleForm.carType && (params.carType = Number(this.ruleForm.carType))
+        this.ruleForm.status && (params.status = Number(this.ruleForm.status))
         this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
         if (this.ruleForm.startDate && this.ruleForm.endDate) {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
-          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
         }
         let { data: res } = await getDriverList(params)
         if (res.success) {
@@ -406,7 +416,11 @@ export default {
           }
           this.tabType.forEach(item => {
             if (item.code === this.ruleForm.status) {
-              item.num = res.title[item.code]
+              if (item.type === '全部') {
+                item.num = res.title.all
+              } else {
+                item.num = res.title[item.code]
+              }
             } else {
               item.num = ''
             }
@@ -426,10 +440,9 @@ export default {
       }
     },
     async onSubmit(value) {
-      // let result = await this.getLists(true)
-      // this.lists = result.lists
-      // this.onRefresh();
-      this.getLists()
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
       this.showScreen = false
     },
     /**
@@ -469,8 +482,8 @@ export default {
         case 'workCity':
           this.columns = this.columns_workCity;
           break;
-        case 'businessType':
-          this.columns = this.columns_businessType;
+        case 'busiType':
+          this.columns = this.columns_busiType;
           break;
         // case 'GmGroup':
         //   this.columns = this.columns_GmGroup;
@@ -516,7 +529,7 @@ export default {
       if (this.checkedList.length === 0) {
         return Notify({
           type: 'warning',
-          message: '请选择新的加盟经理',
+          message: '请选择司机',
           duration: 2000
         });
       } else {
@@ -562,7 +575,7 @@ export default {
     color: #7f8fbd;
     letter-spacing: 0;
     text-align: center;
-    z-index: 2;
+    z-index: 99;
     background-color: @body-bg;
   }
   .list {

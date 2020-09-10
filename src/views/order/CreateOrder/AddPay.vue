@@ -157,11 +157,7 @@ export default {
     return {
       showTime: false,
       showPicker: false,
-      columns: [
-        { name: '哈哈哈1', code: '1323' },
-        { name: '哈哈哈2', code: '1323' },
-        { name: '哈哈哈3', code: '1323' }
-      ],
+      columns: [],
       showForm: {
         payDate: '',
         payType: '',
@@ -173,6 +169,7 @@ export default {
         transactionId: '',
         payDate: '',
         payType: '',
+        payTypeName: '',
         money: '',
         payImageUrl: [], // 库房装货图片
         remarks: '' // 现场信息说明
@@ -216,9 +213,6 @@ export default {
       } else {
         this.$toast.fail(data);
       }
-      // if (this.routeName !== '/createOrder') {
-      this.getOrderDetail(this.$route.query.id);
-      // }
     },
     cancelform() {
       this.$router.go(-1)
@@ -229,15 +223,17 @@ export default {
     },
     onConfirm(time) {
       let timeText = parseTime(time, '{y}-{m}-{d} {h}:{i}:{s}');
-      let timeCode = time.getTime();
+      let timeCode = new Date(time).getTime();
       this.showForm.payDate = timeText;
       this.form.payDate = timeCode;
+      console.log(time, this.form.payDate, new Date(time).getTime())
       this.showTime = false;
     },
     onConfirmPicker(value) {
       this.showForm.payType = value.name;
       this.form.payType = value.code;
       this.showPicker = false;
+      this.form.payTypeName = value.name
     },
     moneyCheck2(val) {
       if (Number(val) < 0) {
@@ -270,11 +266,11 @@ export default {
      */
     onSubmit(values) {
       try {
-        let params = {};
-        params = { ...this.form, ...params };
-        params.payImageUrl = this.form.this.form[0]
+        let params = { ...this.form };
+        params.payDate = new Date(this.form.payDate).getTime()
         let arr = []
         arr.push(params)
+        console.log(arr)
         if (window.localStorage.getItem('payItemInfo')) {
           let itemArr = JSON.parse(window.localStorage.getItem('payItemInfo'))
           let allArr = arr.concat(itemArr)
@@ -282,7 +278,7 @@ export default {
         } else {
           window.localStorage.setItem('payItemInfo', JSON.stringify(arr))
         }
-        // this.$router.go(-1)
+        this.$router.go(-1)
       } catch (err) {
         console.log(`submit fail:${err}`);
       }

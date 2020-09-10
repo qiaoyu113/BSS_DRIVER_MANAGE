@@ -15,8 +15,7 @@
           <van-icon name="arrow-down" />
         </div>
       </div>
-      <p class="tableName">
-        操作人：李相赫（18848885135）
+      <p v-if="newDetail.createName" class="tableName" v-text="` 操作人：${newDetail.createName}（${newDetail.createPhone}）`">
       </p>
 
       <!--共享-->
@@ -86,10 +85,10 @@
             <span>是否有车</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.hasCar }}</span>
+            <span>{{ detail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.hasCar }}</span>
+            <span>{{ newDetail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -156,20 +155,20 @@
             <span>是否能承重较重搬运</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.heavyLifting }}</span>
+            <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.heavyLifting }}</span>
+            <span>{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
             <span>邀约渠道</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.inviteTypeName }}</span>
+            <span>{{ detail.sourceChannelName }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.inviteTypeName }}</span>
+            <span>{{ newDetail.sourceChannelName }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -186,10 +185,10 @@
             <span>是否工作地车牌</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.isLocalPlate }}</span>
+            <span>{{ detail.isLocalPlate ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.isLocalPlate }}</span>
+            <span>{{ newDetail.isLocalPlate ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -246,10 +245,10 @@
             <span>是否新能源</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.isNewEnergy }}</span>
+            <span>{{ detail.isNewEnergy === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.isNewEnergy }}</span>
+            <span>{{ newDetail.isNewEnergy === true ? '是' : '否' }}</span>
           </van-grid-item>
         </van-grid>
       </div>
@@ -421,10 +420,10 @@
             <span>户籍类型</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.householdType }}</span>
+            <span>{{ detail.householdType === 1 ? '农村户口' : '城镇户口' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.householdType }}</span>
+            <span>{{ newDetail.householdType === 1 ? '农村户口' : '城镇户口' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -521,20 +520,20 @@
             <span>是否能承担较重搬运</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.heavyLifting }}</span>
+            <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.heavyLifting }}</span>
+            <span>{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
             <span>能否提供个人征信</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.providePersonalCredit }}</span>
+            <span>{{ detail.providePersonalCredit === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.providePersonalCredit }}</span>
+            <span>{{ newDetail.providePersonalCredit === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -571,10 +570,10 @@
             <span>是否高意向司机</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.isAdvancedIntention }}</span>
+            <span>{{ detail.isAdvancedIntention === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.isAdvancedIntention }}</span>
+            <span>{{ newDetail.isAdvancedIntention === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -606,7 +605,7 @@
   </div>
 </template>
 <script>
-import { getOperateTime, historyList } from '@/api/driver.js';
+import { getOperateTime, historyList, getInterview } from '@/api/driver.js';
 export default {
   data() {
     return {
@@ -634,14 +633,33 @@ export default {
       busiType: busiType
     }
     this.id = id
+    this.getDetail(id)
     this.getTimeList(params);
   },
   methods: {
+    async getDetail(id) {
+      try {
+        let params = {
+          driverId: id
+        };
+        let { data: res } = await getInterview(params);
+        if (res.success) {
+          this.detail = res.data
+        } else {
+          this.$toast.fail(res);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+      } finally {
+        console.log('fail:xxxx');
+      }
+    },
     async getTimeList(params) {
       console.log(params)
       try {
         this.$loading(true);
         let { data: res } = await getOperateTime(params);
+        this.$loading(false);
         if (res.success) {
           this.timeList = res.data;
           if (res.data.length > 0) {
@@ -654,32 +672,31 @@ export default {
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`);
-      } finally {
         this.$loading(false);
+        console.log(`fail:${err}`);
       }
     },
     async getHistoryList(id) {
       try {
         this.$loading(true);
         let { data: res } = await historyList({ id: id });
+        this.$loading(false);
         if (res.success) {
-          this.tableList = res.data;
-          console.log(res.data);
+          this.newDetail = res.data;
         } else {
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`);
-      } finally {
         this.$loading(false);
+        console.log(`fail:${err}`);
       }
     },
     onConfirmPicker(val) {
       console.log(val)
-      this.showTime = val;
+      this.timeText = val.time
+      this.showTime = val.time;
       this.showDate = false;
-      // this.getHistoryList()
+      this.getHistoryList(val.id)
     }
   }
 };

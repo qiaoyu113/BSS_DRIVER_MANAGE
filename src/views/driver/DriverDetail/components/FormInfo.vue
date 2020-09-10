@@ -3,7 +3,7 @@
     <van-form label-width="150px">
       <template v-for="type in obj.interviewInfoVOList">
         <div
-          v-if="type.busiType === 0"
+          v-if="type.busiType === 1"
           :key="type.busiTypeName"
           class="busiTypeBox"
         >
@@ -162,7 +162,7 @@
           </van-cell-group>
         </div>
         <div
-          v-if="type.busiType === 1"
+          v-if="type.busiType === 0"
           :key="type.busiTypeName"
           class="busiTypeBox"
         >
