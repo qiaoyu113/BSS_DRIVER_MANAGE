@@ -32,7 +32,7 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="form.lineState" swipeable @change="handleTabChange">
+        <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
           <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}

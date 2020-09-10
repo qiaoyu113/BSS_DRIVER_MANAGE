@@ -11,7 +11,7 @@
         :form="form"
         required
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择司机上岗时间！' },
         ]"
         label="司机上岗时间"
         placeholder="点击选择日期"
@@ -27,7 +27,7 @@
           label="配送时间"
           placeholder="请选择"
           :rules="[
-            { validator: deliveryWeekCycleValidator, message: '请选择' }
+            { validator: deliveryWeekCycleValidator, message: '请选择配送时间！' }
           ]"
         >
           <div slot="input">
@@ -56,7 +56,7 @@
           label="配送时间"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: true, message: '请选择配送时间！' },
           ]"
         />
       </template>
@@ -71,7 +71,7 @@
         name="daysUseCarValidator"
         type="digit"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入预计月出车天数！' },
           { validator: daysUseCarValidator, message: '请输入1~31' }
         ]"
       />
@@ -85,7 +85,7 @@
         name="countByDayValidator"
         type="digit"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入每日配送趟数！' },
           { validator: countByDayValidator, message: '请输入1~9' }
         ]"
         @input="handleInput"
@@ -109,7 +109,7 @@
         label="结算方式"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择结算方式！' },
         ]"
       />
       <selftPicker
@@ -123,7 +123,7 @@
         label="结算周期"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '结算周期不能为空！' },
         ]"
       />
       <selftPicker
@@ -137,7 +137,7 @@
         label="结算天数"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择结算天数！' },
         ]"
       />
 
@@ -153,7 +153,7 @@
           label="每趟提成单价(元)"
           placeholder="请输入"
           type="number"
-          :rules="[{ required: true, message: '请输入' }]"
+          :rules="[{ required: true, message: '请输入单趟报价！' }]"
         />
       </template>
       <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
@@ -166,7 +166,7 @@
         :label="form.incomeSettlementMethod ===1 ? '单趟报价(元)':'每趟保底(元)'"
         placeholder="请输入"
         type="number"
-        :rules="[{ required: true, message: '请输入' }]"
+        :rules="[{ required: true, message: '请输入单趟报价！' }]"
       />
       <!-- 输入数字限制精确到小数点后两位，小数点前8位 -->
       <template v-if="form.incomeSettlementMethod===1">
@@ -189,7 +189,7 @@
           :disabled="form.incomeSettlementMethod ===1"
           label="预计月报价(元)"
           placeholder="请输入"
-          :rules="[{ required: true, message: '请输入线路名称' }]"
+          :rules="[{ required: true, message: '请输入月报价！' }]"
         />
       </template>
       <div class="btn">
