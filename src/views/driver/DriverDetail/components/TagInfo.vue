@@ -1,6 +1,6 @@
 <template>
   <div class="TagInfo">
-    <div class="tags">
+    <div v-if="obj" class="tags">
       <van-form label-width="150px">
         <van-field
           label="是否小白司机"
@@ -22,7 +22,7 @@
         />
       </van-form>
     </div>
-    <div class="remakeList">
+    <div v-if="obj" class="remakeList">
       <div
         v-for="(item,index) in obj.labelRemarkList"
         :key="index"

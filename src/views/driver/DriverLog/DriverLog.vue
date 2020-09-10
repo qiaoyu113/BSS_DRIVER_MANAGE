@@ -15,8 +15,7 @@
           <van-icon name="arrow-down" />
         </div>
       </div>
-      <p class="tableName">
-        操作人：李相赫（18848885135）
+      <p class="tableName" v-text="` 操作人：${detail.createName}（18848885135）`">
       </p>
 
       <!--共享-->
@@ -606,7 +605,7 @@
   </div>
 </template>
 <script>
-import { getOperateTime, historyList } from '@/api/driver.js';
+import { getOperateTime, historyList, getInterview } from '@/api/driver.js';
 export default {
   data() {
     return {
@@ -634,15 +633,34 @@ export default {
       busiType: busiType
     }
     this.id = id
+    this.getDetail(id)
     this.getTimeList(params);
   },
   methods: {
+    async getDetail(id) {
+      try {
+        let params = {
+          driverId: id
+        };
+        let { data: res } = await getInterview(params);
+        if (res.success) {
+          this.detail = res.data
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+      } finally {
+        console.log('fail:xxxx');
+      }
+    },
     async getTimeList(params) {
       console.log(params)
       try {
         this.$loading(true);
         let { data: res } = await getOperateTime(params);
         if (res.success) {
+          this.$loading(false);
           this.timeList = res.data;
           if (res.data.length > 0) {
             this.showTime = res.data[0].id;
@@ -651,6 +669,7 @@ export default {
           }
           console.log(res.data);
         } else {
+          this.$loading(false);
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
@@ -664,7 +683,9 @@ export default {
         this.$loading(true);
         let { data: res } = await historyList({ id: id });
         if (res.success) {
-          this.tableList = res.data;
+          this.$loading(false);
+          console.log(res.data)
+          this.newDetail = res.data;
           console.log(res.data);
         } else {
           this.$toast.fail(res.errorMsg);

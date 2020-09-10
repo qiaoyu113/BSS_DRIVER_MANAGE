@@ -124,7 +124,7 @@
 
     <van-action-sheet
       v-model="showOrder"
-      :actions="orderActions"
+      :actions="doOrder"
       cancel-text="取消"
       close-on-click-action
       @cancel="showOrder = false"
@@ -132,7 +132,7 @@
     />
     <van-action-sheet
       v-model="showDothing"
-      :actions="dothingActions"
+      :actions="doMore"
       cancel-text="取消"
       close-on-click-action
       @cancel="showDothing = false"
@@ -172,20 +172,20 @@ export default {
         { type: '线路信息', code: 3 }
       ],
       showOrder: false,
-      orderActions: [
-        { name: '录入订单', url: '/createOrder' },
-        { name: '审核', url: '/orderAudit' },
-        { name: '详情', url: '/orderDetail' },
-        { name: '重新提交', url: '/resetOrder' }
-      ],
+      // orderActions: [
+      //   { name: '录入订单', url: '/createOrder' },
+      //   { name: '审核', url: '/orderAudit' },
+      //   { name: '详情', url: '/orderDetail' },
+      //   { name: '重新提交', url: '/resetOrder' }
+      // ],
       showDothing: false,
-      dothingActions: [
-        { name: '编辑面试', url: '/editTailored' },
-        { name: '编辑面试', url: '/editShare' },
-        { name: '打标签', url: '/tagView' },
-        { name: '标记退出' },
-        { name: '标记成交' }
-      ],
+      // dothingActions: [
+      //   { name: '编辑面试', url: '/editTailored' },
+      //   { name: '编辑面试', url: '/editShare' },
+      //   { name: '打标签', url: '/tagView' },
+      //   { name: '标记退出' },
+      //   { name: '标记成交' }
+      // ],
       driverId: '',
       detailInfo: {},
       tagInfo: {},
@@ -193,12 +193,80 @@ export default {
       lineList: []
     };
   },
+  computed: {
+    doMore() {
+      return this.arrList()
+    },
+    doOrder() {
+      return this.orderList()
+    }
+  },
   mounted() {
     let id = this.$route.query.id
     this.driverId = id
     this.getDetail(id)
   },
   methods: {
+    orderList() {
+      if (this.detailInfo.orderStatus === null || this.detailInfo.orderStatus === 0) {
+        let arr = [
+          { name: '录入订单', url: '/createOrder' }
+        ]
+        return arr
+      } else if (this.detailInfo.orderStatus === 20) {
+        let arr = [
+          { name: '审核', url: '/orderAudit' },
+          { name: '详情', url: '/orderDetail' }
+        ]
+        return arr
+      } else if (this.detailInfo.orderStatus === 25) {
+        let arr = [
+          { name: '重新提交', url: '/resetOrder' },
+          { name: '详情', url: '/orderDetail' }
+        ]
+        return arr
+      } else if (this.detailInfo.orderStatus === 30) {
+        let arr = [
+          { name: '详情', url: '/orderDetail' }
+        ]
+        return arr
+      }
+    },
+    arrList() {
+      if (this.detailInfo.status === 1 || this.detailInfo.status === 2 || this.detailInfo.status === 4) {
+        let arr = [
+          { name: '打标签', url: '/tagView' }
+        ]
+        if (this.detailInfo.busiType === 0) {
+          arr.push({ name: '编辑专车面试', url: '/editTailored' })
+        } else if (this.detailInfo.busiType === 1) {
+          arr.push({ name: '编辑共享面试', url: '/editShare' })
+        }
+        return arr
+      } else if (this.detailInfo.status === 3) {
+        if (this.detailInfo.busiType === 0) {
+          arr.push({ name: '编辑专车面试', url: '/editTailored' })
+        } else if (this.detailInfo.busiType === 1) {
+          arr.push({ name: '编辑共享面试', url: '/editShare' })
+        }
+        let arr = [
+          { name: '打标签', url: '/tagView' },
+          { name: '标记成交' }
+        ]
+        return arr
+      } else if (this.detailInfo.status === 5) {
+        if (this.detailInfo.busiType === 0) {
+          arr.push({ name: '编辑专车面试', url: '/editTailored' })
+        } else if (this.detailInfo.busiType === 1) {
+          arr.push({ name: '编辑共享面试', url: '/editShare' })
+        }
+        let arr = [
+          { name: '打标签', url: '/tagView' },
+          { name: '标记退出' }
+        ]
+        return arr
+      }
+    },
     onSelectOrder(item) {
       this.showOrder = false;
       if (item.url === '/createOrder') {
@@ -206,15 +274,14 @@ export default {
           workCity: this.detailInfo.workCity }})
       } else if (item.url === '/resetOrder') {
         this.$router.push({ path: item.url, query: { id: this.driverId, driverName: this.detailInfo.name, driverPhone: this.detailInfo.phone, workCityName: this.detailInfo.workCityName,
-          workCity: this.detailInfo.workCity, orderId: '123' }})
-        // this.detailInfo.orderId
+          workCity: this.detailInfo.workCity, orderId: this.detailInfo.orderId }})
       } else {
+        console.log('this.driverId', this.driverId)
         this.$router.push({ path: item.url, query: { id: this.driverId }})
       }
     },
     onSelectDothing(item) {
       this.showDothing = false;
-      Toast(item.name);
       if (item.name === '标记退出') {
         this.outSign(this.driverId)
       } else if (item.name === '标记成交') {
