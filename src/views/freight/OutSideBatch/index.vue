@@ -4,21 +4,34 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <!-- <div v-if="shipperr" class="headerRight" @click="Shipper() ">
+          <div v-if="shipperr" class="headerRight" @click="Shipper() ">
             批量上报
-          </div> -->
+          </div>
         </template>
       </van-nav-bar>
     </van-sticky>
     <!-- 搜索 -->
     <van-search v-model="value" show-action placeholder="搜索司机姓名/手机号" readonly @click="handleSearchClick">
       <template #action>
-        <div class="searchSelect" @click="showPopup">
+        <div v-if="checkShow" class="searchSelect" @click="showPopup">
           筛选
+          <van-icon name="play" color="#3C4353" />
+        </div>
+        <div v-if="shipperr" class="searchSelect" @click="dateTime">
+          日期
           <van-icon name="play" color="#3C4353" />
         </div>
       </template>
     </van-search>
+    <ul v-if="dateTimes" class="day">
+      <li
+        v-for="(item,index) in day"
+        :key="index"
+        @click="timenum(item.time)"
+      >
+        {{ item.time|formatDate }}
+      </li>
+    </ul>
 
     <!-- 下拉刷新  上拉加载 -->
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
@@ -26,6 +39,7 @@
         v-model="loading"
         :finished="finished"
         finished-text="没有更多了"
+        :error.sync="error"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
@@ -38,7 +52,7 @@
                 {{ item.num }}
               </div>
             </template>
-            <P class="all">
+            <P v-if="checkShow" class="all">
               <van-checkbox v-model="checkall" class="checked">
                 <span>全选</span>
                 <span>已选择{{ checkedNum }} 个出车单位</span>
@@ -49,6 +63,7 @@
                 <CardItem
                   class="items"
                   :obj="sub"
+                  :checkalls="checkShow"
                   :checkedarr="checkedarr"
                 />
               </div>
@@ -177,14 +192,30 @@ export default {
     Suggest
 
   },
+  filters: {
+    formatDate: function(value) {
+      let date = new Date(value);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? ('0' + MM) : MM;
+      let d = date.getDate();
+      d = d < 10 ? ('0' + d) : d;
+      return y + '-' + MM + '-' + d;
+    }
+  },
   data() {
     return {
+      error: '',
+      dateTimes: false,
+      shipperr: true,
+      checkShow: false,
       value: '', // 搜索框
       active: '', // 当前激活的tab,
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
       show: false,
+      day: [],
       ruleForm: {
         username: '',
         password: ''
@@ -313,7 +344,57 @@ export default {
 
   },
   methods: {
-
+    Shipper() {
+      this.shipperr = false
+      this.checkShow = true
+    },
+    dateTime() {
+      let endDate = this.$route.query.endDate
+      let startDate = this.$route.query.startDate
+      let nTime = startDate - endDate;
+      console.log(startDate, endDate)
+      let time = nTime / 86400000;
+      let arr = []
+      for (let i = 0; i < time; i++) {
+        arr.push(i * 86400000)
+      }
+      let arr1 = [];
+      for (let i = 0; i < arr.length; i++) {
+        arr1.push({ time: Number(arr[i]) + Number(endDate) })
+      }
+      this.day = arr1
+      this.dateTimes = true
+    },
+    timenum(e) {
+      console.log(e, this.$route.query.projectId, 'xxxxxxxxxxx')
+      this.dateTimes = false
+      this.getConf(e)
+    },
+    async getConf(e) {
+      try {
+        this.$loading(true)
+        let params = {
+          endDate: this.$route.query.startDate,
+          startDate: e,
+          projectId: this.$route.query.projectId,
+          reportState: null
+        }
+        let { data: res } = await getProjectWayBillList(params)
+        if (res.success) {
+          this.lists = res.data
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        console.log(`get list fail:${err}`)
+      } finally {
+        this.$loading(false)
+      }
+    },
     onClickLeft() {
       this.$router.go(-1)
     },
@@ -331,37 +412,51 @@ export default {
     },
     // 状态切换
     handleTabChange(tab) {
-      this.getConfirmInfoList(true)
+      if (tab === 0) {
+        this.getConfirmInfoList(true, null)
+      } else if (tab === 1) {
+        this.getConfirmInfoList(true, 0)
+      } else if (tab === 2) {
+        this.getConfirmInfoList(true, 1)
+      }
     },
-    async getConfirmInfoList(isInit) {
+    async getConfirmInfoList(isInit, tab) {
       try {
         this.$loading(true)
         let params = {
           endDate: this.$route.query.startDate,
           startDate: this.$route.query.endDate,
-          projectId: this.$route.query.projectId
+          projectId: this.$route.query.projectId,
+          reportState: tab
         }
         let { data: res } = await getProjectWayBillList(params)
         if (res.success) {
-          let newLists = res.data
-          newLists.forEach(item => {
-            item.checked = false
-          })
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
+          this.lists = res.data
+          if (tab === null) {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.all
+              } else {
+                item.num = null
+              }
+            })
+          } else if (tab === 1) {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.reported
+              } else {
+                item.num = 0
+              }
+            })
+          } else {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.notReport
+              } else {
+                item.num = 1
+              }
+            })
           }
-          let result = {
-            lists: newLists,
-            hasMore: res.page.total > newLists.length
-          }
-          this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
-            }
-          })
-          return result
         } else {
           this.loading = false;
           this.error = true;
@@ -383,6 +478,9 @@ export default {
         this.page.current++
       }
       let result = await this.getConfirmInfoList(isInit)
+      if (!result) {
+        return
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -639,6 +737,24 @@ export default {
     font-size: 0.34667rem;
     line-height: 0.64rem;
     background-color: #fff;
+}
+.day{
+  z-index: 999;
+  position: absolute;
+  right: 0;
+  top: 100px;
+  width: 80px;
+  text-align: center;
+  overflow: hidden;
+  padding: 0 5px 0 5px;
+  box-sizing: border-box;
+  background: #666;
+  overflow: hidden;
+}
+.day>li{
+  width: 100%;
+  color: #fff;
+  line-height: 20px;
 }
 </style>
 

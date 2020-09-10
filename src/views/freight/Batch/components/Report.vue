@@ -15,7 +15,6 @@
           <p>*趟数{{ item.deliverTime }}</p>
           <div class="Number">
             <input v-model="item.preMoney" type="text" style="border:none" placeholder="">
-
             <van-button type="default">
               <van-icon name="arrow" color="#A6AAB8" />
             </van-button>
@@ -93,17 +92,11 @@ export default {
       this.$router.go(-1)
     },
     Report() {
-      // let wayBillAmountId = this.checkedarr.map(item => item.wayBillAmountId)
-      // let preMoney = this.checkedarr.map(item => item.preMoney)
-      let wayBillAmountId = []
-      let preMoney = []
       this.obj.filter(item => {
         if (item.checked === true) {
-          wayBillAmountId.push(item.wayBillAmountId)
-          preMoney.push(item.preMoney)
+          this.reportMoneyBatchByGM(item.wayBillAmountId, item.preMoney)
         }
       })
-      this.reportMoneyBatchByGM(wayBillAmountId, preMoney)
     },
     async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {

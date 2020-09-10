@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, shippingDetailByGM } from '@/api/freight'
+import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail } from '@/api/freight'
 import { Toast } from 'vant';
 export default {
   data() {
@@ -310,7 +310,7 @@ export default {
 }
 .danceng{
   width: 260px;
-   height: 220px;
+  overflow: hidden;
   background-color: #fff;
   padding: 10px;
   box-sizing: border-box;

@@ -26,6 +26,7 @@
         v-model="loading"
         :finished="finished"
         finished-text="没有更多了"
+        :error.sync="error"
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
@@ -177,6 +178,7 @@ export default {
   },
   data() {
     return {
+      error: '',
       showPopup: false, // 打开查询抽屉
       showCalendar: false, // 打开日历
       refreshing: false, // 下拉刷新
@@ -274,7 +276,6 @@ export default {
   },
   mounted() {
 
-    // console.log(getConfirmInfoList)
   },
   methods: {
 
@@ -296,12 +297,11 @@ export default {
           customer: this.listQuery.name1,
           project: this.listQuery.name2,
           dutyManagerId: this.listQuery.name3,
-          startDate: this.listQuery.startDate
+          startDate: Date.parse(this.listQuery.startDate)
         }
         this.$loading(true)
         let { data: res } = await getGmInfoList(parmas)
         if (res.success) {
-          console.log(res.data, 'xccccccccccccc')
           this.lists = res.data
           this.listQuery = ''
         } else {
@@ -310,45 +310,60 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
-        // this.loading = false;
-        // this.error = true;
+        this.loading = false;
+        this.error = true;
         console.log(`get list fail:${err}`)
       } finally {
         // this.$loading(false)
       }
     },
     handleTabChange(tab) {
-      console.log(this.active, 'xxxxxxxxxxxxxxx')
-      this.getConfirmInfoList(true)
+      if (tab === 0) {
+        this.getConfirmInfoList(true, null)
+      } else if (tab === 1) {
+        this.getConfirmInfoList(true, 0)
+      } else if (tab === 2) {
+        this.getConfirmInfoList(true, 1)
+      }
     },
-    async getConfirmInfoList(isInit) { // 首页加盟运费列表
+    async getConfirmInfoList(isInit, tab) { // 首页加盟运费列表
       try {
         this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size,
-          pageNumber: 20
+          pageNumber: 20,
+          wayBillGMSaleStatus: tab
 
         }
         let { data: res } = await getGmInfoList(params)
         if (res.success) {
-          let newLists = res.data
-
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
+          this.lists = res.data
+          if (tab === null) {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.all
+              } else {
+                item.num = null
+              }
+            })
+          } else if (tab === 1) {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.reported
+              } else {
+                item.num = 0
+              }
+            })
+          } else {
+            this.tabArrs.forEach(item => {
+              if (item.name === this.form.customerState) {
+                item.num = res.title.notReport
+              } else {
+                item.num = 1
+              }
+            })
           }
-          let result = {
-            lists: newLists,
-            hasMore: res.page.total > newLists.length
-          }
-          this.tabArrs.forEach(item => {
-            if (item.name === this.form.customerState) {
-              item.num = res.page.total
-            } else {
-              item.num = 0
-            }
-          })
-          return result
         } else {
           this.loading = false;
           this.error = true;
@@ -393,6 +408,9 @@ export default {
       }
 
       let result = await this.getConfirmInfoList(isInit)
+      if (!result) {
+        return false
+      }
       this.lists = result.lists
       if (isInit === true) { // 下拉刷新
         this.refreshing = false
@@ -558,5 +576,10 @@ export default {
     height: 94vh;
     margin-top: 26px;
     box-sizing: border-box;
+}
+.OutSideList >>>.van-button--primary:nth-child(2){
+    color: #fff;
+    background-color: #1c4be7bd;
+    border: 1px solid #2f448a;
 }
 </style>

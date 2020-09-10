@@ -72,13 +72,6 @@ export default {
       this.$router.go(-1)
     },
     Report() {
-      // this.obj.forEach(item => {
-      //   if (item.checked === true) {
-      //     this.reportMoneyBatchByGM()
-      //   }
-      // });
-      // let wayBillAmountId = this.checkedarr.map(item => item.wayBillAmountId)
-      // let preMoney = this.checkedarr.map(item => item.preMoney)
       this.obj.filter(item => {
         if (item.checked === true) {
           this.reportMoneyBatchByGM(item.wayBillAmountId, item.preMoney)
