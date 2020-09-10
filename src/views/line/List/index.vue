@@ -444,9 +444,9 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3 })
+        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2 })
+        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
       } else if (key === 'carType') {
         this.getOpenCityList()
       }
