@@ -40,7 +40,7 @@
             {{ lineDetail.distance + '/' +lineDetail.timeDiff }}
           </div>
         </div>
-        <div class="details-btn">
+        <div class="details-btn" @click="goLineDetail(lineDetail.lineId)">
           详情
         </div>
       </div>
@@ -88,7 +88,7 @@
       <van-search
         v-model="lineValue"
         show-action
-        placeholder="请输入搜索关键词"
+        placeholder="请输入线路名称/编号"
         @input="onSearch"
       >
         <template #action>
@@ -164,7 +164,7 @@
     >
       <van-search
         v-model="driverValue"
-        placeholder="请输入搜索关键词"
+        placeholder="请输入司机姓名/编号"
         show-action
         @input="onSearch"
       >
@@ -369,6 +369,14 @@ export default {
       this.driverDetail = item;
       this.formDetails.driver = `${item.name}/${item.phone}`;
       this.showModalDriver = false;
+    },
+    // 线路详情页面
+    goLineDetail(lineId) {
+      // /lineDetail?lineId=""
+      this.$router.push({
+        path: '/lineDetail',
+        query: { lineId }
+      })
     }
   }
 };
