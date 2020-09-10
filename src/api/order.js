@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 // let prefix = '/mock/88'
-let prefix = '/api/business_center'
+let prefix = '/business_center'
 // let productPrefix = '/mock/111'
-let productPrefix = '/api/product'
+let productPrefix = '/product'
 
 /**
  * 订单审核

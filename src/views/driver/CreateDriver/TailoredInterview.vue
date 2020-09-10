@@ -23,6 +23,7 @@
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机姓名' }]"
+          @focus="copyData('name')"
         />
         <selftPicker
           :props="keyValue"
@@ -37,6 +38,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('inviteType')"
         />
         <selftPicker
           :props="keyValue"
@@ -51,6 +53,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('workCity')"
         />
         <selftPicker
           :props="keyValue"
@@ -65,6 +68,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('sourceChannel')"
         />
         <van-field
           v-model="formData.whereKnow"
@@ -75,6 +79,7 @@
           placeholder="请输入"
           show-word-limit
           :rules="[{ required: true, message: '请最多填写30个字' }]"
+          @focus="copyData('whereKnow')"
         />
         <van-field
           v-model="formData.heavyAgentName"
@@ -83,6 +88,7 @@
           placeholder="请输入"
           maxlength="10"
           :rules="[{ required: true, message: '请输入' }]"
+          @focus="copyData('heavyAgentName')"
         />
         <van-field
           v-model="formData.phone"
@@ -93,6 +99,7 @@
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'},{validator:phonePatternIshas, message: '该手机号暂不能使用'}]"
+          @focus="copyData('phone')"
         />
         <van-field
           v-model="formData.age"
@@ -104,6 +111,7 @@
           clearable
           placeholder="请输入"
           :rules="[{ required: true, message: '请输入0-60之间的数字' },{validator:validatorNum(18,60), message: '年龄应在18至60岁之间'}]"
+          @focus="copyData('age')"
         />
         <self-area
           label-width="100"
@@ -117,6 +125,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyArea('liveaddress')"
         />
         <self-area
           label-width="100"
@@ -130,6 +139,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyArea('intentWork')"
         />
         <selftPicker
           :props="keyValue"
@@ -144,6 +154,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('intentDeliveryMode')"
         />
         <selftPicker
           :props="keyValue"
@@ -158,6 +169,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('intentCargoType')"
         />
         <selftPicker
           :props="keyValue"
@@ -172,6 +184,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('intentWorkDuration')"
         />
         <van-field
           v-model="formData.originIncomeAvg"
@@ -181,6 +194,7 @@
           required
           placeholder="请填写0-25000的数字'"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '原收入应在0至25000元之间'}]"
+          @focus="copyData('originIncomeAvg')"
         />
         <van-field
           v-model="formData.expIncomeAvg"
@@ -190,20 +204,22 @@
           required
           placeholder="请填写0-25000的数字'"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '期望收入应在0至25000元之间'}]"
+          @focus="copyData('expIncomeAvg')"
         />
         <selftPicker
           :props="keyValue"
           picker-key="householdType"
-          :form="area"
+          :form="formData"
           :columns="columns_householdType"
           value="dictLabel"
-          :is-computed="formData['householdType']!=='' && columns_householdType.length>0 "
+          :is-computed="formData['householdType']!==''"
           required
           label="户籍类型"
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('householdType')"
         />
         <self-area
           label-width="100"
@@ -217,6 +233,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyArea('householdAddress')"
         />
         <van-field
           v-model="formData.householdDistrict"
@@ -226,6 +243,7 @@
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写详细地址' }]"
+          @focus="copyData('householdDistrict')"
         />
         <selftPicker
           :props="keyValue"
@@ -240,6 +258,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('childNum')"
         />
         <van-field
           v-model="formData.experience"
@@ -250,6 +269,7 @@
           maxlength="3"
           placeholder="请填写0-500的数字'"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '请填写0-500的数字'}]"
+          @focus="copyData('experience')"
         />
         <selftPicker
           :props="keyValue"
@@ -264,6 +284,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('currentHasWork')"
         />
         <van-field
           v-model="formData.drivingAge"
@@ -274,6 +295,7 @@
           maxlength="3"
           placeholder="请填写0-500的数字'"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '请填写0-500的数字'}]"
+          @focus="copyData('drivingAge')"
         />
         <van-field
           v-model="formData.livingAge"
@@ -285,6 +307,7 @@
           maxlength="3"
           placeholder="请填写0-730的数字'"
           :rules="[{ required: true, message: '请填写0-730的数字' },{validator:validatorNum(0,730), message: '请填写0-730的数字'}]"
+          @focus="copyData('livingAge')"
         />
         <selftPicker
           :props="keyValue"
@@ -299,6 +322,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('drivingLicenceType')"
         />
         <selftPicker
           :props="keyValue"
@@ -313,6 +337,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('hasCar')"
         />
 
         <selftPicker
@@ -329,6 +354,7 @@
           :rules="[
             { required: formData.hasCar, message: '请选择' },
           ]"
+          @click.native="copyData('currentCarType')"
         />
 
         <selftPicker
@@ -345,6 +371,7 @@
           :rules="[
             { required: !formData.hasCar, message: '请选择' },
           ]"
+          @click.native="copyData('intentDrivingCarType')"
         />
         <selftPicker
           :props="keyValue"
@@ -359,6 +386,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('maxAdvancePayment')"
         />
         <selftPicker
           :props="keyValue"
@@ -373,6 +401,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('heavyLifting')"
         />
         <selftPicker
           :props="keyValue"
@@ -387,6 +416,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('providePersonalCredit')"
         />
         <selftPicker
           :props="keyValue"
@@ -401,6 +431,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('strategyRight')"
         />
         <selftPicker
           :props="keyValue"
@@ -415,6 +446,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('cooperateFocusPoint')"
         />
         <selftPicker
           :props="keyValue"
@@ -429,6 +461,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('cooperateKeyFactor')"
         />
         <selftPicker
           :props="keyValue"
@@ -443,6 +476,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('isAdvancedIntention')"
         />
         <van-field
           v-model="formData.remarks"
@@ -457,6 +491,7 @@
           :rules="[
             { required: true, message: '请填写' },
           ]"
+          @focus="copyData('remarks')"
         />
         <div class="btnGroup">
           <van-button
@@ -644,7 +679,8 @@ export default {
       columns_cooperateKeyFactor: [],
       routeName: '',
       editForm: '',
-      phone: ''
+      phone: '',
+      Changed: true
     };
   },
   computed: {
@@ -671,6 +707,45 @@ export default {
     this.fetchData();
   },
   methods: {
+    copyData(value) {
+      if (value !== '' && !this.Changed) {
+        this.formData[value] = this.editForm[value]
+      }
+    },
+    copyArea(value) {
+      if (value !== '' && !this.Changed) {
+        if (value === 'householdAddress') {
+          // 面试地址label回显
+          this.area.householdProvinceName = this.editForm.householdProvinceName;
+          this.area.householdCityName = this.editForm.householdCityName;
+          this.area.householdCountyName = this.editForm.householdCountyName;
+          this.area.householdAddress = [
+            String(this.editForm.householdProvince),
+            String(this.editForm.householdCity),
+            String(this.editForm.householdCounty)
+          ];
+        } else if (value === 'liveaddress') {
+          this.area.liveProvinceName = this.editForm.liveProvinceName;
+          this.area.liveCityName = this.editForm.liveCityName;
+          this.area.liveCountyName = this.editForm.liveCountyName;
+          this.area.liveaddress = [
+            String(this.editForm.liveProvince),
+            String(this.editForm.liveCity),
+            String(this.editForm.liveCounty)
+          ];
+        } else if (value === 'intentWork') {
+          // 意向工作地址label回显
+          this.area.intentWorkProvinceName = this.editForm.intentWorkProvinceName;
+          this.area.intentWorkCityName = this.editForm.intentWorkCityName;
+          this.area.intentWorkCountyName = this.editForm.intentWorkCountyName;
+          this.area.intentWork = [
+            String(this.editForm.intentWorkProvince),
+            String(this.editForm.intentWorkCity),
+            String(this.editForm.intentWorkCounty)
+          ];
+        }
+      }
+    },
     phonePatternIshas(val) {
       // Toast.loading('验证中...');
       return new Promise((resolve) => {
@@ -860,38 +935,19 @@ export default {
         let { data: res } = await getInterview(params);
         if (res.success) {
           this.phone = res.data.phone
-          if (res.data.isChange === false) {
-            this.editForm = res.data;
+          this.areaShow(res)
+          if (res.data.isChange !== null) {
+            this.Changed = false
+            this.editForm = {
+              ...this.formData,
+              ...res.data
+            }
           } else {
-            let areaData = res.data;
-            // 现居住地址label回显
-            this.area.liveProvinceName = res.data.liveProvinceName;
-            this.area.liveCityName = res.data.liveCityName;
-            this.area.liveCountyName = res.data.liveCountyName;
-            // 意向工作地址label回显
-            this.area.intentWorkProvinceName = res.data.intentWorkProvinceName;
-            this.area.intentWorkCityName = res.data.intentWorkCityName;
-            this.area.intentWorkCountyName = res.data.intentWorkCountyName;
-            // 户籍地址label回显
-            this.area.householdProvinceName = res.data.householdProvinceName;
-            this.area.householdCityName = res.data.householdCityName;
-            this.area.householdCountyName = res.data.householdCountyName;
-            this.area.liveaddress = [
-              String(areaData.liveProvince),
-              String(areaData.liveCity),
-              String(areaData.liveCounty)
-            ];
-            this.area.intentWork = [
-              String(areaData.intentWorkProvince),
-              String(areaData.intentWorkCity),
-              String(areaData.intentWorkCounty)
-            ];
-            this.area.householdAddress = [
-              String(areaData.householdProvince),
-              String(areaData.householdCity),
-              String(areaData.householdCounty)
-            ];
-            this.formData = { ...this.formData, ...res.data };
+            this.Changed = true
+            this.formData = {
+              ...this.formData,
+              ...res.data
+            };
           }
         } else {
           this.$toast.fail(res.errorMsg);
@@ -901,6 +957,39 @@ export default {
       } finally {
         this.$loading(false);
       }
+    },
+    areaShow(res) {
+      if (res.data.isChange !== null) {
+        return
+      }
+      let areaData = res.data;
+      // 现居住地址label回显
+      this.area.liveProvinceName = res.data.liveProvinceName;
+      this.area.liveCityName = res.data.liveCityName;
+      this.area.liveCountyName = res.data.liveCountyName;
+      // 意向工作地址label回显
+      this.area.intentWorkProvinceName = res.data.intentWorkProvinceName;
+      this.area.intentWorkCityName = res.data.intentWorkCityName;
+      this.area.intentWorkCountyName = res.data.intentWorkCountyName;
+      // 户籍地址label回显
+      this.area.householdProvinceName = res.data.householdProvinceName;
+      this.area.householdCityName = res.data.householdCityName;
+      this.area.householdCountyName = res.data.householdCountyName;
+      this.area.liveaddress = [
+        String(areaData.liveProvince),
+        String(areaData.liveCity),
+        String(areaData.liveCounty)
+      ];
+      this.area.intentWork = [
+        String(areaData.intentWorkProvince),
+        String(areaData.intentWorkCity),
+        String(areaData.intentWorkCounty)
+      ];
+      this.area.householdAddress = [
+        String(areaData.householdProvince),
+        String(areaData.householdCity),
+        String(areaData.householdCounty)
+      ];
     },
     async editTailored() {
       let params = { ...this.formData };

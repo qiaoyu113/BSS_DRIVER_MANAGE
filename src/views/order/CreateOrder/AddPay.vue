@@ -266,10 +266,11 @@ export default {
      */
     onSubmit(values) {
       try {
-        let params = {};
-        params = { ...this.form };
+        let params = { ...this.form };
+        params.payDate = new Date(this.form.payDate).getTime()
         let arr = []
         arr.push(params)
+        console.log(arr)
         if (window.localStorage.getItem('payItemInfo')) {
           let itemArr = JSON.parse(window.localStorage.getItem('payItemInfo'))
           let allArr = arr.concat(itemArr)
@@ -277,7 +278,7 @@ export default {
         } else {
           window.localStorage.setItem('payItemInfo', JSON.stringify(arr))
         }
-        this.$router.go(-1)
+        // this.$router.go(-1)
       } catch (err) {
         console.log(`submit fail:${err}`);
       }

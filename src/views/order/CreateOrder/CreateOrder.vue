@@ -145,7 +145,7 @@
         <div v-show="formStatus === 2">
           <van-cell-group>
             <van-cell
-              value="商品有效期"
+              value="商品附加信息"
               is-link
             />
 
@@ -153,7 +153,7 @@
               v-show="formData.busiType !== 1 && formData.cooperationModel === 3"
               readonly
               clickable
-              :value="timeFormat(formText.inspectionTime,'YYYY-MM-DD dddd HH:mm:ss')"
+              :value="formText.inspectionTime"
               label="年检有效期"
               colon
               required
@@ -169,7 +169,7 @@
               clickable
               colon
               required
-              :value="timeFormat(formText.insuranceTimeData,'YYYY-MM-DD dddd HH:mm:ss')"
+              :value="formText.insuranceTime"
               label="保险有效期"
               placeholder="请选择保险有效期"
               :rules="[
@@ -687,7 +687,7 @@ export default {
       return dayjs(date).format(format)
     },
     clearData(name) {
-      return this.formText['name'] = ''
+      return (this.formText['name'] = '')
     },
     async getBuyCarPrice() {
       let {
@@ -845,16 +845,21 @@ export default {
         this.$loading(true);
         let { data: res } = await orderDetail({ driverId: id });
         if (res.success) {
+          console.log('this.formData0', this.formData, res.data)
           if (res.data !== null) {
-            console.log(res.data.orderId, res.data.orderId, 1, res.data.supplier)
-            this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
             this.formData = { ...this.formData, ...res.data };
+            this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
             this.formData.driverInfoFORM = this.formData.driverInfoVO;
             this.formData.driverId = this.driverId
             this.orderId = res.data.orderId
-            this.formData.supplier = res.data.supplier
-            this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
-            console.log('supplier', this.formData.supplier)
+            if (res.data.orderPayRecordInfoVOList !== null) {
+              this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
+            }
+            this.formData.inspectionTime = new Date(res.data.inspectionTime).getTime()
+            this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
+            this.formText.inspectionTime = res.data.inspectionTime
+            this.formText.insuranceTime = res.data.insuranceTime
+            console.log('this.formData', this.formData)
           }
         } else {
           this.$toast.fail(res.errorMsg);
@@ -900,7 +905,7 @@ export default {
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
           Notify({ type: 'success', message: '订单录入成功' });
-          this.$router.push('/driverdetail')
+          this.$router.push({ path: '/driverdetail', query: { id: this.driverId }})
         } else {
           this.$toast.fail(res.errorMsg);
         }

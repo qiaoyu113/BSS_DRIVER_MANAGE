@@ -26,6 +26,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('interview')"
         />
         <selftPicker
           :props="keyValue"
@@ -40,6 +41,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('workCity')"
         />
         <van-field
           v-model="formData.name"
@@ -88,6 +90,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('hasCar')"
         />
 
         <selftPicker
@@ -104,6 +107,7 @@
           :rules="[
             { required: formData.hasCar, message: '请选择' },
           ]"
+          @click.native="copyData('currentCarType')"
         />
 
         <selftPicker
@@ -120,6 +124,7 @@
           :rules="[
             { required: !formData.hasCar, message: '请选择' },
           ]"
+          @click.native="copyData('intentDrivingCarType')"
         />
         <self-area
           label-width="100"
@@ -133,6 +138,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('liveaddress')"
         />
         <van-field
           v-model="formData.experience"
@@ -160,6 +166,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('currentHasWork')"
         />
         <selftPicker
           :props="keyValue"
@@ -174,6 +181,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('intentCargoType')"
         />
         <selftPicker
           :props="keyValue"
@@ -188,6 +196,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('intentWorkDuration')"
         />
         <selftPicker
           :props="keyValue"
@@ -203,6 +212,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('heavyLifting')"
         />
         <selftPicker
           :props="keyValue"
@@ -217,6 +227,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('sourceChannel')"
         />
         <selftPicker
           :props="keyValue"
@@ -224,13 +235,14 @@
           :form="formData"
           :columns="columns_drivingLicenceType"
           value="name"
-          :is-computed="formData['drivingLicenceType'] ? true : false "
+          :is-computed="formData['drivingLicenceType']!==''"
           required
           label="驾照类型"
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('drivingLicenceType')"
         />
         <selftPicker
           :props="keyValue"
@@ -245,6 +257,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('isLocalPlate')"
         />
         <self-area
           label-width="100"
@@ -258,6 +271,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('intentWork')"
         />
         <van-field
           v-model="formData.originIncomeAvg"
@@ -318,6 +332,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
+          @click.native="copyData('isNewEnergy')"
         />
         <div class="btnGroup">
           <van-button
@@ -328,10 +343,10 @@
           >
             取消
           </van-button>
+          <van-button type="primary" native-type="submit">
+            提交
+          </van-button>
         </div>
-        <van-button type="primary" native-type="submit">
-          提交11111111111
-        </van-button>
       </van-form>
     </div>
   </div>
@@ -398,6 +413,7 @@ export default {
       },
       formData: {
         workCity: '',
+        drivingLicenceType: '',
         name: '',
         phone: '',
         age: '',
@@ -441,7 +457,8 @@ export default {
       routeName: '',
       driverId: '',
       editForm: {},
-      phone: ''
+      phone: '',
+      Changed: true
     };
   },
   computed: {
@@ -567,8 +584,39 @@ export default {
         });
     },
     copyData(value) {
-      if (value && value !== 0) {
-        this.formData[value] = this.editForm[value];
+      if (value !== '' && !this.Changed) {
+        if (value === 'interview') {
+          // 面试地址label回显
+          this.area.interviewProvinceName = this.editForm.interviewProvinceName;
+          this.area.interviewCityName = this.editForm.interviewCityName;
+          this.area.interviewCountyName = this.editForm.interviewCountyName;
+          this.area.interview = [
+            String(this.editForm.interviewProvince),
+            String(this.editForm.interviewCity),
+            String(this.editForm.interviewCounty)
+          ];
+        } else if (value === 'liveaddress') {
+          this.area.liveProvinceName = this.editForm.liveProvinceName;
+          this.area.liveCityName = this.editForm.liveCityName;
+          this.area.liveCountyName = this.editForm.liveCountyName;
+          this.area.liveaddress = [
+            String(this.editForm.liveProvince),
+            String(this.editForm.liveCity),
+            String(this.editForm.liveCounty)
+          ];
+        } else if (value === 'intentWork') {
+          // 意向工作地址label回显
+          this.area.intentWorkProvinceName = this.editForm.intentWorkProvinceName;
+          this.area.intentWorkCityName = this.editForm.intentWorkCityName;
+          this.area.intentWorkCountyName = this.editForm.intentWorkCountyName;
+          this.area.intentWork = [
+            String(this.editForm.intentWorkProvince),
+            String(this.editForm.intentWorkCity),
+            String(this.editForm.intentWorkCounty)
+          ];
+        } else {
+          this.formData[value] = this.editForm[value];
+        }
       }
     },
     async getDetail(id) {
@@ -579,39 +627,16 @@ export default {
         this.$loading(true);
         let { data: res } = await getInterview(params);
         if (res.success) {
-          let areaData = res.data;
           this.phone = res.data.phone
-          // 面试地址label回显
-          this.area.interviewProvinceName = res.data.interviewProvinceName;
-          this.area.interviewCityName = res.data.interviewCityName;
-          this.area.interviewCountyName = res.data.interviewCountyName;
-          // 现居住地址label回显
-          this.area.liveProvinceName = res.data.liveProvinceName;
-          this.area.liveCityName = res.data.liveCityName;
-          this.area.liveCountyName = res.data.liveCountyName;
-          // 意向工作地址label回显
-          this.area.intentWorkProvinceName = res.data.intentWorkProvinceName;
-          this.area.intentWorkCityName = res.data.intentWorkCityName;
-          this.area.intentWorkCountyName = res.data.intentWorkCountyName;
-          this.area.liveaddress = [
-            String(areaData.liveProvince),
-            String(areaData.liveCity),
-            String(areaData.liveCounty)
-          ];
-          this.area.intentWork = [
-            String(areaData.intentWorkProvince),
-            String(areaData.intentWorkCity),
-            String(areaData.intentWorkCounty)
-          ];
-          this.area.interview = [
-            String(areaData.interviewProvince),
-            String(areaData.interviewCity),
-            String(areaData.interviewCounty)
-          ];
-
-          if (res.data.isChange === false) {
-            this.editForm = res.data;
+          this.areaShow(res)
+          if (res.data.isChange !== null) {
+            this.Changed = false
+            this.editForm = {
+              ...this.formData,
+              ...res.data
+            }
           } else {
+            this.Changed = true
             this.formData = {
               ...this.formData,
               ...res.data
@@ -625,6 +650,39 @@ export default {
       } finally {
         this.$loading(false);
       }
+    },
+    areaShow(res) {
+      if (res.data.isChange !== null) {
+        return
+      }
+      let areaData = res.data;
+      // 面试地址label回显
+      this.area.interviewProvinceName = res.data.interviewProvinceName;
+      this.area.interviewCityName = res.data.interviewCityName;
+      this.area.interviewCountyName = res.data.interviewCountyName;
+      // 现居住地址label回显
+      this.area.liveProvinceName = res.data.liveProvinceName;
+      this.area.liveCityName = res.data.liveCityName;
+      this.area.liveCountyName = res.data.liveCountyName;
+      // 意向工作地址label回显
+      this.area.intentWorkProvinceName = res.data.intentWorkProvinceName;
+      this.area.intentWorkCityName = res.data.intentWorkCityName;
+      this.area.intentWorkCountyName = res.data.intentWorkCountyName;
+      this.area.liveaddress = [
+        String(areaData.liveProvince),
+        String(areaData.liveCity),
+        String(areaData.liveCounty)
+      ];
+      this.area.intentWork = [
+        String(areaData.intentWorkProvince),
+        String(areaData.intentWorkCity),
+        String(areaData.intentWorkCounty)
+      ];
+      this.area.interview = [
+        String(areaData.interviewProvince),
+        String(areaData.interviewCity),
+        String(areaData.interviewCounty)
+      ];
     },
     async editShared() {
       this.$loading(true);
