@@ -488,7 +488,7 @@ export default {
     phonePatternIshas(val) {
       // Toast.loading('验证中...');
       return new Promise((resolve) => {
-        if (this.routeName === '/editShare') {
+        if (this.routeName === '/editShare' && this.editForm.isChange !== null) {
           if (this.phone === val) {
             resolve(true);
           } else {
