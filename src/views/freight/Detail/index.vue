@@ -310,7 +310,7 @@ export default {
 }
 .danceng{
   width: 260px;
-   height: 220px;
+  overflow: hidden;
   background-color: #fff;
   padding: 10px;
   box-sizing: border-box;
