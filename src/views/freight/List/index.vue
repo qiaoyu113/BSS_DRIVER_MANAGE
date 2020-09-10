@@ -39,12 +39,23 @@
                 {{ item.num }}
               </div>
             </template>
-            <div v-for="sub in lists" :key="sub.id">
-              <CardItem :obj="sub" />
-              <div class="lineHeight"></div>
-            </div>
           </van-tab>
         </van-tabs>
+
+        <P v-if="optionsType" class="all">
+          <van-checkbox v-model="checkAll" class="checked" shape="square" @click="checkAlls">
+            <span class="text">全选</span>
+            <span class="text">已选择{{ checkedNum }} 个出车单位</span>
+          </van-checkbox>
+        </P>
+        <van-checkbox-group ref="checkboxGroup" v-model="checkResult">
+          <div v-for="sub in lists" :key="sub.id" class="listBox">
+            <p v-if="optionsType" class="checked-box">
+              <van-checkbox :name="sub.wayBillId" shape="square" />
+            </p>
+            <CardItem :obj="sub" />
+          </div>
+        </van-checkbox-group>
       </van-list>
     </van-pull-refresh>
 
@@ -161,6 +172,15 @@
     <van-popup v-model="showPicker11" position="bottom">
       <van-calendar v-model="showPicker11" @confirm="onConfirm11" />
     </van-popup>
+
+    <div v-if="optionsType" class="Bulk">
+      <button @click="cancel()">
+        取消批量上传
+      </button>
+      <button @click="Add_to(obj)">
+        批量上报运费
+      </button>
+    </div>
   </div>
 </template>
 
@@ -169,7 +189,7 @@ import CardItem from './components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
-import { getGmInfoList } from '@/api/freight'
+import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 export default {
   components: {
     CardItem,
@@ -178,7 +198,7 @@ export default {
   },
   data() {
     return {
-      error: '',
+      error: false,
       showPopup: false, // 打开查询抽屉
       showCalendar: false, // 打开日历
       refreshing: false, // 下拉刷新
@@ -188,6 +208,9 @@ export default {
       // picker
       minDate: new Date(+new Date() - 86400000 * 365),
       maxDate: new Date(+new Date() + 86400000 * 365),
+      optionsType: false,
+      checkResult: [],
+      checkAll: false,
       tabArrs: [ // tabs数组
         {
           text: '全部',
@@ -269,23 +292,64 @@ export default {
         current: 0,
         total: 0,
         size: 10
-      }
+      },
+      checkedNum: 0
     }
   },
   computed: {
   },
+  watch: {
+    checkResult(val, newval) {
+      if (val.length !== this.lists.length) {
+        this.checkAll = false;
+      } else {
+        this.checkAll = true;
+      }
+      this.checkedNum = val.length
+    }
+  },
   mounted() {
-
   },
   methods: {
-
+    checkAlls() {
+      if (!this.checkResult.length) {
+        this.$refs.checkboxGroup.toggleAll(true);
+        this.checkAll = true;
+      } else {
+        if (this.checkResult.length < this.lists.length) {
+          this.$refs.checkboxGroup.toggleAll(true);
+          this.checkAll = true;
+        } else {
+          this.$refs.checkboxGroup.toggleAll();
+          this.checkAll = false;
+        }
+      }
+    },
+    async Add_to() {
+      if (this.checkResult.length) {
+        let { data: res } = await wayBillAmountDetail(this.checkResult)
+        if (res.success) {
+          this.$router.push({
+            path: '/outsidereport',
+            query: {
+              obj: JSON.stringify(res.data)
+            }
+          })
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } else {
+        this.$toast.fail('请选择上报的')
+      }
+    },
+    cancel() {
+      this.optionsType = false;
+    },
     onClickLeft() {
-      this.$router.go(-1)
+      this.$router.back(-1);
     },
     batch() {
-      this.$router.push({
-        path: 'batch'
-      })
+      this.optionsType = !this.optionsType;
     },
     filter_left() {
       this.showPopup = true
@@ -314,32 +378,33 @@ export default {
         this.error = true;
         console.log(`get list fail:${err}`)
       } finally {
-        // this.$loading(false)
+        this.$loading(false)
       }
     },
     handleTabChange(tab) {
-      if (tab === 0) {
-        this.getConfirmInfoList(true, null)
-      } else if (tab === 1) {
-        this.getConfirmInfoList(true, 0)
-      } else if (tab === 2) {
-        this.getConfirmInfoList(true, 1)
-      }
+      this.onLoad(true);
+      // if (tab === 0) {
+      //   this.getConfirmInfoList(true, null)
+      // } else if (tab === 1) {
+      //   this.getConfirmInfoList(true, 0)
+      // } else if (tab === 2) {
+      //   this.getConfirmInfoList(true, 1)
+      // }
     },
-    async getConfirmInfoList(isInit, tab) { // 首页加盟运费列表
+    async getConfirmInfoList(isInit) { // 首页加盟运费列表
       try {
         this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size,
           pageNumber: 20,
-          wayBillGMSaleStatus: tab
+          wayBillGMSaleStatus: this.active
 
         }
         let { data: res } = await getGmInfoList(params)
         if (res.success) {
-          this.lists = res.data
-          if (tab === null) {
+          this.lists = this.lists.concat(res.data)
+          if (this.active === null) {
             this.tabArrs.forEach(item => {
               if (item.name === this.form.customerState) {
                 item.num = res.title.all
@@ -347,7 +412,7 @@ export default {
                 item.num = null
               }
             })
-          } else if (tab === 1) {
+          } else if (this.active === 1) {
             this.tabArrs.forEach(item => {
               if (item.name === this.form.customerState) {
                 item.num = res.title.reported
@@ -364,6 +429,7 @@ export default {
               }
             })
           }
+          return res;
         } else {
           this.loading = false;
           this.error = true;
@@ -400,25 +466,37 @@ export default {
       this.listQuery.endDate = endDate;
     },
     async onLoad(isInit = false) {
-      if (isInit === true) { // 下拉刷新
-        this.page.current = 1
-        this.lists = []
-      } else { // 上拉加载更多
-        this.page.current++
+      if (isInit === true) {
+        // 下拉刷新
+        this.page.current = 1;
+        this.lists = [];
+      } else {
+        // 上拉加载更多
+        this.page.current++;
       }
-
-      let result = await this.getConfirmInfoList(isInit)
+      let statusType = ''
+      if (this.active === 0) {
+        statusType = null
+      } else if (this.active === 1) {
+        statusType = 0
+      } else if (this.active === 2) {
+        statusType = 1
+      }
+      let result = await this.getConfirmInfoList(isInit, statusType)
       if (!result) {
         return false
       }
-      this.lists = result.lists
-      if (isInit === true) { // 下拉刷新
-        this.refreshing = false
-        this.finished = false
-      } else { // 上拉加载更多
+      if (isInit === true) {
+        // 下拉刷新
+        this.refreshing = false;
+        this.finished = false;
+      } else {
+        // 上拉加载更多
         this.loading = false;
-        if (!result.hasMore) {
-          this.finished = true
+        if (result) {
+          if (!result.hasMore) {
+            this.finished = true;
+          }
         }
       }
     },
@@ -537,6 +615,24 @@ export default {
 <style lang='scss' scoped>
 .OutSideList {
   font-family: PingFangSC-Medium;
+  background:#f9f9f9;
+  .listBox{
+    width: 100%;
+    display: flex;
+    border-bottom: 1px soli #F9F9F9;
+    margin-bottom: 10px;
+    .checked-box{
+      flex-grow: 1;
+      flex: 40px;
+      text-align: center;
+      line-height: 100vh;
+      position: relative;
+      top:0;
+      bottom:0;
+      left: 5px;
+      margin:auto;
+    }
+  }
   .headerRight {
     display: flex;
     flex-direction: row;
@@ -561,6 +657,45 @@ export default {
     background: #F9F9F9;
     height:10px;
     width:100%;
+  }
+  .all{
+    padding: 0 5px;
+    box-sizing: border-box;
+    .text{
+      font-size: 13px;
+      color: #7F8FBD;
+    }
+  }
+  .Bulk{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    z-index: 999;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    padding: 11px 0 15px;
+    background: #fff;
+  }
+  .Bulk>button{
+    width:46%;
+    border: none;
+    border-radius: 5px;
+    margin:0 auto;
+  }
+  .Bulk>button:nth-child(1){
+    border: 1px solid #2F448A;
+    border-radius: 3px;
+    font-size: 15px;
+    color: #2F448A;
+    background: #ffffff;
+  }
+  .Bulk>button:nth-child(2){
+    border: 1px solid #2F448A;
+    border-radius: 3px;
+    font-size: 15px;
+    color: #fff;;
+    background: #2F448A;
   }
 }
 

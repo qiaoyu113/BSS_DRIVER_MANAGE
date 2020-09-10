@@ -40,17 +40,34 @@
               </div>
             </template>
             <P class="all">
-              <van-checkbox v-model="checkall" class="checked">
+              <van-checkbox v-model="checkResult" class="checked" shape="square" @click="checkAlls">
                 <span>全选</span>
                 <span>已选择{{ checkedNum }} 个出车单位</span>
               </van-checkbox>
             </P>
             <div v-for="sub in lists" :key="sub.id">
-              <CardItem
-                class="items"
-                :obj="sub"
-                :checkedarr="checkedarr"
-              />
+              <van-checkbox-group ref="checkboxGroup" v-model="result">
+                <CardItem
+                  class="items"
+                  :obj="sub"
+                  :checkedarr="checkedarr"
+                />
+              </van-checkbox-group>
+            </div>
+
+            <van-checkbox-group ref="checkboxGroup" v-model="result">
+              <van-checkbox name="a">
+                复选框 a
+              </van-checkbox>
+              <van-checkbox name="b">
+                复选框 b
+              </van-checkbox>
+              <van-checkbox name="c">
+                复选框 c
+              </van-checkbox>
+            </van-checkbox-group>
+            <div @click="checkAlls">
+              123123123
             </div>
           </van-tab>
         </van-tabs>
@@ -200,6 +217,7 @@ export default {
         username: '',
         password: ''
       },
+      checkResult: [],
       count: 0, // 下拉刷新次数
       isLoading: false, // 下拉刷新状态
       tabArrs: [ // tabs数组
@@ -324,7 +342,9 @@ export default {
 
   },
   methods: {
-
+    checkAlls() {
+      this.$refs.checkboxGroup.toggleAll(true);
+    },
     onClickLeft() {
       this.$router.go(-1)
     },

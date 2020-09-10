@@ -81,7 +81,6 @@ export default {
     Add_to() {
       if (this.checkedarr !== '') {
         let wayBillId = this.checkedarr.map(item => item.wayBillId)
-        console.log(wayBillId, 'xxxxxxxxxxxxxxx')
         this.wayBillAmount(wayBillId)
       } else {
         this.$toast.fail('请选择上报的')
