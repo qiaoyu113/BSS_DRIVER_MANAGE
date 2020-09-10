@@ -2,7 +2,7 @@
   <div class="StepThireeContainer">
     <van-form ref="stepThree" :show-error="false" @submit="onSubmit">
       <h4 class="title van-hairline--bottom">
-        配送时间信息
+        货物信息
       </h4>
       <selftPicker
         picker-key="cargoType"
@@ -15,7 +15,7 @@
         label="货物类型"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择货物类型！' },
         ]"
       />
       <van-field
@@ -27,7 +27,7 @@
         name="numValidator"
         placeholder="请输入"
         :rules="[
-          { required: false, message: '请输入' },
+          { required: false, message: '请输入货物件数！' },
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
@@ -43,7 +43,7 @@
         name="numValidator"
         placeholder="请输入"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入货物体积！' },
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
@@ -59,7 +59,7 @@
         placeholder="请输入"
         maxlength="10"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入货物重量！' },
           { validator: numValidator, message: '请输入1~999999' }
         ]"
       />
@@ -74,7 +74,7 @@
         label="是否需要搬运"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择是否需要搬运！' },
         ]"
       />
       <van-field

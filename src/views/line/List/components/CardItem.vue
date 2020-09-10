@@ -22,8 +22,8 @@
       </p>
       <div class="right">
         <div>
-          <p v-for="(item,idx) in obj.workingTimeRegin && obj.workingTimeRegin.split(',')" :key="idx" class="time">
-            预计工作时间:{{ item }}
+          <p class="time">
+            每日配送趟数:{{ obj.dayNum }}
           </p>
         </div>
         <div>

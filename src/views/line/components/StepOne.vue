@@ -15,8 +15,8 @@
         placeholder="请输入"
         maxlength="10"
         :rules="[
-          { required: true, message: '请输入线路名称' },
-          { validator: asyncValidatorLineName, message: '线路名称重复' }
+          { required: true, message: '请输入线路名称！' },
+          { validator: asyncValidatorLineName, message: '系统已存在相同名称线路' }
         ]"
       />
       <template v-if="['copy','create'].includes(type)">
@@ -30,7 +30,7 @@
           name="lineNumValidator"
           type="digit"
           :rules="[
-            { required: true, message: '请输入线路数量' },
+            { required: true, message: '请输入线路数量！' },
             { validator: lineNumValidator, message: '请输入1~99' }
           ]"
         />
@@ -46,7 +46,7 @@
         label="是否有线路余额"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择是否有线路余额！' },
         ]"
       />
       <selfDatetimePicker
@@ -56,7 +56,7 @@
         :form="form"
         required
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择上架截止日期！' },
         ]"
         label="上架截止日期"
         placeholder="点击选择日期"
@@ -72,7 +72,7 @@
         label="线路稳定性"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择线路稳定性！' },
         ]"
       />
       <h4 class="title van-hairline--bottom">
@@ -89,7 +89,7 @@
         label="是否走高速"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择是否走高速！' },
         ]"
       />
       <selftPicker
@@ -103,7 +103,7 @@
         label="是否需要回单"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择是否需要回单！' },
         ]"
       />
       <van-field
@@ -116,7 +116,7 @@
         label="配送车型"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择配送车型！' },
         ]"
         @click="handleShowModal('carType')"
       />
@@ -129,7 +129,7 @@
         label="主要配送区域"
         placeholder="请选择"
         :rules="[
-          { required: true, message: '请选择' },
+          { required: true, message: '请选择主要配送区域！' },
         ]"
       />
       <van-field
@@ -155,7 +155,7 @@
         name="lineNumValidator"
         type="digit"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入配送点数量！' },
           { validator: lineNumValidator, message: '请输入1~99' }
         ]"
       />
@@ -170,7 +170,7 @@
         name="mileageValidator"
         type="digit"
         :rules="[
-          { required: true, message: '请输入' },
+          { required: true, message: '请输入配送总里程数！' },
           { validator: mileageValidator, message: '请输入1~9999' }
         ]"
       />

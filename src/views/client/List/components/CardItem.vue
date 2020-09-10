@@ -15,13 +15,13 @@
     <div class="footer">
       <div class="right">
         <p class="time">
-          创建时间:{{ obj.createDate | parseTime('{y}-{m}-{d}') }}
+          创建时间:{{ timeFormat(obj.createDate,'YYYY-MM-DD HH:mm:ss') }}
         </p>
         <div>
           <van-tag
             v-if="obj.customerState ===2"
             class="tag"
-            color="#3acb8d1a"
+            color="rgba(58, 203, 141, 0.1)"
             text-color="#3ACB8D"
           >
             已启用
@@ -29,7 +29,7 @@
           <van-tag
             v-if="obj.customerState ===1"
             class="tag"
-            color="#ffa0001a"
+            color="rgba(255, 160, 0, 0.1)"
             text-color="#FFA000"
           >
             已禁用
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 export default {
   props: {
     obj: {
@@ -64,6 +65,10 @@ export default {
           customerId: this.obj.customerId
         }
       })
+    },
+    // YYYY-MM-DD dddd HH:mm:ss
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
     }
   }
 }
