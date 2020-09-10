@@ -90,8 +90,15 @@ export default {
   },
   methods: {
     init() {
-      this.isStable = +this.$route.query.isStable === 1
       this.lineId = this.$route.query.lineId
+      this.getLineDetail()
+      this.getTitle()
+    },
+    onClickLeft() {
+      this.$router.go(-1)
+    },
+    // 获取title
+    getTitle() {
       let title = ''
       if (this.isStable) {
         title = '复制稳定线路'
@@ -100,10 +107,6 @@ export default {
       }
       this.title = title
       document.title = title
-      this.getLineDetail()
-    },
-    onClickLeft() {
-      this.$router.go(-1)
     },
     // 复制线路
     handleSubmit() {
@@ -191,6 +194,7 @@ export default {
         if (res.success) {
           let result = res.data
           this.isStable = +res.data.lineCategory === 1
+          this.getTitle()
           this.lineInfo = {
             ...this.lineInfo,
             ...{
