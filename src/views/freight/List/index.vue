@@ -177,7 +177,7 @@
       <button @click="cancel()">
         取消批量上传
       </button>
-      <button @click="Add_to(obj)">
+      <button @click="Add_to()">
         批量上报运费
       </button>
     </div>

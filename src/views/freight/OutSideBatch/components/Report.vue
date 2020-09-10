@@ -16,7 +16,7 @@
       <!-- 出车多趟 -->
       <ul v-for="(item, index) in obj" :key="item.id">
         <li class="li_value_btn">
-          <span class="status">已出车</span> <span><van-switch v-model="item.checked" size="20px" active-color="#7F8FBD" /></span>
+          <span v-if="item.check" class="status">已出车</span> <span v-if="!item.check" class="status_no">未出车</span> <span><van-switch v-model="item.check" size="20px" active-color="#7F8FBD" /></span>
         </li>
         <li class="li_value">
           出车单号：{{ item.wayBillId }}
@@ -302,6 +302,15 @@ border-radius:5px  0px  0px  5px;
   border: 1px solid #3ACB8D ;
   border-radius: 20px ;
   color: #3ACB8D;
+}
+.status_no{
+  width: 50px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  border: 1px solid #db5572 ;
+  border-radius: 20px ;
+  color: #db5572;
 }
 .li_value{
   font-size: 13px;
