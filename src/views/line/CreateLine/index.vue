@@ -129,7 +129,7 @@ export default {
       if (this.isProject) {
         Dialog.confirm({
           title: '提示',
-          message: '已填写相关信息,请确定要返回至项目详情吗?'
+          message: '确定要返回上一页面吗？'
         })
           .then(() => {
             this.$router.go(-1)

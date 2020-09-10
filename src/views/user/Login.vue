@@ -171,10 +171,7 @@ export default {
      * 校验密码
      */
     validatorPassword(val) {
-      if (/^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){8,16}$/.test(val)) {
-        return true
-      }
-      return false
+      return true
     },
     /**
      * 校验账号

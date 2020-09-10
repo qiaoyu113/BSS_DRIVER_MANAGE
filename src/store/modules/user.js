@@ -51,6 +51,10 @@ export default {
           res = response
         }
         if (res.success) {
+          if (!res.data.token) {
+            data.$loading(false)
+            return data.$fail(res.data.msg)
+          }
           state.commit(LOGIN, res.data)
           state.commit(SetUserData, res.data)
 
@@ -61,6 +65,7 @@ export default {
             })
           }, 20)
         } else {
+          data.$loading(false)
           data.$fail(res.errorMsg)
         }
       } catch (error) {
