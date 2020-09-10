@@ -368,9 +368,9 @@ export default {
     timenum(e) {
       console.log(e, this.$route.query.projectId, 'xxxxxxxxxxx')
       this.dateTimes = false
-      this.getConf(e)
+      this.getConf1(e)
     },
-    async getConf(e) {
+    async getConf1(e) {
       try {
         this.$loading(true)
         let params = {
