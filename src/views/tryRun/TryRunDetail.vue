@@ -102,6 +102,7 @@ export default {
             }
           }
           query.status = this.detail.status
+          query.isStable = this.detail.lineInfoVO.lineCategory
           break;
       }
       this.$router.push({

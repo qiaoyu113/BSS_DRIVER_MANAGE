@@ -37,6 +37,14 @@ export function TryRun(data) {
     data
   })
 }
+export function ToTryRun(data) {
+  return request({
+    url: `${prefix}/waybill/v2/runtest/switchTryRun`,
+    // url: `${prefix}/v2/runtest/tryRun`,
+    method: 'post',
+    data
+  })
+}
 // 跟车
 export function FollowCar(data) {
   return request({

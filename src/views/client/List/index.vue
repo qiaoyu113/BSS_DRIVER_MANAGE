@@ -207,7 +207,9 @@ export default {
     },
     // 返回
     onClickLeft() {
-      this.$router.go(-1)
+      this.$router.replace({
+        path: '/'
+      })
     },
     // 是否更多数据
     isModeData() {
@@ -359,6 +361,7 @@ export default {
         this.form.customerState && (params.customerState = this.form.customerState)
         if (this.form.date && this.form.date.length > 1) {
           params.startDate = new Date(this.form.date[0]).getTime()
+          this.form.date[1].setHours(23, 59, 59)
           params.endDate = new Date(this.form.date[1]).getTime()
         }
         let { data: res } = await getClientList(params)
