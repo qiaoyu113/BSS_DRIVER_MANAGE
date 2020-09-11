@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="detail">
-      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj.projectId)">
+      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj)">
         详情
       </van-button>
     </div>
@@ -59,11 +59,15 @@ export default {
     /**
      * 线路详情
      */
-    handleDetailClick(id) {
+    handleDetailClick(item) {
       // this.getGmInfoList(id)
       this.$router.push({
         path: '/outsidefreightlist',
-        query: { id: id }
+        query: {
+          id: item.projectId,
+          start: item.startDate,
+          end: item.endDate
+        }
       })
     },
     async getGmInfoList(id) {

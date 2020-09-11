@@ -312,17 +312,6 @@ export default {
       return obj;
     },
     /**
-     * 下拉刷新
-     */
-    onRefresh() {
-      // 清空列表数据
-      this.finished = false;
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      // this.loading = true;
-      this.onLoad(true);
-    },
-    /**
      * 日期选择
      */
     onConfirm(date) {
@@ -337,10 +326,12 @@ export default {
     /**
      * 提交查询
      */
-    onSubmit(value) {
-      this.showPopup = false;
-      this.refreshing = true;
-      this.onRefresh();
+    async onSubmit(value) {
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
+      this.isModeData()
+      this.showPopup = false
     },
     /**
      * 重置form
