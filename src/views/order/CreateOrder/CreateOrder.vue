@@ -898,7 +898,8 @@ export default {
           driverInfoFORM: this.formData.driverInfoFORM,
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
           orderId: this.orderId,
-          driverId: this.driverId
+          driverId: this.driverId,
+          havePayAmount: this.payMoneyed
         }
         params.driverInfoFORM.driverId = this.driverId
         params.operateFlag = this.operateFlag;
