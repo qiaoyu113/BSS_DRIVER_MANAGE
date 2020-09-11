@@ -42,7 +42,7 @@
         </div>
 
         <div class="historyContainer">
-          <div v-for="item in historyItems" :key="item" class="item" @click="handleItemClick(item)">
+          <div v-for="item in historyItems" :key="item" class="item van-ellipsis" @click="handleItemClick(item)">
             {{ item }}
           </div>
         </div>
