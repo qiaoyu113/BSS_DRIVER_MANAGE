@@ -64,7 +64,7 @@
         <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />
         <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPictures" />
         <VideoPreview :video-url="fileForm.loadingVideo" label="装货视频:" />
-        <van-field label="现场信息说明" label-width="110" readonly :value="fileForm.informationDescription | DataIsNull" :border="false" colon />
+        <van-field label="现场信息说明" label-width="110" type="textarea" autosize readonly :value="fileForm.informationDescription | DataIsNull" :border="false" colon />
       </van-collapse-item>
     </van-collapse>
     <van-button
