@@ -19,49 +19,49 @@
         ]"
       />
       <van-field
-        v-model="form.cargoNum"
+        v-model.number="form.cargoNum"
         label-width="100"
         colon
-        :formatter="_formatter"
         label="货物件数"
         type="digit"
-        name="numValidator"
+        name="cargoNumValidator"
         placeholder="请输入"
         :rules="[
           { required: false, message: '请输入货物件数！' },
-          { validator: numValidator, message: '请输入1~999999' }
+          { validator: cargoNumValidator, message: '请输入1~999999' }
         ]"
       />
       <!-- 精确小数点后一位 -->
+
       <van-field
-        v-model="form.volume"
-        v-only-number.lazy="{min: 1, max: 999999, precision: 1}"
+        v-model.number="form.volume"
+        v-only-number="{min: 1, max: 999999.9, precision: 1}"
         label-width="100"
         colon
         required
+        name="numValidator"
         label="货物体积(m³)"
         type="number"
-        name="numValidator"
         placeholder="请输入"
         :rules="[
           { required: true, message: '请输入货物体积！' },
-          { validator: numValidator, message: '请输入1~999999' }
+          { validator: numValidator, message: '请输入1~999999.9' }
         ]"
       />
       <!-- 精确小数点后一位 -->
       <van-field
-        v-model="form.goodsWeight"
-        v-only-number.lazy="{min: 1, max: 999999, precision: 1}"
+        v-model.number="form.goodsWeight"
+        v-only-number="{min: 1, max: 999999.9, precision: 1}"
         label-width="100"
         colon
         required
-        label="货物重量(吨)"
         name="numValidator"
+        label="货物重量(吨)"
         placeholder="请输入"
         maxlength="10"
         :rules="[
           { required: true, message: '请输入货物重量！' },
-          { validator: numValidator, message: '请输入1~999999' }
+          { validator: numValidator, message: '请输入1~999999.9' }
         ]"
       />
       <selftPicker
@@ -109,7 +109,6 @@
 <script>
 import { getDictData } from '@/api/common'
 import SelftPicker from '@/components/SelfPicker'
-import { formatter } from '@/utils/index'
 export default {
   components: {
     SelftPicker
@@ -147,9 +146,6 @@ export default {
     this.init()
   },
   methods: {
-    _formatter(val) {
-      return formatter(val)
-    },
     async init() {
       let result = await this.getDictData('type_of_goods')
       this.cargoTypeArr = result
@@ -158,9 +154,15 @@ export default {
     onSubmit(values) {
       this.$emit('submit')
     },
-    // 货物件数
     numValidator(val) {
-      if (val >= 1 && val <= 999999) {
+      if ((val >= 1 && val <= 999999.9)) {
+        return true
+      }
+      return false
+    },
+    // 货物件数
+    cargoNumValidator(val) {
+      if ((val >= 1 && val <= 999999) || val === '') {
         return true
       }
       return false

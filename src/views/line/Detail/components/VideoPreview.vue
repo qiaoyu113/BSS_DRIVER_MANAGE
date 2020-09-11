@@ -5,7 +5,7 @@
       <van-image
         class="image"
         src="https://img.yzcdn.cn/vant/leaf.jpg"
-        @click="show=true"
+        @click="handleModalClick"
       />
       <VideoPlay
         v-if="show"
@@ -36,6 +36,15 @@ export default {
   data() {
     return {
       show: false
+    }
+  },
+  methods: {
+    handleModalClick() {
+      if (this.videoUrl) {
+        this.show = true
+      } else {
+        this.$toast('暂无视频数据')
+      }
     }
   }
 

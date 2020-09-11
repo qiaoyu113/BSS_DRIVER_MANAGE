@@ -21,11 +21,10 @@
       />
       <template v-if="['copy','create'].includes(type)">
         <van-field
-          v-model="form.lineNum"
+          v-model.number="form.lineNum"
           label-width="130"
           colon
           required
-          :formatter="_formatter"
           label="线路数量"
           placeholder="请输入"
           name="lineNumValidator"
@@ -151,11 +150,10 @@
         ]"
       />
       <van-field
-        v-model="form.deliveryNum"
+        v-model.number="form.deliveryNum"
         label-width="130"
         colon
         required
-        :formatter="_formatter"
         label="配送点数量"
         placeholder="请输入"
         name="lineNumValidator"
@@ -166,15 +164,15 @@
         ]"
       />
       <van-field
-        v-model="form.distance"
+        v-model.number="form.distance"
+        v-only-number="{min: 1, max: 9999.9, precision: 1}"
         label-width="130"
-        :formatter="_formatter"
         colon
         required
         label="配送总里程数(公里)"
         placeholder="请输入"
         name="mileageValidator"
-        type="digit"
+        type="number"
         :rules="[
           { required: true, message: '请输入配送总里程数！' },
           { validator: mileageValidator, message: '请输入1~9999' }
@@ -219,7 +217,6 @@ import SelftPicker from '@/components/SelfPicker'
 import SelfDatetimePicker from '@/components/SelfDatetimePicker'
 import SelfArea from '@/components/SelfArea'
 import { judgeLineExist, judgeLineExistByLineName, judgeLineExistByLineNameAndLineLogo } from '@/api/line'
-import { formatter } from '@/utils/index'
 export default {
   components: {
     Suggest,
@@ -305,9 +302,6 @@ export default {
     this.init()
   },
   methods: {
-    _formatter(val) {
-      return formatter(val)
-    },
     async init() {
       let result = await this.getDictDataByKeyword('Intentional_compartment')
       this.options = result
@@ -325,7 +319,7 @@ export default {
     },
     // 配送总里程数
     mileageValidator(val) {
-      if (val >= 1 && val <= 9999) {
+      if (val >= 1 && val <= 9999.9) {
         return true
       }
       return false

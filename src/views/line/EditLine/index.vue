@@ -4,7 +4,7 @@
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <StepOne v-show="step === 1" type="edit" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" type="edit" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepTwo v-show="step === 2" type="edit" :form="stepTwoForm" :min-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date()" @stepThree="step=3" @step-one="step=1" />
     <StepThree v-show="step === 3" type="edit" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
@@ -123,8 +123,8 @@ export default {
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
-        params.deliveryStartDate = this.stepTwoForm.deliveryWeekCycle[0]
-        params.deliveryEndDate = this.stepTwoForm.deliveryWeekCycle[1]
+        params.deliveryStartDate = new Date(this.stepTwoForm.deliveryWeekCycle[0]).getTime()
+        params.deliveryEndDate = new Date(this.stepTwoForm.deliveryWeekCycle[1]).getTime()
         delete params.deliveryWeekCycle
       }
       // 预计工作时间

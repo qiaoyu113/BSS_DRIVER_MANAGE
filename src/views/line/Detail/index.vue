@@ -14,6 +14,7 @@
         <van-field label="项目编号" label-width="110" readonly :value="form.projectId | DataIsNull" :border="false" colon />
         <van-field label="线路分类" label-width="110" readonly :value="form.lineCategory ===1 ? '稳定线路':'临时线路'" :border="false" colon />
         <van-field label="线路类型" label-width="110" readonly :value="form.busiTypeName | DataIsNull" :border="false" colon />
+        <van-field label="是否是城配线" label-width="110" readonly :value="form.lineTypeName | DataIsNull" :border="false" colon />
         <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineBalance ===1 ? '有线路余额': '无线路余额'" :border="false" colon />
         <van-field label="线路状态" label-width="110" readonly :value="form.lineStateName | DataIsNull" :border="false" colon />
         <van-field label="试跑状态" label-width="110" readonly :value="form.runTestStateName | DataIsNull" :border="false" colon />
@@ -35,7 +36,8 @@
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
         <van-field label="司机上岗时间" label-width="110" readonly :value="timeFormat(form.driverWorkTime,'YYYY-MM-DD')" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="deliveryWeekCycle | DataIsNull" :border="false" colon />
+        <van-field label="配送时间" label-width="110" readonly :value="form.monthNum | DataIsNull" :border="false" colon />
+        <van-field label="预计月出车天数" label-width="110" readonly :value="deliveryWeekCycle | DataIsNull" :border="false" colon />
         <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum | DataIsNull" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
           <van-field label="预计工作时间" label-width="110" readonly :value="`${item.workingTimeStart}-${item.workingTimeEnd}`" :border="false" colon />
@@ -62,6 +64,7 @@
         <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />
         <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPictures" />
         <VideoPreview :video-url="fileForm.loadingVideo" label="装货视频:" />
+        <van-field label="现场信息说明" label-width="110" type="textarea" autosize readonly :value="fileForm.informationDescription | DataIsNull" :border="false" colon />
       </van-collapse-item>
     </van-collapse>
     <van-button

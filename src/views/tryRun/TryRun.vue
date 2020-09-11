@@ -382,10 +382,20 @@ export default {
     /**
      * 提交查询
      */
-    onSubmit(value) {
-      this.showPopup = false;
-      this.refreshing = true;
-      this.onRefresh();
+    async onSubmit(value) {
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
+      this.isModeData()
+      this.showPopup = false
+    },
+    // 是否更多数据
+    isModeData() {
+      if (this.lists.length === 0) {
+        this.finished = true
+      } else {
+        this.finished = false
+      }
     },
     /**
      * 重置form
@@ -451,8 +461,12 @@ export default {
       this.$router.push('/create-run');
     },
     // 状态切换
-    handleTabChange(tab) {
-      this.onLoad(true);
+    async handleTabChange(tab) {
+      this.lists = [];
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
+      this.isModeData()
     },
     // 获取列表
     async getLists(isInit) {

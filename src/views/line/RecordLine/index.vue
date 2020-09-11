@@ -238,7 +238,6 @@ export default {
         let { data: res } = await upload(params, formData)
         if (res.success) {
           file.status = 'done';
-          this.form[key] = []
           this.form[key].push(res.data.url)
         } else {
           this.$fail(res.errorMsg)
