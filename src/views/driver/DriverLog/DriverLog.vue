@@ -9,7 +9,7 @@
       />
     </van-sticky>
     <div class="logBox">
-      <div class="datePicker">
+      <div v-if="Object.keys(newDetail).length > 0" class="datePicker">
         <div class="dateText" @click="showDate = true">
           <span>{{ timeText }}</span>
           <van-icon name="arrow-down" />
@@ -38,7 +38,7 @@
             <span>{{ detail.interviewProvinceName + detail.interviewCityName + detail.interviewCountyName + detail.interviewDistrict }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.interviewProvinceName + newDetail.interviewCityName + newDetail.interviewCountyName + newDetail.interviewDistrict }}</span>
+            <span v-if="newDetail.interviewProvinceName">{{ newDetail.interviewProvinceName + newDetail.interviewCityName + newDetail.interviewCountyName + newDetail.interviewDistrict }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -88,18 +88,32 @@
             <span>{{ detail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.hasCar === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.hasCar">{{ newDetail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
 
-          <van-grid-item>
-            <span>当前车型</span>
-          </van-grid-item>
-          <van-grid-item>
-            <span>{{ detail.currentCarTypeName }}</span>
-          </van-grid-item>
-          <van-grid-item>
-            <span>{{ newDetail.currentCarTypeName }}</span>
-          </van-grid-item>
+          <template v-if="currentCarTypeStatus">
+            <van-grid-item>
+              <span>当前车型</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ detail.currentCarTypeName }}</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ newDetail.currentCarTypeName }}</span>
+            </van-grid-item>
+          </template>
+
+          <template v-if="showIntentDrivingCarType">
+            <van-grid-item>
+              <span>意向驾驶车型</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ detail.intentDrivingCarTypeName }}</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ newDetail.intentDrivingCarTypeName }}</span>
+            </van-grid-item>
+          </template>
 
           <van-grid-item>
             <span>现居住地址</span>
@@ -108,7 +122,7 @@
             <span>{{ detail.liveProvinceName + detail.liveCityName + detail.liveCountyName + detail.liveDistrict }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
+            <span v-if="newDetail.liveProvinceName">{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -128,7 +142,7 @@
             <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+            <span v-if="newDetail.liveProvinceName">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -158,7 +172,7 @@
             <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.heavyLifting">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -188,7 +202,7 @@
             <span>{{ detail.isLocalPlate ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.isLocalPlate ? '是' : '否' }}</span>
+            <span v-if="newDetail.isLocalPlate">{{ newDetail.isLocalPlate ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -198,7 +212,7 @@
             <span>{{ detail.intentWorkProvinceName + detail.intentWorkCityName + detail.intentWorkCountyName + detail.intentWorkDistrict }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
+            <span v-if="newDetail.intentWorkProvinceName">{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -248,7 +262,7 @@
             <span>{{ detail.isNewEnergy === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.isNewEnergy === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.isNewEnergy">{{ newDetail.isNewEnergy === true ? '是' : '否' }}</span>
           </van-grid-item>
         </van-grid>
       </div>
@@ -353,7 +367,7 @@
             <span>{{ detail.liveProvinceName + detail.liveCityName + detail.liveCountyName + detail.liveDistrict }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
+            <span v-if="newDetail.liveProvinceName">{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -363,7 +377,7 @@
             <span>{{ detail.intentWorkProvinceName + detail.intentWorkCityName + detail.intentWorkCountyName + detail.intentWorkDistrict }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
+            <span v-if="newDetail.intentWorkProvinceName">{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -423,7 +437,7 @@
             <span>{{ detail.householdType === 1 ? '农村户口' : '城镇户口' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.householdType === 1 ? '农村户口' : '城镇户口' }}</span>
+            <span v-if="newDetail.householdType">{{ newDetail.householdType === 1 ? '农村户口' : '城镇户口' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -453,7 +467,7 @@
             <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+            <span v-if="newDetail.currentHasWork">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -493,18 +507,32 @@
             <span>{{ detail.hasCar ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.hasCar ? '是' : '否' }}</span>
+            <span v-if="newDetail.hasCar">{{ newDetail.hasCar ? '是' : '否' }}</span>
           </van-grid-item>
 
-          <van-grid-item>
-            <span>当前车型</span>
-          </van-grid-item>
-          <van-grid-item>
-            <span>{{ detail.currentCarTypeName }}</span>
-          </van-grid-item>
-          <van-grid-item>
-            <span>{{ newDetail.currentCarTypeName }}</span>
-          </van-grid-item>
+          <template v-if="currentCarTypeStatus">
+            <van-grid-item>
+              <span>当前车型</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ detail.currentCarTypeName }}</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ newDetail.currentCarTypeName }}</span>
+            </van-grid-item>
+          </template>
+
+          <template v-if="showIntentDrivingCarType">
+            <van-grid-item>
+              <span>意向驾驶车型</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ detail.intentDrivingCarTypeName }}</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ newDetail.intentDrivingCarTypeName }}</span>
+            </van-grid-item>
+          </template>
 
           <van-grid-item>
             <span>最大可支付首付款</span>
@@ -523,7 +551,7 @@
             <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.heavyLifting">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -533,7 +561,7 @@
             <span>{{ detail.providePersonalCredit === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.providePersonalCredit === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.providePersonalCredit">{{ newDetail.providePersonalCredit === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -573,7 +601,7 @@
             <span>{{ detail.isAdvancedIntention === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.isAdvancedIntention === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.isAdvancedIntention">{{ newDetail.isAdvancedIntention === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -623,6 +651,9 @@ export default {
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    showIntentDrivingCarType() {
+      return this.intentDrivingCarTypeStatus()
     }
   },
   mounted() {
@@ -637,6 +668,24 @@ export default {
     this.getTimeList(params);
   },
   methods: {
+    intentDrivingCarTypeStatus() {
+      if (this.detail.intentDrivingCarType === 0 && this.newDetail.intentDrivingCarType === 0) {
+        return false
+      } else if (this.detail.intentDrivingCarType === 0 && this.newDetail.intentDrivingCarType === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
+    currentCarTypeStatus() {
+      if (this.detail.currentCarType === 0 && this.newDetail.currentCarType === 0) {
+        return false
+      } else if (this.detail.currentCarType === 0 && this.newDetail.currentCarType === undefined) {
+        return false
+      } else {
+        return true
+      }
+    },
     async getDetail(id) {
       try {
         let params = {

@@ -102,7 +102,7 @@
           @focus="copyData('phone')"
         />
         <van-field
-          v-model="formData.age"
+          v-model.number="formData.age"
           name="age"
           label="年龄"
           required
@@ -187,7 +187,7 @@
           @click.native="copyData('intentWorkDuration')"
         />
         <van-field
-          v-model="formData.originIncomeAvg"
+          v-model.number="formData.originIncomeAvg"
           label-width="160px"
           name="原收入(去油)(元/月)"
           label="原收入(去油)(元/月)"
@@ -197,7 +197,7 @@
           @focus="copyData('originIncomeAvg')"
         />
         <van-field
-          v-model="formData.expIncomeAvg"
+          v-model.number="formData.expIncomeAvg"
           label-width="160px"
           name="期望收入(去油)(元/月)"
           label="期望收入(去油)(元/月)"
@@ -236,7 +236,7 @@
           @click.native="copyArea('householdAddress')"
         />
         <van-field
-          v-model="formData.householdDistrict"
+          v-model.number="formData.householdDistrict"
           name="householdDistrict"
           label="户籍详细地址"
           maxlength="50"
@@ -262,7 +262,7 @@
           @click.native="copyData('childNum')"
         />
         <van-field
-          v-model="formData.experience"
+          v-model.number="formData.experience"
           name="货物运输经验（月）"
           label="货物运输经验（月）"
           required
@@ -288,7 +288,7 @@
           @click.native="copyData('currentHasWork')"
         />
         <van-field
-          v-model="formData.drivingAge"
+          v-model.number="formData.drivingAge"
           name="drivingAge"
           label="实际货车驾龄（月）"
           required
@@ -299,7 +299,7 @@
           @focus="copyData('drivingAge')"
         />
         <van-field
-          v-model="formData.livingAge"
+          v-model.number="formData.livingAge"
           label-width="130px"
           name="本城市居住时长（月）"
           label="本城市居住时长（月）"

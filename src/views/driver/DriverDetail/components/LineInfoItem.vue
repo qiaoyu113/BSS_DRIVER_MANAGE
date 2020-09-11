@@ -70,13 +70,11 @@ export default {
   },
   methods: {
     goRouter() {
-      this.$router.push({ path: '/lineDetail', id: this.obj.lineId })
+      this.$router.push({ path: '/lineDetail', lineId: this.obj.lineId })
     }
   }
 }
 </script>
 <style lang="less" scoped>
 @import '../../DriverList/components/DriverItem.less';
-.LineInfoItem{
-}
 </style>
