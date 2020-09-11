@@ -34,9 +34,15 @@
     </template>
     <template v-else>
       <div v-show="options.length === 0" class="history">
-        <h4>历史记录</h4>
+        <div class="subTitle">
+          <h4>
+            历史记录
+          </h4>
+          <van-icon v-if="historyItems.length > 0" name="delete" size="20" color="#7F8FBD" @click="deleteHistory" />
+        </div>
+
         <div class="historyContainer">
-          <div v-for="item in historyItems" :key="item" class="item" @click="handleItemClick(item)">
+          <div v-for="item in historyItems" :key="item" class="item van-ellipsis" @click="handleItemClick(item)">
             {{ item }}
           </div>
         </div>
@@ -49,7 +55,7 @@
 <script>
 import CardItem from '../List/components/CardItem'
 import { debounce } from '@/utils/index'
-import { getLineList } from '@/api/line'
+import { getLineSearch } from '@/api/line'
 export default {
   components: {
     CardItem
@@ -63,12 +69,17 @@ export default {
     }
   },
   mounted() {
-    let historyData = this.getHistory()
-    if (historyData) {
-      this.historyItems = JSON.parse(historyData)
-    }
+    this.getHistoryFromDisk()
   },
   methods: {
+    getHistoryFromDisk() {
+      let historyData = this.getHistory()
+      if (historyData) {
+        this.historyItems = JSON.parse(historyData)
+      } else {
+        this.historyItems = []
+      }
+    },
     // 返回上一页
     onClickLeft() {
       this.$router.go(-1)
@@ -96,7 +107,7 @@ export default {
           pageNumber: 9999
         }
         keyword && (params.key = keyword)
-        let { data: res } = await getLineList(params)
+        let { data: res } = await getLineSearch(params)
         if (res.success) {
           this.lists = res.data
           if (keyword) {
@@ -128,6 +139,11 @@ export default {
       if (history) {
         return history
       }
+    },
+    // 删除历史
+    deleteHistory() {
+      localStorage.removeItem('line')
+      this.getHistoryFromDisk()
     }
   }
 }
@@ -163,6 +179,12 @@ export default {
         color: #838A9D;
       }
     }
+  }
+  .subTitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 

@@ -99,7 +99,7 @@
               clickable
               label="合作期限（月）"
               required
-              placeholder="请填写0-999的数字'"
+              placeholder="请填写0-999的数字"
               type="number"
               maxlength="3"
               :rules="[{ required: true, message: '请填写合作期限' },
@@ -111,7 +111,7 @@
               clickable
               label="收入保障（元）"
               required
-              placeholder="请填写0-999999.99的数字'"
+              placeholder="请填写0-999999.99的数字"
               type="number"
               :rules="[{ required: true, message: '请填写收入保障' },
                        {validator:moneyCheck1, message: '请填写正确的数字'}]"
@@ -122,7 +122,7 @@
               clickable
               label="抽佣比例（%）"
               required
-              placeholder="请填写0-100的数字'"
+              placeholder="请填写0-100的数字"
               type="number"
               maxlength="5"
               :rules="[{ required: true, message: '请填写抽佣比例' },
@@ -134,7 +134,7 @@
               clickable
               label="商品金额（元）"
               required
-              placeholder="请填写0-999999.99的数字'"
+              placeholder="请填写0-999999.99的数字"
               type="number"
               :rules="[{ required: true, message: '请填写商品金额' },
                        {validator:moneyCheck2, message: '请填写正确的数字'}]"

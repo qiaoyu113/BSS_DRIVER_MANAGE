@@ -6,15 +6,17 @@
     <p v-if="obj.statusName != ''" class="dai">
       {{ obj.statusName }}
     </p>
-    <p class="text ellipsis">
-      出车单号:{{ obj.wayBillId }}
-    </p>
-    <p class="text ellipsis">
-      加盟经理:{{ obj.joinManagerName }}
-    </p>
-    <p class="text ellipsis">
-      路线名称:{{ obj.lineName }}
-    </p>
+    <div class="textBox">
+      <p class="text ellipsis">
+        出车单号:{{ obj.wayBillId }}
+      </p>
+      <p class="text ellipsis">
+        加盟经理:{{ obj.joinManagerName }}
+      </p>
+      <p class="text ellipsis">
+        路线名称:{{ obj.lineName }}
+      </p>
+    </div>
     <div class="detail van-hairline--top">
       <van-button type="default" round hairline @click="handleDetailClick(obj.wayBillId)">
         详情
@@ -78,10 +80,12 @@ export default {
 
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .CardItemcontainer {
-  padding: 0px 15px;
+  padding: 5px 15px 0px;
   font-family: PingFangSC-Semibold;
+  background: #fff;
+  width: 100%;
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -95,11 +99,16 @@ export default {
   .title>span{
     float: right;
   }
+  .textBox{
+    padding: 10px;
+  }
   .text {
-    margin-top:0px;
-    margin-bottom:8px;
     font-size: 13px;
+    padding: 0 10px;
+    box-sizing: border-box;
     color: #3C4353;
+    margin: 0;
+    line-height: 24px;
   }
 
   .footer {
@@ -123,16 +132,17 @@ export default {
     }
   }
   .detail {
-    padding: 7px 0px;
+    padding: 10px 0px;
     text-align: center;
     border-top-color:#D8D8D8;
   }
 }
 .dai{
-  width: 40px;
-  height: 15px;
   border: 1px solid #FF5D5D;
+  border-radius: 12px;
   border-radius: 10px;
+  display: inline;
+  padding: 2px 6px;
   text-align: center;
   color: #FF5D5D;
 }

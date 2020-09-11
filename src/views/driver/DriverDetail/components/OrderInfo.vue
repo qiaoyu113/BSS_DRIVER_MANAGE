@@ -10,24 +10,28 @@
     </van-cell>
     <van-cell-group>
       <van-field
+        v-if="obj.busiTypeName"
         label="商品分类"
         :value="obj.busiTypeName"
         readonly
         colon
       />
       <van-field
+        v-if="obj.cooperationModelName"
         label="合作模式"
         :value="obj.cooperationModelName"
         readonly
         colon
       />
       <van-field
+        v-if="obj.cooperationCarName"
         label="合作车型"
         :value="obj.cooperationCarName"
         colon
         readonly
       />
       <van-field
+        v-if="obj.cooperationTime"
         label="合作期限"
         colon
         :value="`${obj.cooperationTime}（月）`"

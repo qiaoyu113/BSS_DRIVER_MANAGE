@@ -76,7 +76,7 @@
             title-class="cell-title"
             value-class="cell-value"
             title="创建时间："
-            :value="detailInfo.createDate | parseTime('{y}-{m}-{d}')"
+            :value="detailInfo.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}')"
           />
         </div>
       </div>

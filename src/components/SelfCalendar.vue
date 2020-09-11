@@ -51,7 +51,7 @@ export default {
   methods: {
     // 获取label
     getLable() {
-      this.label = `${parseTime(this.form[this.pickerKey][0], '{m}/{d}')}-${parseTime(this.form[this.pickerKey][1], '{m}/{d}')}`
+      this.label = `${parseTime(this.form[this.pickerKey][0], '{y}/{m}/{d}')}-${parseTime(this.form[this.pickerKey][1], '{y}/{m}/{d}')}`
     },
     // 打开picker
     showPickerFn() {
@@ -59,8 +59,8 @@ export default {
     },
     // 点击确定
     onConfirm(obj) {
-      let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
-      let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+      let startName = `${obj[0].getFullYear()}/${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+      let endName = `${obj[1].getFullYear()}/${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
       this.label = `${startName}-${endName}`
       this.form[this.pickerKey] = obj
       this.showPicker = false
