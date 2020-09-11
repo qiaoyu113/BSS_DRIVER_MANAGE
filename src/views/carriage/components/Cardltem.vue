@@ -68,7 +68,7 @@ export default {
         let { data: res } = await shippingDetailByGM(parmas)
         if (res.success) {
           this.$router.push({
-            path: '/detail',
+            path: '/joindetail',
             query: { obj: JSON.stringify(res.data),
               type: '1' }
           })

@@ -1,32 +1,32 @@
 <template>
   <div class="CardItemcontainer">
     <h4 class="title ellipsis">
-      {{ obj.projectName }}
+      {{ obj.departureDate |formatDate }} /{{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
-    <p class="dai">
-      {{ obj.reportState ? '已上报':'未上报' }}
+    <p v-if="obj.statusName != ''" class="dai">
+      {{ obj.lineStatusName }}
     </p>
     <div class="textBox">
       <p class="text ellipsis">
-        上岗经理:{{ obj.dutyManagerName +'/'+ obj.dutyManagerPhone }}
+        出车单号:{{ obj.wayBillId }}
       </p>
       <p class="text ellipsis">
-        出车单数:{{ obj.wayBillNum+'个' }}
+        加盟经理:{{ obj.joinManagerName }}
       </p>
       <p class="text ellipsis">
-        上报单数:{{ `未上报${obj.wayBillNum - obj.lineReportedNum}/已上报${obj.lineReportedNum}` }} <span v-if="obj.isDiff && obj.reportState" class="differ">{{ obj.lineFee || 0 }}元</span>
+        路线名称:{{ obj.lineName }} <span v-if="obj.lineStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.feeDiff || 0 }}元</span>
       </p>
-      <div v-if="obj.isDiff && obj.reportState" class="text2 ellipsis">
+      <div v-if="obj.lineStatusCode === 1 && obj.feeDiff === 1" class="text2 ellipsis">
         <p class="differ">
           有差异
         </p>
         <p class="right_text">
-          {{ obj.lineFee || 0 }}元
+          {{ obj.feeDiff || 0 }}元
         </p>
       </div>
     </div>
     <div class="detail">
-      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj.projectId)">
+      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj.wayBillId)">
         详情
       </van-button>
     </div>
@@ -35,7 +35,6 @@
 
 <script>
 import { shippingDetailByGM } from '@/api/freight'
-
 export default {
   filters: {
     formatDate: function(value) {
@@ -54,17 +53,12 @@ export default {
       default: () => {}
     }
   },
-
   methods: {
     /**
      * 线路详情
      */
     handleDetailClick(id) {
-      // this.getGmInfoList(id)
-      this.$router.push({
-        path: '/outsidefreightlist',
-        query: { id: id }
-      })
+      this.getGmInfoList(id)
     },
     async getGmInfoList(id) {
       try {
@@ -74,22 +68,19 @@ export default {
         let { data: res } = await shippingDetailByGM(parmas)
         if (res.success) {
           this.$router.push({
-            path: '/outsidefreightlist',
-            query: { obj: res.data,
+            path: '/joindetail',
+            query: { obj: JSON.stringify(res.data),
               type: '1' }
           })
         } else {
-
-          // this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`get search data fail:${err}`)
       }
     }
-
   }
 }
-
 </script>
 
 <style lang='scss'>

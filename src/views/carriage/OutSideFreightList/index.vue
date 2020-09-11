@@ -2,7 +2,7 @@
   <div class="OutSideList">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="加盟运费" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="外线运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <div class="headerRight" @click="batch">
             批量上报
@@ -31,7 +31,7 @@
         @load="onLoad"
       >
         <!-- tabs -->
-        <van-tabs v-model="active" swipeable @change="handleTabChange">
+        <van-tabs v-model="listQuery.reportState" swipeable @change="handleTabChange">
           <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
             <template #title>
               {{ item.text }}
@@ -151,11 +151,11 @@
 </template>
 
 <script>
-import CardItem from '../components/Cardltem'
+import CardItem from './components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
-import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
+import { wayBillAmountDetail, getProjectWayBillList } from '@/api/freight'
 export default {
   components: {
     CardItem,
@@ -170,7 +170,6 @@ export default {
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
       finished: false, // 是否加载完成
-      active: '', // 当前激活的tab,
       // picker
       minDate: new Date(+new Date() - 86400000 * 365),
       maxDate: new Date(+new Date() + 86400000 * 365),
@@ -180,15 +179,18 @@ export default {
       tabArrs: [ // tabs数组
         {
           text: '全部',
-          num: 0
+          num: 0,
+          name: ''
         },
         {
           text: '待上报',
-          num: 0
+          num: 0,
+          name: 1
         },
         {
           text: '已上报',
-          num: 0
+          num: 0,
+          name: 2
         }
       ],
       lists: [],
@@ -208,14 +210,14 @@ export default {
       },
       // search
       listQuery: {
-        name: '',
-        name1: '',
-        name2: '',
-        name3: '',
-        name4: '',
-        name5: '',
-        name6: '',
-        name7: ''
+        projectId: '',
+        key: '',
+        limit: '20',
+        page: '1',
+        pageNumber: '',
+        reportState: null,
+        startDate: '',
+        endDate: ''
       },
       pickerNames: {
         name4: '',
@@ -271,6 +273,8 @@ export default {
     }
   },
   mounted() {
+    this.listQuery.projectId = this.$route.query.id;
+    this.onLoad(true)
   },
   methods: {
     checkAlls() {
@@ -318,15 +322,8 @@ export default {
     },
     async getConf() { // 首页加盟运费筛选
       try {
-        let parmas = {
-          customerCity: this.listQuery.name,
-          customer: this.listQuery.name1,
-          project: this.listQuery.name2,
-          dutyManagerId: this.listQuery.name3,
-          startDate: Date.parse(this.listQuery.startDate)
-        }
         this.$loading(true)
-        let { data: res } = await getGmInfoList(parmas)
+        let { data: res } = await getProjectWayBillList(this.listQuery)
         if (res.success) {
           this.lists = res.data
           this.listQuery = ''
@@ -345,29 +342,15 @@ export default {
     },
     handleTabChange(tab) {
       this.checkResult = []
-      // this.checkAll = false;
       this.onLoad(true);
-      // if (tab === 0) {
-      //   this.getConfirmInfoList(true, null)
-      // } else if (tab === 1) {
-      //   this.getConfirmInfoList(true, 0)
-      // } else if (tab === 2) {
-      //   this.getConfirmInfoList(true, 1)
-      // }
     },
-    async getConfirmInfoList(isInit) { // 首页加盟运费列表
+    async getConfirmInfoList() { // 首页加盟运费列表
       try {
-        this.$loading(true)
-        let params = {
-          page: this.page.current,
-          limit: this.page.size,
-          pageNumber: 20,
-          wayBillGMSaleStatus: this.active
-        }
-        let { data: res } = await getGmInfoList(params)
+        // this.$loading(true)
+        let { data: res } = await getProjectWayBillList(this.listQuery)
         if (res.success) {
           this.lists = this.lists.concat(res.data)
-          if (this.active === null) {
+          if (this.listQuery.reportState === null) {
             this.tabArrs.forEach(item => {
               if (item.name === this.form.customerState) {
                 item.num = res.title.all
@@ -375,7 +358,7 @@ export default {
                 item.num = null
               }
             })
-          } else if (this.active === 1) {
+          } else if (this.listQuery.reportState === 1) {
             this.tabArrs.forEach(item => {
               if (item.name === this.form.customerState) {
                 item.num = res.title.reported
@@ -402,8 +385,6 @@ export default {
         this.loading = false;
         this.error = true;
         console.log(`get list fail:${err}`)
-      } finally {
-        this.$loading(false)
       }
     },
     // 选择线路
@@ -437,15 +418,7 @@ export default {
         // 上拉加载更多
         this.page.current++;
       }
-      let statusType = ''
-      if (this.active === 0) {
-        statusType = null
-      } else if (this.active === 1) {
-        statusType = 0
-      } else if (this.active === 2) {
-        statusType = 1
-      }
-      let result = await this.getConfirmInfoList(isInit, statusType)
+      let result = await this.getConfirmInfoList()
       if (!result) {
         return false
       }
