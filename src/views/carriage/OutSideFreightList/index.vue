@@ -75,6 +75,7 @@
         :min-date="minDate"
         :max-date="maxDate"
         :formatter="formatter"
+        @cancel="showPicker = false"
         @confirm="onSubmit"
       />
     </van-popup>
