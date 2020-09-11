@@ -1,7 +1,7 @@
 <template>
   <div class="OutSideList">
     <!-- navbar -->
-    <van-sticky :offset-top="0">
+    <div class="top">
       <van-nav-bar title="加盟运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <div class="headerRight" @click="batch">
@@ -18,47 +18,46 @@
           </div>
         </template>
       </van-search>
-    </van-sticky>
-
-    <!-- 下拉刷新  上拉加载 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        :error.sync="error"
-        error-text="请求失败，点击重新加载"
-        @load="onLoad"
-      >
-        <!-- tabs -->
-        <van-tabs v-model="active" swipeable @change="handleTabChange">
-          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
-            <template #title>
-              {{ item.text }}
-              <div v-if="item.num" class="van-info">
-                {{ item.num }}
-              </div>
-            </template>
-          </van-tab>
-        </van-tabs>
-
-        <P v-if="optionsType" class="all">
-          <van-checkbox v-model="checkAll" class="checked" shape="square" @click="checkAlls">
-            <span class="text">全选</span>
-            <span class="text">已选择{{ checkedNum }} 个出车单位</span>
-          </van-checkbox>
-        </P>
-        <van-checkbox-group ref="checkboxGroup" v-model="checkResult">
-          <div v-for="sub in lists" :key="sub.id" class="listBox">
-            <p v-if="optionsType" class="checked-box">
-              <van-checkbox :name="sub.wayBillId" shape="square" />
-            </p>
-            <CardItem :obj="sub" />
-          </div>
-        </van-checkbox-group>
-      </van-list>
-    </van-pull-refresh>
-
+      <!-- tabs -->
+      <van-tabs v-model="form.wayBillGMSaleStatus" swipeable @change="handleTabChange">
+        <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
+          <template #title>
+            {{ item.title }}
+            <div v-if="item.name === form.wayBillGMSaleStatus" class="van-info">
+              {{ item.total }}
+            </div>
+          </template>
+        </van-tab>
+      </van-tabs>
+    </div>
+    <div class="list">
+      <!-- 下拉刷新  上拉加载 -->
+      <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
+          @load="onLoad"
+        >
+          <P v-if="optionsType" class="all">
+            <van-checkbox v-model="checkAll" class="checked" shape="square" @click="checkAlls">
+              <span class="text">全选</span>
+              <span class="text">已选择{{ checkedNum }} 个出车单位</span>
+            </van-checkbox>
+          </P>
+          <van-checkbox-group ref="checkboxGroup" v-model="checkResult">
+            <div v-for="sub in lists" :key="sub.id" class="listBox">
+              <p v-if="optionsType" class="checked-box">
+                <van-checkbox :name="sub.wayBillId" shape="square" />
+              </p>
+              <CardItem :obj="sub" />
+            </div>
+          </van-checkbox-group>
+        </van-list>
+      </van-pull-refresh>
+    </div>
     <!-- 右侧筛选抽屉 -->
     <SelfPopup
       :show.sync="showPopup"
@@ -66,59 +65,55 @@
       @submit="onSubmit"
       @reset="onReset"
     >
-      <!-- <van-field
+      <van-field
         readonly
         clickable
-        label-width="7em"
-        name="city"
-        :value="listQuery.city"
-        label="城市"
-        is-link
-        placeholder="请选择城市"
-        @click="showPickerFn('city')"
-      /> -->
-      <van-field
-        v-model="listQuery.driverCity"
         colon
-        name="driverCity"
-        label-width="7em"
+        label-width="6em"
+        is-link
         label="司机城市"
-        placeholder="请输入司机城市"
+        name="driverCity"
+        :value="pickerNames.driverCity"
+        placeholder="请选择"
+        @click="showPickerCity = true"
       />
       <van-field
-        v-model="listQuery.driver"
+        v-model="form.driver"
         colon
         name="driver"
-        label-width="7em"
+        label-width="6em"
         label="司机"
-        placeholder="请输入司机"
+        placeholder="请输入"
       />
       <van-field
-        v-model="listQuery.line"
+        v-model="form.line"
+        colon
+        label-width="6em"
         name="line"
-        colon
-        label-width="7em"
         label="线路"
-        placeholder="请输入线路"
+        placeholder="请输入"
       />
       <van-field
-        v-model="listQuery.gmId"
-        name="gmId"
+        label-width="6em"
+        :value="pickerNames['gmId']"
+        readonly
         colon
-        label-width="7em"
+        clickable
+        is-link
         label="加盟经理"
-        placeholder="请输入加盟经理"
+        placeholder="请选择"
+        @click="handleShowModal()"
       />
       <van-field
         readonly
         colon
         clickable
         label="出车时间"
-        label-width="7em"
+        label-width="6em"
         is-link
         name="date"
         :value="pickerNames.date"
-        placeholder="请选择出车时间"
+        placeholder="请选择"
         @click="showCalendar = true"
       />
     </SelfPopup>
@@ -129,12 +124,23 @@
       :min-date="minDate"
       :max-data="maxDate"
       :allow-same-day="true"
-      @confirm="onConfirmDate"
+      @confirm="onConfirm"
     />
+    <!-- picker -->
+    <van-popup v-model="showPickerCity" round position="bottom">
+      <van-picker
+        show-toolbar
+        :value-key="'name'"
+        :columns="cityList"
+        @cancel="showPickerCity = false"
+        @confirm="onConfirmPickerCity"
+      />
+    </van-popup>
+    <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
       :options="options"
-      :type="type"
+      :type="'gmId'"
       @keyWordValue="handleSearchChange"
       @finish="handleValueClick"
       @closed="showModal=false"
@@ -151,11 +157,13 @@
 </template>
 
 <script>
+import { getOpenCitys, GetSpecifiedRoleList } from '@/api/common'
 import CardItem from '../components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
+import dayjs from 'dayjs'
 export default {
   components: {
     CardItem,
@@ -164,6 +172,7 @@ export default {
   },
   data() {
     return {
+      showSuggest: true,
       error: false,
       showPopup: false, // 打开查询抽屉
       showCalendar: false, // 打开日历
@@ -177,80 +186,51 @@ export default {
       optionsType: false,
       checkResult: [],
       checkAll: false,
-      tabArrs: [ // tabs数组
+      tabArrs: [
         {
-          text: '全部',
-          num: 0
+          title: '全部',
+          total: 0,
+          name: ''
         },
         {
-          text: '待上报',
-          num: 0
+          title: '待上报',
+          total: 0,
+          name: 0
         },
         {
-          text: '已上报',
-          num: 0
+          title: '已上报',
+          total: 0,
+          name: 1
         }
       ],
       lists: [],
       showPicker: false,
-      columns: [
-        {
-          label: '稳定线路',
-          value: 1
-        },
-        {
-          label: '临时线路',
-          value: 0
-        }
-      ],
-      form: { // 查询表单
-
-      },
       // search
-      listQuery: {
-        name: '',
-        name1: '',
-        name2: '',
-        name3: '',
-        name4: '',
-        name5: '',
-        name6: '',
-        name7: ''
+      form: {
+        driverCity: '', // 司机城市
+        driver: '', // 司机
+        line: '', // 线路
+        gmId: '', // 上岗经理
+        startDate: '', // 线路上岗开始时间
+        endDate: '', // 线路上岗结束时间
+        wayBillGMSaleStatus: '' // 加盟侧和线路侧运单状态 全部null,待上报0,已上报1
+      },
+      page: {
+        current: 0,
+        limit: 20,
+        total: 0
       },
       pickerNames: {
-        name4: '',
-        name7: '',
+        driverCity: '',
         date: ''
       },
-      columns1: [
-        {
-          label: '专车',
-          value: 1
-        },
-        {
-          label: '共享',
-          value: 0
-        }
-      ],
+
+      showPickerCity: false,
 
       showModal: false,
       options: [],
       type: '',
-      cityList: [
-        {
-          name: '北京市',
-          code: 1
-        },
-        {
-          name: '上海市',
-          code: 0
-        }
-      ],
-      page: {
-        current: 0,
-        total: 0,
-        size: 10
-      },
+      cityList: [],
       checkedNum: 0
     }
   },
@@ -271,8 +251,56 @@ export default {
     }
   },
   mounted() {
+    this.fetchData();
   },
   methods: {
+    // 获取外线销售和上岗经理
+    async getSpecifiedRoleList(params) {
+      try {
+        let { data: res } = await GetSpecifiedRoleList(params)
+        if (res.success) {
+          this.options = res.data.map(item => ({
+            label: item.nick,
+            value: item.id
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get list fail:${err}`)
+      }
+    },
+    // 模糊搜索
+    handleSearchChange(value) {
+      let params = {
+        nickname: value,
+        roleId: 1
+      }
+      this.getSpecifiedRoleList(params)
+    },
+    // 打开模糊查询框
+    async handleShowModal() {
+      this.getSpecifiedRoleList({ roleId: 1, nickname: '' })
+      this.showModal = true
+    },
+    handleValueClick(obj) {
+      this.form[obj.type] = obj.value
+      this.pickerNames[obj.type] = obj.label
+    },
+    /**
+     * 请求字典接口
+     */
+    fetchData() {
+      getOpenCitys({})
+        .then(({ data }) => {
+          if (data.success) {
+            this.cityList = data.data;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     checkAlls() {
       if (!this.checkResult.length) {
         this.$refs.checkboxGroup.toggleAll(true);
@@ -319,17 +347,17 @@ export default {
     async getConf() { // 首页加盟运费筛选
       try {
         let parmas = {
-          customerCity: this.listQuery.name,
-          customer: this.listQuery.name1,
-          project: this.listQuery.name2,
-          dutyManagerId: this.listQuery.name3,
-          startDate: Date.parse(this.listQuery.startDate)
+          customerCity: this.form.name,
+          customer: this.form.name1,
+          project: this.form.name2,
+          dutyManagerId: this.form.name3,
+          startDate: Date.parse(this.form.startDate)
         }
         this.$loading(true)
         let { data: res } = await getGmInfoList(parmas)
         if (res.success) {
           this.lists = res.data
-          this.listQuery = ''
+          this.form = ''
         } else {
           this.loading = false;
           this.error = true;
@@ -343,78 +371,94 @@ export default {
         this.$loading(false)
       }
     },
-    handleTabChange(tab) {
-      this.checkResult = []
-      // this.checkAll = false;
-      this.onLoad(true);
-      // if (tab === 0) {
-      //   this.getConfirmInfoList(true, null)
-      // } else if (tab === 1) {
-      //   this.getConfirmInfoList(true, 0)
-      // } else if (tab === 2) {
-      //   this.getConfirmInfoList(true, 1)
-      // }
+    async handleTabChange(tab) {
+      this.lists = [];
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
+      this.isModeData()
     },
-    async getConfirmInfoList(isInit) { // 首页加盟运费列表
+    /**
+     * picker city 选择
+     */
+    onConfirmPickerCity(value) {
+      this.pickerNames.driverCity = value.name;
+      this.form.driverCity = value.code;
+      this.showPickerCity = false;
+    },
+    /**
+     * 处理参数
+     */
+    delForm(form) {
+      let obj = {};
+      Object.keys(form).forEach((key) => {
+        if (form[key] !== '') {
+          obj[key] = form[key];
+        }
+      });
+      return obj;
+    },
+    // 获取列表
+    async getLists(isInit) {
+      let toast;
       try {
-        this.$loading(true)
-        let params = {
-          page: this.page.current,
-          limit: this.page.size,
-          pageNumber: 20,
-          wayBillGMSaleStatus: this.active
-        }
-        let { data: res } = await getGmInfoList(params)
+        toast = this.$toast.loading({
+          duration: 0,
+          message: '加载中...',
+          forbidClick: true,
+          loadingType: 'spinner'
+        })
+        const params = this.delForm(this.form);
+        params.page = this.page.current;
+        params.limit = this.page.limit;
+        let { data: res } = await getGmInfoList(params);
         if (res.success) {
-          this.lists = this.lists.concat(res.data)
-          if (this.active === null) {
-            this.tabArrs.forEach(item => {
-              if (item.name === this.form.customerState) {
-                item.num = res.title.all
-              } else {
-                item.num = null
-              }
-            })
-          } else if (this.active === 1) {
-            this.tabArrs.forEach(item => {
-              if (item.name === this.form.customerState) {
-                item.num = res.title.reported
-              } else {
-                item.num = 0
-              }
-            })
-          } else {
-            this.tabArrs.forEach(item => {
-              if (item.name === this.form.customerState) {
-                item.num = res.title.notReport
-              } else {
-                item.num = 1
-              }
-            })
+          let newLists = res.data;
+          if (!isInit) {
+            newLists = this.lists.concat(newLists);
           }
-          return res;
+          let result = {
+            lists: newLists,
+            hasMore: res.page.total > newLists.length
+          }
+          this.tabArrs.forEach((item) => {
+            if (item.name === this.form.wayBillGMSaleStatus) {
+              item.total = res.page.total;
+            } else {
+              item.total = 0;
+            }
+          });
+          return result;
         } else {
+          this.page.current--;
           this.loading = false;
           this.error = true;
-          this.$toast.fail(res.errorMsg)
+          this.refreshing = false;
+          this.finished = true;
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
+        this.page.current--;
         this.loading = false;
         this.error = true;
-        console.log(`get list fail:${err}`)
+        this.refreshing = false;
+        this.finished = true;
+        console.log(`get list fail:${err}`);
       } finally {
-        this.$loading(false)
+        toast.clear();
       }
     },
-    // 选择线路
-    onConfirm(obj) {
-      this.showPicker = false;
-      this.$router.push({
-        path: '/createLine',
-        query: {
-          isStable: obj.value
-        }
-      })
+    /**
+     * 日期选择
+     */
+    onConfirm(date) {
+      const [start, end] = date;
+      this.showCalendar = false;
+      let startDate = parseTime(start, '{y}-{m}-{d}');
+      let endDate = parseTime(end, '{y}-{m}-{d}');
+      this.pickerNames.date = `${startDate} - ${endDate}`;
+      this.form.startDate = +dayjs(startDate);
+      this.form.endDate = +dayjs(endDate);
     },
     /**
      * 日期选择
@@ -425,41 +469,28 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.pickerNames.date = `${startDate} - ${endDate}`;
-      this.listQuery.startDate = startDate;
-      this.listQuery.endDate = endDate;
+      this.form.startDate = startDate;
+      this.form.endDate = endDate;
     },
     async onLoad(isInit = false) {
-      if (isInit === true) {
-        // 下拉刷新
-        this.page.current = 1;
-        this.lists = [];
-      } else {
-        // 上拉加载更多
-        this.page.current++;
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
       }
-      let statusType = ''
-      if (this.active === 0) {
-        statusType = null
-      } else if (this.active === 1) {
-        statusType = 0
-      } else if (this.active === 2) {
-        statusType = 1
-      }
-      let result = await this.getConfirmInfoList(isInit, statusType)
+      let result = await this.getLists(isInit)
       if (!result) {
         return false
       }
-      if (isInit === true) {
-        // 下拉刷新
-        this.refreshing = false;
-        this.finished = false;
-      } else {
-        // 上拉加载更多
+      this.lists = result.lists
+      if (isInit === true) { // 下拉刷新
+        this.refreshing = false
+        this.finished = false
+      } else { // 上拉加载更多
         this.loading = false;
-        if (result) {
-          if (!result.hasMore) {
-            this.finished = true;
-          }
+        if (!result.hasMore) {
+          this.finished = true
         }
       }
     },
@@ -475,17 +506,26 @@ export default {
     /**
      * 提交查询
      */
-    onSubmit(value) {
-      this.getConf()
-      this.showPopup = false;
-      this.refreshing = true;
-      // console.log('submit', value);
+    async onSubmit(value) {
+      this.showPopup = false
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
+      this.isModeData()
+    },
+    // 是否更多数据
+    isModeData() {
+      if (this.lists.length === 0) {
+        this.finished = true
+      } else {
+        this.finished = false
+      }
     },
     /**
      * 重置form
      */
     onReset(form) {
-      this.listQuery = this.$options.data().listQuery;
+      this.form = this.$options.data().form;
       this.pickerNames = this.$options.data().pickerNames;
       form.resetValidation();
     },
@@ -500,27 +540,6 @@ export default {
         this.columns = this.whyList;
       }
       this.showPicker = true;
-    },
-    // 模糊搜索
-    handleSearchChange(value) {
-      console.log('这里面接口请求模糊查询:', value)
-    },
-    /**
-     *点击某一项
-     */
-    handleValueClick(obj) {
-      console.log('xxx:', obj)
-    },
-    handleShowModal(text) {
-      if (text === 'manager') {
-        this.options = []
-      } else if (text === 'sell') {
-        this.options = []
-      } else if (text === 'carType') {
-        this.options = []
-      }
-      this.type = text
-      this.showModal = true
     }
   }
 }
@@ -529,6 +548,17 @@ export default {
 <style lang='scss' scoped>
 .OutSideList {
   background:#f9f9f9;
+  display: flex;
+  flex-direction: column;
+  background: #f9f9f9;
+  .top {
+    margin-bottom: 5px;
+    background-color: #f9f9f9;
+  }
+  .list {
+    flex: 1;
+    overflow: auto;
+  }
   .listBox{
     width: 100%;
     display: flex;
@@ -585,7 +615,7 @@ export default {
     display: flex;
     z-index: 999;
     justify-content: space-between;
-    position: fixed;
+    position: relative;
     bottom: 0;
     padding: 11px 0 15px;
     background: #fff;
@@ -622,9 +652,5 @@ width: 80%;
 height: 100vh;
 box-sizing: border-box;
 }
-.OutSideList >>>.van-button--primary:nth-child(2){
-    color: #fff;
-    background-color: #1c4be7bd;
-    border: 1px solid #2f448a;
-}
+
 </style>

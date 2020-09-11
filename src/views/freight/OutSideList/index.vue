@@ -212,7 +212,7 @@ export default {
       showPickerCity: false,
       showCalendar: false,
       pickerKey: '',
-      cityList: [], // 掉线原因
+      cityList: [],
       options: []
     };
   },
@@ -337,10 +337,12 @@ export default {
     /**
      * 提交查询
      */
-    onSubmit(value) {
-      this.showPopup = false;
-      this.refreshing = true;
-      this.onRefresh();
+    async onSubmit(value) {
+      this.showPopup = false
+      this.page.current = 1
+      let result = await this.getLists(true)
+      this.lists = result.lists
+      this.isModeData()
     },
     /**
      * 重置form
@@ -378,6 +380,7 @@ export default {
     },
     // 状态切换
     async handleTabChange(tab) {
+      this.lists = [];
       this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists
