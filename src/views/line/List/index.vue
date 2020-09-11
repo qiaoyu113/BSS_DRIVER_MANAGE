@@ -22,32 +22,34 @@
     </van-sticky>
 
     <!-- 下拉刷新  上拉加载 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        :error.sync="error"
-        finished-text="没有更多了"
-        error-text="请求失败，点击重新加载"
-        @load="onLoad"
-      >
-        <!-- tabs -->
-        <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
-          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
-            <template #title>
-              {{ item.text }}
-              <div v-if="item.num" class="van-info">
-                {{ item.num }}
+    <div class="loadList">
+      <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          :error.sync="error"
+          finished-text="没有更多了"
+          error-text="请求失败，点击重新加载"
+          @load="onLoad"
+        >
+          <!-- tabs -->
+          <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
+            <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
+              <template #title>
+                {{ item.text }}
+                <div v-if="item.num" class="van-info">
+                  {{ item.num }}
+                </div>
+              </template>
+              <div v-for="sub in lists" :key="sub.id">
+                <CardItem :obj="sub" />
+                <div class="lineHeight"></div>
               </div>
-            </template>
-            <div v-for="sub in lists" :key="sub.id">
-              <CardItem :obj="sub" />
-              <div class="lineHeight"></div>
-            </div>
-          </van-tab>
-        </van-tabs>
-      </van-list>
-    </van-pull-refresh>
+            </van-tab>
+          </van-tabs>
+        </van-list>
+      </van-pull-refresh>
+    </div>
 
     <!-- 右侧筛选抽屉 -->
     <SelfPopup
@@ -344,7 +346,9 @@ export default {
   },
   methods: {
     onClickLeft() {
-      this.$router.go(-1)
+      this.$router.replace({
+        path: '/'
+      })
     },
     // 是否更多数据
     isModeData() {
@@ -366,12 +370,15 @@ export default {
       if (!result) {
         return false
       }
-      this.lists = result.lists
+
       if (isInit === true) { // 下拉刷新
+        this.lists = result.lists
         this.refreshing = false
         this.finished = false
       } else { // 上拉加载更多
+        this.lists.push(...result.lists)
         this.loading = false;
+
         if (!result.hasMore) {
           this.finished = true
         }
@@ -545,14 +552,15 @@ export default {
         this.form.driverWorkTime && (params.driverWorkTime = new Date(this.form.driverWorkTime).getTime())
         if (this.form.date && this.form.date.length > 1) {
           params.startDate = new Date(this.form.date[0]).getTime()
+          this.form.date[1].setHours(23, 59, 59)
           params.endDate = new Date(this.form.date[1]).getTime()
         }
         let { data: res } = await getLineList(params)
         if (res.success) {
           let newLists = res.data
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
-          }
+          // if (!isInit) {
+          //   newLists = this.lists.concat(newLists)
+          // }
           let result = {
             lists: newLists,
             hasMore: res.page.total > newLists.length
@@ -635,6 +643,9 @@ export default {
     i {
       transform: rotate(90deg);
     }
+  }
+  .loadList {
+    height:calc(100vh - 100px);
   }
   .lineHeight {
     background: #F9F9F9;
