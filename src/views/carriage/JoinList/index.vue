@@ -620,7 +620,7 @@ export default {
   }
   .Bulk{
     width: 100%;
-    height: 50px;
+    height: 38px;
     display: flex;
     z-index: 999;
     justify-content: space-between;
