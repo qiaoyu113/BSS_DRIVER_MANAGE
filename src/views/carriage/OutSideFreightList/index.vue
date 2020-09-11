@@ -201,7 +201,7 @@ export default {
           this.$router.push({
             path: '/outsidereport',
             query: {
-              obj: JSON.stringify(res.data)
+              obj: JSON.stringify(this.checkResult)
             }
           })
         } else {

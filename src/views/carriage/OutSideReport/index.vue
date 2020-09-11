@@ -71,7 +71,7 @@
   </div>
 </template>
 <script>
-import { noCarBatchBySale, reportMoneyBatchBySale } from '@/api/freight'
+import { noCarBatchBySale, reportMoneyBatchBySale, wayBillAmountDetail } from '@/api/freight'
 import { delay } from '@/utils'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
@@ -88,44 +88,51 @@ export default {
   },
   mounted() {
     let objs = JSON.parse(this.$route.query.obj)
-    let ret = []
-    let list = []
-    objs.forEach((i, index) => {
-      // this.freightForm[index].list = i
-      if (ret.indexOf(i.wayBillId) === -1) {
-        ret.push(i.wayBillId)
-        i.check = true
-        i.price = ''
-        i.list = []
-        let lists = Object.assign({}, i)
-        lists.list.push({
-          deliverTime: lists.deliverTime,
-          wayBillId: lists.wayBillId,
-          wayBillAmountId: lists.wayBillAmountId,
-          check: lists.check,
-          price: lists.price
-        })
-        list.push(lists)
-      } else {
-        list.array.forEach((e) => {
-          if (e.wayBillId === i.wayBillId) {
+    this.getList(objs)
+  },
+  methods: {
+    async getList(id) {
+      let { data: res } = await wayBillAmountDetail(id)
+      if (res.success) {
+        let objs = res.data
+        let ret = []
+        let list = []
+        objs.forEach((i, index) => {
+          // this.freightForm[index].list = i
+          if (ret.indexOf(i.wayBillId) === -1) {
+            ret.push(i.wayBillId)
             i.check = true
             i.price = ''
+            i.list = []
             let lists = Object.assign({}, i)
-            e.list.push({
+            lists.list.push({
               deliverTime: lists.deliverTime,
               wayBillId: lists.wayBillId,
               wayBillAmountId: lists.wayBillAmountId,
               check: lists.check,
               price: lists.price
             })
+            list.push(lists)
+          } else {
+            list.array.forEach((e) => {
+              if (e.wayBillId === i.wayBillId) {
+                i.check = true
+                i.price = ''
+                let lists = Object.assign({}, i)
+                e.list.push({
+                  deliverTime: lists.deliverTime,
+                  wayBillId: lists.wayBillId,
+                  wayBillAmountId: lists.wayBillAmountId,
+                  check: lists.check,
+                  price: lists.price
+                })
+              }
+            })
           }
         })
+        this.obj = list
       }
-    })
-    this.obj = list
-  },
-  methods: {
+    },
     onClickLeft() {
       this.$router.go(-1)
     },
