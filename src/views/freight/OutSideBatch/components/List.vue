@@ -124,6 +124,7 @@ export default {
   margin-left:20px ;
   font-family: PingFangSC-Semibold;
   position: relative;
+  box-sizing: border-box;
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;

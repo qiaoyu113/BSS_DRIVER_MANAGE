@@ -117,7 +117,6 @@ export default {
   padding: 0px 30px;
   margin-top: 20px;
   margin-left:20px ;
-  font-family: PingFangSC-Semibold;
   position: relative;
   .ellipsis {
     text-overflow: ellipsis;

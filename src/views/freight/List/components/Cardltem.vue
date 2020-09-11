@@ -4,7 +4,7 @@
       {{ obj.departureDate |formatDate }} /{{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
     <p v-if="obj.statusName != ''" class="dai">
-      {{ obj.statusName }}
+      {{ obj.gmStatusName }}
     </p>
     <div class="textBox">
       <p class="text ellipsis">
@@ -14,11 +14,19 @@
         加盟经理:{{ obj.joinManagerName }}
       </p>
       <p class="text ellipsis">
-        路线名称:{{ obj.lineName }}
+        路线名称:{{ obj.lineName }} <span v-if="obj.gmStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.feeDiff || 0 }}元</span>
       </p>
+      <div v-if="obj.gmStatusCode === 1 && obj.feeDiff === 1" class="text2 ellipsis">
+        <p class="differ">
+          有差异
+        </p>
+        <p class="right_text">
+          {{ obj.feeDiff || 0 }}元
+        </p>
+      </div>
     </div>
-    <div class="detail van-hairline--top">
-      <van-button type="default" round hairline @click="handleDetailClick(obj.wayBillId)">
+    <div class="detail">
+      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj.wayBillId)">
         详情
       </van-button>
     </div>
@@ -63,7 +71,7 @@ export default {
         if (res.success) {
           this.$router.push({
             path: '/detail',
-            query: { obj: res.data,
+            query: { obj: JSON.stringify(res.data),
               type: '1' }
           })
         } else {
@@ -83,9 +91,9 @@ export default {
 <style lang='scss'>
 .CardItemcontainer {
   padding: 5px 15px 0px;
-  font-family: PingFangSC-Semibold;
   background: #fff;
   width: 100%;
+  box-sizing: border-box;
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -109,8 +117,41 @@ export default {
     color: #3C4353;
     margin: 0;
     line-height: 24px;
+    .differ{
+      height: 25px;
+      line-height: 25px;
+      float: right;
+      margin: auto;
+      color: #7F8FBD;
+    }
   }
-
+  .text2 {
+    height: 25px;
+    font-size: 13px;
+    padding: 0;
+    box-sizing: border-box;
+    color: #3C4353;
+    margin: 0 -10px;
+    margin-top: 4px;
+    .differ{
+      padding:3px 15px;
+      box-sizing: border-box;
+      background: #EFF5FE;
+      border-radius: 3px;
+      font-size: 13px;
+      color: #649CEE;
+      display: inline-block;
+      margin: 0;
+      height: 25px;
+    }
+    .right_text{
+      height: 25px;
+      line-height: 25px;
+      float: right;
+      margin: auto;
+      color: #7F8FBD;
+    }
+  }
   .footer {
     margin-bottom:12.5px;
     display: flex;
@@ -134,7 +175,7 @@ export default {
   .detail {
     padding: 10px 0px;
     text-align: center;
-    border-top-color:#D8D8D8;
+    border-top: 1px solid #D8D8D8;
   }
 }
 .dai{
@@ -153,7 +194,9 @@ export default {
   .CardItemcontainer >>> .van-button--default  {
     color:#838A9D;
     background: #fff;
-    height:70px;
-    height:20px;
+    width: 70px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
   }
 </style>

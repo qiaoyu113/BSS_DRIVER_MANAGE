@@ -175,17 +175,17 @@ export default {
               height: '0.9467rem',
               marginTop: '0.1rem'
             }
-          },
-          {
-            title: '运费确认',
-            url: '/report',
-            icon: require('../../assets/Home/icon_10.png'),
-            style: {
-              width: '1.04rem',
-              height: '1.1333rem',
-              marginTop: '-0.1rem'
-            }
           }
+          // {
+          //   title: '运费确认',
+          //   url: '/report',
+          //   icon: require('../../assets/Home/icon_10.png'),
+          //   style: {
+          //     width: '1.04rem',
+          //     height: '1.1333rem',
+          //     marginTop: '-0.1rem'
+          //   }
+          // }
         ],
         // 试跑-在跑
         [
