@@ -41,7 +41,7 @@
           <van-icon v-if="historyItems.length > 0" name="delete" size="20" color="#7F8FBD" @click="deleteHistory" />
         </div>
         <div class="historyContainer">
-          <div v-for="item in historyItems" :key="item" class="item" @click="handleItemClick(item)">
+          <div v-for="item in historyItems" :key="item" class="item van-ellipsis" @click="handleItemClick(item)">
             {{ item }}
           </div>
         </div>
