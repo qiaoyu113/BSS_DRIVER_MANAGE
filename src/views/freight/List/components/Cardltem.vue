@@ -4,7 +4,7 @@
       {{ obj.departureDate |formatDate }} /{{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
     <p v-if="obj.statusName != ''" class="dai">
-      {{ obj.statusName }}
+      {{ obj.gmStatusName }}
     </p>
     <div class="textBox">
       <p class="text ellipsis">
@@ -14,9 +14,9 @@
         加盟经理:{{ obj.joinManagerName }}
       </p>
       <p class="text ellipsis">
-        路线名称:{{ obj.lineName }} <span class="differ">{{ obj.feeDiff || 0 }}元</span>
+        路线名称:{{ obj.lineName }} <span v-if="obj.gmStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.feeDiff || 0 }}元</span>
       </p>
-      <div class="text2 ellipsis">
+      <div v-if="obj.gmStatusCode === 1 && obj.feeDiff === 1" class="text2 ellipsis">
         <p class="differ">
           有差异
         </p>
@@ -71,7 +71,7 @@ export default {
         if (res.success) {
           this.$router.push({
             path: '/detail',
-            query: { obj: res.data,
+            query: { obj: JSON.stringify(res.data),
               type: '1' }
           })
         } else {
