@@ -92,7 +92,7 @@
         />
         <van-field
           v-model="formData.phone"
-          name="phone"
+          name="phonePatternIshas"
           label="司机手机号"
           type="tel"
           clearable
@@ -251,12 +251,13 @@
           :form="formData"
           :columns="columns_childNum"
           value="dictLabel"
+          name="validatorChildNum"
           :is-computed="formData['childNum']!=='' "
           required
           label="子女数"
           placeholder="请选择"
           :rules="[
-            { required: true , message: '请选择' },
+            { validator:validatorChildNum, message: '请输入正确内容' },
           ]"
           @click.native="copyData('childNum')"
         />
@@ -1065,6 +1066,13 @@ export default {
         .catch(() => {
           // on cancel
         });
+    },
+    // 校验子女数
+    validatorChildNum(val) {
+      if (val !== '') {
+        return true
+      }
+      return false
     }
   }
 };
