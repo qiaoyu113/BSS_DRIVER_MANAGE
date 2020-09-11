@@ -291,12 +291,14 @@ export default {
       if (this.checkResult.length) {
         let { data: res } = await wayBillAmountDetail(this.checkResult)
         if (res.success) {
-          this.$router.push({
-            path: '/outsidereport',
-            query: {
-              obj: JSON.stringify(res.data)
-            }
-          })
+          if (res.data.length) {
+            this.$router.push({
+              path: '/joinreport',
+              query: {
+                obj: JSON.stringify(this.checkResult)
+              }
+            })
+          }
         } else {
           this.$toast.fail(res.errorMsg)
         }
@@ -338,22 +340,16 @@ export default {
       } catch (err) {
         this.loading = false;
         this.error = true;
-        console.log(`get list fail:${err}`)
       } finally {
         this.$loading(false)
       }
     },
     handleTabChange(tab) {
       this.checkResult = []
-      // this.checkAll = false;
+      if (tab === 2) {
+        this.optionsType = false;
+      }
       this.onLoad(true);
-      // if (tab === 0) {
-      //   this.getConfirmInfoList(true, null)
-      // } else if (tab === 1) {
-      //   this.getConfirmInfoList(true, 0)
-      // } else if (tab === 2) {
-      //   this.getConfirmInfoList(true, 1)
-      // }
     },
     async getConfirmInfoList(isInit) { // 首页加盟运费列表
       try {
@@ -528,7 +524,12 @@ export default {
 
 <style lang='scss' scoped>
 .OutSideList {
-  background:#f9f9f9;
+    background:#f9f9f9;
+    padding-bottom: 30px;
+    box-sizing: border-box;
+  .van-info{
+    transform: translate(-10%, 0);
+  }
   .listBox{
     width: 100%;
     display: flex;

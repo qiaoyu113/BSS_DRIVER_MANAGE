@@ -55,6 +55,22 @@ export default [
     meta: {
       title: '外线运费详情'
     }
+  },
+  {
+    path: '/joinsearch',
+    name: 'joinsearch',
+    component: resolve => require(['@/views/carriage/JoinSearch'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
+  },
+  {
+    path: '/outsidesearch',
+    name: 'outsidesearch',
+    component: resolve => require(['@/views/carriage/OutSideListSearch'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
   }
 
   // {
@@ -97,20 +113,4 @@ export default [
   //     title: '搜索项目'
   //   }
   // },
-  // {
-  //   path: '/joinsearch',
-  //   name: 'joinsearch',
-  //   component: resolve => require(['@/views/carriage/JoinSearch'], resolve),
-  //   meta: {
-  //     title: '搜索项目'
-  //   }
-  // },
-  // {
-  //   path: '/outsidesearch',
-  //   name: 'outsidesearch',
-  //   component: resolve => require(['@/views/carriage/OutSideListSearch'], resolve),
-  //   meta: {
-  //     title: '搜索项目'
-  //   }
-  // }
 ]

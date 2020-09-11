@@ -441,6 +441,9 @@ export default {
   display: flex;
   flex-direction: column;
   background: @body-bg;
+  .van-info{
+    transform: translate(-10%, 0);
+  }
   .top {
     margin-bottom: 5px;
     background-color: @body-bg;

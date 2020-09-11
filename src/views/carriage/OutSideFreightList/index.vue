@@ -390,6 +390,9 @@ export default {
   display: flex;
   flex-direction: column;
   background:#f9f9f9;
+  .van-info{
+    transform: translate(-10%, 0);
+  }
   .top {
     margin-bottom: 5px;
     background:#f9f9f9;

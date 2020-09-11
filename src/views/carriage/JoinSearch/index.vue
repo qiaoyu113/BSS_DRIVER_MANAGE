@@ -2,7 +2,7 @@
   <div class="JoinSearch">
     <!-- nav-bar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="运费搜索" left-text="返回" left-arrow @click-left="onClickLeft" />
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <!-- 搜索 -->
     <van-search
@@ -34,7 +34,14 @@
     </template>
     <template v-else>
       <div v-show="options.length === 0" class="history">
-        <h4>历史记录</h4>
+        <h4 class="flex align-center justify-between">
+          <div>历史记录</div>
+          <van-icon
+            v-if="historyItems.length > 0"
+            name="delete"
+            @click="onDelete"
+          />
+        </h4>
         <div class="historyContainer">
           <div v-for="item in historyItems" :key="item" class="item" @click="handleItemClick(item)">
             {{ item }}
@@ -47,7 +54,7 @@
 </template>
 
 <script>
-import CardItem from '../List/components/Cardltem'
+import CardItem from '../OutSideList/components/CardItem'
 import { debounce } from '@/utils/index'
 import { getGmInfoListByKeyWord } from '@/api/freight'
 export default {
@@ -60,7 +67,13 @@ export default {
       lists: [], // 查询出来的数据
       historyItems: [], // 历史搜索
       options: [], // 关键字查出来的关键字
-      type: ''
+      type: '',
+      localKey: 'joinSide'
+    }
+  },
+  computed: {
+    title() {
+      return this.$route.meta.title;
     }
   },
   mounted() {
@@ -86,7 +99,21 @@ export default {
     onSearcha() {
       this.getGmInfoListByKeyWorld(this.keyWord)
     },
-
+    /**
+     * 删除历史记录
+     */
+    onDelete() {
+      this.$dialog
+        .alert({
+          title: '提示',
+          message: '确定删除全部历史记录？',
+          showCancelButton: true
+        })
+        .then(() => {
+          localStorage.removeItem(this.localKey);
+          this.historyItems = [];
+        });
+    },
     // 取消
     onCancel() {
       this.keyWord = ''
@@ -102,7 +129,6 @@ export default {
         let params = {
           page: 1,
           pageNumber: 20
-
         }
         keyword && (params.key = keyword)
         let { data: res } = await getGmInfoListByKeyWord(params)
@@ -127,15 +153,15 @@ export default {
         this.historyItems.splice(index, 1)
       }
 
-      if (this.historyItems.length >= 5) {
-        this.historyItems.shift()
+      if (this.historyItems.length >= 10) {
+        this.historyItems.pop()
       }
       this.historyItems.push(keyword)
-      localStorage.setItem('line', JSON.stringify(this.historyItems))
+      localStorage.setItem(this.localKey, JSON.stringify(this.historyItems))
     },
     // 获取从localStorage
     getHistory() {
-      let history = localStorage.getItem('line')
+      let history = localStorage.getItem(this.localKey)
       if (history) {
         return history
       }
