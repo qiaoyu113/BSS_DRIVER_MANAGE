@@ -28,9 +28,9 @@ export default [
     path: '/detail',
     name: 'detail',
     // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
-    component: resolve => require(['@/views/freight/Detail'], resolve),
+    component: resolve => require(['@/views/freight/JoinDetail/index'], resolve),
     meta: {
-      title: '运费'
+      title: '运费详情'
     }
   },
   {

@@ -4,61 +4,65 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div class="headerRight" @click="showPopup(obj)">
+          <div v-if="obj.gmState === 0" class="headerRight" @click="showPopup(obj)">
             上报
           </div>
         </template>
       </van-nav-bar>
     </van-sticky>
-    <div class="CardItemcontainer megin">
-      <h4 class="title ellipsis">
-        {{ obj.customerName }} {{ obj.customerName }}/{{ obj.customerName }}
-        <span style="color: 0000ff73;">{{ obj.confirmMoney }}</span>
-      </h4>
-      <P class="text ellipsis">
-        出车单号:{{ obj.wayBillId }}
-      </P>
-      <P class="text ellipsis">
-        加盟经理:{{ obj.joinManagerName }}/{{ obj.gmPhone }}
-      </P>
-      <P class="text ellipsis">
-        线路名称：{{ obj.lineName }}
-      </P>
-
-      <p class="text ellipsis">
-        上报人：{{ obj.gmReportName }}/{{ obj.gmReportPhone }}
-      </p>
-      <p class="text ellipsis">
-        上报时间：{{ obj.gmReportTime }}
-      </p>
-      <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
-        趟数{{ item.tripNo }}金额：{{ item.gmFee }}
-      </p>
-      <!-- <p class="text ellipsis">
-        趟数2金额：{{}}
-      </p> -->
-      <p class="text ellipsis">
-        备注：{{ obj.remark }}
-      </p>
-      <p class="text ellipsis">
-        确认状态：{{ obj.confirmStateName }}
-      </p>
+    <div class="freightDetail">
+      <div class="title ellipsis">
+        {{ obj.customerName }}
+        <span v-if="obj.gmState === 0" class="states">{{ obj.gmStateName }}</span>
+        <span v-if="obj.gmState === 1" class="prices">{{ obj.gmFee }}</span>
+      </div>
+      <div class="deter_context">
+        <p class="text ellipsis">
+          出车编号：<span>{{ obj.wayBillId }}</span>
+        </p>
+        <p v-if="obj.gmState === 1" class="text ellipsis">
+          加盟经理：<span>{{ obj.gmName }}/{{ obj.gmPhone }}</span>
+        </p>
+        <p class="text ellipsis">
+          线路名称：<span>{{ obj.lineName }}/{{ obj.lineId }}</span>
+        </p>
+        <p v-if="obj.gmState === 1" class="text ellipsis">
+          上报人：<span>{{ obj.gmReportName }}/{{ obj.gmReportPhone }}</span>
+        </p>
+        <p v-if="obj.gmState === 1" class="text ellipsis">
+          上报时间：<span>{{ obj.gmReportTime }}</span>
+        </p>
+        <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
+          趟数{{ item.tripNo }}金额：<span>{{ item.gmFee || 0 }}元</span>
+        </p>
+        <p v-if="obj.gmState === 1" class="text ellipsis">
+          备注：<span>{{ obj.remark | DataIsNull }}</span>
+        </p>
+        <p class="text ellipsis">
+          确认状态：<span>{{ obj.confirmStateName }}</span>
+        </p>
+      </div>
     </div>
     <van-popup v-model="show">
       <div class="danceng" style=" border-radius:5px">
-        <p>运费上报</p>
-        <div>
-          <div v-for="item in arrstr" :key="item.id">
-            <p>*第{{ item.deliverNo }}趟</p>
-            <li style=" list-style: none;">
-              <span>{{ item.deliverTime }}</span>
-              <input :value="Number(item.preMoney).toFixed(2)" type="text" style="border:none;width:100px">
-              <van-button type="default">
-                元
-              </van-button>
-            </li>
-          </div>
-
+        <van-form @submit="footer_confirm">
+          <p class="title">
+            运费上报
+          </p>
+          <van-field
+            v-for="(item, index) in arrstr"
+            :key="item.id"
+            v-model="item.preMoney"
+            v-only-number="{min: 0}"
+            :name="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
+            :label="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
+            placeholder="请输入运费(元)"
+            label-width="120px"
+            input-align="right"
+            error-message-align="right"
+            :rules="[{ required: true, message: '请输入运费' }]"
+          >
+          </van-field>
           <div class="Remarks">
             <van-field
               v-model="message"
@@ -71,15 +75,15 @@
             />
           </div>
           <p class="footer_but">
-            <button @click="show = false">
+            <van-button @click="show = false">
               取消
-            </button>
-            <button>未出车</button>
-            <button @click="footer_confirm">
+            </van-button>
+            <van-button>未出车</van-button>
+            <van-button native-type="submit">
               确认
-            </button>
+            </van-button>
           </p>
-        </div>
+        </van-form>
       </div>
     </van-popup>
   </div>
@@ -101,8 +105,7 @@ export default {
     }
   },
   mounted() {
-    this.obj = this.$route.query.obj;
-    console.log(this.obj)
+    this.obj = JSON.parse(this.$route.query.obj);
   },
 
   methods: {
@@ -112,21 +115,20 @@ export default {
     onClickLeft() {
       this.$router.go(-1)
     },
-    showPopup(id) {
-      this.wayBillAmountDetail(this.obj.wayBillId)
-    },
     footer_confirm() {
       let wayBillAmountIds = []
       let gmFee = []
-
       if (this.$route.query.type === '1') {
-        this.obj.wayBillAmountVOS.forEach(item => {
-          console.lgo(item.wayBillAmountId)
+        this.arrstr.forEach(item => {
           wayBillAmountIds.push(item.wayBillAmountId)
-          gmFee.push(item.gmFee)
+          gmFee.push(item.preMoney)
         })
         this.reportMoneyBatchByGM(wayBillAmountIds, gmFee) // 加盟运费上报
       } else {
+        this.arrstr.forEach(item => {
+          wayBillAmountIds.push(item.wayBillAmountId)
+          gmFee.push(item.preMoney)
+        })
         this.reportMoneyBatchBySale() // 线外运费上报
       }
     },
@@ -140,17 +142,18 @@ export default {
         this.$loading(true)
         let { data: res } = await reportMoneyBatchByGM(parmas) // 加盟运费
         if (res.success) {
-          res.data
+          this.$loading(false)
           Toast.success('上报成功');
+          this.show = false;
+          this.$router.back(-1);
         } else {
           this.error = true;
+          this.$loading(false)
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
+        this.$loading(false)
         this.error = true;
-      } finally {
-        Toast.fail('上报失败');
-        // this.$loading(false)
       }
     },
 
@@ -177,13 +180,12 @@ export default {
       // this.$loading(false)
       }
     },
+    showPopup(id) {
+      this.wayBillAmountDetail(this.obj.wayBillId)
+    },
     async wayBillAmountDetail(id) { // 确认运费回显
       try {
-        let parmas = {
-          wayBillIds: id
-        }
-        let { data: res } = await wayBillAmountDetail(parmas)
-        console.log(res)
+        let { data: res } = await wayBillAmountDetail([id])
         if (res.success) {
           this.show = true;
           this.arrstr = res.data
@@ -203,7 +205,6 @@ export default {
 
 <style lang='scss' scoped>
 .lineListContainer {
-  font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
     flex-direction: row;
@@ -236,31 +237,47 @@ export default {
   margin: auto;
 
 }
-.CardItemcontainer {
+.freightDetail {
+  .deter_context{
+    padding-top: 10px;
+  }
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
   }
-  h4{
+  .title{
     border-bottom: 1px solid #ddd;
     line-height: 40px;
+    padding: 0 15px;
+    box-sizing: border-box;
+    color: #3C4353;
+    font-weight: bold;
+    .states{
+      color: #FF5D5D;
+      font-weight: 400;
+    }
   }
 
   .title {
-    margin: 10px 0px;
     font-size: 14px;
     color: #666;
   }
   .title>span{
     float: right;
-
   }
   .text {
-    margin-top:0px;
-    margin-bottom:8px;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    margin: auto;
+    padding: 0 15px;
+    box-sizing: border-box;
     font-size: 13px;
-    color: #666;
+    color:#A6AAB8;
+    span{
+      color: #3C4353;
+    }
   }
   .text_xiang{
     float: right;
@@ -306,14 +323,16 @@ export default {
 .danceng{
   width: 260px;
   overflow: hidden;
+    padding: 15px;
+    box-sizing: border-box;
   background-color: #fff;
-  padding: 10px;
-  box-sizing: border-box;
-
-}
-.danceng>p:nth-child(1){
-  text-align: center;
-  color: #000;
+  .title{
+    text-align: center;
+    font-size: 15px;
+    color: #3C4353;
+    margin: 0;
+    font-weight: bold;
+  }
 }
 .danceng>div>li{
 
@@ -329,6 +348,7 @@ export default {
   width: 30%;
   height: 30px;
   border: none;
+  font-size: 12px;
 
 }
 .footer_but>button:nth-child(1){
@@ -350,4 +370,3 @@ export default {
   border-radius: 5px;
 }
 </style>
-
