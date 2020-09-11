@@ -4,7 +4,7 @@
     <div class="top">
       <van-nav-bar title="外线运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div class="headerRight" @click="batch">
+          <div v-if="listQuery.reportState !== 1" class="headerRight" @click="batch">
             批量上报
           </div>
         </template>
@@ -217,7 +217,9 @@ export default {
       this.$router.back(-1);
     },
     batch() {
-      this.optionsType = !this.optionsType;
+      if (this.listQuery.reportState !== 1) {
+        this.optionsType = !this.optionsType;
+      }
     },
     filter_left() {
       this.showPicker = true
@@ -246,12 +248,14 @@ export default {
     async handleTabChange(tab) {
       this.lists = [];
       this.page.current = 1
+      if (tab === 1) {
+        this.optionsType = false;
+      }
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
     },
     async onSubmit(value) {
-      // console.log(value)
       this.showPicker = false;
       this.listQuery.departureDate = +new Date(value)
       this.page.current = 1
@@ -353,9 +357,9 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/joinsearch',
+        path: '/outsidelinesearch',
         query: {
-          type: 1
+          id: this.listQuery.projectId
         }
       })
     },
@@ -370,16 +374,6 @@ export default {
         }
       });
       return obj;
-    },
-    // 模糊搜索
-    handleSearchChange(value) {
-      console.log('这里面接口请求模糊查询:', value)
-    },
-    /**
-     *点击某一项
-     */
-    handleValueClick(obj) {
-      console.log('xxx:', obj)
     }
   }
 }
@@ -494,9 +488,5 @@ width: 80%;
 height: 100vh;
 box-sizing: border-box;
 }
-.OutSideList >>>.van-button--primary:nth-child(2){
-    color: #fff;
-    background-color: #1c4be7bd;
-    border: 1px solid #2f448a;
-}
+
 </style>

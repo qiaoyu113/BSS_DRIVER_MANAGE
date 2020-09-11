@@ -72,6 +72,7 @@
 </template>
 <script>
 import { noCarBatchByGM, reportMoneyBatchByGM, wayBillAmountDetail } from '@/api/freight'
+import { delay } from '@/utils'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
 export default {
@@ -172,7 +173,9 @@ export default {
         let { data: res } = await reportMoneyBatchByGM(parmas)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
-          return true
+          setTimeout(() => {
+            this.$router.back(-1)
+          }, delay);
         } else {
           Toast.success(res.errorMsg);
           return false
@@ -200,7 +203,9 @@ export default {
         let { data: res } = await noCarBatchByGM(arr)
         if (res.success) {
           Toast.success('已提交成功');
-          this.$router.back(-1)
+          setTimeout(() => {
+            this.$router.back(-1)
+          }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
         }

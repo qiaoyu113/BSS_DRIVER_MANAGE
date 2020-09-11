@@ -93,6 +93,7 @@
 
 <script>
 import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, noCarBatchByGM } from '@/api/freight'
+import { delay } from '@/utils'
 import { Toast } from 'vant';
 export default {
   data() {
@@ -158,9 +159,11 @@ export default {
         }
         this.$loading(true)
         let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
-        console.log(res)
         if (res.success) {
           Toast.success('上报成功', res.data);
+          setTimeout(() => {
+            this.$router.go(-1)
+          }, delay);
         } else {
           this.error = true;
           this.$toast.fail(res.errorMsg)
@@ -198,6 +201,10 @@ export default {
           let { data: res } = await noCarBatchByGM(ids)
           if (res.success) {
             this.show = false;
+            Toast.success('已提交成功');
+            setTimeout(() => {
+              this.$router.go(-1)
+            }, delay);
             this.$router.back(-1)
           } else {
             this.$toast.fail(res.errorMsg)

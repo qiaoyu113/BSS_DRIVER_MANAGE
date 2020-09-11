@@ -54,9 +54,9 @@
 </template>
 
 <script>
-import CardItem from '../OutSideList/components/CardItem'
+import CardItem from '../OutSideFreightList/components/Cardltem'
 import { debounce } from '@/utils/index'
-import { getLineInfoListSearch } from '@/api/freight'
+import { getProjectWayBillList } from '@/api/freight'
 export default {
   components: {
     CardItem
@@ -68,7 +68,8 @@ export default {
       historyItems: [], // 历史搜索
       options: [], // 关键字查出来的关键字
       type: '',
-      localKey: 'OutSide'
+      localKey: 'OutSideLine',
+      projectId: ''
     }
   },
   computed: {
@@ -82,6 +83,7 @@ export default {
       this.historyItems = JSON.parse(historyData)
     }
     this.type = this.$route.query.type
+    this.projectId = this.$route.query.id
   },
   methods: {
     // 返回上一页
@@ -94,10 +96,10 @@ export default {
         this.lists = []
         return false
       }
-      this.getProjectWayBillLists(this.keyWord)
+      this.getGmInfoListByKeyWorld(this.keyWord)
     }, 200),
     onSearcha() {
-      this.getProjectWayBillLists(this.keyWord)
+      this.getGmInfoListByKeyWorld(this.keyWord)
     },
     /**
      * 删除历史记录
@@ -123,15 +125,16 @@ export default {
       this.keyWord = value
     },
     // 搜索
-    async getProjectWayBillLists(keyword = '') {
+    async getGmInfoListByKeyWorld(keyword = '') {
       this.$loading(true)
       try {
         let params = {
           page: 1,
-          pageNumber: 20
+          pageNumber: 20,
+          projectId: this.projectId
         }
         keyword && (params.key = keyword)
-        let { data: res } = await getLineInfoListSearch(params)
+        let { data: res } = await getProjectWayBillList(params)
         this.$loading(false)
         if (res.success) {
           this.lists = res.data

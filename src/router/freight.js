@@ -71,6 +71,14 @@ export default [
     meta: {
       title: '搜索项目'
     }
+  },
+  {
+    path: '/outsidelinesearch',
+    name: 'outsidelinesearch',
+    component: resolve => require(['@/views/carriage/OutSideLineSearch'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
   }
 
   // {

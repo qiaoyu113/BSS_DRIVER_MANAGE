@@ -715,9 +715,4 @@ export default {
     height: 100vh;
     box-sizing: border-box;
 }
-.OutSideList >>>.van-button--primary:nth-child(2){
-    color: #fff;
-    background-color: #1c4be7bd;
-    border: 1px solid #2f448a;
-}
 </style>

@@ -72,6 +72,7 @@
 </template>
 <script>
 import { noCarBatchBySale, reportMoneyBatchBySale } from '@/api/freight'
+import { delay } from '@/utils'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
 export default {
@@ -165,6 +166,9 @@ export default {
         let { data: res } = await reportMoneyBatchBySale(parmas)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
+          setTimeout(() => {
+            this.$router.go(-1)
+          }, delay);
           return true
         } else {
           Toast.success(res.errorMsg);
@@ -180,7 +184,6 @@ export default {
         message: `确定全部的${this.obj.length}个出全部未出车`
       }).then(() => {
         let wayBillIds = []
-        console.log(this.obj)
         this.obj.forEach(item => {
           item.list.forEach(i => {
             wayBillIds.push(i.wayBillAmountId)
@@ -194,7 +197,9 @@ export default {
         let { data: res } = await noCarBatchBySale(arr)
         if (res.success) {
           Toast.success('已提交成功');
-          this.$router.back(-1)
+          setTimeout(() => {
+            this.$router.go(-1)
+          }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
         }
