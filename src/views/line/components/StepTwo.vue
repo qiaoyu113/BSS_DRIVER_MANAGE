@@ -181,7 +181,7 @@
       <template v-else>
         <van-field
           v-model.number="form.shipperOffer"
-          v-only-number.lazy="{min: 1, max: 99999999.99, precision: 2}"
+          v-only-number="{min: 1, max: 99999999.99, precision: 2}"
           label-width="130"
           colon
           required

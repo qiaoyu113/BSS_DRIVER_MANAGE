@@ -184,8 +184,8 @@ export default {
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
-        params.deliveryStartDate = this.stepTwoForm.deliveryWeekCycle[0]
-        params.deliveryEndDate = this.stepTwoForm.deliveryWeekCycle[1]
+        params.deliveryStartDate = new Date(this.stepTwoForm.deliveryWeekCycle[0]).getTime()
+        params.deliveryEndDate = new Date(this.stepTwoForm.deliveryWeekCycle[1]).getTime()
         delete params.deliveryWeekCycle
       }
       // 预计工作时间
@@ -250,8 +250,12 @@ export default {
     createSuc() {
       this.$toast.success('操作成功')
       setTimeout(() => {
+        let path = '/line'
+        if (this.isProject) {
+          path = `/projectDetail?projectId=${this.projectId}`
+        }
         this.$router.push({
-          path: '/line'
+          path
         })
       }, delay)
     },

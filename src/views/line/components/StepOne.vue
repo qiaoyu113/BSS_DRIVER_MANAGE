@@ -165,13 +165,14 @@
       />
       <van-field
         v-model.number="form.distance"
+        v-only-number="{min: 1, max: 9999.9, precision: 1}"
         label-width="130"
         colon
         required
         label="配送总里程数(公里)"
         placeholder="请输入"
         name="mileageValidator"
-        type="digit"
+        type="number"
         :rules="[
           { required: true, message: '请输入配送总里程数！' },
           { validator: mileageValidator, message: '请输入1~9999' }
@@ -318,7 +319,7 @@ export default {
     },
     // 配送总里程数
     mileageValidator(val) {
-      if (val >= 1 && val <= 9999) {
+      if (val >= 1 && val <= 9999.9) {
         return true
       }
       return false

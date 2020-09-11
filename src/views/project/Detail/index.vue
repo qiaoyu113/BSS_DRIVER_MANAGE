@@ -52,7 +52,7 @@
         <van-field label="其他上岗要求" label-width="100" readonly :value="form.dutyRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
     </van-collapse>
-    <div class="btn">
+    <div v-if="form.projectState ===2 && form.auditState ===2" class="btn">
       <van-button type="plain" hairline block class="distance" @click="handleLinkClick(0)">
         发布临时线路
       </van-button>
