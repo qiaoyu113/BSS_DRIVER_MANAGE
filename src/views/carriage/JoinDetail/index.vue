@@ -2,7 +2,7 @@
   <div class="lineListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="加盟运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <div v-if="obj.gmState === 0" class="headerRight" @click="showPopup(obj)">
             上报
@@ -12,7 +12,7 @@
     </van-sticky>
     <div class="freightDetail">
       <div class="title ellipsis">
-        {{ obj.customerName }}
+        {{ obj.name }}
         <span v-if="obj.gmState === 0" class="states">{{ obj.gmStateName }}</span>
         <span v-if="obj.gmState === 1" class="prices">{{ obj.gmFee }}</span>
       </div>
@@ -39,7 +39,7 @@
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
         <p class="text ellipsis">
-          确认状态：<span>{{ obj.confirmStateName }}</span>
+          确认状态：<span>{{ obj.confirmStateName }}/{{ obj.confirmMoney | 0 }}元</span>
         </p>
       </div>
     </div>
@@ -75,10 +75,12 @@
             />
           </div>
           <p class="footer_but">
-            <van-button @click="show = false">
+            <van-button native-type="button" @click="show = false">
               取消
             </van-button>
-            <van-button>未出车</van-button>
+            <van-button native-type="button" @click="opNoCarBatchByGM">
+              未出车
+            </van-button>
             <van-button native-type="submit">
               确认
             </van-button>
@@ -90,24 +92,23 @@
 </template>
 
 <script>
-import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail } from '@/api/freight'
+import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, noCarBatchByGM } from '@/api/freight'
 import { Toast } from 'vant';
 export default {
   data() {
     return {
       show: false,
-      obj: '',
+      obj: [],
       dataAll: [],
       value: '', // 上报金额
       message: '', // 备注
-      arrstr: ''
+      arrstr: []
 
     }
   },
   mounted() {
     this.obj = JSON.parse(this.$route.query.obj);
   },
-
   methods: {
     /**
      * 线路详情
@@ -118,19 +119,11 @@ export default {
     footer_confirm() {
       let wayBillAmountIds = []
       let gmFee = []
-      if (this.$route.query.type === '1') {
-        this.arrstr.forEach(item => {
-          wayBillAmountIds.push(item.wayBillAmountId)
-          gmFee.push(item.preMoney)
-        })
-        this.reportMoneyBatchByGM(wayBillAmountIds, gmFee) // 加盟运费上报
-      } else {
-        this.arrstr.forEach(item => {
-          wayBillAmountIds.push(item.wayBillAmountId)
-          gmFee.push(item.preMoney)
-        })
-        this.reportMoneyBatchBySale() // 线外运费上报
-      }
+      this.arrstr.forEach(item => {
+        wayBillAmountIds.push(item.wayBillAmountId)
+        gmFee.push(item.preMoney)
+      })
+      this.reportMoneyBatchByGM(wayBillAmountIds, gmFee) // 加盟运费上报
     },
     async reportMoneyBatchByGM(wayBillAmountIds, gmFee) {
       try {
@@ -156,7 +149,6 @@ export default {
         this.error = true;
       }
     },
-
     async reportMoneyBatchBySale() {
       try {
         let parmas = {
@@ -195,8 +187,28 @@ export default {
       } catch (err) {
         console.log(`get search data fail:${err}`)
       }
+    },
+    async opNoCarBatchByGM() {
+      let ids = []
+      this.arrstr.forEach(i => {
+        ids.push(i.wayBillAmountId)
+      })
+      if (this.arrstr.length) {
+        try {
+          let { data: res } = await noCarBatchByGM(ids)
+          if (res.success) {
+            this.show = false;
+            this.$router.back(-1)
+          } else {
+            this.$toast.fail(res.errorMsg)
+          }
+        } catch (err) {
+          console.log(`get search data fail:${err}`)
+        }
+      } else {
+        this.$toast.fail('暂无运费可上报')
+      }
     }
-
   }
 
 }

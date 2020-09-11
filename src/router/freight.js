@@ -21,7 +21,15 @@ export default [
     name: 'outsidereport',
     component: resolve => require(['@/views/carriage/OutSideReport'], resolve),
     meta: {
-      title: '批量上报运费'
+      title: '外线批量上报运费'
+    }
+  },
+  {
+    path: '/joinreport',
+    name: 'joinreport',
+    component: resolve => require(['@/views/carriage/JoinReport'], resolve),
+    meta: {
+      title: '加盟批量上报运费'
     }
   },
   {
@@ -38,6 +46,14 @@ export default [
     component: resolve => require(['@/views/carriage/OutSideFreightList'], resolve),
     meta: {
       title: '外线运费上报'
+    }
+  },
+  {
+    path: '/outsidedetail',
+    name: 'outsidedetail',
+    component: resolve => require(['@/views/carriage/OutSideDetail'], resolve),
+    meta: {
+      title: '外线运费详情'
     }
   }
 

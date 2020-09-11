@@ -71,7 +71,7 @@
   </div>
 </template>
 <script>
-import { noCarBatchBySale, reportMoneyBatchBySale } from '@/api/freight'
+import { noCarBatchByGM, reportMoneyBatchByGM } from '@/api/freight'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
 export default {
@@ -136,12 +136,12 @@ export default {
         if (item.check) {
           item.list.forEach(i => {
             if (i.check === true) {
-              wayBillIds.push(i.wayBillId)
+              wayBillIds.push(i.wayBillAmountId)
               wayBillPrices.push(i.price)
             }
           })
         } else {
-          noBillIds.push(item.wayBillId)
+          noBillIds.push(item.wayBillAmountId)
         }
       })
       if (wayBillIds.length) {
@@ -162,7 +162,7 @@ export default {
           wayBillAmountIds: wayBillAmountId
 
         }
-        let { data: res } = await reportMoneyBatchBySale(parmas)
+        let { data: res } = await reportMoneyBatchByGM(parmas)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
           return true
@@ -180,7 +180,6 @@ export default {
         message: `确定全部的${this.obj.length}个出全部未出车`
       }).then(() => {
         let wayBillIds = []
-        console.log(this.obj)
         this.obj.forEach(item => {
           item.list.forEach(i => {
             wayBillIds.push(i.wayBillAmountId)
@@ -191,7 +190,7 @@ export default {
     },
     async noCarBatchByGM(arr) {
       try {
-        let { data: res } = await noCarBatchBySale(arr)
+        let { data: res } = await noCarBatchByGM(arr)
         if (res.success) {
           Toast.success('已提交成功');
           this.$router.back(-1)
