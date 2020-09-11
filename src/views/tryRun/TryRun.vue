@@ -400,7 +400,7 @@ export default {
      */
     onConfirmPicker(value) {
       this.pickerNames[this.pickerKey] = value.dictLabel;
-      this.form[this.pickerKey] = value.id;
+      this.form[this.pickerKey] = value.dictValue;
       this.showPicker = false;
     },
     /**

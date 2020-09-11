@@ -104,7 +104,7 @@
 
 <script>
 import { parseTime, phoneRegExp, delay } from '@/utils'
-import { GetPersonInfo, TryRun, FollowCar, GetLineDetail } from '@/api/tryrun';
+import { GetPersonInfo, TryRun, FollowCar, GetLineDetail, ToTryRun } from '@/api/tryrun';
 export default {
   name: 'StepTwo',
   props: {
@@ -235,7 +235,12 @@ export default {
      * 点击提交
      */
     async onSubmit() {
-      const SubmintForm = this.operateFlag === 'followCar' ? FollowCar : TryRun;
+      let sub = {
+        followCar: FollowCar,
+        tryRun: TryRun,
+        switchTryRun: ToTryRun
+      }
+      const SubmintForm = sub[this.operateFlag];
       try {
         this.$loading(true);
         let { data: res } = await SubmintForm({

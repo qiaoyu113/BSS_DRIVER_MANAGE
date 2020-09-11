@@ -395,7 +395,7 @@ export default {
           limit: this.page.size
         }
         this.ruleForm.workCity && (params.workCity = Number(this.ruleForm.workCity))
-        this.ruleForm.busiType && (params.busiType = this.ruleForm.busiType)
+        this.ruleForm.busiType !== '' && (params.busiType = this.ruleForm.busiType)
         this.ruleForm.GmManager && (params.GmManager = this.ruleForm.GmManager)
         this.ruleForm.carType && (params.carType = Number(this.ruleForm.carType))
         this.ruleForm.status && (params.status = Number(this.ruleForm.status))
@@ -404,6 +404,7 @@ export default {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
           this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
         }
+        console.log(params)
         let { data: res } = await getDriverList(params)
         if (res.success) {
           let newLists = res.data
