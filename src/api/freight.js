@@ -62,6 +62,13 @@ export function getLineInfoList(data) {
     data
   })
 }
+export function getLineInfoListSearch(data) {
+  return request({
+    url: `${prefix}/v2/waybill/getLineInfoListByKeyWord`, // 外线测列表
+    method: 'post',
+    data
+  })
+}
 export function noCarBatchBySale(data) {
   return request({
     url: `${prefix}/v2/waybill/noCarBatchBySale`, // 外线侧批量设置未出车

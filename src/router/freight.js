@@ -88,5 +88,13 @@ export default [
     meta: {
       title: '搜索项目'
     }
+  },
+  {
+    path: '/outsidesearch',
+    name: 'outsidesearch',
+    component: resolve => require(['@/views/freight/OutSideListSearch/index'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
   }
 ]
