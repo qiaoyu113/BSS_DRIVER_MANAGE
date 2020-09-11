@@ -39,7 +39,7 @@
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
         <p class="text ellipsis">
-          确认状态：<span>{{ obj.confirmStateName }}/{{ obj.confirmMoney | 0 }}元</span>
+          确认状态：<span>{{ obj.confirmStateName }}/{{ obj.confirmMoney || 0 }}元</span>
         </p>
       </div>
     </div>
