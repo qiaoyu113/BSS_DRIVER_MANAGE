@@ -450,11 +450,11 @@ export default {
   }
   .Bulk{
     width: 100%;
-    height: 50px;
+    height: 38px;
     display: flex;
     z-index: 999;
     justify-content: space-between;
-    position: fixed;
+    position: relative;
     bottom: 0;
     padding: 11px 0 15px;
     background: #fff;

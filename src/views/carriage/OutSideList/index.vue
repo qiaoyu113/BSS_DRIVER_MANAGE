@@ -401,7 +401,6 @@ export default {
           if (!isInit) {
             newLists = this.lists.concat(newLists);
           }
-          console.log(res.page.total, newLists.length)
           let result = {
             lists: newLists,
             hasMore: res.page.total > newLists.length
