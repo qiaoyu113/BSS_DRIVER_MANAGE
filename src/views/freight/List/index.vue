@@ -10,7 +10,7 @@
         </template>
       </van-nav-bar>
       <!-- 搜索 -->
-      <van-search show-action placeholder="请输入项目名称/编号" readonly @click="handleSearchClick">
+      <van-search show-action placeholder="请输入司机名称/手机号" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="filter_left">
             筛选
@@ -303,7 +303,11 @@ export default {
       if (val.length !== this.lists.length) {
         this.checkAll = false;
       } else {
-        this.checkAll = true;
+        if (this.lists.length !== 0) {
+          this.checkAll = true;
+        } else {
+          this.checkAll = false;
+        }
       }
       this.checkedNum = val.length
     }
@@ -382,6 +386,8 @@ export default {
       }
     },
     handleTabChange(tab) {
+      this.checkResult = []
+      // this.checkAll = false;
       this.onLoad(true);
       // if (tab === 0) {
       //   this.getConfirmInfoList(true, null)
@@ -502,7 +508,7 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/outlineSearch',
+        path: '/joinsearch',
         query: {
           type: 1
         }
@@ -613,7 +619,6 @@ export default {
 
 <style lang='scss' scoped>
 .OutSideList {
-  font-family: PingFangSC-Medium;
   background:#f9f9f9;
   .listBox{
     width: 100%;

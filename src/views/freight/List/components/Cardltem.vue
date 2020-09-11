@@ -14,11 +14,19 @@
         加盟经理:{{ obj.joinManagerName }}
       </p>
       <p class="text ellipsis">
-        路线名称:{{ obj.lineName }}
+        路线名称:{{ obj.lineName }} <span class="differ">{{ obj.feeDiff || 0 }}元</span>
       </p>
+      <div class="text2 ellipsis">
+        <p class="differ">
+          有差异
+        </p>
+        <p class="right_text">
+          {{ obj.feeDiff || 0 }}元
+        </p>
+      </div>
     </div>
     <div class="detail">
-      <van-button type="default" round hairline @click="handleDetailClick(obj.wayBillId)">
+      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj.wayBillId)">
         详情
       </van-button>
     </div>
@@ -83,7 +91,6 @@ export default {
 <style lang='scss'>
 .CardItemcontainer {
   padding: 5px 15px 0px;
-  font-family: PingFangSC-Semibold;
   background: #fff;
   width: 100%;
   box-sizing: border-box;
@@ -110,8 +117,41 @@ export default {
     color: #3C4353;
     margin: 0;
     line-height: 24px;
+    .differ{
+      height: 25px;
+      line-height: 25px;
+      float: right;
+      margin: auto;
+      color: #7F8FBD;
+    }
   }
-
+  .text2 {
+    height: 25px;
+    font-size: 13px;
+    padding: 0;
+    box-sizing: border-box;
+    color: #3C4353;
+    margin: 0 -10px;
+    margin-top: 4px;
+    .differ{
+      padding:3px 15px;
+      box-sizing: border-box;
+      background: #EFF5FE;
+      border-radius: 3px;
+      font-size: 13px;
+      color: #649CEE;
+      display: inline-block;
+      margin: 0;
+      height: 25px;
+    }
+    .right_text{
+      height: 25px;
+      line-height: 25px;
+      float: right;
+      margin: auto;
+      color: #7F8FBD;
+    }
+  }
   .footer {
     margin-bottom:12.5px;
     display: flex;
@@ -158,6 +198,5 @@ export default {
     height: 22px;
     line-height: 22px;
     font-size: 13px;
-    border: 1px solid #D8D8D8;
   }
 </style>

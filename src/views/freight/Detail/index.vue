@@ -12,7 +12,7 @@
     </van-sticky>
     <div class="CardItemcontainer megin">
       <h4 class="title ellipsis">
-        {{ obj.customerName }}
+        {{ obj.customerName }} {{ obj.customerName }}/{{ obj.customerName }}
         <span style="color: 0000ff73;">{{ obj.confirmMoney }}</span>
       </h4>
       <P class="text ellipsis">
@@ -101,10 +101,8 @@ export default {
     }
   },
   mounted() {
-    this.obj = this.$route.query.obj
-
-    ;
-    this.getGmInfoList(this.obj)
+    this.obj = this.$route.query.obj;
+    console.log(this.obj)
   },
 
   methods: {
@@ -239,9 +237,6 @@ export default {
 
 }
 .CardItemcontainer {
-  padding: 0px 15px;
-  margin-top: 20px;
-  font-family: PingFangSC-Semibold;
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;

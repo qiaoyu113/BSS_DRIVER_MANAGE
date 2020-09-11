@@ -80,5 +80,13 @@ export default [
     meta: {
       title: '批量上报运费'
     }
+  },
+  {
+    path: '/joinsearch',
+    name: 'joinsearch',
+    component: resolve => require(['@/views/freight/JoinSearch/index'], resolve),
+    meta: {
+      title: '搜索项目'
+    }
   }
 ]
