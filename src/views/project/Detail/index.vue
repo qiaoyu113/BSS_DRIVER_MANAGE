@@ -14,7 +14,7 @@
         <van-field label="客户编号" label-width="100" readonly :value="form.customerId | DataIsNull" :border="false" colon />
         <van-field label="线索名称" label-width="100" readonly :value="form.clueName | DataIsNull" :border="false" colon />
         <van-field label="线索编号" label-width="100" readonly :value="form.clueId | DataIsNull" :border="false" colon />
-        <van-field label="审核状态" label-width="100" readonly :value="form.auditState === 1 ? '待审核' : '审核通过'" :border="false" colon />
+        <van-field label="审核状态" label-width="100" readonly :value="auditStateName" :border="false" colon />
         <van-field label="项目状态" label-width="100" readonly :value="form.projectState === 1 ? '禁用' :'启用'" :border="false" colon />
         <van-field label="上岗经理" label-width="100" readonly :value="form.dutyManagerName | DataIsNull" :border="false" colon />
         <van-field label="外线销售" label-width="100" readonly :value="form.lineSaleName | DataIsNull" :border="false" colon />
@@ -76,6 +76,16 @@ export default {
     }
   },
   computed: {
+    auditStateName() {
+      if (this.form.auditState === 1) {
+        return '待审核'
+      } else if (this.form.auditState === 2) {
+        return '审核通过'
+      } else if (this.form.auditState === 3) {
+        return '审核不通过'
+      }
+      return '暂无数据'
+    },
     region() {
       return this.form.warehouseProvinceName + '/' + this.form.warehouseCityName + '/' + this.form.warehouseCountyName
     },

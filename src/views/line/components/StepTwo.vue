@@ -7,6 +7,7 @@
       <SelfDatetimePicker
         label-width="130"
         picker-key="driverWorkTime"
+        :min-date="minDate"
         :is-computed="form['driverWorkTime']!==''"
         :form="form"
         required
@@ -50,6 +51,7 @@
           picker-key="deliveryWeekCycle"
           :is-computed="form['deliveryWeekCycle'].length> 0"
           :form="form"
+          :min-date="minDate"
           readonly
           clickable
           required
@@ -228,6 +230,10 @@ export default {
       type: String,
       default: '',
       required: true
+    },
+    minDate: {
+      type: [Date],
+      default: () => new Date()
     }
   },
   data() {

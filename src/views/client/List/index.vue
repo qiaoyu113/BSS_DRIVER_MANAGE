@@ -12,7 +12,19 @@
           </div>
         </template>
       </van-search>
+      <!-- tabs -->
+      <van-tabs v-model="form.customerState" swipeable @change="handleTabChange">
+        <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
+          <template #title>
+            {{ item.text }}
+            <div v-if="item.num" class="van-info">
+              {{ item.num }}
+            </div>
+          </template>
+        </van-tab>
+      </van-tabs>
     </van-sticky>
+
     <!-- 下拉刷新  上拉加载 -->
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
       <van-list
@@ -23,21 +35,10 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
-        <!-- tabs -->
-        <van-tabs v-model="form.customerState" swipeable @change="handleTabChange">
-          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
-            <template #title>
-              {{ item.text }}
-              <div v-if="item.num" class="van-info">
-                {{ item.num }}
-              </div>
-            </template>
-            <div v-for="sub in lists" :key="sub.id">
-              <CardItem :obj="sub" />
-              <div class="lineHeight"></div>
-            </div>
-          </van-tab>
-        </van-tabs>
+        <div v-for="sub in lists" :key="sub.id">
+          <CardItem :obj="sub" />
+          <div class="lineHeight"></div>
+        </div>
       </van-list>
     </van-pull-refresh>
 
@@ -197,6 +198,11 @@ export default {
     this.init()
   },
   methods: {
+    // 状态切换
+    handleTabChange() {
+      this.loading = true
+      this.onLoad(true)
+    },
     async init() {
       // 客户类型
       let customerTypeArr = await this.getDictData('line_cloud_customerType')
@@ -211,14 +217,6 @@ export default {
         path: '/'
       })
     },
-    // 是否更多数据
-    isModeData() {
-      if (this.lists.length === 0) {
-        this.finished = true
-      } else {
-        this.finished = false
-      }
-    },
     // 加载列表
     async onLoad(isInit = false) {
       if (isInit === true) { // 下拉刷新
@@ -231,13 +229,17 @@ export default {
       if (!result) {
         return false
       }
-      this.lists = result.lists
+
       if (isInit === true) { // 下拉刷新
+        this.lists = result.lists
         this.refreshing = false
         this.finished = false
+        this.loading = false
       } else { // 上拉加载更多
+        this.lists.push(...result.lists)
         this.loading = false;
-        if (!result.hasMore) {
+        let hasMore = result.total > this.lists.length
+        if (!hasMore) {
           this.finished = true
         }
       }
@@ -250,11 +252,9 @@ export default {
     },
     // 查询
     async onQuery() {
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
-      this.isModeData()
+      this.loading = true
       this.show = false
+      this.onLoad(true)
     },
     // 重置
     onReset(form) {
@@ -340,17 +340,9 @@ export default {
         console.log(`get open city list fail:${err}`)
       }
     },
-    // 状态切换
-    async handleTabChange(tab) {
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
-      this.isModeData()
-    },
     // 获取列表
     async getLists(isInit) {
       try {
-        this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size
@@ -367,13 +359,10 @@ export default {
         let { data: res } = await getClientList(params)
         if (res.success) {
           let newLists = res.data
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
-          }
 
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            total: res.page.total
           }
           this.tabArrs.forEach(item => {
             if (item.name === '') {
@@ -398,8 +387,6 @@ export default {
         this.finished = true
         this.refreshing = false
         console.log(`get list fail:${err}`)
-      } finally {
-        this.$loading(false)
       }
     },
     // 从数据字典获取数据

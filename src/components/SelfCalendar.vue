@@ -8,7 +8,7 @@
       v-bind="$attrs"
       @click="showPickerFn"
     />
-    <van-calendar v-model="showPicker" :default-date="form[pickerKey]" type="range" :allow-same-day="true" @confirm="onConfirm" />
+    <van-calendar v-model="showPicker" :min-date="minTime" :default-date="form[pickerKey]" type="range" :allow-same-day="true" @confirm="onConfirm" />
   </div>
 </template>
 
@@ -33,18 +33,28 @@ export default {
     border: {
       type: Boolean,
       default: true
+    },
+    minDate: {
+      type: Date,
+      default: () => new Date()
     }
   },
   data() {
     return {
       showPicker: false,
-      label: ''
+      label: '',
+      minTime: new Date()
     }
   },
   watch: {
     isComputed(val) {
       if (val) {
         this.getLable()
+      }
+    },
+    minDate(val) {
+      if (val) {
+        this.minTime = val
       }
     }
   },

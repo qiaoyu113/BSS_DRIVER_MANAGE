@@ -4,7 +4,7 @@
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <StepOne v-show="step === 1" type="active" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" type="active" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepTwo v-show="step === 2" type="active" :min-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date()" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
     <StepThree v-show="step === 3" type="active" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
