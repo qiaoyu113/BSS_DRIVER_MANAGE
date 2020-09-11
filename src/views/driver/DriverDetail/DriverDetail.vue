@@ -42,8 +42,8 @@
         <van-cell>
           <template #title>
             <div class="title">
-              <span>{{ detailInfo.name }}</span>
-              <span>{{ detailInfo.phone }}</span>
+              <span>{{ detailInfo.name }}</span>&#8194;
+              <span>{{ detailInfo.phone }}</span>&#8194;
               <span>({{ detailInfo.busiTypeName }}/{{ detailInfo.workCityName }})</span>
             </div>
           </template>
@@ -254,7 +254,7 @@ export default {
         }
         return arr;
       } else if (this.detailInfo.status === 3) {
-        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
+        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记退出' }];
         if (this.detailInfo.busiType === 0) {
           arr.push({ name: '编辑专车面试', url: '/editTailored' });
         } else if (this.detailInfo.busiType === 1) {
@@ -267,7 +267,7 @@ export default {
         } else if (this.detailInfo.busiType === 1) {
           arr.push({ name: '编辑共享面试', url: '/editShare' });
         }
-        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记退出' }];
+        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
         return arr;
       }
     },
@@ -281,7 +281,8 @@ export default {
             driverName: this.detailInfo.name,
             driverPhone: this.detailInfo.phone,
             workCityName: this.detailInfo.workCityName,
-            workCity: this.detailInfo.workCity
+            workCity: this.detailInfo.workCity,
+            busiType: this.detailInfo.busiType
           }
         });
       } else if (item.url === '/resetOrder') {
@@ -359,7 +360,6 @@ export default {
         let { data: res } = await selectLabel({ driverId: id });
         if (res.success) {
           this.tagInfo = res.data;
-          console.log(res.data, 123);
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -375,7 +375,6 @@ export default {
         let { data: res } = await driverDetail({ driverId: id });
         if (res.success) {
           this.detailInfo = res.data;
-          console.log(res.data);
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -391,7 +390,6 @@ export default {
         let { data: res } = await getLingMessageByDriverId({ driverId: id });
         if (res.success) {
           this.lineList = res.data;
-          console.log(res.data);
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -407,7 +405,6 @@ export default {
         let { data: res } = await orderDetail({ driverId: id });
         if (res.success) {
           this.orderInfo = res.data;
-          console.log(res.data);
         } else {
           this.$toast.fail(res.errorMsg);
         }
