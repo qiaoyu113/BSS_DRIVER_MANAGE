@@ -19,10 +19,9 @@
         ]"
       />
       <van-field
-        v-model="form.cargoNum"
+        v-model.number="form.cargoNum"
         label-width="100"
         colon
-        :formatter="_formatter"
         label="货物件数"
         type="digit"
         name="numValidator"
@@ -33,9 +32,10 @@
         ]"
       />
       <!-- 精确小数点后一位 -->
+
       <van-field
-        v-model="form.volume"
-        v-only-number.lazy="{min: 1, max: 999999, precision: 1}"
+        v-model.number="form.volume"
+        v-only-number="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
@@ -50,8 +50,8 @@
       />
       <!-- 精确小数点后一位 -->
       <van-field
-        v-model="form.goodsWeight"
-        v-only-number.lazy="{min: 1, max: 999999, precision: 1}"
+        v-model.number="form.goodsWeight"
+        v-only-number="{min: 1, max: 999999, precision: 1}"
         label-width="100"
         colon
         required
@@ -109,7 +109,6 @@
 <script>
 import { getDictData } from '@/api/common'
 import SelftPicker from '@/components/SelfPicker'
-import { formatter } from '@/utils/index'
 export default {
   components: {
     SelftPicker
@@ -147,9 +146,6 @@ export default {
     this.init()
   },
   methods: {
-    _formatter(val) {
-      return formatter(val)
-    },
     async init() {
       let result = await this.getDictData('type_of_goods')
       this.cargoTypeArr = result

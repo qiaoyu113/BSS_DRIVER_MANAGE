@@ -61,8 +61,7 @@
         />
       </template>
       <van-field
-        v-model="form.monthNum"
-        :formatter="_formatter"
+        v-model.number="form.monthNum"
         colon
         required
         label="预计月出车天数(天)"
@@ -81,7 +80,6 @@
         colon
         required
         label="每日配送趟数"
-        :formatter="_formatter"
         placeholder="请输入"
         name="countByDayValidator"
         type="digit"
@@ -146,8 +144,8 @@
       <template v-if="form.incomeSettlementMethod ===2">
         <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
         <van-field
-          v-model="form.everyUnitPrice"
-          v-only-number.lazy="{min: 1, max: 999999.99, precision: 2}"
+          v-model.number="form.everyUnitPrice"
+          v-only-number="{min: 1, max: 999999.99, precision: 2}"
           label-width="130"
           colon
           required
@@ -159,8 +157,8 @@
       </template>
       <!-- 输入数字限制精确到小数点后两位，小数点前6位 -->
       <van-field
-        v-model="form.everyTripGuaranteed"
-        v-only-number.lazy="{min: 1, max: 999999.99, precision: 2}"
+        v-model.number="form.everyTripGuaranteed"
+        v-only-number="{min: 1, max: 999999.99, precision: 2}"
         label-width="130"
         colon
         required
@@ -182,7 +180,7 @@
       </template>
       <template v-else>
         <van-field
-          v-model="form.shipperOffer"
+          v-model.number="form.shipperOffer"
           v-only-number.lazy="{min: 1, max: 99999999.99, precision: 2}"
           label-width="130"
           colon
@@ -213,7 +211,6 @@ import CustomSelect from './Select'
 import SelftPicker from '@/components/SelfPicker'
 import SelfCalendar from '@/components/SelfCalendar'
 import SelfDatetimePicker from '@/components/SelfDatetimePicker'
-import { formatter } from '@/utils/index'
 export default {
   components: {
     CustomSelect,
@@ -349,9 +346,6 @@ export default {
     this.generaTimelist()
   },
   methods: {
-    _formatter(val) {
-      return formatter(val)
-    },
     init() {
       this.isStable = +this.$route.query.isStable === 1
       if (this.isStable) {
