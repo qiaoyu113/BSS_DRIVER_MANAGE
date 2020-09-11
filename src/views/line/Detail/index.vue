@@ -115,46 +115,17 @@ export default {
     // 配送时间
     deliveryWeekCycle() {
       if (+this.form.lineCategory === 1) {
-        let arrs = [
-          {
-            label: '一',
-            value: 1
-          },
-          {
-            label: '二',
-            value: 2
-          },
-          {
-            label: '三',
-            value: 3
-          },
-          {
-            label: '四',
-            value: 4
-          },
-          {
-            label: '五',
-            value: 5
-          },
-          {
-            label: '六',
-            value: 6
-          },
-          {
-            label: '日',
-            value: 7
-          }
-        ]
-        let name = ''
-        arrs.forEach((item, idx) => {
-          if (this.form.deliveryWeekCycle.indexOf(item.value) > -1) {
-            if (idx !== 0) {
-              name += '、'
-            }
-            name += `周${item.label}`
-          }
-        })
-        return name
+        let obj = {
+          1: '一',
+          2: '二',
+          3: '三',
+          4: '四',
+          5: '五',
+          6: '六',
+          7: '日'
+        }
+        let brrs = this.form.deliveryWeekCycle.split(',').sort((a, b) => Number(a) - Number(b)).map(item => `周${obj[item]}`)
+        return brrs.join('、')
       }
       return this.form.lineCategory
     }
