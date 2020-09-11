@@ -2,11 +2,6 @@
   <div class="lineListContainer">
     <van-sticky :offset-top="0">
       <van-nav-bar title="批量运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
-        <template #right>
-          <!-- <div class="headerRight" @click="batch">
-            批量上报
-          </div> -->
-        </template>
       </van-nav-bar>
     </van-sticky>
     <div class="cont_ent">
@@ -37,13 +32,6 @@
               :key="i.id"
               class="Number_ong"
             >
-              <!-- <p>趟数{{ ins + 1 }}: {{ i.deliverTime }}</p>
-              <div class="Number">
-                <input v-model="value" type="text" style="border:none" placeholder="350.00元">
-                <van-button type="default">
-                  <van-icon name="arrow" color="#A6AAB8" />
-                </van-button>
-              </div> -->
               <van-field
                 v-model="i.price"
                 v-only-number="{min: 0}"
@@ -83,7 +71,8 @@
   </div>
 </template>
 <script>
-import { noCarBatchBySale, reportMoneyBatchBySale } from '@/api/freight'
+import { noCarBatchBySale, reportMoneyBatchBySale, wayBillAmountDetail } from '@/api/freight'
+import { delay } from '@/utils'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
 export default {
@@ -99,42 +88,51 @@ export default {
   },
   mounted() {
     let objs = JSON.parse(this.$route.query.obj)
-    let ret = []
-    let list = []
-    objs.forEach((i, index) => {
-      // this.freightForm[index].list = i
-      if (ret.indexOf(i.wayBillId) === -1) {
-        ret.push(i.wayBillId)
-        i.check = true
-        i.price = ''
-        i.list = []
-        let lists = Object.assign({}, i)
-        lists.list.push({
-          deliverTime: lists.deliverTime,
-          wayBillId: lists.wayBillId,
-          check: lists.check,
-          price: lists.price
-        })
-        list.push(lists)
-      } else {
-        list.array.forEach((e) => {
-          if (e.wayBillId === i.wayBillId) {
+    this.getList(objs)
+  },
+  methods: {
+    async getList(id) {
+      let { data: res } = await wayBillAmountDetail(id)
+      if (res.success) {
+        let objs = res.data
+        let ret = []
+        let list = []
+        objs.forEach((i, index) => {
+          // this.freightForm[index].list = i
+          if (ret.indexOf(i.wayBillId) === -1) {
+            ret.push(i.wayBillId)
             i.check = true
             i.price = ''
+            i.list = []
             let lists = Object.assign({}, i)
-            e.list.push({
+            lists.list.push({
               deliverTime: lists.deliverTime,
               wayBillId: lists.wayBillId,
+              wayBillAmountId: lists.wayBillAmountId,
               check: lists.check,
               price: lists.price
             })
+            list.push(lists)
+          } else {
+            list.array.forEach((e) => {
+              if (e.wayBillId === i.wayBillId) {
+                i.check = true
+                i.price = ''
+                let lists = Object.assign({}, i)
+                e.list.push({
+                  deliverTime: lists.deliverTime,
+                  wayBillId: lists.wayBillId,
+                  wayBillAmountId: lists.wayBillAmountId,
+                  check: lists.check,
+                  price: lists.price
+                })
+              }
+            })
           }
         })
+        this.obj = list
       }
-    })
-    this.obj = list
-  },
-  methods: {
+    },
     onClickLeft() {
       this.$router.go(-1)
     },
@@ -160,6 +158,9 @@ export default {
       if (noBillIds.length) {
         this.noCarBatchByGM(wayBillIds)
       }
+      if (!wayBillIds.length && !noBillIds.length) {
+        this.$toast.fail('暂无上报数据')
+      }
     },
     async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
@@ -172,6 +173,9 @@ export default {
         let { data: res } = await reportMoneyBatchBySale(parmas)
         if (res.success) {
           Toast.success('已提交成功'); // 全部批量上报
+          setTimeout(() => {
+            this.$router.go(-1)
+          }, delay);
           return true
         } else {
           Toast.success(res.errorMsg);
@@ -189,7 +193,7 @@ export default {
         let wayBillIds = []
         this.obj.forEach(item => {
           item.list.forEach(i => {
-            wayBillIds.push(i.wayBillId)
+            wayBillIds.push(i.wayBillAmountId)
           })
         })
         this.noCarBatchByGM(wayBillIds)
@@ -197,13 +201,12 @@ export default {
     },
     async noCarBatchByGM(arr) {
       try {
-        let parmas = {
-          wayBillAmountIds: arr
-        }
-        let { data: res } = await noCarBatchBySale(parmas)
+        let { data: res } = await noCarBatchBySale(arr)
         if (res.success) {
           Toast.success('已提交成功');
-          this.$router.back(-1)
+          setTimeout(() => {
+            this.$router.go(-1)
+          }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
         }
@@ -302,7 +305,7 @@ border-radius:5px  0px  0px  5px;
 }
 .Bulk{
   width: 100%;
-  height: 50px;
+  height: 38px;
   display: flex;
   z-index: 999;
   justify-content: space-between;
@@ -377,23 +380,19 @@ border-radius:5px  0px  0px  5px;
 
 </style>
 <style scoped>
-  .Remarks >>> .van-field__body  {
+.Remarks >>> .van-field__body  {
     border: 1px solid #ddd;
-  }
-  .Remarks >>>.van-cell {
+}
+.Remarks >>>.van-cell {
     line-height: 0.5rem;
     border: none;
-
     border-radius: 0.13333rem 0px 0px 0.13333rem;
 }
 .Remarks >>>.van-field__label {
-
     width: 3.2em;
-
 }
 .Remarks >>>.van-cell {
- width: 84%;
-
+    width: 84%;
 }
 .Number >>>.van-button{
   height: 35px;

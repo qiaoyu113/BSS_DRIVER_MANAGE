@@ -10,7 +10,7 @@
         </template>
       </van-nav-bar>
       <!-- 搜索 -->
-      <van-search show-action placeholder="请输入项目名称/编号" readonly @click="handleSearchClick">
+      <van-search show-action placeholder="请输入司机名称/手机号" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="filter_left">
             筛选
@@ -89,36 +89,36 @@
         @click="showPickerFn('city')"
       /> -->
       <van-field
-        v-model="listQuery.name"
+        v-model="listQuery.driverCity"
         colon
-        name="name"
+        name="driverCity"
         label-width="7em"
         label="司机城市"
-        placeholder="请输入城市"
+        placeholder="请输入司机城市"
       />
       <van-field
-        v-model="listQuery.name1"
+        v-model="listQuery.driver"
         colon
-        name="name1"
+        name="driver"
         label-width="7em"
-        label="客户"
-        placeholder="请输入客户"
+        label="司机"
+        placeholder="请输入司机"
       />
       <van-field
-        v-model="listQuery.name2"
-        name="name2"
+        v-model="listQuery.line"
+        name="line"
         colon
         label-width="7em"
-        label="项目"
-        placeholder="请输入项目"
+        label="线路"
+        placeholder="请输入线路"
       />
       <van-field
-        v-model="listQuery.name3"
-        name="name3"
+        v-model="listQuery.gmId"
+        name="gmId"
         colon
         label-width="7em"
-        label="上岗经理"
-        placeholder="请输入上岗经理"
+        label="加盟经理"
+        placeholder="请输入加盟经理"
       />
       <van-field
         readonly
@@ -177,7 +177,7 @@
       <button @click="cancel()">
         取消批量上传
       </button>
-      <button @click="Add_to(obj)">
+      <button @click="Add_to()">
         批量上报运费
       </button>
     </div>
@@ -303,7 +303,11 @@ export default {
       if (val.length !== this.lists.length) {
         this.checkAll = false;
       } else {
-        this.checkAll = true;
+        if (this.lists.length !== 0) {
+          this.checkAll = true;
+        } else {
+          this.checkAll = false;
+        }
       }
       this.checkedNum = val.length
     }
@@ -382,6 +386,8 @@ export default {
       }
     },
     handleTabChange(tab) {
+      this.checkResult = []
+      // this.checkAll = false;
       this.onLoad(true);
       // if (tab === 0) {
       //   this.getConfirmInfoList(true, null)
@@ -399,7 +405,6 @@ export default {
           limit: this.page.size,
           pageNumber: 20,
           wayBillGMSaleStatus: this.active
-
         }
         let { data: res } = await getGmInfoList(params)
         if (res.success) {
@@ -503,7 +508,7 @@ export default {
     // 搜索
     handleSearchClick() {
       this.$router.push({
-        path: '/outlineSearch',
+        path: '/joinsearch',
         query: {
           type: 1
         }
@@ -614,7 +619,6 @@ export default {
 
 <style lang='scss' scoped>
 .OutSideList {
-  font-family: PingFangSC-Medium;
   background:#f9f9f9;
   .listBox{
     width: 100%;
@@ -708,13 +712,7 @@ export default {
   }
   .OutSideList >>> .SelfPopup[data-v-7aa3f8c0] .van-popup {
     width: 80%;
-    height: 94vh;
-    margin-top: 26px;
+    height: 100vh;
     box-sizing: border-box;
-}
-.OutSideList >>>.van-button--primary:nth-child(2){
-    color: #fff;
-    background-color: #1c4be7bd;
-    border: 1px solid #2f448a;
 }
 </style>

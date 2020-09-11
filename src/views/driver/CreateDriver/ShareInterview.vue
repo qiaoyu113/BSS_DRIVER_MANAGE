@@ -66,7 +66,7 @@
           @focus="copyData('phone')"
         />
         <van-field
-          v-model="formData.age"
+          v-model.number="formData.age"
           name="age"
           label="年龄"
           maxlength="2"
@@ -274,7 +274,7 @@
           @click.native="copyData('intentWork')"
         />
         <van-field
-          v-model="formData.originIncomeAvg"
+          v-model.number="formData.originIncomeAvg"
           label-width="160px"
           name="原收入（去油）（元/月）"
           label="原收入（去油）（元/月）"
@@ -286,7 +286,7 @@
           @focus="copyData('originIncomeAvg')"
         />
         <van-field
-          v-model="formData.expIncomeAvg"
+          v-model.number="formData.expIncomeAvg"
           label-width="160px"
           name="期望收入（去油）（元/月）"
           label="期望收入（去油）（元/月）"
@@ -298,7 +298,7 @@
           @focus="copyData('expIncomeAvg')"
         />
         <van-field
-          v-model="formData.workDuration"
+          v-model.number="formData.workDuration"
           name="从业时间（月）"
           label="从业时间（月）"
           required
@@ -309,7 +309,7 @@
           @focus="copyData('workDuration')"
         />
         <van-field
-          v-model="formData.scatteredJobRate"
+          v-model.number="formData.scatteredJobRate"
           name="零散活占比（%）"
           label="零散活占比（%）"
           required
