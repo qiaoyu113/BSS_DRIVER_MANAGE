@@ -1,7 +1,7 @@
 <template>
   <div class="lineListContainer">
     <van-sticky :offset-top="0">
-      <van-nav-bar title="外线批量运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="批量运费上报" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <!-- <div class="headerRight" @click="batch">
             批量上报
@@ -10,14 +10,22 @@
       </van-nav-bar>
     </van-sticky>
     <div class="cont_ent">
-      <p>提示：一批量选择 <span class="blur_clor">{{ obj.length }}</span> 个出单车</p>
+      <div class="cont_ent_title">
+        提示：已批量选择 <span class="blur_clor">{{ obj.length }}</span> 个出单车
+      </div>
       <!-- 出车多趟 -->
-      <ul v-for="item in obj" :key="item.id">
-        <li><span class="status">已出车</span> <span><van-switch v-model="item.checked" size="20px" /></span></li>
-        <li>出车单号：{{ item.wayBillId }}</li>
-        <li>司机姓名/手机号：  {{ item.driverName }}/{{ item.driverPhone }}</li>
+      <ul v-for="(item, index) in obj" :key="item.id">
+        <li class="li_value_btn">
+          <span class="status">已出车</span> <span><van-switch v-model="item.checked" size="20px" active-color="#7F8FBD" /></span>
+        </li>
+        <li class="li_value">
+          出车单号：{{ item.wayBillId }}
+        </li>
+        <li class="li_value">
+          司机姓名/手机号：  {{ item.driverName }}/{{ item.driverPhone }}
+        </li>
         <li class="Number_ong">
-          <p>*趟数1:0:02 - 06:00</p>
+          <p>趟数{{ index + 1 }}: {{ item.deliverTime }}</p>
           <div class="Number">
             <input v-model="value" type="text" style="border:none" placeholder="350.00元">
             <van-button type="default">
@@ -64,7 +72,41 @@ export default {
     }
   },
   mounted() {
-    this.obj = JSON.parse(this.$route.query.obj)
+    let objs = JSON.parse(this.$route.query.obj)
+    let ret = []
+    let list = []
+    objs.forEach((i, index) => {
+      // this.freightForm[index].list = i
+      if (ret.indexOf(i.wayBillId) === -1) {
+        ret.push(i.wayBillId)
+        i.check = true
+        i.price = ''
+        i.list = []
+        let lists = Object.assign({}, i)
+        lists.list.push({
+          deliverTime: lists.deliverTime,
+          wayBillId: lists.wayBillId,
+          check: lists.check,
+          price: lists.price
+        })
+        list.push(lists)
+      } else {
+        list.array.forEach((e) => {
+          if (e.wayBillId === i.wayBillId) {
+            i.check = true
+            i.price = ''
+            let lists = Object.assign({}, i)
+            e.list.push({
+              deliverTime: lists.deliverTime,
+              wayBillId: lists.wayBillId,
+              check: lists.check,
+              price: lists.price
+            })
+          }
+        })
+      }
+    })
+    this.obj = list
     console.log(this.obj)
   },
   methods: {
@@ -136,6 +178,7 @@ export default {
 <style lang='scss' scoped>
 .lineListContainer {
   font-family: PingFangSC-Medium;
+  background: #F9F9F9;
   .headerRight {
     display: flex;
     flex-direction: row;
@@ -165,28 +208,30 @@ export default {
 .cont_ent{
   width: 100%;
   overflow: hidden;
-}
-.cont_ent>p{
-  background: #FBF8F2 ;
-  text-indent: 20px;
+  .cont_ent_title{
+    height: 25px;
+    line-height: 25px;
+    background: #FBF8F2;
+    padding: 0 15px;
+    font-size: 12px;
+    color: #838A9D;
+    .blur_clor{
+      color:#EBAF51;
+    }
+  }
 }
 .cont_ent>ul{
   width: 100%;
-  padding: 10px 10px 20px 10px;
+  padding: 10px 0 20px;
   box-sizing: border-box;
   background: #fff;
   height: 100%;
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .cont_ent>ul>li:nth-child(1){
   width: 100%;
-
   display: flex;
   justify-content: space-between;
-}
-
-.cont_ent>ul>li:nth-child(1)>span:nth-child(1){
-  color: yellowgreen;
 }
 .Number{
   width: 50%;
@@ -242,13 +287,12 @@ border-radius:5px  0px  0px  5px;
   color: #fff;;
   background: #2F448A;
 }
-.blur_clor{
-color:#0000ffa6;
-}
 .Number_ong{
   width: 100%;
   display: flex;
   justify-content: space-between;
+  border-top: 3px solid #f9f9f9;
+  margin-top: 5px;
 }
 .status{
   width: 50px;
@@ -257,6 +301,17 @@ color:#0000ffa6;
   line-height: 20px;
   border: 1px solid #3ACB8D ;
   border-radius: 20px ;
+  color: #3ACB8D;
+}
+.li_value{
+  font-size: 13px;
+  color: #838A9D;
+  padding: 0 25px;
+  box-sizing: border-box;
+}
+.li_value_btn{
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 
 </style>

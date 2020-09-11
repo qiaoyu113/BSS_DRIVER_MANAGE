@@ -70,7 +70,7 @@ module.exports = {
         secure: false,
         ws: true, // proxy websockets
         pathRewrite: {
-          '/api': ''
+          // '/api': ''
         }
       }
       // '/mock': {
