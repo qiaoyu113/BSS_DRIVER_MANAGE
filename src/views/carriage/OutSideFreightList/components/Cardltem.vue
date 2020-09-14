@@ -11,7 +11,7 @@
         出车单号:{{ obj.wayBillId }}
       </p>
       <p class="text ellipsis">
-        路线名称:{{ obj.lineName }} <span v-if="obj.lineStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.feeDiff || 0 }}元</span>
+        线路名称:{{ obj.lineName }}/{{ obj.lineId }} <span v-if="obj.lineStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.feeDiff || 0 }}元</span>
       </p>
       <div v-if="obj.lineStatusCode === 1 && obj.feeDiff === 1" class="text2 ellipsis">
         <p class="differ">
