@@ -105,8 +105,9 @@
 
 <script>
 import { parseTime, phoneRegExp, delay } from '@/utils'
-import { GetPersonInfo, TryRun, FollowCar, GetLineDetail, ToTryRun } from '@/api/tryrun';
+import { GetPersonInfo, TryRun, FollowCar, GetLineDetail, ToTryRun, GetDetails } from '@/api/tryrun';
 import { driverDetail } from '@/api/driver'
+import dayjs from 'dayjs'
 export default {
   name: 'StepTwo',
   props: {
@@ -172,7 +173,6 @@ export default {
     // 获取到仓联系人
     async getPersonInfo() {
       try {
-        this.$loading(true);
         let { data: res } = await GetPersonInfo({
           lineId: this.lineId
         })
@@ -188,8 +188,13 @@ export default {
       } catch (err) {
         console.log(`${err}`)
       } finally {
-        this.getLineDetail();
-        this.getDriverDetail();
+        if (this.to) {
+          // 跟车转试跑
+          this.getTryDetail();
+        } else {
+          this.getLineDetail();
+          this.getDriverDetail();
+        }
       }
     },
     async getDriverDetail() {
@@ -204,8 +209,6 @@ export default {
         }
       } catch (err) {
         console.log(`${err}`)
-      } finally {
-        this.$loading(false)
       }
     },
     // 确认到仓联系人
@@ -239,6 +242,32 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
+        console.log(`${err}`)
+      }
+    },
+    // 获取试跑详情
+    async getTryDetail() {
+      try {
+        this.$loading(true);
+        const runTestId = this.runTestId;
+        let { data: res } = await GetDetails({ runTestId })
+        if (res.success) {
+          this.lineDetail = res.data.lineInfoVO;
+          this.driverDetail = res.data.driverBusiInfoVO;
+
+          const item = res.data.runTestStatusRecordVOList.find(item => item.recordFlag === '跟车记录');
+          this.form.receptionist = item.receptionist;
+          this.form.receptionistPhone = item.receptionistPhone;
+
+          this.formStr.date = dayjs(item.arrivalTime).$d;
+          this.formStr.arrivalTime = parseTime(dayjs(item.arrivalTime).$d, '{y}-{m}-{d} {h}:{i}');
+          this.form.arrivalTime = +dayjs(item.arrivalTime).$d;
+          this.form.preJobAdvice = item.preJobAdvice;
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.$loading(false)
         console.log(`${err}`)
       } finally {
         this.$loading(false)
