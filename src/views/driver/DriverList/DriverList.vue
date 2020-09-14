@@ -233,7 +233,7 @@ export default {
         { name: '全部', code: '' },
         { name: '已成交', code: 30 },
         { name: '审核不通过', code: 25 },
-        { name: '待审核', code: 20 },
+        // { name: '待审核', code: 20 },
         { name: '待确认', code: 15 }
         // { label: '已退出', value: '5' }
       ],
@@ -526,6 +526,9 @@ export default {
     },
     changeOver() {
       this.checked = false;
+      this.changeManagerStatus = false;
+      this.loading = true
+      this.onLoad(true)
     },
     /**
      * 选则加盟经理

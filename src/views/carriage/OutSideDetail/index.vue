@@ -36,13 +36,13 @@
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
         <p class="text ellipsis">
-          确认状态：<span>{{ obj.confirmStateName }}/{{ obj.confirmMoney | 0 }}元</span>
+          确认状态：<span>{{ obj.confirmStateName }}/{{ obj.confirmMoney || 0 }}元</span>
         </p>
       </div>
     </div>
     <van-popup v-model="show">
       <div class="danceng" style=" border-radius:5px">
-        <van-form @submit="footer_confirm">
+        <van-form :show-error="false" @submit="footer_confirm">
           <p class="title">
             运费上报
           </p>
