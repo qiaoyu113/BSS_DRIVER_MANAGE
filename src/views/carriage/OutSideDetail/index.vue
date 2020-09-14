@@ -30,7 +30,7 @@
           上报时间：<span>{{ obj.lineReportTime }}</span>
         </p>
         <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
-          趟数{{ item.tripNo }}金额：<span>{{ item.gmFee || 0 }}元</span>
+          趟数{{ item.tripNo }}金额：<span>{{ item.lineFee || 0 }}元</span>
         </p>
         <p v-if="obj.lineState === 1" class="text ellipsis">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
