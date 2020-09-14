@@ -29,14 +29,14 @@
         <van-field label="是否需要回单" label-width="110" readonly :value="form.returnBill === 1 ? '是':'否'" :border="false" colon />
         <van-field label="配送车型" label-width="110" readonly :value="form.carTypeName | DataIsNull" :border="false" colon />
         <van-field label="主要配送区域" label-width="110" readonly :value="region | DataIsNull" :border="false" colon />
-        <van-field label="详细地址" label-width="110" readonly :value="form.districtArea | DataIsNull" :border="false" colon />
+        <van-field label="详细地址" label-width="110" readonly autosize type="textarea" :value="form.districtArea | DataIsNull" :border="false" colon />
         <van-field label="配送点数量" label-width="110" readonly :value="form.deliveryNum | DataIsNull" :border="false" colon />
         <van-field label="配送总里程数" label-width="110" readonly :value="form.distance | DataIsNull" :border="false" colon />
-        <van-field label="限行区域说明" label-width="110" readonly :value="form.limitRemark | DataIsNull" :border="false" colon />
+        <van-field label="限行区域说明" label-width="110" readonly autosize type="textarea" :value="form.limitRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
         <van-field label="司机上岗时间" label-width="110" readonly :value="timeFormat(form.driverWorkTime,'YYYY-MM-DD')" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="form.monthNum | DataIsNull" :border="false" colon />
+        <van-field label="配送时间" label-width="110" readonly :value="timeFormat(form.driverWorkTime,'YYYY-MM-DD') " :border="false" colon />
         <van-field label="预计月出车天数" label-width="110" readonly :value="deliveryWeekCycle | DataIsNull" :border="false" colon />
         <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum | DataIsNull" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
@@ -54,7 +54,7 @@
         <van-field label="是否需要搬运" label-width="110" readonly :value="form.carry ===1 ? '是':'否'" :border="false" colon />
         <van-field label="货物体积" label-width="110" readonly :value="form.volume | DataIsNull" :border="false" colon />
         <van-field label="货物重量" label-width="110" readonly :value="form.goodsWeight | DataIsNull" :border="false" colon />
-        <van-field label="其他上岗要求" label-width="110" readonly :value="form.dutyRemark | DataIsNull" :border="false" colon />
+        <van-field label="其他上岗要求" label-width="110" readonly autosize type="textarea" :value="form.dutyRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="标签信息" name="6">
         <van-field label="线路紧急程度" label-width="110" readonly :value="form.lineUrgentName | DataIsNull" :border="false" colon />

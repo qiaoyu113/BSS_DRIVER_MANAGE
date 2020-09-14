@@ -14,7 +14,7 @@
         加盟经理:{{ obj.joinManagerName }}/{{ obj.joinManagerPhone }}
       </p>
       <p class="text ellipsis">
-        路线名称:{{ obj.lineName }}/{{ obj.lineId }} <span v-if="obj.gmStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.gmFee || 0 }}元</span>
+        线路名称:{{ obj.lineName }}/{{ obj.lineId }} <span v-if="obj.gmStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.gmFee || 0 }}元</span>
       </p>
       <div v-if="obj.gmStatusCode === 1 && obj.feeDiff === 1" class="text2 ellipsis">
         <p class="differ">

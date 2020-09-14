@@ -54,9 +54,6 @@ export default {
      * input发生变化
      */
     onSearch: debounce(function() {
-      if (!this.keyWord) {
-        return false
-      }
       this.$emit('keyWordValue', this.keyWord)
     }, 200),
     /**

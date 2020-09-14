@@ -35,6 +35,7 @@
               <van-field
                 v-model="i.price"
                 v-only-number="{min: 0}"
+                required
                 :name="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
                 :label="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
                 placeholder="请输入运费(元)"
