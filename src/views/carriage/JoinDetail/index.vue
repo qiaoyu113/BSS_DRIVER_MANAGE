@@ -54,6 +54,7 @@
             :key="item.id"
             v-model="item.preMoney"
             v-only-number="{min: 0, max: 999999.99, precision: 2}"
+            required
             :name="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             :label="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             placeholder="请输入运费(元)"
