@@ -53,7 +53,7 @@
             v-for="(item, index) in arrstr"
             :key="item.id"
             v-model="item.preMoney"
-            v-only-number="{min: 0}"
+            v-only-number="{min: 0, max: 999999.99, precision: 2}"
             :name="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             :label="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             placeholder="请输入运费(元)"
@@ -70,7 +70,7 @@
               autosize
               label="备注:"
               type="textarea"
-              placeholder="请输入不超过150字"
+              placeholder="不超过150字符"
               show-word-limit
             />
           </div>
