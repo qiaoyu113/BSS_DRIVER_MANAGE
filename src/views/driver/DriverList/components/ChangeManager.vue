@@ -94,8 +94,9 @@
 </template>
 <script>
 import { Popup, Notify } from 'vant';
+import { delay } from '@/utils';
 import { updateGmByDriverId } from '@/api/driver.js'
-import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { getCurrentLowerOfficeCityData, getGMListByProductLineAndCC } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -131,6 +132,7 @@ export default {
     },
     active(val) {
       this.resetform();
+      this.getGmId()
     },
     'formData.workCity'(val) {
       if (val) {
@@ -144,12 +146,19 @@ export default {
   },
   methods: {
     async getGmId(val) {
-      console.log(val)
-      GetSpecifiedRoleList({ roleId: 1 })
+      if (!this.formData.workCity) {
+        return
+      }
+      let params = {
+        'cityCode': Number(this.formData.workCity),
+        // 'gmGroup': 0,
+        'productLine': this.active
+      }
+      getGMListByProductLineAndCC(params)
         .then(({ data }) => {
           if (data.success) {
             this.columns_gmId = data.data.map(ele => {
-              return { name: ele.nick, code: ele.id }
+              return { name: ele.name, code: ele.id }
             });
           }
         })
@@ -171,23 +180,26 @@ export default {
           'gmId': this.formData.gmId,
           'driverId': this.$parent.checkedList
         };
-        console.log(params, this.$parent.checkedList);
         let { data: res } = await updateGmByDriverId(params);
         if (res.success) {
           this.managerStatus = false;
           if (res.data.flag) {
             Notify({ type: 'success', message: '加盟经理更改成功' });
+            this.$loading(false)
             this.$parent.checkedList = []
           } else {
             Notify({ type: 'warn', message: res.data.msg });
+            this.$loading(false)
           }
-          this.$emit('changeOver')
+          this.resetform();
+          setTimeout(() => {
+            this.$emit('changeOver')
+          }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {
         console.log(`fail:${err}`)
-      } finally {
         this.$loading(false)
       }
     },

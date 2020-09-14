@@ -233,8 +233,8 @@ export default {
         { name: '全部', code: '' },
         { name: '已成交', code: 30 },
         { name: '审核不通过', code: 25 },
-        { name: '待审核', code: 20 },
-        { name: '待确认', code: 15 }
+        { name: '待审核', code: 20 }
+        // { name: '待确认', code: 15 }
         // { label: '已退出', value: '5' }
       ],
       columns_carType: [],
@@ -333,7 +333,7 @@ export default {
         .then(({ data }) => {
           if (data.success) {
             this.columns_GmManager = data.data.map(ele => {
-              return { name: ele.nick, code: ele.id }
+              return { name: ele.name, code: ele.id }
             });
           }
         }).catch((err) => {
@@ -344,13 +344,11 @@ export default {
       if (isInit === true) { // 下拉刷新
         this.page.current = 1
         this.lists = []
-        this.loading = false
       } else { // 上拉加载更多
         this.page.current++
       }
       let result = await this.getLists(isInit)
-      if (!result || result.lists.length === 0) {
-        result.hasMore = false
+      if (!result) {
         return false
       }
 
@@ -361,7 +359,6 @@ export default {
         this.finished = false
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
-        // this.lists.concat(result.lists)
         this.loading = false;
         let hasMore = result.total > this.lists.length
         if (!hasMore) {
@@ -411,9 +408,6 @@ export default {
         let { data: res } = await getDriverList(params)
         if (res.success) {
           let newLists = res.data
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
-          }
           let result = {
             lists: newLists,
             total: res.page.total
@@ -526,6 +520,9 @@ export default {
     },
     changeOver() {
       this.checked = false;
+      this.changeManagerStatus = false;
+      this.loading = true
+      this.onLoad(true)
     },
     /**
      * 选则加盟经理

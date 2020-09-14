@@ -45,7 +45,7 @@
           picker-key="workCity"
           :form="formData"
           :columns="columns_workCity"
-          value="name"
+          value="dictLabel"
           :is-computed="formData['workCity']!=='' && columns_workCity.length > 0 "
           required
           label="工作城市"
@@ -87,7 +87,6 @@
           label="重代理姓名"
           placeholder="请输入"
           maxlength="10"
-          :rules="[{ required: true, message: '请输入' }]"
           @focus="copyData('heavyAgentName')"
         />
         <van-field
@@ -522,6 +521,7 @@ import { specialInterview, getInterview, unqPhone, editInterview } from '@/api/d
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import SelftPicker from '@/components/SelfPicker';
 import SelfArea from '@/components/SelfArea';
+import { delay } from '@/utils/index.js'
 export default {
   name: 'TailoredInterview',
   components: {
@@ -1011,8 +1011,12 @@ export default {
       let { data: res } = await editInterview(params);
       if (res.success) {
         Notify({ type: 'success', message: '编辑面试成功' });
-        this.$router.go(-1);
+        setTimeout(() => {
+          this.$loading(false);
+          this.$router.go(-1);
+        }, delay)
       } else {
+        this.$loading(false);
         this.$toast.fail(res.errorMsg);
       }
     },
@@ -1035,8 +1039,12 @@ export default {
       let { data: res } = await specialInterview(params);
       if (res.success) {
         Notify({ type: 'success', message: '新建面试成功' });
-        this.$router.go(-1);
+        setTimeout(() => {
+          this.$loading(false);
+          this.$router.go(-1);
+        }, delay)
       } else {
+        this.$loading(false);
         this.$toast.fail(res.errorMsg);
       }
     },
@@ -1050,7 +1058,6 @@ export default {
         }
       } catch (err) {
         console.log(`fail:${err}`);
-      } finally {
         this.$loading(false);
       }
     },

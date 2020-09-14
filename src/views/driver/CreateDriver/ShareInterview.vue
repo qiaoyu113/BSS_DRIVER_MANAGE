@@ -10,6 +10,7 @@
     </van-sticky>
     <div class="formBox">
       <van-form
+        :show-error="false"
         label-width="120px"
         @submit="onSubmit"
         @failed="onFailed"
@@ -359,6 +360,7 @@ import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import SelfArea from '@/components/SelfArea';
 import SelftPicker from '@/components/SelfPicker';
+import { delay } from '@/utils/index.js'
 import { shareInterview, getInterview, unqPhone, editInterview } from '@/api/driver.js';
 export default {
   name: 'ShareInterview',
@@ -685,7 +687,6 @@ export default {
       ];
     },
     async editShared() {
-      this.$loading(true);
       let params = { ...this.formData };
       params.liveProvince = this.area.liveaddress[0]; // 居住地
       params.liveCity = this.area.liveaddress[1];
@@ -705,13 +706,16 @@ export default {
       let { data: res } = await editInterview(params);
       if (res.success) {
         Notify({ type: 'success', message: '编辑面试成功' });
-        this.$router.go(-1);
+        setTimeout(() => {
+          this.$loading(false);
+          this.$router.go(-1);
+        }, delay)
       } else {
+        this.$loading(false);
         this.$toast.fail(res.errorMsg);
       }
     },
     async buildShared() {
-      this.$loading(true);
       let params = { ...this.formData };
       params.liveProvince = this.area.liveaddress[0]; // 居住地
       params.liveCity = this.area.liveaddress[1];
@@ -731,23 +735,26 @@ export default {
       let { data: res } = await shareInterview(params);
       if (res.success) {
         Notify({ type: 'success', message: '新建面试成功' });
-        this.$router.go(-1);
+        setTimeout(() => {
+          this.$loading(false);
+          this.$router.go(-1);
+        }, delay)
       } else {
+        this.$loading(false);
         this.$toast.fail(res.errorMsg);
       }
     },
     async onSubmit(values) {
-      console.log(123456);
       try {
+        this.$loading(true);
         if (this.routeName === '/editShare') {
           this.editShared()
         } else {
           this.buildShared()
         }
       } catch (err) {
-        console.log(`fail:${err}`);
-      } finally {
         this.$loading(false);
+        console.log(`fail:${err}`);
       }
     },
     onFailed(error) {

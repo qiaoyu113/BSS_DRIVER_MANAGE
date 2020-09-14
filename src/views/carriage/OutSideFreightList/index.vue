@@ -2,7 +2,7 @@
   <div class="OutSideList">
     <!-- navbar -->
     <div class="top">
-      <van-nav-bar title="外线运费" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="项目名称" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <div v-if="listQuery.reportState !== 1" class="headerRight" @click="batch">
             批量上报
@@ -44,10 +44,10 @@
           <P v-if="optionsType" class="all">
             <van-checkbox v-model="checkAll" class="checked" shape="square" @click="checkAlls">
               <span class="text">全选</span>
-              <span class="text">已选择{{ checkedNum }} 个出车单位</span>
+              <span class="text">已选择{{ checkedNum }} 个出车单</span>
             </van-checkbox>
           </P>
-          <van-checkbox-group ref="checkboxGroup" v-model="checkResult">
+          <van-checkbox-group ref="checkboxGroup" v-model="checkResult" max="20">
             <div v-for="sub in lists" :key="sub.id" class="listBox">
               <p v-if="optionsType" class="checked-box">
                 <van-checkbox :name="sub.wayBillId" shape="square" />
@@ -60,7 +60,7 @@
     </div>
     <div v-if="optionsType" class="Bulk">
       <button @click="cancel()">
-        取消批量上传
+        取消批量上报
       </button>
       <button @click="Add_to()">
         批量上报运费
@@ -163,6 +163,8 @@ export default {
   mounted() {
     this.listQuery.projectId = this.$route.query.id;
     const { start, end } = this.$route.query;
+    this.listQuery.startDate = start;
+    this.listQuery.endDate = end;
     this.formStr.date = new Date(Number(start));
     this.minDate = new Date(Number(start));
     this.maxDate = new Date(Number(end));
@@ -182,12 +184,23 @@ export default {
     },
     checkAlls() {
       if (!this.checkResult.length) {
-        this.$refs.checkboxGroup.toggleAll(true);
-        this.checkAll = true;
-      } else {
-        if (this.checkResult.length < this.lists.length) {
+        if (this.lists.length > 20) {
+          this.$toast('选择不可大于20')
+          this.checkAll = false;
+        } else {
           this.$refs.checkboxGroup.toggleAll(true);
           this.checkAll = true;
+        }
+      } else {
+        if (this.checkResult.length < this.lists.length) {
+          if (this.lists.length > 20) {
+            this.$toast('选择不可大于20')
+            this.checkResult = []
+            this.checkAll = !this.checkAll;
+          } else {
+            this.$refs.checkboxGroup.toggleAll(true);
+            this.checkAll = true;
+          }
         } else {
           this.$refs.checkboxGroup.toggleAll();
           this.checkAll = false;
@@ -213,6 +226,7 @@ export default {
     },
     cancel() {
       this.optionsType = false;
+      this.checkResult = [];
     },
     onClickLeft() {
       this.$router.back(-1);
@@ -248,6 +262,7 @@ export default {
     // 状态切换
     async handleTabChange(tab) {
       this.lists = [];
+      this.checkResult = [];
       this.page.current = 1
       if (tab === 1) {
         this.optionsType = false;

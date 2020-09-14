@@ -9,7 +9,7 @@
       />
     </div>
     <div class="bottom">
-      <van-form @submit="onSubmit">
+      <van-form :show-error="false" @submit="onSubmit">
         <van-cell-group>
           <van-field
             v-model="formStr.droppedTime"
@@ -207,6 +207,7 @@ export default {
             })
             .catch(() => {
               // 关闭弹窗
+              this.onClickLeft()
             });
         } else {
           this.$toast.fail(res.errorMsg)

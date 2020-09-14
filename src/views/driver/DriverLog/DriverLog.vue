@@ -88,10 +88,10 @@
             <span>{{ detail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar">{{ newDetail.hasCar === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.hasCar !== undefined">{{ newDetail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
 
-          <template v-if="currentCarTypeStatus">
+          <template v-if="showCurrentCarTypeStatus">
             <van-grid-item>
               <span>当前车型</span>
             </van-grid-item>
@@ -142,7 +142,7 @@
             <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.liveProvinceName">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+            <span v-if="newDetail.currentHasWork !== undefined">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -172,7 +172,7 @@
             <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.heavyLifting">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.heavyLifting !== undefined">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -202,7 +202,7 @@
             <span>{{ detail.isLocalPlate ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isLocalPlate">{{ newDetail.isLocalPlate ? '是' : '否' }}</span>
+            <span v-if="newDetail.isLocalPlate !== undefined">{{ newDetail.isLocalPlate ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -262,7 +262,7 @@
             <span>{{ detail.isNewEnergy === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isNewEnergy">{{ newDetail.isNewEnergy === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.isNewEnergy !== undefined">{{ newDetail.isNewEnergy === true ? '是' : '否' }}</span>
           </van-grid-item>
         </van-grid>
       </div>
@@ -467,7 +467,7 @@
             <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.currentHasWork">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+            <span v-if="newDetail.currentHasWork !== undefined">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -507,7 +507,7 @@
             <span>{{ detail.hasCar ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar">{{ newDetail.hasCar ? '是' : '否' }}</span>
+            <span v-if="newDetail.hasCar !== undefined">{{ newDetail.hasCar ? '是' : '否' }}</span>
           </van-grid-item>
 
           <template v-if="currentCarTypeStatus">
@@ -551,7 +551,7 @@
             <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.heavyLifting">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.heavyLifting !== undefined">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -561,7 +561,7 @@
             <span>{{ detail.providePersonalCredit === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.providePersonalCredit">{{ newDetail.providePersonalCredit === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.providePersonalCredit !== undefined">{{ newDetail.providePersonalCredit === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -601,7 +601,7 @@
             <span>{{ detail.isAdvancedIntention === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isAdvancedIntention">{{ newDetail.isAdvancedIntention === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.isAdvancedIntention !== undefined">{{ newDetail.isAdvancedIntention === true ? '是' : '否' }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -654,6 +654,9 @@ export default {
     },
     showIntentDrivingCarType() {
       return this.intentDrivingCarTypeStatus()
+    },
+    showCurrentCarTypeStatus() {
+      return this.currentCarTypeStatus()
     }
   },
   mounted() {
@@ -678,6 +681,7 @@ export default {
       }
     },
     currentCarTypeStatus() {
+      console.log(this.detail.currentCarType === 0 && this.newDetail.currentCarType === undefined)
       if (this.detail.currentCarType === 0 && this.newDetail.currentCarType === 0) {
         return false
       } else if (this.detail.currentCarType === 0 && this.newDetail.currentCarType === undefined) {

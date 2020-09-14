@@ -6,6 +6,7 @@
     >
       <van-form
         :ref="formRef"
+        :show-error="false"
         v-bind="$attrs"
         v-on="$listeners"
       >

@@ -14,14 +14,14 @@
         出车单数:{{ obj.wayBillNum+'个' }}
       </p>
       <p class="text ellipsis">
-        上报单数:{{ `未上报${obj.wayBillNum - obj.lineReportedNum}/已上报${obj.lineReportedNum}` }} <span v-if="obj.isDiff && obj.reportState" class="differ">{{ obj.lineFee || 0 }}元</span>
+        上报单数:{{ `未上报${obj.wayBillNum - obj.lineReportedNum}/已上报${obj.lineReportedNum}` }} <span v-if="obj.isDiff && obj.reportState" class="differ">{{ obj.lineReportedMoney || 0 }}元</span>
       </p>
       <div v-if="obj.isDiff && obj.reportState" class="text2 ellipsis">
         <p class="differ">
           有差异
         </p>
         <p class="right_text">
-          {{ obj.lineFee || 0 }}元
+          {{ obj.lineReportedMoney || 0 }}元
         </p>
       </div>
     </div>

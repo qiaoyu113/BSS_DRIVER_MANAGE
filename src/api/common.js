@@ -121,7 +121,7 @@ export const GetCityByCode = (data) =>
 // 加盟经理(1)  外销销售(2) 上岗经理(3)
 export const GetSpecifiedRoleList = (params) =>
   request({
-    url: `${prefix}/v2/base/user/getSpecifiedUserList`,
+    url: `${prefix}/v1/base/role/getSpecifiedRoleList`,
     method: 'post',
     params
   })
@@ -134,3 +134,11 @@ export function getCurrentLowerOfficeCityData(params) {
     params
   })
 }
+
+// 根据城市小组查加盟经理
+export const getGMListByProductLineAndCC = (data) =>
+  request({
+    url: `${prefix}/v2/base/user/getGMListByProductLineAndCC`,
+    method: 'post',
+    data
+  })

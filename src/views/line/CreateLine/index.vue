@@ -5,7 +5,7 @@
     </van-sticky>
 
     <template v-if="step === 0">
-      <van-form @submit="onSubmit">
+      <van-form :show-error="false" @submit="onSubmit">
         <van-field
           :value="projectName"
           label="选择项目"
