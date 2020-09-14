@@ -260,7 +260,7 @@ export default {
         let { data: res } = await GetSpecifiedRoleList(params)
         if (res.success) {
           this.options = res.data.map(item => ({
-            label: item.nick,
+            label: item.name,
             value: item.id
           }))
         } else {
