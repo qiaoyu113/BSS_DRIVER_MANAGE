@@ -32,7 +32,7 @@ export default {
         if (val) {
           setTimeout(() => {
             this.init()
-          }, 20)
+          }, 120)
         }
       },
       immediate: true

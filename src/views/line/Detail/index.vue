@@ -36,8 +36,9 @@
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
         <van-field label="司机上岗时间" label-width="110" readonly :value="timeFormat(form.driverWorkTime,'YYYY-MM-DD')" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="timeFormat(form.driverWorkTime,'YYYY-MM-DD') " :border="false" colon />
-        <van-field label="预计月出车天数" label-width="110" readonly :value="deliveryWeekCycle | DataIsNull" :border="false" colon />
+        <van-field v-if="form.lineCategory ===1" label="配送时间" autosize type="textarea" label-width="110" readonly :value="deliveryWeekCycle | DataIsNull" :border="false" colon />
+        <van-field v-else label="配送时间" label-width="110" readonly :value="deliveryTime " :border="false" colon />
+        <van-field label="预计月出车天数" label-width="110" readonly :value="form.monthNum | DataIsNull" :border="false" colon />
         <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum | DataIsNull" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
           <van-field label="预计工作时间" label-width="110" readonly :value="`${item.workingTimeStart}-${item.workingTimeEnd}`" :border="false" colon />
@@ -103,6 +104,9 @@ export default {
     }
   },
   computed: {
+    deliveryTime() {
+      return dayjs(this.form.deliveryStartDate).format('YYYY/MM/DD') + '-' + dayjs(this.form.deliveryEndDate).format('YYYY/MM/DD')
+    },
     upTime() {
       if (this.form.waitDirveValidity) {
         return dayjs(this.form.waitDirveValidity).format('YYYY/MM/DD')
