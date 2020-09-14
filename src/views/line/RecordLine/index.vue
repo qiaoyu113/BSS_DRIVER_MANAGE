@@ -9,7 +9,7 @@
       标签信息
     </h4>
     <!-- form表单 -->
-    <van-form ref="recordLine" @submit="onSubmit">
+    <van-form ref="recordLine" :show-error="false" @submit="onSubmit">
       <van-field label="库房装货图片" colon label-width="100">
         <van-uploader
           slot="input"

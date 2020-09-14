@@ -1,6 +1,6 @@
 <template>
   <div class="StepOne">
-    <van-form ref="submitForm" @submit="onSubmit">
+    <van-form ref="submitForm" :show-error="false" @submit="onSubmit">
       <van-cell-group class="border-none">
         <van-field
           :value="formDetails.line"

@@ -61,7 +61,7 @@ export default [
     name: 'joinsearch',
     component: resolve => require(['@/views/carriage/JoinSearch'], resolve),
     meta: {
-      title: '搜索项目'
+      title: '加盟运费'
     }
   },
   {
@@ -69,7 +69,7 @@ export default [
     name: 'outsidesearch',
     component: resolve => require(['@/views/carriage/OutSideListSearch'], resolve),
     meta: {
-      title: '搜索项目'
+      title: '外线运费上报'
     }
   },
   {
@@ -77,7 +77,7 @@ export default [
     name: 'outsidelinesearch',
     component: resolve => require(['@/views/carriage/OutSideLineSearch'], resolve),
     meta: {
-      title: '搜索项目'
+      title: '项目名称'
     }
   }
 

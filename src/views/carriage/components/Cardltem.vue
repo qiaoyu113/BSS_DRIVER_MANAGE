@@ -92,7 +92,7 @@ export default {
   .ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    // white-space: nowrap;
   }
   .title {
     margin: 10px 0px;
