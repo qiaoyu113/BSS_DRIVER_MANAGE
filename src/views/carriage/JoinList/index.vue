@@ -44,7 +44,7 @@
           <P v-if="optionsType" class="all">
             <van-checkbox v-model="checkAll" class="checked" shape="square" @click="checkAlls">
               <span class="text">全选</span>
-              <span class="text">已选择{{ checkedNum }} 个出车单位</span>
+              <span class="text">已选择{{ checkedNum }} 个出车单</span>
             </van-checkbox>
           </P>
           <van-checkbox-group ref="checkboxGroup" v-model="checkResult">
