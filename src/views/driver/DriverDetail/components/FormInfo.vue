@@ -81,7 +81,7 @@
             />
             <van-field
               label="当前是否无业"
-              :value="type.currentHasWork===0?'否':'是'"
+              :value="type.currentHasWork===false?'否':'是'"
               readonly
               colon
             />
@@ -118,7 +118,7 @@
             <van-field
               label="是否本地工作车牌"
               colon
-              :value="type.isLocalPlate===0?'否':'是'"
+              :value="type.isLocalPlate===false?'否':'是'"
               readonly
             />
             <van-field
@@ -156,7 +156,7 @@
             <van-field
               label="是否新能源"
               colon
-              :value="type.isNewEnergy===0?'否':'是'"
+              :value="type.isNewEnergy===false?'否':'是'"
               readonly
             />
           </van-cell-group>
@@ -297,7 +297,7 @@
             />
             <van-field
               label="当前是否无业"
-              :value="type.currentHasWork===0?'否':'是'"
+              :value="type.currentHasWork===false?'否':'是'"
               readonly
               colon
             />
@@ -347,13 +347,13 @@
             />
             <van-field
               label="是否能承担较重搬运"
-              :value="type.heavyLiftingName===0?'否':'是'"
+              :value="type.heavyLiftingName===false?'否':'是'"
               readonly
               colon
             />
             <van-field
               label="是否提供个人征信"
-              :value="type.providePersonalCreditName===0?'否':'是'"
+              :value="type.providePersonalCreditName===false?'否':'是'"
               colon
               readonly
             />
@@ -377,7 +377,7 @@
             />
             <van-field
               label="是否是高意向司机"
-              :value="type.isAdvancedIntention===0?'否':'是'"
+              :value="type.isAdvancedIntention===false?'否':'是'"
               colon
               readonly
             />
