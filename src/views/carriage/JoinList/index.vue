@@ -350,6 +350,7 @@ export default {
     },
     cancel() {
       this.optionsType = false;
+      this.checkResult = [];
     },
     onClickLeft() {
       this.$router.back(-1);
@@ -390,6 +391,7 @@ export default {
     },
     async handleTabChange(tab) {
       this.lists = [];
+      this.checkResult = [];
       if (tab === 1) {
         this.optionsType = false;
       }
