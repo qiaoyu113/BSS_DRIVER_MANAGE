@@ -14,7 +14,7 @@
       @clear="onCancel"
     >
       <template #action>
-        <div @click="onSearch">
+        <div @click="getLists(keyWord,true)">
           搜索
         </div>
       </template>
@@ -101,7 +101,7 @@ export default {
       this.getLists(this.keyWord)
     },
     // 搜索
-    async getLists(keyword = '') {
+    async getLists(keyword = '', isAddHistory = false) {
       try {
         let params = {
           page: 1,
@@ -112,7 +112,7 @@ export default {
         let { data: res } = await getClientSearch(params)
         if (res.success) {
           this.lists = res.data
-          if (keyword) {
+          if (keyword && isAddHistory) {
             this.setHistory(keyword)
           }
         } else {

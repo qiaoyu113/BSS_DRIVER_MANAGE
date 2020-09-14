@@ -445,9 +445,9 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
+        this.getSpecifiedRoleList({ roleId: 3 })
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
+        this.getSpecifiedRoleList({ roleId: 2 })
       } else if (key === 'carType') {
         let result = await this.getDictDataByKeyword('Intentional_compartment')
         this.options = result
@@ -460,7 +460,7 @@ export default {
         let { data: res } = await GetSpecifiedRoleList(params)
         if (res.success) {
           this.options = res.data.map(item => ({
-            label: item.nick,
+            label: item.name,
             value: item.id
           }))
         } else {
