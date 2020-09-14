@@ -99,7 +99,8 @@ export default {
       return (
         lineInfoEs.provinceAreaName +
         lineInfoEs.cityAreaName +
-        lineInfoEs.countyAreaName
+        lineInfoEs.countyAreaName +
+        lineInfoEs.districtArea
       );
     }
   },

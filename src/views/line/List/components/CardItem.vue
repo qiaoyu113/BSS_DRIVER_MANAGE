@@ -3,38 +3,43 @@
     <h4 class="title van-ellipsis">
       {{ obj.lineName }} ({{ obj.lineId }})
     </h4>
+    <div class="status">
+      <van-tag type="primary" plain round color="#FFFFFF" text-color="#FFA000" class="tag">
+        {{ obj.lineStateName | DataIsNull }}
+      </van-tag>
+    </div>
     <p class="text van-ellipsis">
-      上架有效期:{{ obj.waitDirveValidity | parseTime('{y}-{m}-{d}') }}
+      上架截止日期:{{ obj.waitDirveValidity | parseTime('{y}-{m}-{d}') }}
     </p>
     <p class="text van-ellipsis">
-      {{ line }}
+      {{ line | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      配送车型:{{ obj.carTypeName }}
+      配送车型:{{ obj.carTypeName | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      试跑状态:{{ obj.runTestStateName }}
+      试跑状态:{{ obj.runTestStateName | DataIsNull }}
     </p>
-    <div class="footer">
-      <p class="time">
-        配送时间:{{ obj.driverWorkTime | parseTime('{y}-{m}-{d}')
-        }}
-      </p>
-      <div class="right">
-        <div>
-          <p class="time">
-            每日配送趟数:{{ obj.dayNum }}
-          </p>
-        </div>
-        <div>
-          <van-tag type="primary" color="#EFF5FE" text-color="#7F8FBD" class="tag">
-            {{ obj.busiTypeName }}
-          </van-tag>
-          <van-tag type="primary" color="#EFF5FE" text-color="#7F8FBD" class="tag">
-            {{ obj.lineStateName }}
-          </van-tag>
-        </div>
-      </div>
+    <p class="text van-ellipsis">
+      配送时间:{{ obj.driverWorkTime | parseTime('{y}-{m}-{d}') }}
+    </p>
+    <p class="text van-ellipsis">
+      每日配送趟数:{{ obj.dayNum | DataIsNull }}
+    </p>
+    <div class="car">
+      <van-tag type="primary" color="#EFF5FE" text-color="#649CEE">
+        {{ obj.busiTypeName | DataIsNull }}
+      </van-tag>
+      <template v-if="obj.inLine ===1">
+        <van-tag type="primary" color="#EFF5FE" text-color="#649CEE" class="tag">
+          已采线
+        </van-tag>
+      </template>
+      <template v-else-if="obj.inLine ===2">
+        <van-tag type="primary" color="#EFF5FE" text-color="#649CEE" class="tag">
+          未采线
+        </van-tag>
+      </template>
     </div>
     <div class="detail van-hairline--top">
       <van-button type="default" round hairline>
@@ -83,33 +88,17 @@ export default {
     font-size: 14px;
     color: #3C4353;
   }
+  .status {
+    margin-bottom: 10px;
+  }
   .text {
     margin-top:0px;
     margin-bottom:8px;
     font-size: 13px;
     color: #3C4353;
   }
-  .footer {
-    margin-bottom:12.5px;
-    display: flex;
-    flex-direction: column;
-    .time {
-      margin: 0px;
-      font-size: 11px;
-      color: #838A9D;
-      line-height: 20px;
-    }
-    .right {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-between;
-      align-items: center;
-      .tag {
-        margin-bottom:5px;
-        margin-right:5px;
-        padding: 3px 10px;
-      }
-    }
+  .car {
+    margin-bottom: 12.5px;
   }
   .detail {
     padding: 7px 0px;

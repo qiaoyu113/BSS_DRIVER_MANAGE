@@ -97,6 +97,9 @@ export default {
       this.getProjectWayBillLists(this.keyWord)
     }, 200),
     onSearcha() {
+      if (this.keyWord) {
+        this.setHistory(this.keyWord)
+      }
       this.getProjectWayBillLists(this.keyWord)
     },
     /**
@@ -136,9 +139,6 @@ export default {
         this.$loading(false)
         if (res.success) {
           this.lists = res.data
-          if (keyword) {
-            this.setHistory(keyword)
-          }
         } else {
           this.$toast.fail(res.errorMsg)
         }

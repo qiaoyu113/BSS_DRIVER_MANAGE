@@ -104,6 +104,8 @@
                 DataIsNull(lineInfoVO.cityAreaName)
                 +
                 DataIsNull(lineInfoVO.countyAreaName)
+                +
+                DataIsNull(lineInfoVO.districtArea)
             "
           ></van-cell>
           <van-cell
@@ -186,7 +188,7 @@
             ></van-cell>
             <van-cell
               title="操作时间："
-              :value="item.droppedTime | DataIsNull"
+              :value="item.createDate | DataIsNull"
             ></van-cell>
           </template>
           <template v-else-if="item.recordFlag.includes('掉线记录')">
@@ -197,7 +199,7 @@
             ></van-cell>
             <van-cell
               title="操作时间："
-              :value="item.droppedTime | DataIsNull"
+              :value="item.createDate | DataIsNull"
             ></van-cell>
             <van-cell
               title="掉线原因："
@@ -216,7 +218,7 @@
             ></van-cell>
             <van-cell
               title="操作时间："
-              :value="item.droppedTime | DataIsNull"
+              :value="item.createDate | DataIsNull"
             ></van-cell>
             <van-cell
               title="到仓接待人："

@@ -29,8 +29,10 @@ Vue.prototype.$loading = (status) => {
       loadingType: 'spinner'
     })
   } else {
-    loading.clear()
-    loading = null
+    if (loading) {
+      loading.clear()
+      loading = null
+    }
   }
 }
 Vue.prototype.$fail = (message) => {

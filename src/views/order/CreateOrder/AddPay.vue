@@ -16,7 +16,7 @@
       @submit="onSubmit"
     >
       <van-field
-        v-model="form.money"
+        v-model.number="form.money"
         label-width="120px"
         colon
         clickable

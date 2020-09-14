@@ -40,7 +40,7 @@
       <van-field
         label="订单金额"
         colon
-        :value="`￥${obj.havePayAmount}`"
+        :value="`￥${obj.goodsAmount}`"
         readonly
       />
       <van-field

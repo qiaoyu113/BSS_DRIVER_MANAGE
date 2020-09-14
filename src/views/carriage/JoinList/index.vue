@@ -420,14 +420,7 @@ export default {
     },
     // 获取列表
     async getLists(isInit) {
-      let toast;
       try {
-        toast = this.$toast.loading({
-          duration: 0,
-          message: '加载中...',
-          forbidClick: true,
-          loadingType: 'spinner'
-        })
         const params = this.delForm(this.form);
         params.page = this.page.current;
         params.limit = this.page.limit;
@@ -464,8 +457,6 @@ export default {
         this.refreshing = false;
         this.finished = true;
         console.log(`get list fail:${err}`);
-      } finally {
-        toast.clear();
       }
     },
     /**

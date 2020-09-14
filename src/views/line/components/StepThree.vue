@@ -19,48 +19,49 @@
         ]"
       />
       <van-field
-        v-model="form.cargoNum"
+        v-model.number="form.cargoNum"
         label-width="100"
         colon
         label="货物件数"
         type="digit"
-        name="numValidator"
+        name="cargoNumValidator"
         placeholder="请输入"
         :rules="[
           { required: false, message: '请输入货物件数！' },
-          { validator: numValidator, message: '请输入1~999999' }
+          { validator: cargoNumValidator, message: '请输入1~999999' }
         ]"
       />
       <!-- 精确小数点后一位 -->
+
       <van-field
-        v-model="form.volume"
-        v-only-number="{min: 1, max: 999999, precision: 1}"
+        v-model.number="form.volume"
+        v-only-number="{min: 1, max: 999999.9, precision: 1}"
         label-width="100"
         colon
         required
+        name="numValidator"
         label="货物体积(m³)"
         type="number"
-        name="numValidator"
         placeholder="请输入"
         :rules="[
           { required: true, message: '请输入货物体积！' },
-          { validator: numValidator, message: '请输入1~999999' }
+          { validator: numValidator, message: '请输入1~999999.9' }
         ]"
       />
       <!-- 精确小数点后一位 -->
       <van-field
-        v-model="form.goodsWeight"
-        v-only-number="{min: 1, max: 999999, precision: 1}"
+        v-model.number="form.goodsWeight"
+        v-only-number="{min: 1, max: 999999.9, precision: 1}"
         label-width="100"
         colon
         required
-        label="货物重量(吨)"
         name="numValidator"
+        label="货物重量(吨)"
         placeholder="请输入"
         maxlength="10"
         :rules="[
           { required: true, message: '请输入货物重量！' },
-          { validator: numValidator, message: '请输入1~999999' }
+          { validator: numValidator, message: '请输入1~999999.9' }
         ]"
       />
       <selftPicker
@@ -99,6 +100,9 @@
         </van-button>
       </div>
     </van-form>
+    <div class="cycle">
+      3/3
+    </div>
   </div>
 </template>
 
@@ -150,9 +154,15 @@ export default {
     onSubmit(values) {
       this.$emit('submit')
     },
-    // 货物件数
     numValidator(val) {
-      if (val >= 1 && val <= 999999) {
+      if ((val >= 1 && val <= 999999.9)) {
+        return true
+      }
+      return false
+    },
+    // 货物件数
+    cargoNumValidator(val) {
+      if ((val >= 1 && val <= 999999) || val === '') {
         return true
       }
       return false
@@ -185,6 +195,7 @@ export default {
 
 <style lang='scss' scoped>
 .StepThireeContainer {
+  position: relative;
   font-family: PingFangSC-Medium;
   .title {
     margin: 0px;
@@ -201,6 +212,22 @@ export default {
     .lastStep {
       margin-right:5px;
     }
+  }
+  .cycle {
+    position: absolute;
+    right:30px;
+    bottom:80px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #2f448a;
+    color: #2f448a;
+    z-index: 99;
+    font-size: 13px;
+    text-align: center;
+    line-height: 40px;
+    margin-right: 15px;
+    margin-top: 15px;
   }
 }
 

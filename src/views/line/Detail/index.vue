@@ -8,100 +8,81 @@
 
     <van-collapse v-model="activeNames">
       <van-collapse-item title="基本信息" name="1">
-        <van-field label="线路名称" label-width="110" readonly :value="form.lineName" :border="false" colon />
-        <van-field label="线路编号" label-width="110" readonly :value="form.lineId" :border="false" colon />
-        <van-field label="项目名称" label-width="110" readonly :value="form.projectName" :border="false" colon />
-        <van-field label="项目编号" label-width="110" readonly :value="form.projectId" :border="false" colon />
+        <van-field label="线路名称" label-width="110" readonly :value="form.lineName | DataIsNull" :border="false" colon />
+        <van-field label="线路编号" label-width="110" readonly :value="form.lineId | DataIsNull" :border="false" colon />
+        <van-field label="项目名称" label-width="110" readonly :value="form.projectName | DataIsNull" :border="false" colon />
+        <van-field label="项目编号" label-width="110" readonly :value="form.projectId | DataIsNull" :border="false" colon />
         <van-field label="线路分类" label-width="110" readonly :value="form.lineCategory ===1 ? '稳定线路':'临时线路'" :border="false" colon />
-        <van-field label="线路类型" label-width="110" readonly :value="form.busiTypeName" :border="false" colon />
+        <van-field label="线路类型" label-width="110" readonly :value="form.busiTypeName | DataIsNull" :border="false" colon />
+        <van-field label="是否是城配线" label-width="110" readonly :value="form.lineTypeName | DataIsNull" :border="false" colon />
         <van-field label="是否有线路余额" label-width="110" readonly :value="form.lineBalance ===1 ? '有线路余额': '无线路余额'" :border="false" colon />
-        <van-field label="线路状态" label-width="110" readonly :value="form.lineStateName" :border="false" colon />
-        <van-field label="试跑状态" label-width="110" readonly :value="form.runTestStateName" :border="false" colon />
+        <van-field label="线路状态" label-width="110" readonly :value="form.lineStateName | DataIsNull" :border="false" colon />
+        <van-field label="试跑状态" label-width="110" readonly :value="form.runTestStateName | DataIsNull" :border="false" colon />
 
-        <van-field label="上架截止日期" label-width="110" readonly :value="upTime" :border="false" colon />
-        <van-field label="线路稳定性" label-width="110" readonly :value="form.stabilityRateName" :border="false" colon />
-        <van-field label="对外销售" label-width="110" readonly :value="form.lineSaleName" :border="false" colon />
-        <van-field label="上岗经理" label-width="110" readonly :value="form.dutyManagerIdName" :border="false" colon />
+        <van-field label="上架截止日期" label-width="110" readonly :value="upTime | DataIsNull" :border="false" colon />
+        <van-field label="线路稳定性" label-width="110" readonly :value="form.stabilityRateName | DataIsNull" :border="false" colon />
+        <van-field label="对外销售" label-width="110" readonly :value="form.lineSaleName | DataIsNull" :border="false" colon />
+        <van-field label="上岗经理" label-width="110" readonly :value="form.dutyManagerIdName | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送信息" name="2">
         <van-field label="是否走高速" label-width="110" readonly :value="form.runSpeed === 1 ? '是':'否'" :border="false" colon />
         <van-field label="是否需要回单" label-width="110" readonly :value="form.returnBill === 1 ? '是':'否'" :border="false" colon />
-        <van-field label="配送车型" label-width="110" readonly :value="form.carTypeName" :border="false" colon />
-        <van-field label="主要配送区域" label-width="110" readonly :value="region" :border="false" colon />
-        <van-field label="详细地址" label-width="110" readonly :value="form.districtArea" :border="false" colon />
-        <van-field label="配送点数量" label-width="110" readonly :value="form.deliveryNum" :border="false" colon />
-        <van-field label="配送总里程数" label-width="110" readonly :value="form.distance" :border="false" colon />
-        <van-field label="限行区域说明" label-width="110" readonly :value="form.limitRemark" :border="false" colon />
+        <van-field label="配送车型" label-width="110" readonly :value="form.carTypeName | DataIsNull" :border="false" colon />
+        <van-field label="主要配送区域" label-width="110" readonly :value="region | DataIsNull" :border="false" colon />
+        <van-field label="详细地址" label-width="110" readonly :value="form.districtArea | DataIsNull" :border="false" colon />
+        <van-field label="配送点数量" label-width="110" readonly :value="form.deliveryNum | DataIsNull" :border="false" colon />
+        <van-field label="配送总里程数" label-width="110" readonly :value="form.distance | DataIsNull" :border="false" colon />
+        <van-field label="限行区域说明" label-width="110" readonly :value="form.limitRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送时间信息" name="3">
         <van-field label="司机上岗时间" label-width="110" readonly :value="timeFormat(form.driverWorkTime,'YYYY-MM-DD')" :border="false" colon />
-        <van-field label="配送时间" label-width="110" readonly :value="deliveryWeekCycle" :border="false" colon />
-        <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum" :border="false" colon />
+        <van-field label="配送时间" label-width="110" readonly :value="form.monthNum | DataIsNull" :border="false" colon />
+        <van-field label="预计月出车天数" label-width="110" readonly :value="deliveryWeekCycle | DataIsNull" :border="false" colon />
+        <van-field label="每日配送趟数" label-width="110" readonly :value="form.dayNum | DataIsNull" :border="false" colon />
         <div v-for="(item,idx) in form.lineDeliveryInfoFORMS" :key="'time'+idx">
           <van-field label="预计工作时间" label-width="110" readonly :value="`${item.workingTimeStart}-${item.workingTimeEnd}`" :border="false" colon />
         </div>
       </van-collapse-item>
       <van-collapse-item title="结算信息" name="4">
-        <van-field label="结算方式" label-width="110" readonly :value="form.incomeSettlementMethodName" :border="false" colon />
-        <van-field label="结算周期" label-width="110" readonly :value="form.settlementCycleName" :border="false" colon />
-        <van-field label="结算天数" label-width="110" readonly :value="form.settlementDaysName" :border="false" colon />
+        <van-field label="结算方式" label-width="110" readonly :value="form.incomeSettlementMethodName | DataIsNull" :border="false" colon />
+        <van-field label="结算周期" label-width="110" readonly :value="form.settlementCycleName | DataIsNull" :border="false" colon />
+        <van-field label="结算天数" label-width="110" readonly :value="form.settlementDaysName | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="货物信息" name="5">
-        <van-field label="货物类型" label-width="110" readonly :value="form.cargoTypeName" :border="false" colon />
-        <van-field label="货物件数" label-width="110" readonly :value="form.cargoNum" :border="false" colon />
+        <van-field label="货物类型" label-width="110" readonly :value="form.cargoTypeName | DataIsNull" :border="false" colon />
+        <van-field label="货物件数" label-width="110" readonly :value="form.cargoNum | DataIsNull" :border="false" colon />
         <van-field label="是否需要搬运" label-width="110" readonly :value="form.carry ===1 ? '是':'否'" :border="false" colon />
-        <van-field label="货物体积" label-width="110" readonly :value="form.volume" :border="false" colon />
-        <van-field label="货物重量" label-width="110" readonly :value="form.goodsWeight" :border="false" colon />
-        <van-field label="其他上岗要求" label-width="110" readonly :value="form.dutyRemark" :border="false" colon />
+        <van-field label="货物体积" label-width="110" readonly :value="form.volume | DataIsNull" :border="false" colon />
+        <van-field label="货物重量" label-width="110" readonly :value="form.goodsWeight | DataIsNull" :border="false" colon />
+        <van-field label="其他上岗要求" label-width="110" readonly :value="form.dutyRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="标签信息" name="6">
-        <van-field label="线路紧急程度" label-width="110" readonly :value="form.lineUrgentName" :border="false" colon />
-        <van-field label="适配性" label-width="110" readonly :value="form.lineAdapterName" :border="false" colon />
+        <van-field label="线路紧急程度" label-width="110" readonly :value="form.lineUrgentName | DataIsNull" :border="false" colon />
+        <van-field label="适配性" label-width="110" readonly :value="form.lineAdapterName | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="现场信息" name="7">
         <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />
         <ImagePreview label="其他图片:" :image-arrs="fileForm.otherPictures" />
         <VideoPreview :video-url="fileForm.loadingVideo" label="装货视频:" />
+        <van-field label="现场信息说明" label-width="110" type="textarea" autosize readonly :value="fileForm.informationDescription | DataIsNull" :border="false" colon />
       </van-collapse-item>
     </van-collapse>
-    <div class="btn">
-      <!-- 线路状态为已上架、已开跑状态时显示此按钮 -->
-      <van-button type="plain" hairline block class="distance" @click="handleLinkClick('copy')">
-        复制线路
-      </van-button>
-      <!-- 线路状态为已上架状态时显示此按钮 -->
-      <van-button v-if="form.lineState ===1" type="primary" hairline block @click="handleLinkClick('edit')">
-        编辑
-      </van-button>
-    </div>
-    <div v-if="[1,2].includes(form.lineState)" class="btn">
-      <!-- 线路状态为已上架、已开跑状态时显示此按钮 -->
-      <van-button type="plain" hairline block class="distance" @click="handleLinkClick('record')">
-        采线
-      </van-button>
-
-      <!-- 线路状态为已上架、已开跑状态时显示此按钮 -->
-      <van-button type="primary" hairline block @click="handleLinkClick('tag')">
-        打标签
-      </van-button>
-    </div>
-    <div v-if="[1,3,4].includes(form.lineState)" class="btn">
-      <!-- 当线路状态为已上架的时候存在此按钮 -->
-      <van-button v-if="form.lineState ===1" type="plain" hairline block class="distance" @click="handleOffShelf">
-        下架
-      </van-button>
-      <!-- 所有线路状态下显示此按钮 -->
-      <van-button v-if="[3,4].includes(form.lineState)" type="primary" hairline block @click="handleLinkClick('active')">
-        激活线路
-      </van-button>
-    </div>
+    <van-button
+      type="primary"
+      block
+      class="btn"
+      @click="show=true"
+    >
+      更多操作
+    </van-button>
+    <van-action-sheet v-model="show" :actions="actions" @select="onSelect" />
   </div>
 </template>
 
 <script>
 import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
-import { Dialog, Notify } from 'vant';
+import { Dialog, ActionSheet } from 'vant';
 import dayjs from 'dayjs'
 import { getLineDetail, undercarriage, judgeMeetConditions } from '@/api/line'
 export default {
@@ -109,15 +90,16 @@ export default {
     ImagePreview,
     VideoPreview,
     [Dialog.Component.name]: Dialog.Component,
-    [Notify.Component.name]: Notify.Component
+    [ActionSheet.Component]: ActionSheet.Component
   },
   data() {
     return {
       activeNames: ['1'],
       form: {},
       fileForm: {},
-      lineId: ''
-
+      lineId: '',
+      show: false,
+      actions: []
     }
   },
   computed: {
@@ -133,46 +115,17 @@ export default {
     // 配送时间
     deliveryWeekCycle() {
       if (+this.form.lineCategory === 1) {
-        let arrs = [
-          {
-            label: '一',
-            value: 1
-          },
-          {
-            label: '二',
-            value: 2
-          },
-          {
-            label: '三',
-            value: 3
-          },
-          {
-            label: '四',
-            value: 4
-          },
-          {
-            label: '五',
-            value: 5
-          },
-          {
-            label: '六',
-            value: 6
-          },
-          {
-            label: '日',
-            value: 7
-          }
-        ]
-        let name = ''
-        arrs.forEach((item, idx) => {
-          if (this.form.deliveryWeekCycle.indexOf(item.value) > -1) {
-            if (idx !== 0) {
-              name += '、'
-            }
-            name += `周${item.label}`
-          }
-        })
-        return name
+        let obj = {
+          1: '一',
+          2: '二',
+          3: '三',
+          4: '四',
+          5: '五',
+          6: '六',
+          7: '日'
+        }
+        let brrs = this.form.deliveryWeekCycle.split(',').sort((a, b) => Number(a) - Number(b)).map(item => `周${obj[item]}`)
+        return brrs.join('、')
       }
       return this.form.lineCategory
     }
@@ -294,6 +247,7 @@ export default {
         if (res.success) {
           this.form = res.data || {}
           this.fileForm = res.data && res.data.linePictureRelatedVO || {}
+          this.getActions()
         } else {
           this.$fail(res.errorMsg)
         }
@@ -302,6 +256,30 @@ export default {
       } finally {
         this.$loading(false)
       }
+    },
+    getActions() {
+      let arrs = [{ name: '复制线路' }]
+      if ([1, 2].includes(this.form.lineState)) {
+        if ([1].includes(this.form.lineState)) {
+          arrs.push({
+            name: '编辑'
+          })
+          arrs.push({
+            name: '下架'
+          })
+        }
+        arrs.push({
+          name: '采线'
+        })
+        arrs.push({
+          name: '打标签'
+        })
+      } else if ([3, 4].includes(this.form.lineState)) {
+        arrs.push({
+          name: '激活线路'
+        })
+      }
+      this.actions = arrs
     },
     // 下架
     async undercarriage() {
@@ -323,6 +301,26 @@ export default {
         this.$loading(false)
         console.log(`undercarriage fail:${err}`)
       }
+    },
+    // 点击跳转链接
+    onSelect(item) {
+      this.show = false;
+      let text = ''
+      if (item.name === '复制线路') {
+        text = 'copy'
+      } else if (item.name === '编辑') {
+        text = 'edit'
+      } else if (item.name === '下架') {
+        this.handleOffShelf()
+        return false
+      } else if (item.name === '采线') {
+        text = 'record'
+      } else if (item.name === '打标签') {
+        text = 'tag'
+      } else if (item.name === '激活线路') {
+        text = 'active'
+      }
+      this.handleLinkClick(text)
     }
   }
 }
@@ -333,16 +331,8 @@ export default {
 .lineDetailContainer {
   font-family: PingFangSC-Medium;
   .btn {
-    padding: 15px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    .distance {
-      margin-right:5px;
-    }
-    button {
-      width:170px;
-    }
+    margin: 50px 16px;
+    width: calc(100% - 32px);
   }
 }
 

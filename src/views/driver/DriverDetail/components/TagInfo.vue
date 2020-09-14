@@ -17,7 +17,7 @@
         <van-field
           label="是否存在跳单行为"
           colon
-          :value="obj.isDown === 0 ? '暂无数据' : obj.isDownName"
+          :value="obj.isDown === 0 ? '否' : obj.isDownName"
           readonly
         />
       </van-form>

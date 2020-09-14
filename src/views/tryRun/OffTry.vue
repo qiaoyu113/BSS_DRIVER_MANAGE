@@ -120,6 +120,7 @@ export default {
     this.runTestId = this.$route.query.runTestId;
     this.id = this.$route.query.id;
     this.status = this.$route.query.status;
+    this.isStable = this.$route.query.isStable;
     this.fetchData();
     this.setDate();
   },
@@ -195,10 +196,12 @@ export default {
             .then(() => {
               // 去激活线路页面
               const lineId = this.lineId;
+              const isStable = this.isStable;
               this.$router.push({
-                path: '/lineDetail',
+                path: '/activeLine',
                 query: {
-                  lineId
+                  lineId,
+                  isStable
                 }
               })
             })

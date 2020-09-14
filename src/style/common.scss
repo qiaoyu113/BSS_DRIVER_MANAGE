@@ -138,3 +138,7 @@ $--transition-time: 300ms;
     padding: 0;
   }
 }
+
+.van-cell--required::before {
+  color:#ee0a24!important;
+}

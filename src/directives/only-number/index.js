@@ -37,7 +37,7 @@ export const onlyNumber = {
       }
     })
     // 按键弹起=>并限制最大最小
-    el.addEventListener('keyup', (event) => {
+    el.addEventListener('blur', (event) => {
       const e = event || window.event
       content = parseFloat(e.target.value)
       if (!content) {
