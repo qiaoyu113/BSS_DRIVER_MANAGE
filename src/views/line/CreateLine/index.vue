@@ -183,6 +183,8 @@ export default {
       params.provinceArea = this.stepOneForm.area[0]
       params.cityArea = this.stepOneForm.area[1]
       params.countyArea = this.stepOneForm.area[2]
+      params.waitDirveValidity = new Date(params.waitDirveValidity).getTime()
+      params.driverWorkTime = new Date(params.driverWorkTime).getTime()
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
