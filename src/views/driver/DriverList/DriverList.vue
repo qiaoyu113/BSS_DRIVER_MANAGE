@@ -344,13 +344,11 @@ export default {
       if (isInit === true) { // 下拉刷新
         this.page.current = 1
         this.lists = []
-        this.loading = false
       } else { // 上拉加载更多
         this.page.current++
       }
       let result = await this.getLists(isInit)
-      if (!result || result.lists.length === 0) {
-        result.hasMore = false
+      if (!result) {
         return false
       }
 
@@ -361,7 +359,6 @@ export default {
         this.finished = false
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
-        // this.lists.concat(result.lists)
         this.loading = false;
         let hasMore = result.total > this.lists.length
         if (!hasMore) {
@@ -411,9 +408,6 @@ export default {
         let { data: res } = await getDriverList(params)
         if (res.success) {
           let newLists = res.data
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
-          }
           let result = {
             lists: newLists,
             total: res.page.total
