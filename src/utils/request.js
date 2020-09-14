@@ -96,6 +96,14 @@ service.interceptors.response.use(
     }
   },
   error => {
+    if (error.message.includes('timeout') || error.message.includes('500')) { // 判断请求异常信息中是否含有超时timeout字符串
+      Toast({
+        message: '当前网络超时，请检查网络重新尝试',
+        type: 'error',
+        duration: 4 * 1000
+      })
+      return Promise.reject(error); // reject这个错误信息
+    }
     console.log('err' + error) // for debug
     Toast.fail({
       message: error.data.msg,

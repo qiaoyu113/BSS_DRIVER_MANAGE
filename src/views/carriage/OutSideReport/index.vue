@@ -35,6 +35,7 @@
               <van-field
                 v-model="i.price"
                 v-only-number="{min: 0}"
+                required
                 :name="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
                 :label="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
                 placeholder="请输入运费(元)"
@@ -144,12 +145,12 @@ export default {
         if (item.check) {
           item.list.forEach(i => {
             if (i.check === true) {
-              wayBillIds.push(i.wayBillId)
+              wayBillIds.push(i.wayBillAmountId)
               wayBillPrices.push(i.price)
             }
           })
         } else {
-          noBillIds.push(item.wayBillId)
+          noBillIds.push(item.wayBillAmountId)
         }
       })
       if (wayBillIds.length) {
