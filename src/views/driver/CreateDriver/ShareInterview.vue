@@ -10,6 +10,7 @@
     </van-sticky>
     <div class="formBox">
       <van-form
+        :show-error="false"
         label-width="120px"
         @submit="onSubmit"
         @failed="onFailed"

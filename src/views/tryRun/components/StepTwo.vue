@@ -1,6 +1,6 @@
 <template>
   <div class="StepTwo">
-    <van-form ref="submitForm" @submit="onSubmit">
+    <van-form ref="submitForm" :show-error="false" @submit="onSubmit">
       <van-cell-group>
         <van-field
           v-model="form.receptionist"

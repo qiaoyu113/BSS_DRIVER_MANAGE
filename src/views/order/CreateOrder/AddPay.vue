@@ -13,6 +13,7 @@
     <!-- form表单 -->
     <van-form
       ref="recordLine"
+      :show-error="false"
       @submit="onSubmit"
     >
       <van-field

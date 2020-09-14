@@ -9,7 +9,7 @@
         提示：已批量选择 <span class="blur_clor">{{ obj.length }}</span> 个出单车
       </div>
       <!-- 出车多趟 -->
-      <van-form @submit="onSubmit">
+      <van-form :show-error="false" @submit="onSubmit">
         <ul v-for="item in obj" :key="item.id" class="listStyle" :style="!item.check ? 'padding-bottom: 10px;' : ''">
           <li class="li_value_btn">
             <div class="li_value_btn_list">

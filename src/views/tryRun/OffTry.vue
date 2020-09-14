@@ -9,7 +9,7 @@
       />
     </div>
     <div class="bottom">
-      <van-form @submit="onSubmit">
+      <van-form :show-error="false" @submit="onSubmit">
         <van-cell-group>
           <van-field
             v-model="formStr.droppedTime"
