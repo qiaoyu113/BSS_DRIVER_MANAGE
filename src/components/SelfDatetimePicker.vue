@@ -43,6 +43,10 @@ export default {
     border: {
       type: Boolean,
       default: true
+    },
+    minDate: {
+      type: Date,
+      default: () => new Date()
     }
   },
   data() {
@@ -58,12 +62,17 @@ export default {
       if (val) {
         this.getLabel()
       }
+    },
+    minDate(val) {
+      if (val) {
+        this.minTime = val
+      }
     }
   },
   methods: {
     // 获取label
     getLabel() {
-      this.label = `${parseTime(this.form[this.pickerKey], '{m}/{d}')}`
+      this.label = `${parseTime(this.form[this.pickerKey], '{y}/{m}/{d}')}`
     },
     // 打开picker
     showPickerFn() {
@@ -71,7 +80,7 @@ export default {
     },
     // 点击确定
     onConfirm(obj) {
-      this.label = `${obj.getMonth() + 1}/${obj.getDate()}`;
+      this.label = `${obj.getFullYear()}/${obj.getMonth() + 1}/${obj.getDate()}`;
       this.form[this.pickerKey] = obj
       this.showPicker = false
     }

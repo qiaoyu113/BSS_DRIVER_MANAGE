@@ -303,3 +303,13 @@ export const carNoRegExp = /^([京津晋冀蒙辽吉黑沪苏浙皖闽赣鲁豫�
 
 // 延迟3秒
 export const delay = 3000
+
+// 验证是否为正整数
+export function formatter(val) {
+  if (val.length === 1) {
+    val = val.replace(/[^\d]/g, '').replace(/^0{1,}/g, '')
+  } else {
+    val = val.replace(/\D/g, '').replace(/^0{1,}/g, '')
+  }
+  return val
+}

@@ -105,7 +105,8 @@
 
 <script>
 import { parseTime, phoneRegExp, delay } from '@/utils'
-import { GetPersonInfo, TryRun, FollowCar, GetLineDetail } from '@/api/tryrun';
+import { GetPersonInfo, TryRun, FollowCar, GetLineDetail, ToTryRun } from '@/api/tryrun';
+import { driverDetail } from '@/api/driver'
 export default {
   name: 'StepTwo',
   props: {
@@ -147,9 +148,9 @@ export default {
   mounted() {
     this.lineId = this.$route.query.lineId;
     this.driverId = this.$route.query.driverId;
+    this.runTestId = this.$route.query.runTestId;
     if (this.to) {
       this.actions = [
-        { name: '确认跟车', value: 'followCar' },
         { name: '确认试跑', value: 'switchTryRun' }
       ]
     }
@@ -188,6 +189,23 @@ export default {
         console.log(`${err}`)
       } finally {
         this.getLineDetail();
+        this.getDriverDetail();
+      }
+    },
+    async getDriverDetail() {
+      try {
+        let { data: res } = await driverDetail({
+          driverId: this.driverId
+        })
+        if (res.success) {
+          this.driverDetail = res.data
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`${err}`)
+      } finally {
+        this.$loading(false)
       }
     },
     // 确认到仓联系人
@@ -202,6 +220,7 @@ export default {
           lineId: this.lineId
         })
         if (res.success) {
+          this.lineDetail = res.data;
           // driverWorkTime
           // 判断配送时间大小
           const timeList = res.data.lineDeliveryInfoFORMS;
@@ -236,13 +255,21 @@ export default {
      * 点击提交
      */
     async onSubmit() {
-      const SubmintForm = this.operateFlag === 'followCar' ? FollowCar : TryRun;
+      let sub = {
+        followCar: FollowCar,
+        tryRun: TryRun,
+        switchTryRun: ToTryRun
+      }
+      const SubmintForm = sub[this.operateFlag];
       try {
         this.$loading(true);
         let { data: res } = await SubmintForm({
           lineId: this.lineId,
           driverId: this.driverId,
+          runTestId: this.runTestId,
           operateFlag: this.operateFlag,
+          driverMessage: `${this.driverDetail.name}/${this.driverDetail.phone}`,
+          lineMessage: `${this.lineDetail.lineName}/${this.lineDetail.lineId}`,
           runTestStatusRecordFORM: {
             ...this.form
           }

@@ -21,7 +21,10 @@
               size="12"
             />
           </div>
-          <div class="doBox" style="margin-left:6px">
+          <div
+            class="doBox"
+            style="margin-left:6px"
+          >
             <span
               class="orderBtn"
               @click="showDothing = true"
@@ -39,8 +42,8 @@
         <van-cell>
           <template #title>
             <div class="title">
-              <span>{{ detailInfo.name }}</span>
-              <span>{{ detailInfo.phone }}</span>
+              <span>{{ detailInfo.name }}</span>&#8194;
+              <span>{{ detailInfo.phone }}</span>&#8194;
               <span>({{ detailInfo.busiTypeName }}/{{ detailInfo.workCityName }})</span>
             </div>
           </template>
@@ -71,7 +74,6 @@
             title="创建人："
             :value="`${detailInfo.createName}/${detailInfo.createPhone}`"
           />
-          <!-- (共享一组) -->
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
@@ -141,14 +143,21 @@
   </div>
 </template>
 <script>
-import { DropdownMenu, DropdownItem, Cell, CellGroup, Toast, Notify } from 'vant';
+import {
+  DropdownMenu,
+  DropdownItem,
+  Cell,
+  CellGroup,
+  Toast,
+  Notify
+} from 'vant';
 import FormInfo from './components/FormInfo';
 import TagInfo from './components/TagInfo';
 import LineInfoItem from './components/LineInfoItem';
 import OrderInfo from './components/OrderInfo';
-import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js'
-import { orderDetail } from '@/api/order.js'
-import { getLingMessageByDriverId } from '@/api/driver.js'
+import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
+import { orderDetail } from '@/api/order.js';
+import { getLingMessageByDriverId } from '@/api/driver.js';
 export default {
   name: 'DriverDetail',
   components: {
@@ -195,205 +204,214 @@ export default {
   },
   computed: {
     doMore() {
-      return this.arrList()
+      return this.arrList();
     },
     doOrder() {
-      return this.orderList()
+      return this.orderList();
     }
   },
   mounted() {
-    let id = this.$route.query.id
-    this.driverId = id
-    this.getDetail(id)
+    let id = this.$route.query.id;
+    this.driverId = id;
+    this.getDetail(id);
   },
   methods: {
     orderList() {
-      if (this.detailInfo.orderStatus === null || this.detailInfo.orderStatus === 0) {
-        let arr = [
-          { name: '录入订单', url: '/createOrder' }
-        ]
-        return arr
+      if (
+        this.detailInfo.orderStatus === null ||
+        this.detailInfo.orderStatus === 0
+      ) {
+        let arr = [{ name: '录入订单', url: '/createOrder' }];
+        return arr;
       } else if (this.detailInfo.orderStatus === 20) {
         let arr = [
           { name: '审核', url: '/orderAudit' },
           { name: '详情', url: '/orderDetail' }
-        ]
-        return arr
+        ];
+        return arr;
       } else if (this.detailInfo.orderStatus === 25) {
         let arr = [
           { name: '重新提交', url: '/resetOrder' },
           { name: '详情', url: '/orderDetail' }
-        ]
-        return arr
+        ];
+        return arr;
       } else if (this.detailInfo.orderStatus === 30) {
-        let arr = [
-          { name: '详情', url: '/orderDetail' }
-        ]
-        return arr
+        let arr = [{ name: '详情', url: '/orderDetail' }];
+        return arr;
       }
     },
     arrList() {
-      if (this.detailInfo.status === 1 || this.detailInfo.status === 2 || this.detailInfo.status === 4) {
-        let arr = [
-          { name: '打标签', url: '/tagView' }
-        ]
+      if (
+        this.detailInfo.status === 1 ||
+        this.detailInfo.status === 2 ||
+        this.detailInfo.status === 4
+      ) {
+        let arr = [{ name: '打标签', url: '/tagView' }];
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored' })
+          arr.push({ name: '编辑专车面试', url: '/editTailored' });
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare' })
+          arr.push({ name: '编辑共享面试', url: '/editShare' });
         }
-        return arr
+        return arr;
       } else if (this.detailInfo.status === 3) {
+        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记退出' }];
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored' })
+          arr.push({ name: '编辑专车面试', url: '/editTailored' });
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare' })
+          arr.push({ name: '编辑共享面试', url: '/editShare' });
         }
-        let arr = [
-          { name: '打标签', url: '/tagView' },
-          { name: '标记成交' }
-        ]
-        return arr
+        return arr;
       } else if (this.detailInfo.status === 5) {
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored' })
+          arr.push({ name: '编辑专车面试', url: '/editTailored' });
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare' })
+          arr.push({ name: '编辑共享面试', url: '/editShare' });
         }
-        let arr = [
-          { name: '打标签', url: '/tagView' },
-          { name: '标记退出' }
-        ]
-        return arr
+        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
+        return arr;
       }
     },
     onSelectOrder(item) {
       this.showOrder = false;
       if (item.url === '/createOrder') {
-        this.$router.push({ path: item.url, query: { id: this.driverId, driverName: this.detailInfo.name, driverPhone: this.detailInfo.phone, workCityName: this.detailInfo.workCityName,
-          workCity: this.detailInfo.workCity }})
+        this.$router.push({
+          path: item.url,
+          query: {
+            id: this.driverId,
+            driverName: this.detailInfo.name,
+            driverPhone: this.detailInfo.phone,
+            workCityName: this.detailInfo.workCityName,
+            workCity: this.detailInfo.workCity,
+            busiType: this.detailInfo.busiType
+          }
+        });
       } else if (item.url === '/resetOrder') {
-        this.$router.push({ path: item.url, query: { id: this.driverId, driverName: this.detailInfo.name, driverPhone: this.detailInfo.phone, workCityName: this.detailInfo.workCityName,
-          workCity: this.detailInfo.workCity, orderId: this.detailInfo.orderId }})
+        this.$router.push({
+          path: item.url,
+          query: {
+            id: this.driverId,
+            driverName: this.detailInfo.name,
+            driverPhone: this.detailInfo.phone,
+            workCityName: this.detailInfo.workCityName,
+            workCity: this.detailInfo.workCity,
+            orderId: this.detailInfo.orderId
+          }
+        });
       } else {
-        console.log('this.driverId', this.driverId)
-        this.$router.push({ path: item.url, query: { id: this.driverId }})
+        console.log('this.driverId', this.driverId);
+        this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },
     onSelectDothing(item) {
       this.showDothing = false;
       if (item.name === '标记退出') {
-        this.outSign(this.driverId)
+        this.outSign(this.driverId);
       } else if (item.name === '标记成交') {
-        this.dealSign(this.driverId)
+        this.dealSign(this.driverId);
       } else {
-        this.$router.push({ path: item.url, query: { id: this.driverId }})
+        this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },
     async outSign(id) {
       try {
-        this.$loading(true)
-        let { data: res } = await signOut({ 'driverId': id });
+        this.$loading(true);
+        let { data: res } = await signOut({ driverId: id });
         if (res.success) {
           Notify({ type: 'success', message: '标记退出成功' });
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     },
     async dealSign(id) {
       try {
-        this.$loading(true)
-        let { data: res } = await signDeal({ 'driverId': id });
+        this.$loading(true);
+        let { data: res } = await signDeal({ driverId: id });
         if (res.success) {
           Notify({ type: 'success', message: '标记成交成功' });
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     },
     changeTab(name, title) {
-      let id = this.driverId
+      let id = this.driverId;
       if (name === 1) {
-        this.getTagInfo(id)
+        this.getTagInfo(id);
       } else if (name === 0) {
-        this.getDetail(id)
+        this.getDetail(id);
       } else if (name === 2) {
-        this.getOrderLabel(id)
+        this.getOrderLabel(id);
       } else {
-        this.getLineLabel(id)
+        this.getLineLabel(id);
       }
     },
     async getTagInfo(id) {
       try {
-        this.$loading(true)
-        let { data: res } = await selectLabel({ 'driverId': id });
+        this.$loading(true);
+        let { data: res } = await selectLabel({ driverId: id });
         if (res.success) {
-          this.tagInfo = res.data
-          console.log(res.data, 123)
+          this.tagInfo = res.data;
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     },
     async getDetail(id) {
       try {
-        this.$loading(true)
-        let { data: res } = await driverDetail({ 'driverId': id });
+        this.$loading(true);
+        let { data: res } = await driverDetail({ driverId: id });
         if (res.success) {
-          this.detailInfo = res.data
-          console.log(res.data)
+          this.detailInfo = res.data;
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     },
     async getLineLabel(id) {
       try {
-        this.$loading(true)
-        let { data: res } = await getLingMessageByDriverId({ 'driverId': id });
+        this.$loading(true);
+        let { data: res } = await getLingMessageByDriverId({ driverId: id });
         if (res.success) {
-          this.lineList = res.data
-          console.log(res.data)
+          this.lineList = res.data;
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     },
     async getOrderLabel(id) {
       try {
-        this.$loading(true)
-        let { data: res } = await orderDetail({ 'driverId': id });
+        this.$loading(true);
+        let { data: res } = await orderDetail({ driverId: id });
         if (res.success) {
-          this.orderInfo = res.data
-          console.log(res.data)
+          this.orderInfo = res.data;
         } else {
-          this.$toast.fail(res.errorMsg)
+          this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`)
+        console.log(`fail:${err}`);
       } finally {
-        this.$loading(false)
+        this.$loading(false);
       }
     }
   }

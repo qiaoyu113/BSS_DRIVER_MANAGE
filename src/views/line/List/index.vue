@@ -19,9 +19,21 @@
           </div>
         </template>
       </van-search>
+      <!-- tabs -->
+      <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
+        <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
+          <template #title>
+            {{ item.text }}
+            <div v-if="item.num" class="van-info">
+              {{ item.num }}
+            </div>
+          </template>
+        </van-tab>
+      </van-tabs>
     </van-sticky>
 
     <!-- 下拉刷新  上拉加载 -->
+
     <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
       <van-list
         v-model="loading"
@@ -31,21 +43,10 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
-        <!-- tabs -->
-        <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
-          <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
-            <template #title>
-              {{ item.text }}
-              <div v-if="item.num" class="van-info">
-                {{ item.num }}
-              </div>
-            </template>
-            <div v-for="sub in lists" :key="sub.id">
-              <CardItem :obj="sub" />
-              <div class="lineHeight"></div>
-            </div>
-          </van-tab>
-        </van-tabs>
+        <div v-for="sub in lists" :key="sub.id">
+          <CardItem :obj="sub" />
+          <div class="lineHeight"></div>
+        </div>
       </van-list>
     </van-pull-refresh>
 
@@ -199,7 +200,7 @@ import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getLineList } from '@/api/line'
-import { getOpenCitys, GetSpecifiedRoleList } from '@/api/common'
+import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
 export default {
   components: {
     CardItem,
@@ -343,16 +344,15 @@ export default {
     }
   },
   methods: {
-    onClickLeft() {
-      this.$router.go(-1)
+    // 状态切换
+    handleTabChange() {
+      this.loading = true
+      this.onLoad(true)
     },
-    // 是否更多数据
-    isModeData() {
-      if (this.lists.length === 0) {
-        this.finished = true
-      } else {
-        this.finished = false
-      }
+    onClickLeft() {
+      this.$router.replace({
+        path: '/'
+      })
     },
     // 加载列表
     async onLoad(isInit = false) {
@@ -366,13 +366,17 @@ export default {
       if (!result) {
         return false
       }
-      this.lists = result.lists
+
       if (isInit === true) { // 下拉刷新
+        this.lists = result.lists
         this.refreshing = false
+        this.loading = false
         this.finished = false
       } else { // 上拉加载更多
+        this.lists.push(...result.lists)
         this.loading = false;
-        if (!result.hasMore) {
+        let hasMore = result.total > this.lists.length
+        if (!hasMore) {
           this.finished = true
         }
       }
@@ -385,11 +389,9 @@ export default {
     },
     // 查询
     async onQuery() {
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
-      this.isModeData()
+      this.loading = true
       this.show = false
+      this.onLoad(true)
     },
     // 重置
     onReset(form) {
@@ -414,7 +416,7 @@ export default {
       }
     },
     // 模糊搜索
-    handleSearchChange(value) {
+    async handleSearchChange(value) {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
           nickname: value,
@@ -428,10 +430,8 @@ export default {
         }
         this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'carType') {
-        let params = {
-          keyword: value
-        }
-        this.getOpenCityList(params)
+        let result = await this.getDictDataByKeyword('Intentional_compartment', value)
+        this.options = result
       }
     },
     /**
@@ -449,7 +449,8 @@ export default {
       } else if (key === 'lineSaleId') {
         this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
       } else if (key === 'carType') {
-        this.getOpenCityList()
+        let result = await this.getDictDataByKeyword('Intentional_compartment')
+        this.options = result
       }
       this.showModal = true
     },
@@ -469,22 +470,7 @@ export default {
         console.log(`get list fail:${err}`)
       }
     },
-    // 获取开通的城市列表
-    async getOpenCityList(params = {}) {
-      try {
-        let { data: res } = await getOpenCitys(params)
-        if (res.success) {
-          this.options = res.data.map(item => ({
-            label: item.name,
-            value: item.code
-          }))
-        } else {
-          this.$fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get open city list fail:${err}`)
-      }
-    },
+
     // 显示picker
     showPickerFn(key) {
       this.columns = []
@@ -534,17 +520,9 @@ export default {
 
       this.showPicker = false;
     },
-    // 状态切换
-    async handleTabChange(tab) {
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
-      this.isModeData()
-    },
     // 获取列表
     async getLists(isInit) {
       try {
-        this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size
@@ -554,24 +532,22 @@ export default {
         this.form.lineBalance && (params.lineBalance = this.form.lineBalance)
         this.form.lineCategory && (params.lineCategory = this.form.lineCategory)
         this.form.lineType && (params.lineType = this.form.lineType)
-        this.form.waitDirveValidity && (params.waitDirveValidity = this.form.waitDirveValidity)
+        this.form.waitDirveValidity && (params.waitDirveValidity = new Date(this.form.waitDirveValidity).getTime())
         this.form.carType && (params.carType = this.form.carType)
         this.form.dutyManagerId && (params.dutyManagerId = this.form.dutyManagerId)
         this.form.lineSaleId && (params.lineSaleId = this.form.lineSaleId)
-        this.form.driverWorkTime && (params.driverWorkTime = this.form.driverWorkTime)
+        this.form.driverWorkTime && (params.driverWorkTime = new Date(this.form.driverWorkTime).getTime())
         if (this.form.date && this.form.date.length > 1) {
           params.startDate = new Date(this.form.date[0]).getTime()
+          this.form.date[1].setHours(23, 59, 59)
           params.endDate = new Date(this.form.date[1]).getTime()
         }
         let { data: res } = await getLineList(params)
         if (res.success) {
           let newLists = res.data
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
-          }
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            total: res.page.total
           }
           this.tabArrs.forEach(item => {
             if (item.name === '') {
@@ -600,8 +576,26 @@ export default {
         this.finished = true
         this.refreshing = false
         console.log(`get list fail:${err}`)
-      } finally {
-        this.$loading(false)
+      }
+    },
+    // 从数据字典获取数据
+    async getDictDataByKeyword(type, keyword = '') {
+      try {
+        let params = {
+          type
+        }
+        keyword && (params.keyword = keyword)
+        let { data: res } = await getDictDataByKeyword(params)
+        if (res.success) {
+          return res.data.map(item => ({
+            label: item.dictLabel,
+            value: item.dictValue
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get dict data fail:${err}`)
       }
     }
   }

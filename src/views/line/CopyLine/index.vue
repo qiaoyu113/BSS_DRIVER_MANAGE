@@ -4,7 +4,7 @@
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <StepOne v-show="step === 1" type="copy" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" type="copy" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepTwo v-show="step === 2" type="copy" :min-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date()" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
     <StepThree v-show="step === 3" type="copy" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
@@ -90,8 +90,15 @@ export default {
   },
   methods: {
     init() {
-      this.isStable = +this.$route.query.isStable === 1
       this.lineId = this.$route.query.lineId
+      this.getLineDetail()
+      this.getTitle()
+    },
+    onClickLeft() {
+      this.$router.go(-1)
+    },
+    // 获取title
+    getTitle() {
       let title = ''
       if (this.isStable) {
         title = '复制稳定线路'
@@ -100,10 +107,6 @@ export default {
       }
       this.title = title
       document.title = title
-      this.getLineDetail()
-    },
-    onClickLeft() {
-      this.$router.go(-1)
     },
     // 复制线路
     handleSubmit() {
@@ -123,8 +126,8 @@ export default {
       if (this.isStable) {
         params.deliveryWeekCycle = this.stepTwoForm.deliveryWeekCycle.join(',')
       } else {
-        params.deliveryStartDate = this.stepTwoForm.deliveryWeekCycle[0]
-        params.deliveryEndDate = this.stepTwoForm.deliveryWeekCycle[1]
+        params.deliveryStartDate = new Date(this.stepTwoForm.deliveryWeekCycle[0]).getTime()
+        params.deliveryEndDate = new Date(this.stepTwoForm.deliveryWeekCycle[1]).getTime()
         delete params.deliveryWeekCycle
       }
       // 预计工作时间
@@ -191,6 +194,7 @@ export default {
         if (res.success) {
           let result = res.data
           this.isStable = +res.data.lineCategory === 1
+          this.getTitle()
           this.lineInfo = {
             ...this.lineInfo,
             ...{

@@ -2,7 +2,7 @@
   <div class="RecordLineContainer">
     <!-- nav-bar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="补录线路" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="采线" left-text="返回" left-arrow @click-left="onClickLeft">
       </van-nav-bar>
     </van-sticky>
     <h4 class="title van-hairline--bottom">
@@ -238,7 +238,6 @@ export default {
         let { data: res } = await upload(params, formData)
         if (res.success) {
           file.status = 'done';
-          this.form[key] = []
           this.form[key].push(res.data.url)
         } else {
           this.$fail(res.errorMsg)

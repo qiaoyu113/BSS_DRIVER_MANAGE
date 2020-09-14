@@ -6,7 +6,7 @@
       </h4>
       <van-field
         v-model="form.lineName"
-        label-width="110"
+        label-width="130"
         colon
         required
         :disabled="type === 'edit'"
@@ -21,8 +21,8 @@
       />
       <template v-if="['copy','create'].includes(type)">
         <van-field
-          v-model="form.lineNum"
-          label-width="110"
+          v-model.number="form.lineNum"
+          label-width="130"
           colon
           required
           label="线路数量"
@@ -42,7 +42,7 @@
         value="label"
         :is-computed="form['lineBalance']!==''"
         required
-        label-width="110"
+        label-width="130"
         label="是否有线路余额"
         placeholder="请选择"
         :rules="[
@@ -50,7 +50,7 @@
         ]"
       />
       <selfDatetimePicker
-        label-width="110"
+        label-width="130"
         picker-key="waitDirveValidity"
         :is-computed="form['waitDirveValidity']!==''"
         :form="form"
@@ -68,7 +68,7 @@
         value="label"
         :is-computed="form['stabilityRate']!==''"
         required
-        label-width="110"
+        label-width="130"
         label="线路稳定性"
         placeholder="请选择"
         :rules="[
@@ -85,7 +85,7 @@
         value="label"
         :is-computed="form['runSpeed']!==''"
         required
-        label-width="110"
+        label-width="130"
         label="是否走高速"
         placeholder="请选择"
         :rules="[
@@ -99,7 +99,7 @@
         value="label"
         :is-computed="form['returnBill']!==''"
         required
-        label-width="110"
+        label-width="130"
         label="是否需要回单"
         placeholder="请选择"
         :rules="[
@@ -107,7 +107,7 @@
         ]"
       />
       <van-field
-        label-width="110"
+        label-width="130"
         colon
         :value="pickerNames['carType'] || form['carTypeName']"
         readonly
@@ -121,7 +121,7 @@
         @click="handleShowModal('carType')"
       />
       <self-area
-        label-width="110"
+        label-width="130"
         picker-key="area"
         :form="form"
         :is-computed="form.area.length > 2"
@@ -135,7 +135,7 @@
       <van-field
         v-model="form.districtArea"
         colon
-        label-width="110"
+        label-width="130"
         rows="2"
         required
         autosize
@@ -150,8 +150,8 @@
         ]"
       />
       <van-field
-        v-model="form.deliveryNum"
-        label-width="110"
+        v-model.number="form.deliveryNum"
+        label-width="130"
         colon
         required
         label="配送点数量"
@@ -164,15 +164,15 @@
         ]"
       />
       <van-field
-        v-model="form.distance"
-        v-only-number="{min: 1, max: 999999}"
-        label-width="110"
+        v-model.number="form.distance"
+        v-only-number="{min: 1, max: 9999.9, precision: 1}"
+        label-width="130"
         colon
         required
-        label="配送总里程数"
+        label="配送总里程数(公里)"
         placeholder="请输入"
         name="mileageValidator"
-        type="digit"
+        type="number"
         :rules="[
           { required: true, message: '请输入配送总里程数！' },
           { validator: mileageValidator, message: '请输入1~9999' }
@@ -180,7 +180,7 @@
       />
       <van-field
         v-model="form.limitRemark"
-        label-width="110"
+        label-width="130"
         colon
         rows="2"
         autosize
@@ -204,6 +204,9 @@
       @finish="handleValueClick"
       @closed="showModal=false"
     />
+    <div class="cycle">
+      1/3
+    </div>
   </div>
 </template>
 
@@ -316,7 +319,7 @@ export default {
     },
     // 配送总里程数
     mileageValidator(val) {
-      if (val >= 1 && val <= 9999) {
+      if (val >= 1 && val <= 9999.9) {
         return true
       }
       return false
@@ -422,6 +425,7 @@ export default {
 
 <style lang='scss' scoped>
 .stepOneContainer {
+  position: relative;
   font-family: PingFangSC-Medium;
   .title {
     margin: 0px;
@@ -432,6 +436,22 @@ export default {
   .btn {
     margin:100px 15px 0px;
     width: 345px;
+  }
+  .cycle {
+    position: absolute;
+    right:30px;
+    bottom:80px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #2f448a;
+    color: #2f448a;
+    z-index: 99;
+    font-size: 13px;
+    text-align: center;
+    line-height: 40px;
+    margin-right: 15px;
+    margin-top: 15px;
   }
 }
 

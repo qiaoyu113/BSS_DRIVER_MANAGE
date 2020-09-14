@@ -344,6 +344,7 @@ export default {
       if (isInit === true) { // 下拉刷新
         this.page.current = 1
         this.lists = []
+        this.loading = false
       } else { // 上拉加载更多
         this.page.current++
       }
@@ -352,13 +353,18 @@ export default {
         result.hasMore = false
         return false
       }
-      this.lists = result.lists
+
       if (isInit === true) { // 下拉刷新
+        this.lists = result.lists
         this.refreshing = false
+        this.loading = false
         this.finished = false
       } else { // 上拉加载更多
+        this.lists.push(...result.lists)
+        // this.lists.concat(result.lists)
         this.loading = false;
-        if (!result.hasMore) {
+        let hasMore = result.total > this.lists.length
+        if (!hasMore) {
           this.finished = true
         }
       }
@@ -382,20 +388,18 @@ export default {
       } else {
         this.ruleForm.status = String(tab)
       }
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
+      this.loading = true
+      this.onLoad(true)
     },
     // 获取列表
     async getLists(isInit) {
       try {
-        this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size
         }
         this.ruleForm.workCity && (params.workCity = Number(this.ruleForm.workCity))
-        this.ruleForm.busiType && (params.busiType = this.ruleForm.busiType)
+        this.ruleForm.busiType !== '' && (params.busiType = this.ruleForm.busiType)
         this.ruleForm.GmManager && (params.GmManager = this.ruleForm.GmManager)
         this.ruleForm.carType && (params.carType = Number(this.ruleForm.carType))
         this.ruleForm.status && (params.status = Number(this.ruleForm.status))
@@ -412,7 +416,7 @@ export default {
           }
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            total: res.page.total
           }
           this.tabType.forEach(item => {
             if (item.code === this.ruleForm.status) {
@@ -429,20 +433,21 @@ export default {
         } else {
           this.loading = false;
           this.error = true;
-          this.$toast.fail(res.errorMsg)
+          this.finished = true
+          this.refreshing = false
+          this.$fail(res.errorMsg)
         }
       } catch (err) {
         this.loading = false;
         this.error = true;
+        this.finished = true
+        this.refreshing = false
         console.log(`get list fail:${err}`)
-      } finally {
-        this.$loading(false)
       }
     },
     async onSubmit(value) {
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
+      this.loading = true
+      this.onLoad(true)
       this.showScreen = false
     },
     /**

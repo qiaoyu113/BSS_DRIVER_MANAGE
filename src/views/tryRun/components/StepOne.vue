@@ -164,7 +164,7 @@
     >
       <van-search
         v-model="driverValue"
-        placeholder="请输入司机姓名/编号"
+        placeholder="请输入司机姓名/手机号"
         show-action
         @input="onSearch"
       >
@@ -267,6 +267,18 @@ export default {
      * 点击提交
      */
     async onSubmit() {
+      if (this.actionVal !== '1') {
+        // 进入创建试跑
+        this.$router.replace({
+          path: '/create-run',
+          query: {
+            step: '1',
+            lineId: this.form.lineId,
+            driverId: this.form.driverId
+          }
+        })
+        return;
+      }
       try {
         this.$loading(true);
         let { data: res } = await CreateLntentionRun({
@@ -280,16 +292,6 @@ export default {
             if (this.actionVal === '1') { // 1提交 2提交并创建试跑
             // 返回试跑列表
               this.$router.push('/try-run')
-            } else {
-            // 进入创建试跑
-              this.$router.replace({
-                path: '/create-run',
-                query: {
-                  step: '1',
-                  lineId: this.form.lineId,
-                  driverId: this.form.driverId
-                }
-              })
             }
           }, delay);
         } else {

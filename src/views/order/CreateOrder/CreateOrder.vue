@@ -54,7 +54,8 @@
               value="商品信息"
               is-link
             />
-            <selftPicker
+            <van-field label="商品分类" :value="formData.busiType === 0 ? '梧桐专车' : '梧桐共享' " placeholder="业务线" colon readonly />
+            <!-- <selftPicker
               :props="keyValue"
               picker-key="busiType"
               :form="formData"
@@ -67,7 +68,7 @@
               :rules="[
                 { required: true, message: '请选择' },
               ]"
-            />
+            /> -->
             <selftPicker
               :props="keyValue"
               picker-key="cooperationModel"
@@ -94,7 +95,7 @@
               @click="showPickerFn('cooperationModel')"
             /> -->
             <van-field
-              v-model="formData.cooperationTime"
+              v-model.number="formData.cooperationTime"
               colon
               clickable
               label="合作期限（月）"
@@ -106,7 +107,7 @@
                        {validator:validatorNum(0,999), message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model="formData.incomeGuarantee"
+              v-model.number="formData.incomeGuarantee"
               colon
               clickable
               label="收入保障（元）"
@@ -117,7 +118,7 @@
                        {validator:moneyCheck1, message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model="formData.rake"
+              v-model.number="formData.rake"
               colon
               clickable
               label="抽佣比例（%）"
@@ -129,7 +130,7 @@
                        {validator:checkPercent, message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model="formData.goodsAmount"
+              v-model.number="formData.goodsAmount"
               colon
               clickable
               label="商品金额（元）"
@@ -799,6 +800,7 @@ export default {
       this.formData.driverInfoFORM.phone = this.$route.query.driverPhone;
       this.formData.driverInfoFORM.workCity = this.$route.query.workCity;
       this.formData.driverInfoFORM.workCityName = this.$route.query.workCityName;
+      this.formData.busiType = this.$route.query.busiType
       let orderId = this.$route.query.orderId;
       if (orderId) {
         this.orderId = orderId;
@@ -898,7 +900,8 @@ export default {
           driverInfoFORM: this.formData.driverInfoFORM,
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
           orderId: this.orderId,
-          driverId: this.driverId
+          driverId: this.driverId,
+          havePayAmount: this.payMoneyed
         }
         params.driverInfoFORM.driverId = this.driverId
         params.operateFlag = this.operateFlag;

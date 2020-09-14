@@ -8,7 +8,7 @@
       v-bind="$attrs"
       @click="showPickerFn"
     />
-    <van-calendar v-model="showPicker" :default-date="form[pickerKey]" type="range" :allow-same-day="true" @confirm="onConfirm" />
+    <van-calendar v-model="showPicker" :min-date="minTime" :default-date="form[pickerKey]" type="range" :allow-same-day="true" @confirm="onConfirm" />
   </div>
 </template>
 
@@ -33,12 +33,17 @@ export default {
     border: {
       type: Boolean,
       default: true
+    },
+    minDate: {
+      type: Date,
+      default: () => new Date()
     }
   },
   data() {
     return {
       showPicker: false,
-      label: ''
+      label: '',
+      minTime: new Date()
     }
   },
   watch: {
@@ -46,12 +51,17 @@ export default {
       if (val) {
         this.getLable()
       }
+    },
+    minDate(val) {
+      if (val) {
+        this.minTime = val
+      }
     }
   },
   methods: {
     // 获取label
     getLable() {
-      this.label = `${parseTime(this.form[this.pickerKey][0], '{m}/{d}')}-${parseTime(this.form[this.pickerKey][1], '{m}/{d}')}`
+      this.label = `${parseTime(this.form[this.pickerKey][0], '{y}/{m}/{d}')}-${parseTime(this.form[this.pickerKey][1], '{y}/{m}/{d}')}`
     },
     // 打开picker
     showPickerFn() {
@@ -59,8 +69,9 @@ export default {
     },
     // 点击确定
     onConfirm(obj) {
-      let startName = `${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
-      let endName = `${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
+      let startName = `${obj[0].getFullYear()}/${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
+      obj[1] = new Date(obj[1].setHours(23, 59, 59))
+      let endName = `${obj[1].getFullYear()}/${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
       this.label = `${startName}-${endName}`
       this.form[this.pickerKey] = obj
       this.showPicker = false
