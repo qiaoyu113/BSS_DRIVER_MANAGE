@@ -44,7 +44,7 @@
           <P v-if="optionsType" class="all">
             <van-checkbox v-model="checkAll" class="checked" shape="square" @click="checkAlls">
               <span class="text">全选</span>
-              <span class="text">已选择{{ checkedNum }} 个出车单位</span>
+              <span class="text">已选择{{ checkedNum }} 个出车单</span>
             </van-checkbox>
           </P>
           <van-checkbox-group ref="checkboxGroup" v-model="checkResult">
@@ -406,14 +406,7 @@ export default {
     },
     // 获取列表
     async getLists(isInit) {
-      let toast;
       try {
-        toast = this.$toast.loading({
-          duration: 0,
-          message: '加载中...',
-          forbidClick: true,
-          loadingType: 'spinner'
-        })
         const params = this.delForm(this.form);
         params.page = this.page.current;
         params.limit = this.page.limit;
@@ -450,8 +443,6 @@ export default {
         this.refreshing = false;
         this.finished = true;
         console.log(`get list fail:${err}`);
-      } finally {
-        toast.clear();
       }
     },
     /**

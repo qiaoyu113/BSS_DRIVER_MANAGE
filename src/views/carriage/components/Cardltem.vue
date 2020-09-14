@@ -11,17 +11,17 @@
         出车单号:{{ obj.wayBillId }}
       </p>
       <p class="text ellipsis">
-        加盟经理:{{ obj.joinManagerName }}
+        加盟经理:{{ obj.joinManagerName }}/{{ obj.joinManagerPhone }}
       </p>
       <p class="text ellipsis">
-        路线名称:{{ obj.lineName }} <span v-if="obj.gmStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.feeDiff || 0 }}元</span>
+        路线名称:{{ obj.lineName }}/{{ obj.lineId }} <span v-if="obj.gmStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.gmFee || 0 }}元</span>
       </p>
       <div v-if="obj.gmStatusCode === 1 && obj.feeDiff === 1" class="text2 ellipsis">
         <p class="differ">
           有差异
         </p>
         <p class="right_text">
-          {{ obj.feeDiff || 0 }}元
+          {{ obj.feeDiffValue || 0 }}元
         </p>
       </div>
     </div>

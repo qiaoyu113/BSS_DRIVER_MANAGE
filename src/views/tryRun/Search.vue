@@ -134,9 +134,6 @@ export default {
         let { data: res } = await GetRunTestInfoList(params);
         if (res.success) {
           this.lists = res.data;
-          if (keyword) {
-            this.setHistory(keyword);
-          }
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -166,6 +163,9 @@ export default {
     },
     // 跳转页面
     onRunList() {
+      if (this.keyWord) {
+        this.setHistory(this.keyWord);
+      }
       this.$router.replace({
         path: '/try-list',
         query: {
