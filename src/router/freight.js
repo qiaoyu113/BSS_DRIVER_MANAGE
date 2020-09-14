@@ -77,7 +77,7 @@ export default [
     name: 'outsidelinesearch',
     component: resolve => require(['@/views/carriage/OutSideLineSearch'], resolve),
     meta: {
-      title: '外线运费'
+      title: '项目名称'
     }
   }
 
