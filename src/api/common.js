@@ -134,3 +134,11 @@ export function getCurrentLowerOfficeCityData(params) {
     params
   })
 }
+
+// 根据城市小组查加盟经理
+export const getGMListByProductLineAndCC = (data) =>
+  request({
+    url: `${prefix}/v2/base/user/getGMListByProductLineAndCC`,
+    method: 'post',
+    data
+  })

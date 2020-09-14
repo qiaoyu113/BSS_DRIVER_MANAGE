@@ -526,6 +526,9 @@ export default {
     },
     changeOver() {
       this.checked = false;
+      this.changeManagerStatus = false;
+      this.loading = true
+      this.onLoad(true)
     },
     /**
      * 选则加盟经理

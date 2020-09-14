@@ -55,20 +55,6 @@
               is-link
             />
             <van-field label="商品分类" :value="formData.busiType === 0 ? '梧桐专车' : '梧桐共享' " placeholder="业务线" colon readonly />
-            <!-- <selftPicker
-              :props="keyValue"
-              picker-key="busiType"
-              :form="formData"
-              :columns="columns_busiType"
-              value="name"
-              :is-computed="formData['busiType']!=='' && columns_busiType.length > 0"
-              required
-              label="商品分类"
-              placeholder="请选择"
-              :rules="[
-                { required: true, message: '请选择' },
-              ]"
-            /> -->
             <selftPicker
               :props="keyValue"
               picker-key="cooperationModel"
@@ -83,17 +69,6 @@
                 { required: true, message: '请选择' },
               ]"
             />
-            <!-- <van-field
-              readonly
-              clickable
-              colon
-              required
-              :value="formText.cooperationModel"
-              label="合作模式"
-              placeholder="请选择"
-              :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('cooperationModel')"
-            /> -->
             <van-field
               v-model.number="formData.cooperationTime"
               colon
@@ -194,18 +169,6 @@
                 { required: formData.cooperationModel === 2 && formStatus === 2, message: '请选择' },
               ]"
             />
-            <!-- <van-field
-              v-if="formData.cooperationModel === '2'"
-              readonly
-              clickable
-              colon
-              required
-              :value="formData.supplier"
-              label="租赁公司"
-              placeholder="请选择"
-              :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('supplier')"
-            /> -->
 
             <selftPicker
               v-show="formData.cooperationModel === 1"
@@ -222,18 +185,6 @@
                 { required: formData.cooperationModel === 1 && formStatus === 2, message: '请选择' },
               ]"
             />
-            <!-- <van-field
-              v-if="formData.cooperationModel === '1'"
-              readonly
-              clickable
-              colon
-              required
-              :value="formData.supplier"
-              label="购车公司"
-              placeholder="请选择"
-              :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('supplier')"
-            /> -->
             <!-- 购车与租车 -->
             <selftPicker
               v-show="formData.cooperationModel !== 3"
@@ -250,18 +201,6 @@
                 { required: formData.supplier && formData.cooperationModel !== 3 && formStatus === 2, message: '请选择' },
               ]"
             />
-            <!-- <van-field
-              v-if="formData.supplier && formData.cooperationModel !== '3'"
-              readonly
-              clickable
-              colon
-              required
-              :value="formText.cooperationCar"
-              label="合作车型"
-              placeholder="请选择"
-              :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('cooperationCar1')"
-            /> -->
 
             <selftPicker
               v-show="formData.cooperationModel ===3"
@@ -278,18 +217,6 @@
                 { required: formData.cooperationModel ===3 && formStatus === 2, message: '请选择' },
               ]"
             />
-            <!-- <van-field
-              v-if="formData.cooperationModel === '3'"
-              readonly
-              clickable
-              colon
-              required
-              :value="formText.cooperationCar"
-              label="合作车型"
-              placeholder="请选择"
-              :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('cooperationCar2')"
-            /> -->
 
             <selftPicker
               v-show="formData.supplier && formData.cooperationCar && formData.cooperationModel === 1"
@@ -306,18 +233,6 @@
                 { required: formData.supplier && formData.cooperationCar && formData.cooperationModel === 1 && formStatus === 2, message: '请选择' },
               ]"
             />
-            <!-- <van-field
-              v-if="formData.supplier && formData.cooperationCar && formData.cooperationModel === '1'"
-              readonly
-              clickable
-              colon
-              required
-              :value="formText.carModel"
-              label="车辆型号"
-              placeholder="请选择"
-              :rules="[{ required: true, message: '请选择' }]"
-              @click="showPickerFn('carModel')"
-            /> -->
             <template>
               <div v-show="formData.cooperationModel !== 3 ">
                 <van-field
@@ -432,25 +347,11 @@
       position="bottom"
     >
       <van-datetime-picker
-        v-model="formData.inspectionTime"
+        v-model="formData[pickerKey]"
         type="date"
         title="选择年月日"
         @confirm="onConfirm1"
         @cancel="showPickerDate = false"
-      />
-    </van-popup>
-    <!-- picker -->
-    <van-popup
-      v-model="showPicker"
-      round
-      position="bottom"
-    >
-      <van-picker
-        show-toolbar
-        value-key="name"
-        :columns="columns"
-        @cancel="showPicker = false"
-        @confirm="onConfirmPicker"
       />
     </van-popup>
   </div>
@@ -552,20 +453,6 @@ export default {
     title() {
       return this.$route.meta.title;
     },
-    insuranceTimeData() {
-      if (this.formData.busiType !== 1 && this.formData.cooperationModel === 3) {
-        return this.formText.insuranceTime
-      } else {
-        return this.clearData('insuranceTime')
-      }
-    },
-    inspectionTimeData() {
-      if (this.formData.busiType !== 1 && this.formData.cooperationModel === 3) {
-        return this.formText.inspectionTime
-      } else {
-        return this.clearData('inspectionTime')
-      }
-    },
     operateFlag() {
       if (this.formStatus === 1) {
         return 'step1';
@@ -596,22 +483,6 @@ export default {
   watch: {
     'formData.cooperationModel'(value) {
       if (value === 1) {
-        // if (!this.id) {
-        //   this.formData.supplier = '';
-        //   this.formData.cooperationCar = '';
-        //   this.formData.carModel = '';
-        //   this.formText.supplier = '';
-        //   this.formText.cooperationCar = '';
-        // } else {
-        //   if (this.editors) {
-        //     this.formData.supplier = '';
-        //     this.formData.cooperationCar = '';
-        //     this.formData.carModel = '';
-        //     this.formText.supplier = '';
-        //     this.formText.cooperationCar = '';
-        //   }
-        //   this.editors = true;
-        // }
         this.getCompany('1');
       } else if (value === 2) {
         this.getCompany('2');
@@ -631,16 +502,6 @@ export default {
       }
     },
     'formData.supplier'(value) {
-      // if (!this.id) {
-      //   this.formData.cooperationCar = '';
-      //   this.formData.carModel = '';
-      // } else {
-      //   if (this.editorsSupplier) {
-      //     this.formData.cooperationCar = '';
-      //     this.formData.carModel = '';
-      //   }
-      //   this.editorsSupplier = true;
-      // }
       if (value) {
         this.getCar();
       }
@@ -651,16 +512,6 @@ export default {
         this.formData.cooperationModel === 2
       ) {
         if (value) {
-          // if (this.id) {
-          //   if (this.editorsCar) {
-          //     this.formData.carModel = '';
-          //   }
-          //   this.editorsCar = true;
-          // } else {
-          //   this.formData.carModel = '';
-          // }
-          // this.formData.carModel = '';
-          // this.formText.carModel = '';
           if (this.formData.cooperationModel === 1 && value) {
             this.GetModelByTypeAndCityAndSupplierAndCarType();
           } else if (this.formData.cooperationModel === 2) {
@@ -686,9 +537,6 @@ export default {
   methods: {
     timeFormat(date, format) {
       return dayjs(date).format(format)
-    },
-    clearData(name) {
-      return (this.formText['name'] = '')
     },
     async getBuyCarPrice() {
       let {
@@ -847,7 +695,6 @@ export default {
         this.$loading(true);
         let { data: res } = await orderDetail({ driverId: id });
         if (res.success) {
-          console.log('this.formData0', this.formData, res.data)
           if (res.data !== null) {
             this.formData = { ...this.formData, ...res.data };
             this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
@@ -861,7 +708,6 @@ export default {
             this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
             this.formText.inspectionTime = res.data.inspectionTime
             this.formText.insuranceTime = res.data.insuranceTime
-            console.log('this.formData', this.formData)
           }
         } else {
           this.$toast.fail(res.errorMsg);
@@ -882,7 +728,6 @@ export default {
           return;
         }
         this.$loading(true);
-        console.log('tag', this.formData.cooperationTime)
         let params = {
           cooperationModel: this.formData.cooperationModel,
           cooperationTime: this.formData.cooperationTimenew,
@@ -909,13 +754,14 @@ export default {
         if (res.success) {
           Notify({ type: 'success', message: '订单录入成功' });
           this.$router.push({ path: '/driverdetail', query: { id: this.driverId }})
+          this.$loading(false);
         } else {
+          this.$loading(false);
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
-        console.log(`fail:${err}`);
-      } finally {
         this.$loading(false);
+        console.log(`fail:${err}`);
       }
     },
     async onSubmit1(values) {
@@ -959,52 +805,14 @@ export default {
       let timeText = parseTime(time, '{y}-{m}-{d}');
       let timeCode = time.getTime();
       this.formText[this.pickerKey] = timeText;
-      this.formData[this.pickerKey] = timeCode;
+      // this.formData[this.pickerKey] = timeCode;
+      // this.formData[this.pickerKey] = 1231231232;
+      console.log(this.formData[this.pickerKey], this.pickerKey, timeCode, time)
       this.showPickerDate = false;
     },
     changeDate(key) {
       this.pickerKey = key;
       this.showPickerDate = true;
-    },
-    /**
-     * picker 选择
-     */
-    onConfirmPicker(value) {
-      if (
-        this.pickerKey === 'cooperationCar1' ||
-        this.pickerKey === 'cooperationCar2'
-      ) {
-        this.formText['cooperationCar'] = value.name;
-        this.formData['cooperationCar'] = value.code;
-      } else {
-        this.formText[this.pickerKey] = value.name;
-        this.formData[this.pickerKey] = value.code;
-      }
-      this.showPicker = false;
-    },
-    /**
-     * 显示picker
-     */
-    showPickerFn(key) {
-      this.pickerKey = key;
-      switch (key) {
-        case 'supplier':
-          this.columns = this.columns_supplier;
-          break;
-        case 'busiType':
-          this.columns = this.columns_busiType;
-          break;
-        case 'cooperationModel':
-          this.columns = this.columns_cooperationModel;
-          break;
-        case 'cooperationCar1':
-          this.columns = this.columns_cooperationCar1;
-          break;
-        case 'cooperationCar2':
-          this.columns = this.columns_cooperationCar2;
-          break;
-      }
-      this.showPicker = true;
     },
     /**
      * 验证收入保障

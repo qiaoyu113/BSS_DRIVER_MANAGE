@@ -1,28 +1,28 @@
 <template>
   <div class="TagInfo">
-    <div v-if="obj" class="tags">
+    <div v-if="obj !== null" class="tags">
       <van-form label-width="150px">
         <van-field
           label="是否小白司机"
           colon
-          :value="obj.isNoviceName"
+          :value="obj.isNoviceName | DataIsNull"
           readonly
         />
         <van-field
           label="是否为司急"
           colon
-          :value="obj.isUrgentName"
+          :value="obj.isUrgentName | DataIsNull"
           readonly
         />
         <van-field
           label="是否存在跳单行为"
           colon
-          :value="obj.isDown === 0 ? '否' : obj.isDownName"
+          :value="obj.isDown === 0 ? '否' : obj.isDownName | DataIsNull"
           readonly
         />
       </van-form>
     </div>
-    <div v-if="obj" class="remakeList">
+    <div v-if="obj !== null" class="remakeList">
       <div
         v-for="(item,index) in obj.labelRemarkList"
         :key="index"

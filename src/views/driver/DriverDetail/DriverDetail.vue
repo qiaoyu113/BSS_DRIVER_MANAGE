@@ -42,16 +42,16 @@
         <van-cell>
           <template #title>
             <div class="title">
-              <span>{{ detailInfo.name }}</span>&#8194;
-              <span>{{ detailInfo.phone }}</span>&#8194;
-              <span>({{ detailInfo.busiTypeName }}/{{ detailInfo.workCityName }})</span>
+              <span>{{ detailInfo.name | DataIsNull }}</span>&#8194;
+              <span>{{ detailInfo.phone| DataIsNull }}</span>&#8194;
+              <span>({{ detailInfo.busiTypeName | DataIsNull }}/{{ detailInfo.workCityName | DataIsNull }})</span>
             </div>
           </template>
         </van-cell>
         <van-cell>
           <template #title>
             <div class="itemStatus">
-              {{ detailInfo.statusName }}
+              {{ detailInfo.statusName | DataIsNull }}
             </div>
           </template>
         </van-cell>
@@ -60,7 +60,7 @@
             title-class="cell-title"
             value-class="cell-value"
             title="司机编号："
-            :value="detailInfo.driverId"
+            :value="detailInfo.driverId | DataIsNull"
           />
           <van-cell
             title-class="cell-title"
