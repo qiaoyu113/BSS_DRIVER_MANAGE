@@ -88,10 +88,10 @@
             <span>{{ detail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar">{{ newDetail.hasCar === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.hasCar !== undefined">{{ newDetail.hasCar === true ? '是' : '否' }}</span>
           </van-grid-item>
 
-          <template v-if="currentCarTypeStatus">
+          <template v-if="showCurrentCarTypeStatus">
             <van-grid-item>
               <span>当前车型</span>
             </van-grid-item>
@@ -507,7 +507,7 @@
             <span>{{ detail.hasCar ? '是' : '否' }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar">{{ newDetail.hasCar ? '是' : '否' }}</span>
+            <span v-if="newDetail">{{ newDetail.hasCar ? '是' : '否' }}</span>
           </van-grid-item>
 
           <template v-if="currentCarTypeStatus">
@@ -654,6 +654,9 @@ export default {
     },
     showIntentDrivingCarType() {
       return this.intentDrivingCarTypeStatus()
+    },
+    showCurrentCarTypeStatus() {
+      return this.currentCarTypeStatus()
     }
   },
   mounted() {
@@ -678,6 +681,7 @@ export default {
       }
     },
     currentCarTypeStatus() {
+      console.log(this.detail.currentCarType === 0 && this.newDetail.currentCarType === undefined)
       if (this.detail.currentCarType === 0 && this.newDetail.currentCarType === 0) {
         return false
       } else if (this.detail.currentCarType === 0 && this.newDetail.currentCarType === undefined) {
