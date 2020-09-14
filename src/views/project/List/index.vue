@@ -366,9 +366,9 @@ export default {
     handleShowModal(key) {
       this.modalKey = key
       if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
+        this.getSpecifiedRoleList({ roleId: 2 })
       } else if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
+        this.getSpecifiedRoleList({ roleId: 3 })
       }
       this.showModal = true
     },
@@ -410,7 +410,7 @@ export default {
         let { data: res } = await GetSpecifiedRoleList(params)
         if (res.success) {
           this.options = res.data.map(item => ({
-            label: item.nick,
+            label: item.name,
             value: item.id
           }))
         } else {
