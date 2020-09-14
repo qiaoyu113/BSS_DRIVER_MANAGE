@@ -42,7 +42,7 @@
     </div>
     <van-popup v-model="show">
       <div class="danceng" style=" border-radius:5px">
-        <van-form @submit="footer_confirm">
+        <van-form :show-error="false" @submit="footer_confirm">
           <p class="title">
             运费上报
           </p>

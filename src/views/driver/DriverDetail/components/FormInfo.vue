@@ -1,6 +1,6 @@
 <template>
   <div class="formInfo">
-    <van-form label-width="150px">
+    <van-form :show-error="false" label-width="150px">
       <template v-for="type in obj.interviewInfoVOList">
         <div
           v-if="type.busiType === 1"

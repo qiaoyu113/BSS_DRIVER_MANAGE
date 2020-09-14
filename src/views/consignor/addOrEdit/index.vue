@@ -1,7 +1,7 @@
 <template>
   <div class="consignorAddOrEdit">
     <NavBar v-if="false" />
-    <van-form @submit="onSubmit">
+    <van-form :show-error="false" @submit="onSubmit">
       <van-field
         v-model="form.customerName"
         required

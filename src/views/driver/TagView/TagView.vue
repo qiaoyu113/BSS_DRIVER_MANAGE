@@ -9,7 +9,7 @@
       />
     </van-sticky>
     <van-cell class="tagText" value="标签信息" size="large" />
-    <van-form class="formText" @submit="onSubmit">
+    <van-form :show-error="false" class="formText" @submit="onSubmit">
       <van-field
         v-model="isUrgent"
         readonly

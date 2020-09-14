@@ -1,7 +1,7 @@
 <template>
   <div class="TagInfo">
     <div v-if="obj !== null" class="tags">
-      <van-form label-width="150px">
+      <van-form :show-error="false" label-width="150px">
         <van-field
           label="是否小白司机"
           colon
