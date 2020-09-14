@@ -20,28 +20,28 @@
         />
         <van-field
           label="司机姓名"
-          :value="`${formData.driverName}（${formData.driverId}）`"
+          :value="`${formData.driverName}（${formData.driverId}）` | DataIsNull"
           colon
           required
           readonly
         />
         <van-field
           label="司机电话"
-          :value="formData.driverInfoVO.phone"
+          :value="formData.driverInfoVO.phone | DataIsNull"
           required
           colon
           readonly
         />
         <van-field
           label="工作城市"
-          :value="formData.driverInfoVO.workCityName"
+          :value="formData.driverInfoVO.workCityName | DataIsNull"
           readonly
           required
           colon
         />
         <van-field
           label="身份证号"
-          :value="formData.driverInfoVO.idNo"
+          :value="formData.driverInfoVO.idNo | DataIsNull"
           readonly
           required
           colon
@@ -54,14 +54,14 @@
         />
         <van-field
           label="商品分类"
-          :value="formData.busiTypeName"
+          :value="formData.busiTypeName | DataIsNull"
           required
           readonly
           colon
         />
         <van-field
           label="合作模式"
-          :value="formData.cooperationModelName"
+          :value="formData.cooperationModelName | DataIsNull"
           required
           readonly
           colon
@@ -69,7 +69,7 @@
         <van-field
           label-width="100px"
           label="合作期限（月）"
-          :value="formData.cooperationTime"
+          :value="formData.cooperationTime | DataIsNull"
           readonly
           required
           colon
@@ -79,7 +79,7 @@
           v-if="formData.busiType === 0"
           label-width="100px"
           label="收入保障（元）"
-          :value="formData.incomeGuarantee"
+          :value="formData.incomeGuarantee | DataIsNull"
           readonly
           required
           colon
@@ -87,14 +87,14 @@
         <van-field
           label-width="100px"
           label="抽佣比例（%）"
-          :value="formData.rake"
+          :value="formData.rake | DataIsNull"
           readonly
           colon
         />
         <van-field
           label-width="100px"
           label="商品金额（元）"
-          :value="formData.goodsAmount"
+          :value="formData.goodsAmount | DataIsNull"
           readonly
           colon
           required
@@ -108,7 +108,7 @@
         <van-field
           v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
           label="年检有效期"
-          :value="formData.inspectionTime"
+          :value="formData.inspectionTime | DataIsNull"
           required
           colon
           readonly
@@ -116,7 +116,7 @@
         <van-field
           v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
           label="保险有效期"
-          :value="formData.insuranceTime"
+          :value="formData.insuranceTime | DataIsNull"
           required
           colon
           readonly
@@ -124,7 +124,7 @@
         <van-field
           v-if="formData.cooperationModel === 2"
           label="租聘公司"
-          :value="formData.supplier"
+          :value="formData.supplier | DataIsNull"
           readonly
           colon
           required
@@ -132,21 +132,21 @@
         <van-field
           v-if="formData.cooperationModel === 1"
           label="购车公司"
-          :value="formData.supplier"
+          :value="formData.supplier | DataIsNull"
           readonly
           colon
           required
         />
         <van-field
           label="合作车型"
-          :value="formData.cooperationCarName"
+          :value="formData.cooperationCarName | DataIsNull"
           readonly
           colon
         />
         <van-field
           v-if="formData.cooperationModel === 1"
           label="车辆型号"
-          :value="formData.carModel"
+          :value="formData.carModel | DataIsNull"
           readonly
           colon
           required
@@ -154,7 +154,7 @@
         <van-field
           v-if="formData.cooperationModel !== 3"
           label="车辆信息"
-          :value="formData.carMessage"
+          :value="formData.carMessage | DataIsNull"
           readonly
           required
           colon
@@ -162,7 +162,7 @@
         <van-field
           v-if="formData.cooperationModel === 1"
           label="无税车价"
-          :value="formData.carPrice"
+          :value="formData.carPrice | DataIsNull"
           readonly
           required
           colon
@@ -170,7 +170,7 @@
         <van-field
           v-if="formData.cooperationModel !== 1"
           label="车牌号"
-          :value="formData.plateNo"
+          :value="formData.plateNo | DataIsNull"
           colon
           readonly
           required
