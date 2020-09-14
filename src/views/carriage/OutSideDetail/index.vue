@@ -4,7 +4,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="外线运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div v-if="obj.gmState === 0" class="headerRight" @click="showPopup(obj)">
+          <div v-if="obj.lineState === 0" class="headerRight" @click="showPopup(obj)">
             上报
           </div>
         </template>
@@ -50,7 +50,7 @@
             v-for="(item, index) in arrstr"
             :key="item.id"
             v-model="item.preMoney"
-            v-only-number="{min: 0}"
+            v-only-number="{min: 0, max: 999999.99, precision: 2}"
             :name="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             :label="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             placeholder="请输入运费(元)"
@@ -67,7 +67,7 @@
               autosize
               label="备注:"
               type="textarea"
-              placeholder="请输入不超过150字"
+              placeholder="不超过150字符"
               show-word-limit
             />
           </div>

@@ -8,7 +8,7 @@
     <van-search
       v-model="keyWord"
       show-action
-      placeholder="请输入搜索关键词"
+      placeholder="请输入司机名称/手机号"
       @input="onSearch"
       @search="onSearch"
       @clear="onCancel"
@@ -124,6 +124,7 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value
+      this.getGmInfoListByKeyWorld(value)
     },
     // 搜索
     async getGmInfoListByKeyWorld(keyword = '') {
@@ -156,7 +157,7 @@ export default {
       if (this.historyItems.length >= 10) {
         this.historyItems.pop()
       }
-      this.historyItems.push(keyword)
+      this.historyItems.unshift(keyword)
       localStorage.setItem(this.localKey, JSON.stringify(this.historyItems))
     },
     // 获取从localStorage
@@ -198,6 +199,7 @@ export default {
         border-radius: 3px;
         font-size: 13px;
         color: #838A9D;
+        word-break:break-all;
       }
     }
   }

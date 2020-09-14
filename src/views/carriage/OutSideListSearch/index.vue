@@ -8,7 +8,7 @@
     <van-search
       v-model="keyWord"
       show-action
-      placeholder="请输入搜索关键词"
+      placeholder="搜索项目名称/编号"
       @input="onSearch"
       @search="onSearch"
       @clear="onCancel"
@@ -124,6 +124,7 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value
+      this.getProjectWayBillLists(value)
     },
     // 搜索
     async getProjectWayBillLists(keyword = '') {
@@ -156,7 +157,7 @@ export default {
       if (this.historyItems.length >= 10) {
         this.historyItems.pop()
       }
-      this.historyItems.push(keyword)
+      this.historyItems.unshift(keyword)
       localStorage.setItem(this.localKey, JSON.stringify(this.historyItems))
     },
     // 获取从localStorage
