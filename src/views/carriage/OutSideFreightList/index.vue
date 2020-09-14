@@ -2,7 +2,7 @@
   <div class="OutSideList">
     <!-- navbar -->
     <div class="top">
-      <van-nav-bar title="外线运费" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar title="项目名称" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <div v-if="listQuery.reportState !== 1" class="headerRight" @click="batch">
             批量上报
@@ -44,7 +44,7 @@
           <P v-if="optionsType" class="all">
             <van-checkbox v-model="checkAll" class="checked" shape="square" @click="checkAlls">
               <span class="text">全选</span>
-              <span class="text">已选择{{ checkedNum }} 个出车单位</span>
+              <span class="text">已选择{{ checkedNum }} 个出车单</span>
             </van-checkbox>
           </P>
           <van-checkbox-group ref="checkboxGroup" v-model="checkResult" max="20">
@@ -163,6 +163,8 @@ export default {
   mounted() {
     this.listQuery.projectId = this.$route.query.id;
     const { start, end } = this.$route.query;
+    this.listQuery.startDate = start;
+    this.listQuery.endDate = end;
     this.formStr.date = new Date(Number(start));
     this.minDate = new Date(Number(start));
     this.maxDate = new Date(Number(end));
