@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import CardItem from '../List/components/Cardltem'
+import CardItem from '././List/components/Cardltem'
 import { debounce } from '@/utils/index'
 import { getGmInfoListByKeyWord } from '@/api/freight'
 export default {

@@ -43,6 +43,10 @@ export default {
     border: {
       type: Boolean,
       default: true
+    },
+    minDate: {
+      type: Date,
+      default: () => new Date()
     }
   },
   data() {
@@ -57,6 +61,11 @@ export default {
     isComputed(val) {
       if (val) {
         this.getLabel()
+      }
+    },
+    minDate(val) {
+      if (val) {
+        this.minTime = val
       }
     }
   },

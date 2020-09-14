@@ -19,37 +19,36 @@
           </div>
         </template>
       </van-search>
+      <!-- tabs -->
+      <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
+        <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
+          <template #title>
+            {{ item.text }}
+            <div v-if="item.num" class="van-info">
+              {{ item.num }}
+            </div>
+          </template>
+        </van-tab>
+      </van-tabs>
     </van-sticky>
 
     <!-- 下拉刷新  上拉加载 -->
-    <div class="loadList">
-      <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          :error.sync="error"
-          finished-text="没有更多了"
-          error-text="请求失败，点击重新加载"
-          @load="onLoad"
-        >
-          <!-- tabs -->
-          <van-tabs v-model="form.lineState" swipeable :ellipsis="false" @change="handleTabChange">
-            <van-tab v-for="item in tabArrs" :key="item.text" :name="item.name">
-              <template #title>
-                {{ item.text }}
-                <div v-if="item.num" class="van-info">
-                  {{ item.num }}
-                </div>
-              </template>
-              <div v-for="sub in lists" :key="sub.id">
-                <CardItem :obj="sub" />
-                <div class="lineHeight"></div>
-              </div>
-            </van-tab>
-          </van-tabs>
-        </van-list>
-      </van-pull-refresh>
-    </div>
+
+    <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        :error.sync="error"
+        finished-text="没有更多了"
+        error-text="请求失败，点击重新加载"
+        @load="onLoad"
+      >
+        <div v-for="sub in lists" :key="sub.id">
+          <CardItem :obj="sub" />
+          <div class="lineHeight"></div>
+        </div>
+      </van-list>
+    </van-pull-refresh>
 
     <!-- 右侧筛选抽屉 -->
     <SelfPopup
@@ -345,18 +344,15 @@ export default {
     }
   },
   methods: {
+    // 状态切换
+    handleTabChange() {
+      this.loading = true
+      this.onLoad(true)
+    },
     onClickLeft() {
       this.$router.replace({
         path: '/'
       })
-    },
-    // 是否更多数据
-    isModeData() {
-      if (this.lists.length === 0) {
-        this.finished = true
-      } else {
-        this.finished = false
-      }
     },
     // 加载列表
     async onLoad(isInit = false) {
@@ -374,12 +370,13 @@ export default {
       if (isInit === true) { // 下拉刷新
         this.lists = result.lists
         this.refreshing = false
+        this.loading = false
         this.finished = false
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
         this.loading = false;
-
-        if (!result.hasMore) {
+        let hasMore = result.total > this.lists.length
+        if (!hasMore) {
           this.finished = true
         }
       }
@@ -392,11 +389,9 @@ export default {
     },
     // 查询
     async onQuery() {
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
-      this.isModeData()
+      this.loading = true
       this.show = false
+      this.onLoad(true)
     },
     // 重置
     onReset(form) {
@@ -450,9 +445,9 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3, nickname: '上岗' })
+        this.getSpecifiedRoleList({ roleId: 3 })
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2, nickname: '外线' })
+        this.getSpecifiedRoleList({ roleId: 2 })
       } else if (key === 'carType') {
         let result = await this.getDictDataByKeyword('Intentional_compartment')
         this.options = result
@@ -465,7 +460,7 @@ export default {
         let { data: res } = await GetSpecifiedRoleList(params)
         if (res.success) {
           this.options = res.data.map(item => ({
-            label: item.nick,
+            label: item.name,
             value: item.id
           }))
         } else {
@@ -525,17 +520,9 @@ export default {
 
       this.showPicker = false;
     },
-    // 状态切换
-    async handleTabChange(tab) {
-      this.page.current = 1
-      let result = await this.getLists(true)
-      this.lists = result.lists
-      this.isModeData()
-    },
     // 获取列表
     async getLists(isInit) {
       try {
-        this.$loading(true)
         let params = {
           page: this.page.current,
           limit: this.page.size
@@ -558,12 +545,9 @@ export default {
         let { data: res } = await getLineList(params)
         if (res.success) {
           let newLists = res.data
-          // if (!isInit) {
-          //   newLists = this.lists.concat(newLists)
-          // }
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            total: res.page.total
           }
           this.tabArrs.forEach(item => {
             if (item.name === '') {
@@ -592,8 +576,6 @@ export default {
         this.finished = true
         this.refreshing = false
         console.log(`get list fail:${err}`)
-      } finally {
-        this.$loading(false)
       }
     },
     // 从数据字典获取数据
@@ -643,9 +625,6 @@ export default {
     i {
       transform: rotate(90deg);
     }
-  }
-  .loadList {
-    height:calc(100vh - 100px);
   }
   .lineHeight {
     background: #F9F9F9;

@@ -28,7 +28,7 @@
     </template>
 
     <StepOne v-show="step === 1" :is-stable="isStable" type="create" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" :is-stable="isStable" type="create" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepTwo v-show="step === 2" :is-stable="isStable" :min-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date()" type="create" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
     <StepThree v-show="step === 3" :is-stable="isStable" type="create" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
@@ -71,7 +71,8 @@ export default {
         distance: '', // 配送总里程数
         limitRemark: '', // 限行区域说明
         area: [], // 主要配送区域
-        districtArea: ''
+        districtArea: '',
+        carTypeName: ''
       },
       stepTwoForm: {
         driverWorkTime: '', // 司机上岗时间
@@ -164,6 +165,7 @@ export default {
       this.stepOneForm.deliveryNum = obj.deliveryNum
       this.stepOneForm.distance = obj.distance
       this.stepOneForm.limitRemark = obj.limitRemark
+      this.stepOneForm.carTypeName = obj.carTypeName
       this.stepThreeForm.cargoType = obj.cargoType
       this.stepThreeForm.cargoNum = obj.cargoNum
       this.stepThreeForm.carry = obj.carry
@@ -284,7 +286,8 @@ export default {
             cargoType: item.cargoType,
             cargoNum: item.cargoNum,
             carry: item.carry,
-            dutyRemark: item.dutyRemark
+            dutyRemark: item.dutyRemark,
+            carTypeName: item.carTypeName
           }))
         } else {
           this.$fail(res.errorMsg)
@@ -316,6 +319,7 @@ export default {
           this.stepOneForm.deliveryNum = obj.deliveryNum
           this.stepOneForm.distance = obj.distance
           this.stepOneForm.limitRemark = obj.limitRemark
+          this.stepOneForm.carTypeName = obj.carTypeName
           this.stepThreeForm.cargoType = obj.cargoType
           this.stepThreeForm.cargoNum = obj.cargoNum
           this.stepThreeForm.carry = obj.carry

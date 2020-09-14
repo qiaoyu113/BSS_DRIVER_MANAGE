@@ -104,6 +104,8 @@
                 DataIsNull(lineInfoVO.cityAreaName)
                 +
                 DataIsNull(lineInfoVO.countyAreaName)
+                +
+                DataIsNull(lineInfoVO.districtArea)
             "
           ></van-cell>
           <van-cell

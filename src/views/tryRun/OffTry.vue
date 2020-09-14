@@ -80,6 +80,7 @@
         :max-date="maxDate"
         :formatter="formatter"
         @confirm="onConfirm"
+        @cancel="showModal = false"
       />
     </van-popup>
   </div>
