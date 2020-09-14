@@ -114,7 +114,7 @@ export default {
             })
             list.push(lists)
           } else {
-            list.array.forEach((e) => {
+            list.forEach((e) => {
               if (e.wayBillId === i.wayBillId) {
                 i.check = true
                 i.price = ''
