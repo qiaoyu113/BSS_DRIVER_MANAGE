@@ -467,6 +467,8 @@ export default {
       if (val < 0 || val > 9) {
         this.form.dayNum = 1
         this.form.workingTime = []
+      } else {
+        this.form.workingTime = []
       }
     }
   }

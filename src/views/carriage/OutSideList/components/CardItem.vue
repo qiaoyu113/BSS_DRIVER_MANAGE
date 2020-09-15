@@ -4,7 +4,7 @@
       {{ obj.projectName }}
     </h4>
     <p class="dai">
-      {{ obj.reportState ? '已上报':'未上报' }}
+      {{ obj.reportState ? '已上报':'待上报' }}
     </p>
     <div class="textBox">
       <p class="text ellipsis">
