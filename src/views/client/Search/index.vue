@@ -2,13 +2,14 @@
   <div class="customerSearchContainer">
     <!-- nav-bar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="客户项目" left-text="返回" left-arrow @click-left="onClickLeft" />
+      <van-nav-bar title="搜索客户" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <!-- 搜索 -->
     <van-search
       v-model="keyWord"
       show-action
       placeholder="请输入搜索关键词"
+      maxlength="30"
       @input="onSearch"
       @search="onSearch"
       @clear="onCancel"
@@ -131,7 +132,7 @@ export default {
         this.historyItems.splice(index, 1)
       }
       if (this.historyItems.length >= 5) {
-        this.historyItems.pop()
+        this.historyItems.shift()
       }
       this.historyItems.push(keyword)
       localStorage.setItem('clent', JSON.stringify(this.historyItems))
