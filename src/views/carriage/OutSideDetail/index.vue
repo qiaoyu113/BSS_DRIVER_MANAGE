@@ -14,7 +14,7 @@
       <div class="title ellipsis">
         {{ obj.name }}
         <span v-if="obj.gmState === 0" class="states">{{ obj.lineStateName }}</span>
-        <span v-if="obj.gmState === 1" class="prices">{{ obj.lineFee }}</span>
+        <span v-if="obj.gmState === 1" class="prices">{{ obj.lineFee }}元</span>
       </div>
       <div class="deter_context">
         <p class="text ellipsis">
@@ -30,7 +30,7 @@
           上报时间：<span>{{ obj.lineReportTime }}</span>
         </p>
         <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
-          趟数{{ item.tripNo }}金额：<span>{{ item.gmFee || 0 }}元</span>
+          趟数{{ item.tripNo }}金额：<span>{{ item.lineFee || 0 }}元</span>
         </p>
         <p v-if="obj.lineState === 1" class="text ellipsis">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
@@ -51,6 +51,7 @@
             :key="item.id"
             v-model="item.preMoney"
             v-only-number="{min: 0, max: 999999.99, precision: 2}"
+            required
             :name="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             :label="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             placeholder="请输入运费(元)"
@@ -63,6 +64,7 @@
           <div class="Remarks">
             <van-field
               v-model="message"
+              maxlength="150"
               rows="1"
               autosize
               label="备注:"
@@ -129,11 +131,10 @@ export default {
       try {
         let parmas = {
           moneys: gmFee, // 运费
-          remark: this.message, // 备注
           wayBillAmountIds: wayBillAmountIds
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchBySale(parmas) // 外线运费
+        let { data: res } = await reportMoneyBatchBySale(parmas, this.message) // 外线运费
         if (res.success) {
           this.$loading(false)
           Toast.success('上报成功');
@@ -154,11 +155,10 @@ export default {
       try {
         let parmas = {
           moneys: this.value, // 运费
-          remark: this.message, // 备注
           wayBillAmountIds: 'message'
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
+        let { data: res } = await reportMoneyBatchBySale(parmas, this.message) // 线外加盟运费
         if (res.success) {
           Toast.success('上报成功', res.data);
           setTimeout(() => {

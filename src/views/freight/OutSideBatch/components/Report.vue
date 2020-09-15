@@ -171,7 +171,7 @@ export default {
         }
         let { data: res } = await reportMoneyBatchBySale(parmas)
         if (res.success) {
-          Toast.success('已提交成功'); // 全部批量上报
+          Toast.success('运费上报成功'); // 全部批量上报
           return true
         } else {
           Toast.success(res.errorMsg);
@@ -202,7 +202,7 @@ export default {
         }
         let { data: res } = await noCarBatchBySale(parmas)
         if (res.success) {
-          Toast.success('已提交成功');
+          Toast.success('运费上报成功');
           this.$router.back(-1)
         } else {
           this.$toast.fail(res.errorMsg)

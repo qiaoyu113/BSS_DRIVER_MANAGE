@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, getGMListByProductLineAndCC } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -300,6 +300,16 @@ export default {
   watch: {
     active(val) {
       this.checkedList = [];
+    },
+    'ruleForm.workCity'(val) {
+      if (val !== '') {
+        this.getGmId()
+      }
+    },
+    'ruleForm.busiType'(val) {
+      if (val !== '') {
+        this.getGmId()
+      }
     }
   },
   mounted() {
@@ -307,6 +317,24 @@ export default {
     this.fetchData();
   },
   methods: {
+    // 联动请求加盟经理
+    getGmId() {
+      let params = {
+        'cityCode': Number(this.ruleForm.workCity),
+        // 'gmGroup': 0,
+        'productLine': this.ruleForm.busiType
+      }
+      getGMListByProductLineAndCC(params)
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_GmManager = data.data.map(ele => {
+              return { name: ele.name, code: ele.id }
+            });
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+    },
     /**
      * 请求字典接口
      */
@@ -329,28 +357,17 @@ export default {
         }).catch((err) => {
           console.log(err)
         });
-      GetSpecifiedRoleList({ roleId: 1 })
-        .then(({ data }) => {
-          if (data.success) {
-            this.columns_GmManager = data.data.map(ele => {
-              return { name: ele.name, code: ele.id }
-            });
-          }
-        }).catch((err) => {
-          console.log(err)
-        });
+      this.getGmId()
     },
     async onLoad(isInit = false) {
       if (isInit === true) { // 下拉刷新
         this.page.current = 1
         this.lists = []
-        this.loading = false
       } else { // 上拉加载更多
         this.page.current++
       }
       let result = await this.getLists(isInit)
-      if (!result || result.lists.length === 0) {
-        result.hasMore = false
+      if (!result) {
         return false
       }
 
@@ -361,7 +378,6 @@ export default {
         this.finished = false
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
-        // this.lists.concat(result.lists)
         this.loading = false;
         let hasMore = result.total > this.lists.length
         if (!hasMore) {
@@ -411,9 +427,6 @@ export default {
         let { data: res } = await getDriverList(params)
         if (res.success) {
           let newLists = res.data
-          if (!isInit) {
-            newLists = this.lists.concat(newLists)
-          }
           let result = {
             lists: newLists,
             total: res.page.total

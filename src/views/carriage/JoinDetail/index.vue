@@ -14,7 +14,7 @@
       <div class="title ellipsis">
         {{ obj.name }}
         <span v-if="obj.gmState === 0" class="states">{{ obj.gmStateName }}</span>
-        <span v-if="obj.gmState === 1" class="prices">{{ obj.gmFee }}</span>
+        <span v-if="obj.gmState === 1" class="prices">{{ obj.gmFee }}元</span>
       </div>
       <div class="deter_context">
         <p class="text ellipsis">
@@ -54,6 +54,7 @@
             :key="item.id"
             v-model="item.preMoney"
             v-only-number="{min: 0, max: 999999.99, precision: 2}"
+            required
             :name="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             :label="'趟数' + ( index + 1 ) + ': ' + item.deliverTime"
             placeholder="请输入运费(元)"
@@ -66,6 +67,7 @@
           <div class="Remarks">
             <van-field
               v-model="message"
+              maxlength="150"
               rows="1"
               autosize
               label="备注:"
@@ -130,11 +132,10 @@ export default {
       try {
         let parmas = {
           moneys: gmFee, // 运费
-          remark: this.message, // 备注
           wayBillAmountIds: wayBillAmountIds
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchByGM(parmas) // 加盟运费
+        let { data: res } = await reportMoneyBatchByGM(parmas, this.message) // 加盟运费
         if (res.success) {
           this.$loading(false)
           Toast.success('上报成功');
@@ -154,11 +155,10 @@ export default {
       try {
         let parmas = {
           moneys: this.value, // 运费
-          remark: this.message, // 备注
           wayBillAmountIds: 'message'
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
+        let { data: res } = await reportMoneyBatchBySale(parmas, this.message) // 线外加盟运费
         if (res.success) {
           Toast.success('上报成功', res.data);
           setTimeout(() => {
@@ -201,7 +201,7 @@ export default {
           let { data: res } = await noCarBatchByGM(ids)
           if (res.success) {
             this.show = false;
-            Toast.success('已提交成功');
+            Toast.success('运费上报成功');
             setTimeout(() => {
               this.$router.go(-1)
             }, delay);

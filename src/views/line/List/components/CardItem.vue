@@ -21,7 +21,7 @@
       试跑状态:{{ obj.runTestStateName | DataIsNull }}
     </p>
     <p class="text van-ellipsis">
-      配送时间:{{ obj.driverWorkTime | parseTime('{y}-{m}-{d}') }}
+      司机上岗时间:{{ obj.driverWorkTime | parseTime('{y}-{m}-{d}') }}
     </p>
     <p class="text van-ellipsis">
       每日配送趟数:{{ obj.dayNum | DataIsNull }}
