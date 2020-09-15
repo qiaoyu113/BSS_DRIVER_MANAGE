@@ -18,7 +18,7 @@
           有差异
         </p>
         <p class="right_text">
-          {{ obj.feeDiff || 0 }}元
+          {{ obj.feeDiffValue || 0 }}元
         </p>
       </div>
     </div>
