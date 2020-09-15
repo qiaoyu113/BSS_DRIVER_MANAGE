@@ -494,7 +494,7 @@ export default {
   methods: {
     validatorAddress(val) {
       let arr = val.split('/')
-      if (arr[2] === '' || arr[1] === '') {
+      if (arr[2] === '' || arr[1] === '' || arr.length === 2 || arr.length === 1) {
         return false
       } else {
         return true
