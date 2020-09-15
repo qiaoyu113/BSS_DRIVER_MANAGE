@@ -10,6 +10,7 @@
     </van-sticky>
     <div class="formBox">
       <van-form
+        :scroll-to-error="true"
         :show-error="false"
         label-width="120px"
         @submit="onSubmit"
@@ -19,6 +20,7 @@
           label-width="100"
           picker-key="interview"
           :form="area"
+          name="interview"
           :props="{provinceAreaName:'interviewProvinceName',cityAreaName:'interviewCityName',countyAreaName:'interviewCountyName'}"
           :is-computed="area.interview.length > 2"
           required
@@ -26,6 +28,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整面试地址' }
           ]"
           @click.native="copyData('interview')"
         />
@@ -138,6 +141,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整现居住地址' }
           ]"
           @click.native="copyData('liveaddress')"
         />
@@ -271,6 +275,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整工作区域' }
           ]"
           @click.native="copyData('intentWork')"
         />
@@ -487,6 +492,14 @@ export default {
     this.validatorNum = validatorNum;
   },
   methods: {
+    validatorAddress(val) {
+      let arr = val.split('/')
+      if (arr[2] === '' || arr[1] === '') {
+        return false
+      } else {
+        return true
+      }
+    },
     phonePatternIshas(val) {
       // Toast.loading('验证中...');
       return new Promise((resolve) => {

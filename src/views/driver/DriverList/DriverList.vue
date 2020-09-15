@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, getGMListByProductLineAndCC } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, getGMListByProductLineAndCC, GetSpecifiedRoleList } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -319,21 +319,40 @@ export default {
   methods: {
     // 联动请求加盟经理
     getGmId() {
-      let params = {
-        'cityCode': Number(this.ruleForm.workCity),
-        // 'gmGroup': 0,
-        'productLine': this.ruleForm.busiType
-      }
-      getGMListByProductLineAndCC(params)
-        .then(({ data }) => {
+      this.ruleForm.GmManager = ''
+      this.formText.GmManager = ''
+      if (this.ruleForm.workCity === '' && this.ruleForm.busiType === '') {
+        GetSpecifiedRoleList({ roleId: 1 }).then(({ data }) => {
           if (data.success) {
             this.columns_GmManager = data.data.map(ele => {
               return { name: ele.name, code: ele.id }
             });
+          } else {
+            this.$toast(data.errorMsg)
           }
-        }).catch((err) => {
-          console.log(err)
-        });
+        })
+          .catch((err) => {
+            console.log(err)
+          });
+      } else {
+        let params = {
+          'cityCode': Number(this.ruleForm.workCity),
+          // 'gmGroup': 0,
+          'productLine': this.ruleForm.busiType
+        }
+        getGMListByProductLineAndCC(params)
+          .then(({ data }) => {
+            if (data.success) {
+              this.columns_GmManager = data.data.map(ele => {
+                return { name: ele.name, code: ele.id }
+              });
+            } else {
+              this.$toast(data.errorMsg)
+            }
+          }).catch((err) => {
+            console.log(err)
+          });
+      }
     },
     /**
      * 请求字典接口

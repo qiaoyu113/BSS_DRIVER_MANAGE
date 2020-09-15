@@ -123,6 +123,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整现居住地址' }
           ]"
           @click.native="copyArea('liveaddress')"
         />
@@ -137,6 +138,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整工作区域' }
           ]"
           @click.native="copyArea('intentWork')"
         />
@@ -231,6 +233,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整户籍地址' }
           ]"
           @click.native="copyArea('householdAddress')"
         />
@@ -708,6 +711,14 @@ export default {
     this.fetchData();
   },
   methods: {
+    validatorAddress(val) {
+      let arr = val.split('/')
+      if (arr[2] === '' || arr[1] === '') {
+        return false
+      } else {
+        return true
+      }
+    },
     copyData(value) {
       if (value !== '' && !this.Changed) {
         this.formData[value] = this.editForm[value]

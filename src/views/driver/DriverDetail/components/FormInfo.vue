@@ -128,14 +128,12 @@
               readonly
             />
             <van-field
-              label-width="200px"
               label="原收入(去油)(元/月)"
               colon
               :value="type.originIncomeAvg"
               readonly
             />
             <van-field
-              label-width="200px"
               label="期望收入(去油)(元/月)"
               colon
               :value="type.expIncomeAvg"
