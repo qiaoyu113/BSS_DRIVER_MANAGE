@@ -90,8 +90,9 @@ export default {
     },
     // 点击确定
     onConfirm(obj) {
-      this.form[this.pickerKey] = obj.map((item) => item.code)
-      this.label = obj.map((item) => item.name).join('/');
+      this.form[this.pickerKey] = obj.map((item) => item && item.code)
+      let label = obj.map((item) => item && item.name).filter(item => item);
+      this.label = label.join('/')
       this.showPicker = false
       this.isEcho = false
     },

@@ -121,7 +121,7 @@ export const GetCityByCode = (data) =>
 // 加盟经理(1)  外销销售(2) 上岗经理(3)
 export const GetSpecifiedRoleList = (params) =>
   request({
-    url: `${prefix}/v1/base/role/getSpecifiedRoleList`,
+    url: `${prefix}/v2/base/user/getSpecifiedUserList`,
     method: 'post',
     params
   })
