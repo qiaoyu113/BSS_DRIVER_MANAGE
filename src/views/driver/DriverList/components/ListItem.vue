@@ -91,6 +91,8 @@ export default {
       if (this.checked) {
         this.$emit('changeCheck', { change: !this.check, item: this.item.driverId })
         this.check = !this.check
+      } else {
+        this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
       }
     },
     goRouter() {
