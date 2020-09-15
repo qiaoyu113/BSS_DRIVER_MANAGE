@@ -96,7 +96,7 @@
           返回上一步
         </van-button>
         <van-button type="primary" block>
-          下一步
+          提交
         </van-button>
       </div>
     </van-form>
