@@ -66,7 +66,8 @@ export default {
         query: {
           id: item.projectId,
           start: item.startDate,
-          end: item.endDate
+          end: item.endDate,
+          title: item.name
         }
       })
     },
