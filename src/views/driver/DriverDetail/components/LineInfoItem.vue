@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     goRouter() {
-      this.$router.push({ path: '/lineDetail', lineId: this.obj.lineId })
+      this.$router.push({ path: '/lineDetail', query: { lineId: this.obj.lineId }})
     }
   }
 }

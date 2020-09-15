@@ -183,19 +183,19 @@ export default {
         let { data: res } = await updateGmByDriverId(params);
         if (res.success) {
           this.managerStatus = false;
+          this.$loading(false)
           if (res.data.flag) {
             Notify({ type: 'success', message: '加盟经理更改成功' });
-            this.$loading(false)
             this.$parent.checkedList = []
           } else {
             Notify({ type: 'warn', message: res.data.msg });
-            this.$loading(false)
           }
           this.resetform();
           setTimeout(() => {
             this.$emit('changeOver')
           }, delay);
         } else {
+          this.$loading(false)
           this.$toast.fail(res.errorMsg)
         }
       } catch (err) {

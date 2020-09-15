@@ -280,9 +280,12 @@
             <van-field
               label="户籍详细地址"
               :value="type.householdDistrict"
-              colon
+
               readonly
             />
+            <!-- type="textarea"
+ :autosize="{ maxHeight: 100, minHeight: 50 }"
+              colon -->
             <van-field
               label="子女数"
               :value="type.childNum"
@@ -386,6 +389,8 @@
               label="备注"
               :value="type.remarks"
               readonly
+              type="textarea"
+              :autosize="{ maxHeight: 200, minHeight: 10 }"
               colon
             />
           </van-cell-group>

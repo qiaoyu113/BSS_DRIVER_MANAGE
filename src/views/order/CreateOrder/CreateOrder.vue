@@ -11,6 +11,7 @@
     </van-sticky>
     <div class="orderForm">
       <van-form
+        ref="orderForm"
         :show-error="false"
         label-width="120px"
         @submit="onSubmit1"
@@ -239,7 +240,8 @@
                   label="车辆信息"
                   :value="formText.describe"
                   required
-                  placeholder="请输入"
+                  readonly
+                  placeholder="车辆信息"
                   colon
                   :rules="[{ required: formData.cooperationModel !== 3 && formStatus === 2, message: '请选择' }]"
                 />
@@ -247,9 +249,10 @@
                 <van-field
                   v-show="formData.supplier && formData.cooperationModel === 1"
                   label="无税车价"
-                  placeholder="请输入"
+                  placeholder="无税车价"
                   :value="formText.carPrice"
                   required
+                  readonly
                   colon
                   :rules="[{ required: formData.supplier && formData.cooperationModel === 1 && formStatus === 2, message: '请选择' }]"
                 />
@@ -262,7 +265,9 @@
               clickable
               label="车牌号"
               required
+              :readonly="formStatus !== 2"
               colon
+              name="plateNo"
               placeholder="请填写车牌号"
               :rules="[
                 { required: formData.cooperationModel !== 1 && formStatus === 2, message: '请填写车牌号' },{pattern:formData.cooperationModel !== 1 && formStatus === 2 ? carNoRegExp : '', message: '请填写正确的车牌号'}
@@ -549,9 +554,11 @@ export default {
         model: this.formData.carModel
       });
       if (data.success) {
-        this.formText.carPrice = data.data.price;
-        this.formText.describe = data.data.describe;
-        this.formData.productId = data.data.productCode;
+        if (data.data) {
+          this.formText.carPrice = data.data.price;
+          this.formText.describe = data.data.describe;
+          this.formData.productId = data.data.productCode;
+        }
       } else {
         this.$toast.fail(data);
       }
@@ -631,9 +638,11 @@ export default {
         carType: this.formData.cooperationCar
       });
       if (data.success) {
-        this.formText.carPrice = data.data.price;
-        this.formText.describe = data.data.describe;
-        this.formData.productId = data.data.productCode;
+        if (data.data) {
+          this.formText.carPrice = data.data.price;
+          this.formText.describe = data.data.describe;
+          this.formData.productId = data.data.productCode;
+        }
       } else {
         this.$toast.fail(data);
       }
