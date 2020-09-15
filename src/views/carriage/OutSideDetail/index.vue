@@ -14,7 +14,7 @@
       <div class="title ellipsis">
         {{ obj.name }}
         <span v-if="obj.gmState === 0" class="states">{{ obj.lineStateName }}</span>
-        <span v-if="obj.gmState === 1" class="prices">{{ obj.lineFee }}元</span>
+        <span v-if="obj.gmState === 1" class="prices">{{ obj.lineFee || 0 }}元</span>
       </div>
       <div class="deter_context">
         <p class="text ellipsis">
