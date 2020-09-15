@@ -299,6 +299,7 @@ export default {
         this.lists = result.lists
         this.refreshing = false
         this.finished = false
+        this.loading = false;
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
         this.loading = false;
