@@ -601,15 +601,15 @@ export default {
     copyData(value) {
       if (value !== '' && !this.Changed) {
         if (value === 'interview') {
-          // 面试地址label回显
-          this.area.interviewProvinceName = this.editForm.interviewProvinceName;
-          this.area.interviewCityName = this.editForm.interviewCityName;
-          this.area.interviewCountyName = this.editForm.interviewCountyName;
-          this.area.interview = [
-            String(this.editForm.interviewProvince),
-            String(this.editForm.interviewCity),
-            String(this.editForm.interviewCounty)
-          ];
+          // 面试地址label回显 更换业务线必定没有面试地址的信息所以不用copy回显
+          // this.area.interviewProvinceName = this.editForm.interviewProvinceName;
+          // this.area.interviewCityName = this.editForm.interviewCityName;
+          // this.area.interviewCountyName = this.editForm.interviewCountyName;
+          // this.area.interview = [
+          //   String(this.editForm.interviewProvince),
+          //   String(this.editForm.interviewCity),
+          //   String(this.editForm.interviewCounty)
+          // ];
         } else if (value === 'liveaddress') {
           this.area.liveProvinceName = this.editForm.liveProvinceName;
           this.area.liveCityName = this.editForm.liveCityName;
@@ -711,6 +711,7 @@ export default {
       params.interviewCity = this.area.interview[0];
       params.interviewCounty = this.area.interview[1];
       params.interviewProvince = this.area.interview[2];
+      params.driverId = this.driverId
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';
       } else {

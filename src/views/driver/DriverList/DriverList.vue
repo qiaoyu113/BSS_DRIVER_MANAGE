@@ -99,12 +99,12 @@
         @click="showPickerFn('GmGroup')"
       /> -->
       <van-field
-        v-model="formText.GmManager"
+        v-model="formText.gmId"
         readonly
-        name="GmManager"
+        name="gmId"
         label="加盟经理"
         placeholder="请选择"
-        @click="showPickerFn('GmManager')"
+        @click="showPickerFn('gmId')"
       />
       <van-field
         v-model="formText.carType"
@@ -248,7 +248,7 @@ export default {
         workCity: '',
         busiType: '',
         GmGroup: '',
-        GmManager: '',
+        gmId: '',
         carType: '',
         orderStatus: '',
         dateArr: ''
@@ -257,7 +257,7 @@ export default {
         workCity: '',
         busiType: '',
         // GmGroup: '',
-        GmManager: '',
+        gmId: '',
         carType: '',
         status: '',
         startDate: '',
@@ -319,8 +319,8 @@ export default {
   methods: {
     // 联动请求加盟经理
     getGmId() {
-      this.ruleForm.GmManager = ''
-      this.formText.GmManager = ''
+      this.ruleForm.gmId = ''
+      this.formText.gmId = ''
       if (this.ruleForm.workCity === '' && this.ruleForm.busiType === '') {
         GetSpecifiedRoleList({ roleId: 1 }).then(({ data }) => {
           if (data.success) {
@@ -435,7 +435,7 @@ export default {
         }
         this.ruleForm.workCity && (params.workCity = Number(this.ruleForm.workCity))
         this.ruleForm.busiType !== '' && (params.busiType = this.ruleForm.busiType)
-        this.ruleForm.GmManager && (params.GmManager = this.ruleForm.GmManager)
+        this.ruleForm.gmId && (params.gmId = this.ruleForm.gmId)
         this.ruleForm.carType && (params.carType = Number(this.ruleForm.carType))
         this.ruleForm.status && (params.status = Number(this.ruleForm.status))
         this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
@@ -525,7 +525,7 @@ export default {
         // case 'GmGroup':
         //   this.columns = this.columns_GmGroup;
         //   break;
-        case 'GmManager':
+        case 'gmId':
           this.columns = this.columns_GmManager;
           break;
         case 'carType':

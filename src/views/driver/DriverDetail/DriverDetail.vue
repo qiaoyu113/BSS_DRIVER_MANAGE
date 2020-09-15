@@ -236,6 +236,7 @@ export default {
         ];
         return arr;
       } else if (this.detailInfo.orderStatus === 30) {
+        // 订单状态已成交
         let arr = [{ name: '详情', url: '/orderDetail' }];
         return arr;
       }
@@ -309,6 +310,7 @@ export default {
       } else if (item.name === '标记成交') {
         this.dealSign(this.driverId);
       } else {
+        console.log('this.driverId', this.driverId)
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },
