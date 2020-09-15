@@ -46,9 +46,9 @@ export function noCarBatchByGM(data) {
     data
   })
 }
-export function reportMoneyBatchByGM(data) {
+export function reportMoneyBatchByGM(data, parmas) {
   return request({
-    url: `${prefix}//v2/waybill/reportMoneyBatchByGM `, // 加盟侧批量上报出车金额
+    url: `${prefix}//v2/waybill/reportMoneyBatchByGM?remark=` + parmas, // 加盟侧批量上报出车金额
     method: 'post',
     data
 
@@ -83,9 +83,9 @@ export function noCarBySale(data) {
     data
   })
 }
-export function reportMoneyBatchBySale(data) {
+export function reportMoneyBatchBySale(data, parmas) {
   return request({
-    url: `${prefix}/v2/waybill/reportMoneyBatchBySale`, // 外线侧批量上报出车金额
+    url: `${prefix}/v2/waybill/reportMoneyBatchBySale?remark=` + parmas, // 外线侧批量上报出车金额
     method: 'post',
     data
   })

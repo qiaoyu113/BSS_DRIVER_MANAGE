@@ -34,7 +34,7 @@
             >
               <van-field
                 v-model="i.price"
-                v-only-number="{min: 0}"
+                v-only-number="{min: 0, max: 999999.99, precision: 2}"
                 required
                 :name="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
                 :label="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
@@ -61,6 +61,7 @@
     <van-form>
       <van-field
         v-model="message"
+        maxlength="150"
         rows="3"
         autosize
         label="备注:"
@@ -166,12 +167,11 @@ export default {
     async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
         let parmas = {
-          remark: this.message, // 备注
           moneys: preMoney, // 上报金额
           wayBillAmountIds: wayBillAmountId
 
         }
-        let { data: res } = await reportMoneyBatchByGM(parmas)
+        let { data: res } = await reportMoneyBatchByGM(parmas, this.message)
         if (res.success) {
           Toast.success('运费上报成功'); // 全部批量上报
           setTimeout(() => {

@@ -14,7 +14,7 @@
       <div class="title ellipsis">
         {{ obj.name }}
         <span v-if="obj.gmState === 0" class="states">{{ obj.gmStateName }}</span>
-        <span v-if="obj.gmState === 1" class="prices">{{ obj.gmFee }}</span>
+        <span v-if="obj.gmState === 1" class="prices">{{ obj.gmFee }}元</span>
       </div>
       <div class="deter_context">
         <p class="text ellipsis">
@@ -67,6 +67,7 @@
           <div class="Remarks">
             <van-field
               v-model="message"
+              maxlength="150"
               rows="1"
               autosize
               label="备注:"
@@ -131,11 +132,10 @@ export default {
       try {
         let parmas = {
           moneys: gmFee, // 运费
-          remark: this.message, // 备注
           wayBillAmountIds: wayBillAmountIds
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchByGM(parmas) // 加盟运费
+        let { data: res } = await reportMoneyBatchByGM(parmas, this.message) // 加盟运费
         if (res.success) {
           this.$loading(false)
           Toast.success('上报成功');
@@ -155,11 +155,10 @@ export default {
       try {
         let parmas = {
           moneys: this.value, // 运费
-          remark: this.message, // 备注
           wayBillAmountIds: 'message'
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
+        let { data: res } = await reportMoneyBatchBySale(parmas, this.message) // 线外加盟运费
         if (res.success) {
           Toast.success('上报成功', res.data);
           setTimeout(() => {
