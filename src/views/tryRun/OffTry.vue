@@ -28,7 +28,12 @@
           提示：掉线时间当天，不再生成出车单
         </div>
         <van-cell-group>
-          <van-field required name="droppedReason" label="掉线原因：">
+          <van-field
+            required
+            name="droppedReason"
+            label="掉线原因："
+            :rules="[{required: true, message: '请选择掉线原因'}]"
+          >
             <template #input>
               <van-radio-group v-model="form.droppedReason">
                 <van-radio
