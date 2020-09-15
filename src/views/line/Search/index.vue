@@ -9,6 +9,7 @@
       v-model="keyWord"
       show-action
       placeholder="请输入搜索关键词"
+      maxlength="30"
       @input="onSearch"
       @search="onSearch"
       @clear="onCancel"

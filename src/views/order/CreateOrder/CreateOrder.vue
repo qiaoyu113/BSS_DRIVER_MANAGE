@@ -460,9 +460,17 @@ export default {
     },
     operateFlag() {
       if (this.formStatus === 1) {
-        return 'step1';
+        if (this.routeName === '/createOrder') {
+          return 'step1';
+        } else {
+          return 'resubmit'
+        }
       } else if (this.formStatus === 2) {
-        return 'step2';
+        if (this.routeName === '/createOrder') {
+          return 'step2';
+        } else {
+          return 'resubmit'
+        }
       } else {
         return 'submit';
       }

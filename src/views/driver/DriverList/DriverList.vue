@@ -99,12 +99,12 @@
         @click="showPickerFn('GmGroup')"
       /> -->
       <van-field
-        v-model="formText.GmManager"
+        v-model="formText.gmId"
         readonly
-        name="GmManager"
+        name="gmId"
         label="加盟经理"
         placeholder="请选择"
-        @click="showPickerFn('GmManager')"
+        @click="showPickerFn('gmId')"
       />
       <van-field
         v-model="formText.carType"
@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, getGMListByProductLineAndCC } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, getGMListByProductLineAndCC, GetSpecifiedRoleList } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -248,7 +248,7 @@ export default {
         workCity: '',
         busiType: '',
         GmGroup: '',
-        GmManager: '',
+        gmId: '',
         carType: '',
         orderStatus: '',
         dateArr: ''
@@ -257,7 +257,7 @@ export default {
         workCity: '',
         busiType: '',
         // GmGroup: '',
-        GmManager: '',
+        gmId: '',
         carType: '',
         status: '',
         startDate: '',
@@ -319,21 +319,40 @@ export default {
   methods: {
     // 联动请求加盟经理
     getGmId() {
-      let params = {
-        'cityCode': Number(this.ruleForm.workCity),
-        // 'gmGroup': 0,
-        'productLine': this.ruleForm.busiType
-      }
-      getGMListByProductLineAndCC(params)
-        .then(({ data }) => {
+      this.ruleForm.gmId = ''
+      this.formText.gmId = ''
+      if (this.ruleForm.workCity === '' && this.ruleForm.busiType === '') {
+        GetSpecifiedRoleList({ roleId: 1 }).then(({ data }) => {
           if (data.success) {
             this.columns_GmManager = data.data.map(ele => {
               return { name: ele.name, code: ele.id }
             });
+          } else {
+            this.$toast(data.errorMsg)
           }
-        }).catch((err) => {
-          console.log(err)
-        });
+        })
+          .catch((err) => {
+            console.log(err)
+          });
+      } else {
+        let params = {
+          'cityCode': Number(this.ruleForm.workCity),
+          // 'gmGroup': 0,
+          'productLine': this.ruleForm.busiType
+        }
+        getGMListByProductLineAndCC(params)
+          .then(({ data }) => {
+            if (data.success) {
+              this.columns_GmManager = data.data.map(ele => {
+                return { name: ele.name, code: ele.id }
+              });
+            } else {
+              this.$toast(data.errorMsg)
+            }
+          }).catch((err) => {
+            console.log(err)
+          });
+      }
     },
     /**
      * 请求字典接口
@@ -416,7 +435,7 @@ export default {
         }
         this.ruleForm.workCity && (params.workCity = Number(this.ruleForm.workCity))
         this.ruleForm.busiType !== '' && (params.busiType = this.ruleForm.busiType)
-        this.ruleForm.GmManager && (params.GmManager = this.ruleForm.GmManager)
+        this.ruleForm.gmId && (params.gmId = this.ruleForm.gmId)
         this.ruleForm.carType && (params.carType = Number(this.ruleForm.carType))
         this.ruleForm.status && (params.status = Number(this.ruleForm.status))
         this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
@@ -506,7 +525,7 @@ export default {
         // case 'GmGroup':
         //   this.columns = this.columns_GmGroup;
         //   break;
-        case 'GmManager':
+        case 'gmId':
           this.columns = this.columns_GmManager;
           break;
         case 'carType':

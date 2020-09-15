@@ -123,6 +123,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整现居住地址' }
           ]"
           @click.native="copyArea('liveaddress')"
         />
@@ -137,6 +138,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整工作区域' }
           ]"
           @click.native="copyArea('intentWork')"
         />
@@ -231,6 +233,7 @@
           placeholder="请选择"
           :rules="[
             { required: true, message: '请选择' },
+            { validator:validatorAddress, message: '请选择完整户籍地址' }
           ]"
           @click.native="copyArea('householdAddress')"
         />
@@ -708,6 +711,14 @@ export default {
     this.fetchData();
   },
   methods: {
+    validatorAddress(val) {
+      let arr = val.split('/')
+      if (arr[2] === '' || arr[1] === '' || arr.length === 2 || arr.length === 1) {
+        return false
+      } else {
+        return true
+      }
+    },
     copyData(value) {
       if (value !== '' && !this.Changed) {
         this.formData[value] = this.editForm[value]
@@ -716,15 +727,15 @@ export default {
     copyArea(value) {
       if (value !== '' && !this.Changed) {
         if (value === 'householdAddress') {
-          // 面试地址label回显
-          this.area.householdProvinceName = this.editForm.householdProvinceName;
-          this.area.householdCityName = this.editForm.householdCityName;
-          this.area.householdCountyName = this.editForm.householdCountyName;
-          this.area.householdAddress = [
-            String(this.editForm.householdProvince),
-            String(this.editForm.householdCity),
-            String(this.editForm.householdCounty)
-          ];
+          // 户籍地址label不回显
+          // this.area.householdProvinceName = this.editForm.householdProvinceName;
+          // this.area.householdCityName = this.editForm.householdCityName;
+          // this.area.householdCountyName = this.editForm.householdCountyName;
+          // this.area.householdAddress = [
+          //   String(this.editForm.householdProvince),
+          //   String(this.editForm.householdCity),
+          //   String(this.editForm.householdCounty)
+          // ];
         } else if (value === 'liveaddress') {
           this.area.liveProvinceName = this.editForm.liveProvinceName;
           this.area.liveCityName = this.editForm.liveCityName;
@@ -972,10 +983,15 @@ export default {
       this.area.intentWorkProvinceName = res.data.intentWorkProvinceName;
       this.area.intentWorkCityName = res.data.intentWorkCityName;
       this.area.intentWorkCountyName = res.data.intentWorkCountyName;
-      // 户籍地址label回显
+      // 户籍地址label  更改业务线之后不用回显
       this.area.householdProvinceName = res.data.householdProvinceName;
       this.area.householdCityName = res.data.householdCityName;
       this.area.householdCountyName = res.data.householdCountyName;
+      this.area.householdAddress = [
+        String(areaData.householdProvince),
+        String(areaData.householdCity),
+        String(areaData.householdCounty)
+      ];
       this.area.liveaddress = [
         String(areaData.liveProvince),
         String(areaData.liveCity),
@@ -985,11 +1001,6 @@ export default {
         String(areaData.intentWorkProvince),
         String(areaData.intentWorkCity),
         String(areaData.intentWorkCounty)
-      ];
-      this.area.householdAddress = [
-        String(areaData.householdProvince),
-        String(areaData.householdCity),
-        String(areaData.householdCounty)
       ];
     },
     async editTailored() {
@@ -1003,6 +1014,7 @@ export default {
       params.householdProvince = this.area.householdAddress[0]; // 户籍地址
       params.householdCity = this.area.householdAddress[1];
       params.householdCounty = this.area.householdAddress[2];
+      params.driverId = this.driverId
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';
       } else {

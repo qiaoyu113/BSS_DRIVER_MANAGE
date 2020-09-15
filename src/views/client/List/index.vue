@@ -70,7 +70,7 @@
         :value="pickerNames['classification']"
         readonly
         clickable
-        label="客户属性"
+        label="客户分类"
         placeholder="请选择"
         @click="showPickerFn('classification')"
       />
@@ -368,9 +368,9 @@ export default {
             if (item.name === '') {
               item.num = res.title.all
             } else if (item.name === 1) {
-              item.num = res.title.enable
-            } else if (item.name === 2) {
               item.num = res.title.prevent
+            } else if (item.name === 2) {
+              item.num = res.title.enable
             }
           })
           return result

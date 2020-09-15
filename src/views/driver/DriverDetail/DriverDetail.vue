@@ -236,6 +236,7 @@ export default {
         ];
         return arr;
       } else if (this.detailInfo.orderStatus === 30) {
+        // 订单状态已成交
         let arr = [{ name: '详情', url: '/orderDetail' }];
         return arr;
       }
@@ -262,12 +263,12 @@ export default {
         }
         return arr;
       } else if (this.detailInfo.status === 5) {
+        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
         if (this.detailInfo.busiType === 0) {
           arr.push({ name: '编辑专车面试', url: '/editTailored' });
         } else if (this.detailInfo.busiType === 1) {
           arr.push({ name: '编辑共享面试', url: '/editShare' });
         }
-        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
         return arr;
       }
     },
@@ -309,6 +310,7 @@ export default {
       } else if (item.name === '标记成交') {
         this.dealSign(this.driverId);
       } else {
+        console.log('this.driverId', this.driverId)
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },
