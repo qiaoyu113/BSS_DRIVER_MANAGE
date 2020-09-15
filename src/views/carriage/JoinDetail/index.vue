@@ -13,8 +13,8 @@
     <div class="freightDetail">
       <div class="title ellipsis">
         {{ obj.name }}
-        <span v-if="obj.gmState === 0" class="states">{{ obj.gmStateName }}</span>
         <span v-if="obj.gmState === 1" class="prices">{{ obj.gmFee || 0 }}元</span>
+        <span v-else class="states">{{ obj.gmStateName }}</span>
       </div>
       <div class="deter_context">
         <p class="text ellipsis">
