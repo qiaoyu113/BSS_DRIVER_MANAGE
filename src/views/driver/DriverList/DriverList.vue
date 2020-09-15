@@ -452,11 +452,7 @@ export default {
           }
           this.tabType.forEach(item => {
             if (item.code === this.ruleForm.status) {
-              if (item.type === '全部') {
-                item.num = res.title.all
-              } else {
-                item.num = res.title[item.code]
-              }
+              item.num = res.page.total
             } else {
               item.num = ''
             }
