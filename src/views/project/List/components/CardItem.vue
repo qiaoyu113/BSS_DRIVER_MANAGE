@@ -21,7 +21,7 @@
     <div class="footer">
       <div class="right">
         <p class="time">
-          预计工作时间:{{ obj.createDate | parseTime('{y}-{m}-{d}') }}
+          创建时间:{{ obj.createDate | parseTime('{y}-{m}-{d}') }}
         </p>
         <div>
           <van-tag
