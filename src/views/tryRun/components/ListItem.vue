@@ -5,7 +5,7 @@
         {{ lineInfoEs.lineCategoryName }}
       </div>
       <h3 class="van-ellipsis">
-        {{ lineInfoEs.lineName }}（{{ lineInfoEs.lineId }}）
+        {{ lineInfoEs.lineName }}/{{ lineInfoEs.lineId }}
       </h3>
       <van-icon name="arrow" />
     </div>

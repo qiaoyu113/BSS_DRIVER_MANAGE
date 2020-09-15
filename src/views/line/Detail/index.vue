@@ -61,8 +61,8 @@
         <van-field label="货物类型" label-width="120" readonly :value="form.cargoTypeName | DataIsNull" :border="false" colon />
         <van-field label="货物件数" label-width="120" readonly :value="form.cargoNum | DataIsNull" :border="false" colon />
         <van-field label="是否需要搬运" label-width="120" readonly :value="form.carry ===1 ? '是':'否'" :border="false" colon />
-        <van-field label="货物体积" label-width="120" readonly :value="form.volume | DataIsNull" :border="false" colon />
-        <van-field label="货物重量" label-width="120" readonly :value="form.goodsWeight | DataIsNull" :border="false" colon />
+        <van-field label="货物体积(m³)" label-width="120" readonly :value="form.volume | DataIsNull" :border="false" colon />
+        <van-field label="货物重量(吨)" label-width="120" readonly :value="form.goodsWeight | DataIsNull" :border="false" colon />
         <van-field label="其他上岗要求" label-width="120" readonly autosize type="textarea" :value="form.dutyRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="标签信息" name="6">
