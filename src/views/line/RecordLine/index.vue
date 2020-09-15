@@ -42,6 +42,7 @@
           :after-read="afterRead"
           :max-count="1"
           :preview-full-image="false"
+          :before-read="beforeRead"
           accept="video/*"
           :before-delete="handleDeleteFile"
           :max-size="50 * 1024 * 1024"
@@ -270,6 +271,13 @@ export default {
     // 文件最大限制
     onOversize(size) {
       this.$toast(`文件大小不能超过${size}`)
+    },
+    beforeRead(file) {
+      if (!['video/quicktime', 'video/mp4'].includes(file.type)) {
+        this.$toast('请上传 mp4 或者 mov格式的视频');
+        return false;
+      }
+      return true;
     }
   }
 }
