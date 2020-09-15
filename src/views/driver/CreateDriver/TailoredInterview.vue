@@ -707,7 +707,6 @@ export default {
     copyData(value) {
       if (value !== '' && !this.Changed) {
         this.formData[value] = this.editForm[value]
-        console.log(this.formData[value], 'this.formData[value]')
       }
     },
     copyArea(value) {
