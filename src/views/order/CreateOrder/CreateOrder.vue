@@ -467,7 +467,7 @@ export default {
         if (this.routeName === '/createOrder') {
           return 'submit';
         } else {
-          return 'Resubmit'
+          return 'resubmit'
         }
       }
     },
