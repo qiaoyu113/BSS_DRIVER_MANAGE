@@ -320,7 +320,7 @@ export default {
       showPicker: false, // 是否打开picker
       dateLists: ['date'], // 显示日历控件的字段集合
       timeLists: ['waitDirveValidity', 'driverWorkTime'],
-      minTime: new Date(),
+      minTime: new Date(2010, 0, 1),
       maxTime: new Date(2125, 12, 31),
       page: {
         current: 0,
