@@ -173,7 +173,7 @@ export default {
         }
         let { data: res } = await reportMoneyBatchBySale(parmas)
         if (res.success) {
-          Toast.success('已提交成功'); // 全部批量上报
+          Toast.success('运费上报成功'); // 全部批量上报
           setTimeout(() => {
             this.$router.go(-1)
           }, delay);
@@ -189,7 +189,7 @@ export default {
     cancel() { // 全部未出车
       Dialog.confirm({
         title: '提示',
-        message: `确定全部的${this.obj.length}个出全部未出车`
+        message: `提示：确定全部的${this.obj.length}个出车，全部未出车!`
       }).then(() => {
         let wayBillIds = []
         this.obj.forEach(item => {
@@ -204,7 +204,7 @@ export default {
       try {
         let { data: res } = await noCarBatchBySale(arr)
         if (res.success) {
-          Toast.success('已提交成功');
+          Toast.success('运费上报成功');
           setTimeout(() => {
             this.$router.go(-1)
           }, delay);

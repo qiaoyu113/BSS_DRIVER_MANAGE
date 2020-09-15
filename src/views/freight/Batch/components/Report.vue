@@ -108,7 +108,7 @@ export default {
         }
         let { data: res } = await reportMoneyBatchByGM(parmas)
         if (res.success) {
-          Toast.success('已提交成功'); // 全部批量上报
+          Toast.success('运费上报成功'); // 全部批量上报
           res.data
         } else {
           Toast.success('失败');

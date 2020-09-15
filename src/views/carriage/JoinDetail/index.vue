@@ -202,7 +202,7 @@ export default {
           let { data: res } = await noCarBatchByGM(ids)
           if (res.success) {
             this.show = false;
-            Toast.success('已提交成功');
+            Toast.success('运费上报成功');
             setTimeout(() => {
               this.$router.go(-1)
             }, delay);
