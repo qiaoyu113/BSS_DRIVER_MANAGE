@@ -5,7 +5,7 @@
         {{ lineInfoEs.lineCategoryName }}
       </div>
       <h3 class="van-ellipsis">
-        {{ lineInfoEs.lineName }}（{{ lineInfoEs.lineId }}）
+        {{ lineInfoEs.lineName }}/{{ lineInfoEs.lineId }}
       </h3>
       <van-icon name="arrow" />
     </div>
@@ -49,6 +49,12 @@
       value-class="cell-value"
       title="司机信息："
       :value="item.driverName + '/' + item.driverPhone"
+    />
+    <van-cell
+      title-class="cell-title"
+      value-class="cell-value"
+      title="创建时间："
+      :value="item.createDate | parseTime"
     />
     <div v-if="item.droppedReasonName" class="bottom-tag-ct flex align-center">
       <van-tag

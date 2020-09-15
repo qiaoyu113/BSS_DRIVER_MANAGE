@@ -30,7 +30,6 @@
             { required: true, message: '请选择' },
             { validator:validatorAddress, message: '请选择完整面试地址' }
           ]"
-          @click.native="copyData('interview')"
         />
         <selftPicker
           :props="keyValue"
@@ -262,7 +261,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('isLocalPlate')"
         />
         <self-area
           label-width="100"
@@ -312,7 +310,6 @@
           type="digit"
           placeholder="请填写0-500的数字'"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '从业时间应在0至500个月之间'}]"
-          @focus="copyData('workDuration')"
         />
         <van-field
           v-model.number="formData.scatteredJobRate"
@@ -323,7 +320,6 @@
           type="digit"
           placeholder="请填写0-100的数字'"
           :rules="[{ required: true, message: '请填写0-100的数字' },{validator:validatorNum(0,100), message: '零散活占比应在100之间'}]"
-          @focus="copyData('scatteredJobRate')"
         />
         <selftPicker
           :props="keyValue"
@@ -338,7 +334,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('isNewEnergy')"
         />
         <div class="btnGroup">
           <van-button
@@ -708,9 +703,9 @@ export default {
       params.intentWorkCity = this.area.intentWork[1];
       params.intentWorkCounty = this.area.intentWork[2];
       // 面试地址
-      params.interviewCity = this.area.interview[0];
+      params.interviewCity = this.area.interview[2];
       params.interviewCounty = this.area.interview[1];
-      params.interviewProvince = this.area.interview[2];
+      params.interviewProvince = this.area.interview[0];
       params.driverId = this.driverId
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';

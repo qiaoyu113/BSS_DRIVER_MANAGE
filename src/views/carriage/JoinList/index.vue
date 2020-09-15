@@ -50,7 +50,7 @@
           <van-checkbox-group ref="checkboxGroup" v-model="checkResult" max="20">
             <div v-for="sub in lists" :key="sub.id" class="listBox">
               <p v-if="optionsType" class="checked-box">
-                <van-checkbox :name="sub.wayBillId" shape="square" />
+                <van-checkbox v-if="sub.gmStatusCode === 0" :disabled="sub.gmStatusCode !== 0" shape="square" />
               </p>
               <CardItem :obj="sub" />
             </div>
