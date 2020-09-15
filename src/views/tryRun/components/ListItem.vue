@@ -50,6 +50,12 @@
       title="司机信息："
       :value="item.driverName + '/' + item.driverPhone"
     />
+    <van-cell
+      title-class="cell-title"
+      value-class="cell-value"
+      title="创建时间："
+      :value="item.createDate | parseTime"
+    />
     <div v-if="item.droppedReasonName" class="bottom-tag-ct flex align-center">
       <van-tag
         plain

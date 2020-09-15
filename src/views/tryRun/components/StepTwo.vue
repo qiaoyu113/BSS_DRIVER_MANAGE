@@ -304,11 +304,7 @@ export default {
           }
         })
         if (res.success) {
-          if (this.operateFlag === 'followCar') {
-            this.$toast.success('确认跟车成功！');
-          } else {
-            this.$toast.success('确认试跑成功！');
-          }
+          this.$toast.success('创建试跑成功');
           setTimeout(() => {
             this.$router.push('/try-run')
           }, delay);
