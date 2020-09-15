@@ -262,12 +262,12 @@ export default {
         }
         return arr;
       } else if (this.detailInfo.status === 5) {
+        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
         if (this.detailInfo.busiType === 0) {
           arr.push({ name: '编辑专车面试', url: '/editTailored' });
         } else if (this.detailInfo.busiType === 1) {
           arr.push({ name: '编辑共享面试', url: '/editShare' });
         }
-        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
         return arr;
       }
     },

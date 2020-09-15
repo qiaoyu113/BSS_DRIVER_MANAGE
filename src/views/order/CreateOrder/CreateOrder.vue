@@ -464,7 +464,11 @@ export default {
       } else if (this.formStatus === 2) {
         return 'step2';
       } else {
-        return 'submit';
+        if (this.routeName === '/createOrder') {
+          return 'submit';
+        } else {
+          return 'resubmit'
+        }
       }
     },
     payMoneyed() {
