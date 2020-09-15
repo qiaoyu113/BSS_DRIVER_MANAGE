@@ -124,12 +124,14 @@
         label-width="130"
         picker-key="area"
         :form="form"
+        name="areaValidator"
         :is-computed="form.area.length > 2"
         required
         label="主要配送区域"
         placeholder="请选择"
         :rules="[
           { required: true, message: '请选择主要配送区域！' },
+          { validator:areaValidator, message: '请选择完整省、市、县' }
         ]"
       />
       <van-field
@@ -417,6 +419,15 @@ export default {
         console.log(`validate fail:${err}`)
         return false
       }
+    },
+    // 省、市、县校验
+    areaValidator(val) {
+      console.log(this.form.area)
+      let arr = this.form.area.filter(item => item)
+      if (arr.length === 3) {
+        return true
+      }
+      return false
     }
   }
 }
