@@ -38,7 +38,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('inviteType')"
         />
         <selftPicker
           :props="keyValue"
@@ -79,7 +78,6 @@
           placeholder="请输入"
           show-word-limit
           :rules="[{ required: true, message: '请最多填写30个字' }]"
-          @focus="copyData('whereKnow')"
         />
         <van-field
           v-model="formData.heavyAgentName"
@@ -87,7 +85,6 @@
           label="重代理姓名"
           placeholder="请输入"
           maxlength="10"
-          @focus="copyData('heavyAgentName')"
         />
         <van-field
           v-model="formData.phone"
@@ -155,7 +152,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('intentDeliveryMode')"
         />
         <selftPicker
           :props="keyValue"
@@ -220,7 +216,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('householdType')"
         />
         <self-area
           label-width="100"
@@ -235,7 +230,6 @@
             { required: true, message: '请选择' },
             { validator:validatorAddress, message: '请选择完整户籍地址' }
           ]"
-          @click.native="copyArea('householdAddress')"
         />
         <van-field
           v-model.number="formData.householdDistrict"
@@ -245,7 +239,6 @@
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写详细地址' }]"
-          @focus="copyData('householdDistrict')"
         />
         <selftPicker
           :props="keyValue"
@@ -261,7 +254,6 @@
           :rules="[
             { validator:validatorChildNum, message: '请输入正确内容' },
           ]"
-          @click.native="copyData('childNum')"
         />
         <van-field
           v-model.number="formData.experience"
@@ -298,7 +290,6 @@
           maxlength="3"
           placeholder="请填写0-500的数字'"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '请填写0-500的数字'}]"
-          @focus="copyData('drivingAge')"
         />
         <van-field
           v-model.number="formData.livingAge"
@@ -310,7 +301,6 @@
           maxlength="3"
           placeholder="请填写0-730的数字'"
           :rules="[{ required: true, message: '请填写0-730的数字' },{validator:validatorNum(0,730), message: '请填写0-730的数字'}]"
-          @focus="copyData('livingAge')"
         />
         <selftPicker
           :props="keyValue"
@@ -389,7 +379,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('maxAdvancePayment')"
         />
         <selftPicker
           :props="keyValue"
@@ -434,7 +423,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('strategyRight')"
         />
         <selftPicker
           :props="keyValue"
@@ -449,7 +437,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('cooperateFocusPoint')"
         />
         <selftPicker
           :props="keyValue"
@@ -464,7 +451,6 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('cooperateKeyFactor')"
         />
         <selftPicker
           :props="keyValue"
@@ -494,7 +480,6 @@
           :rules="[
             { required: true, message: '请填写' },
           ]"
-          @focus="copyData('remarks')"
         />
         <div class="btnGroup">
           <van-button
@@ -722,6 +707,7 @@ export default {
     copyData(value) {
       if (value !== '' && !this.Changed) {
         this.formData[value] = this.editForm[value]
+        console.log(this.formData[value], 'this.formData[value]')
       }
     },
     copyArea(value) {
