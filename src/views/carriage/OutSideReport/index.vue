@@ -34,7 +34,7 @@
             >
               <van-field
                 v-model="i.price"
-                v-only-number="{min: 0}"
+                v-only-number="{min: 0, max: 999999.99, precision: 2}"
                 required
                 :name="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
                 :label="'趟数' + ( ins + 1 ) + ': ' + i.deliverTime"
@@ -61,6 +61,7 @@
     <van-form>
       <van-field
         v-model="message"
+        maxlength="150"
         rows="3"
         autosize
         label="备注:"
@@ -166,14 +167,13 @@ export default {
     async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
         let parmas = {
-          remark: this.message, // 备注
           moneys: preMoney, // 上报金额
           wayBillAmountIds: wayBillAmountId
 
         }
-        let { data: res } = await reportMoneyBatchBySale(parmas)
+        let { data: res } = await reportMoneyBatchBySale(parmas, this.message)
         if (res.success) {
-          Toast.success('已提交成功'); // 全部批量上报
+          Toast.success('运费上报成功'); // 全部批量上报
           setTimeout(() => {
             this.$router.go(-1)
           }, delay);
@@ -189,7 +189,7 @@ export default {
     cancel() { // 全部未出车
       Dialog.confirm({
         title: '提示',
-        message: `确定全部的${this.obj.length}个出全部未出车`
+        message: `提示：确定全部的${this.obj.length}个出车，全部未出车!`
       }).then(() => {
         let wayBillIds = []
         this.obj.forEach(item => {
@@ -204,7 +204,7 @@ export default {
       try {
         let { data: res } = await noCarBatchBySale(arr)
         if (res.success) {
-          Toast.success('已提交成功');
+          Toast.success('运费上报成功');
           setTimeout(() => {
             this.$router.go(-1)
           }, delay);

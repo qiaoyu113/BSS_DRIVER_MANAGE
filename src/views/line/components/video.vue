@@ -70,6 +70,7 @@ export default {
           innerRotate: true, // 只旋转内部video
           clockwise: false // 旋转方向是否为顺时针
         },
+        lang: 'zh-cn',
         url: this.url,
         videoInit: true
       })

@@ -136,11 +136,10 @@ export default {
       try {
         let parmas = {
           moneys: gmFee, // 运费
-          remark: this.message, // 备注
           wayBillAmountIds: wayBillAmountIds
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchByGM(parmas) // 加盟运费
+        let { data: res } = await reportMoneyBatchByGM(parmas, this.message) // 加盟运费
         if (res.success) {
           this.$loading(false)
           Toast.success('上报成功');
@@ -165,7 +164,7 @@ export default {
           wayBillAmountIds: 'message'
         }
         this.$loading(true)
-        let { data: res } = await reportMoneyBatchBySale(parmas) // 线外加盟运费
+        let { data: res } = await reportMoneyBatchBySale(parmas, this.message) // 线外加盟运费
         console.log(res)
         if (res.success) {
           Toast.success('上报成功', res.data);

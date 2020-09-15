@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, getGMListByProductLineAndCC } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -300,6 +300,16 @@ export default {
   watch: {
     active(val) {
       this.checkedList = [];
+    },
+    'ruleForm.workCity'(val) {
+      if (val !== '') {
+        this.getGmId()
+      }
+    },
+    'ruleForm.busiType'(val) {
+      if (val !== '') {
+        this.getGmId()
+      }
     }
   },
   mounted() {
@@ -307,6 +317,24 @@ export default {
     this.fetchData();
   },
   methods: {
+    // 联动请求加盟经理
+    getGmId() {
+      let params = {
+        'cityCode': Number(this.ruleForm.workCity),
+        // 'gmGroup': 0,
+        'productLine': this.ruleForm.busiType
+      }
+      getGMListByProductLineAndCC(params)
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_GmManager = data.data.map(ele => {
+              return { name: ele.name, code: ele.id }
+            });
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+    },
     /**
      * 请求字典接口
      */
@@ -329,16 +357,7 @@ export default {
         }).catch((err) => {
           console.log(err)
         });
-      GetSpecifiedRoleList({ roleId: 1 })
-        .then(({ data }) => {
-          if (data.success) {
-            this.columns_GmManager = data.data.map(ele => {
-              return { name: ele.name, code: ele.id }
-            });
-          }
-        }).catch((err) => {
-          console.log(err)
-        });
+      this.getGmId()
     },
     async onLoad(isInit = false) {
       if (isInit === true) { // 下拉刷新

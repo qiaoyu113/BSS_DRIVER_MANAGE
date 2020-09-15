@@ -101,14 +101,13 @@ export default {
     async reportMoneyBatchByGM(wayBillAmountId, preMoney) {
       try {
         let parmas = {
-          remark: this.message, // 备注
           moneys: preMoney, // 上报金额
           wayBillAmountIds: wayBillAmountId
 
         }
-        let { data: res } = await reportMoneyBatchByGM(parmas)
+        let { data: res } = await reportMoneyBatchByGM(parmas, this.message)
         if (res.success) {
-          Toast.success('已提交成功'); // 全部批量上报
+          Toast.success('运费上报成功'); // 全部批量上报
           res.data
         } else {
           Toast.success('失败');
