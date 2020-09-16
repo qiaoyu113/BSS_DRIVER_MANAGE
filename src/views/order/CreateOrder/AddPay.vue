@@ -35,7 +35,7 @@
         label="支付时间"
         required
         readonly
-        :value="showForm.payDate"
+        :value="upTime"
         placeholder="请填写"
         type="number"
         :rules="[{ required: true, message: '请填写' }]"
@@ -149,6 +149,7 @@
 <script>
 import { parseTime } from '@/utils';
 import { Toast } from 'vant';
+import dayjs from 'dayjs'
 import { upload, GetDictionaryList } from '@/api/common';
 export default {
   components: {
@@ -180,6 +181,12 @@ export default {
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    upTime() {
+      if (this.form.payDate) {
+        return dayjs(this.form.payDate).format('YYYY/MM/DD')
+      }
+      return ''
     }
   },
   beforeRouteLeave(to, from, next) {

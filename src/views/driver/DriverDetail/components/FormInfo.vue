@@ -281,6 +281,7 @@
               label="户籍详细地址"
               :value="type.householdDistrict"
               autosize
+              colon
               type="textarea"
               readonly
             />

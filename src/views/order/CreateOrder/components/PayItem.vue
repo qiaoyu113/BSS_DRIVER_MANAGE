@@ -13,7 +13,7 @@
     </van-field>
     <van-field
       label="支付时间"
-      :value="obj.payDate | parseTime('{y}/{m}/{d} {h}:{i}:{s}')"
+      :value="timeFormat(obj.payDate,'YYYY-MM-DD')"
       colon
       readonly
       :border="false"
@@ -48,6 +48,7 @@
   </div>
 </template>
 <script>
+import dayjs from 'dayjs'
 import { ImagePreview } from 'vant'
 export default {
   props: {
@@ -68,6 +69,9 @@ export default {
       ImagePreview([
         url
       ]);
+    },
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
     },
     deleteItem() {
       this.$emit('delete', this.index)

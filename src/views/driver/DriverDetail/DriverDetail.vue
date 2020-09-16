@@ -78,7 +78,7 @@
             title-class="cell-title"
             value-class="cell-value"
             title="创建时间："
-            :value="detailInfo.createDate | parseTime('{y}/{m}/{d} {h}:{i}:{s}')"
+            :value="timeFormat(detailInfo.createDate,'YYYY-MM-DD')"
           />
         </div>
       </div>
@@ -156,6 +156,7 @@ import TagInfo from './components/TagInfo';
 import LineInfoItem from './components/LineInfoItem';
 import OrderInfo from './components/OrderInfo';
 import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
+import dayjs from 'dayjs'
 import { orderDetail } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
 export default {
@@ -216,6 +217,10 @@ export default {
     this.getDetail(id);
   },
   methods: {
+    // YYYY-MM-DD dddd HH:mm:ss
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
+    },
     orderList() {
       if (
         this.detailInfo.orderStatus === null ||
