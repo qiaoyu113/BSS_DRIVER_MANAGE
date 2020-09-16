@@ -42,13 +42,14 @@
       <van-field
         label="支付时间"
         colon
-        :value="obj.updateDate | parseTime('{y}/{m}/{d}')"
+        :value="timeFormat(obj.updateDate,'YYYY-MM-DD')"
         readonly
       />
     </van-cell-group>
   </div>
 </template>
 <script>
+import dayjs from 'dayjs'
 export default {
   props: {
     obj: {
@@ -62,6 +63,9 @@ export default {
   methods: {
     goRouter() {
       this.$router.push({ path: '/orderDetail', query: { id: this.obj.driverId }});
+    },
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
     }
   }
 };
