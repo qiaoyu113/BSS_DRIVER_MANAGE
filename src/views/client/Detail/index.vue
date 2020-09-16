@@ -24,11 +24,11 @@
     <van-field label="身份证号" label-width="100" readonly :value="form.bussinessCard | DataIsNull" :border="false" colon />
     <van-field label="客户意向度" label-width="100" readonly :value="form.customerIntentionName | DataIsNull" :border="false" colon />
     <van-field label="客户体量" label-width="100" readonly :value="form.customerSize | DataIsNull" :border="false" colon />
-    <van-field label="合同止期" label-width="100" readonly :value="timeFormat(form.contractEnd,'YYYY-MM-DD')" :border="false" colon />
-    <van-field label="创建日期" label-width="100" readonly :value="timeFormat(form.contractEnd,'YYYY-MM-DD HH:mm:ss')" :border="false" colon />
+    <van-field label="合同止期" label-width="100" readonly :value="form.contractEnd ?timeFormat(form.contractEnd,'YYYY-MM-DD') : '暂无数据'" :border="false" colon />
+    <van-field label="创建日期" label-width="100" readonly :value="form.createDate ?timeFormat(form.createDate,'YYYY-MM-DD HH:mm:ss') : '暂无数据'" :border="false" colon />
     <van-field label="所在区域" label-width="100" readonly :value="region | DataIsNull" :border="false" colon />
     <van-field label="详细地址" label-width="100" readonly :value="form.address | DataIsNull" :border="false" colon />
-    <van-field label="备注" label-width="100" readonly :value="form.remark" colon />
+    <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.remark" colon />
 
     <van-cell-group v-if="form.customerType ===1" title="营业执照" class="busiLicense">
       <ImagePreview :image-arrs="form.businessLicenseUrl" />
