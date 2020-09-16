@@ -33,7 +33,7 @@
           title-class="cell-title"
           value-class="cell-value"
           title="创建时间："
-          :value="item.createDate | parseTime('{y}-{m}-{d}')"
+          :value="item.createDate | parseTime('{y}/{m}/{d}')"
         />
       </div>
       <div class="detailBtn">

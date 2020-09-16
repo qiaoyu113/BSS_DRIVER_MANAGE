@@ -206,6 +206,8 @@
             <van-field
               label="您是从哪里了解到我们的加盟方式"
               :value="type.whereKnow"
+              autosize
+              type="textarea"
               colon
               readonly
             />
@@ -278,12 +280,10 @@
             <van-field
               label="户籍详细地址"
               :value="type.householdDistrict"
-
+              autosize
+              type="textarea"
               readonly
             />
-            <!-- type="textarea"
- :autosize="{ maxHeight: 100, minHeight: 50 }"
-              colon -->
             <van-field
               label="子女数"
               :value="type.childNum"

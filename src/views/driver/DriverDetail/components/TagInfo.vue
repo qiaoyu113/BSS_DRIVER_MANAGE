@@ -39,7 +39,7 @@
         />
         <van-field
           label="创建时间："
-          :value="item.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}')"
+          :value="item.createDate | parseTime('{y}/{m}/{d} {h}:{i}:{s}')"
           readonly
         />
       </div>

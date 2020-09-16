@@ -20,7 +20,7 @@
         <p class="text ellipsis">
           出车编号：<span>{{ obj.wayBillId }}</span>
         </p>
-        <p v-if="obj.gmState === 1" class="text ellipsis">
+        <p class="text ellipsis">
           加盟经理：<span>{{ obj.gmName }}/{{ obj.gmPhone }}</span>
         </p>
         <p class="text ellipsis">
@@ -35,7 +35,7 @@
         <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
           趟数{{ item.tripNo }}金额：<span>{{ item.gmFee || 0 }}元</span>
         </p>
-        <p v-if="obj.gmState === 1" class="text ellipsis">
+        <p v-if="obj.gmState === 1" class="text">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
         <p class="text ellipsis">
@@ -287,13 +287,13 @@ export default {
   }
   .text {
     width: 100%;
-    height: 30px;
     line-height: 30px;
     margin: auto;
     padding: 0 15px;
     box-sizing: border-box;
     font-size: 13px;
     color:#A6AAB8;
+    word-break: break-all;
     span{
       color: #3C4353;
     }
