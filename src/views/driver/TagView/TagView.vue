@@ -80,8 +80,8 @@ export default {
         this.$loading(true)
         let { data: res } = await insertLabel(parmas);
         if (res.success) {
-          Notify({ type: 'success', remark: '打标签成功' });
           this.$router.go(-1)
+          Notify({ type: 'success', message: '打标签成功' });
         } else {
           this.$toast.fail(res.errorMsg)
         }
