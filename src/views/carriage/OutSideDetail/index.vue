@@ -292,6 +292,7 @@ export default {
     box-sizing: border-box;
     font-size: 13px;
     color:#A6AAB8;
+    word-break: break-all;
     span{
       color: #3C4353;
     }
