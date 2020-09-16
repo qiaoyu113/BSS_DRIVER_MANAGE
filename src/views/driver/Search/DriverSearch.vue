@@ -108,7 +108,7 @@
           <div
             v-for="item in historyItems"
             :key="item"
-            class="item"
+            class="item van-ellipsis"
             @click="handleItemClick(item)"
           >
             {{ item }}

@@ -78,7 +78,7 @@
             title-class="cell-title"
             value-class="cell-value"
             title="创建时间："
-            :value="detailInfo.createDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}')"
+            :value="detailInfo.createDate | parseTime('{y}/{m}/{d} {h}:{i}:{s}')"
           />
         </div>
       </div>
@@ -404,9 +404,15 @@ export default {
     async getOrderLabel(id) {
       try {
         this.$loading(true);
-        let { data: res } = await orderDetail({ driverId: id });
+        let params = {
+          operateFlag: 'detial',
+          driverId: id
+        }
+        let { data: res } = await orderDetail(params);
         if (res.success) {
-          this.orderInfo = res.data;
+          if (res.data !== null) {
+            this.orderInfo = res.data;
+          }
         } else {
           this.$toast.fail(res.errorMsg);
         }

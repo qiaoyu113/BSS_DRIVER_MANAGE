@@ -223,7 +223,7 @@ export default {
       Toast('图片大小不能超过 5M');
     },
     onConfirm(time) {
-      let timeText = parseTime(time, '{y}-{m}-{d} {h}:{i}:{s}');
+      let timeText = parseTime(time, '{y}/{m}/{d} {h}:{i}:{s}');
       let timeCode = new Date(time).getTime();
       this.showForm.payDate = timeText;
       this.form.payDate = timeCode;

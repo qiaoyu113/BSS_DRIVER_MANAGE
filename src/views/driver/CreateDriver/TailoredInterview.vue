@@ -184,7 +184,8 @@
           @click.native="copyData('intentWorkDuration')"
         />
         <van-field
-          v-model.number="formData.originIncomeAvg"
+          v-model="formData.originIncomeAvg"
+          v-only-number="{min: 0, max: 25000, precision: 0}"
           label-width="160px"
           name="原收入(去油)(元/月)"
           label="原收入(去油)(元/月)"
@@ -194,7 +195,8 @@
           @focus="copyData('originIncomeAvg')"
         />
         <van-field
-          v-model.number="formData.expIncomeAvg"
+          v-model="formData.expIncomeAvg"
+          v-only-number="{min: 0, max: 25000, precision: 0}"
           label-width="160px"
           name="期望收入(去油)(元/月)"
           label="期望收入(去油)(元/月)"
@@ -256,7 +258,8 @@
           ]"
         />
         <van-field
-          v-model.number="formData.experience"
+          v-model="formData.experience"
+          v-only-number="{min: 0, max: 500, precision: 0}"
           name="货物运输经验（月）"
           label="货物运输经验（月）"
           required
@@ -282,7 +285,8 @@
           @click.native="copyData('currentHasWork')"
         />
         <van-field
-          v-model.number="formData.drivingAge"
+          v-model="formData.drivingAge"
+          v-only-number="{min: 0, max: 500, precision: 0}"
           name="drivingAge"
           label="实际货车驾龄（月）"
           required
@@ -292,7 +296,8 @@
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '请填写0-500的数字'}]"
         />
         <van-field
-          v-model.number="formData.livingAge"
+          v-model="formData.livingAge"
+          v-only-number="{min: 0, max: 730, precision: 0}"
           label-width="130px"
           name="本城市居住时长（月）"
           label="本城市居住时长（月）"

@@ -245,46 +245,51 @@
           label-align="right"
           label-width="120px"
         />
+        <!-- :value="formData.createDate" -->
         <van-field
           label="订单生成时间"
           colon
-          :value="formData.createDate"
+          :value="timeFormat(formData.createDate,'YYYY-MM-DD')"
           label-align="right"
           readonly
           label-width="120px"
         />
+        <!-- :value="formData.confirmTime" -->
         <van-field
           v-if="formData.confirmName"
           label="订单确定时间"
           colon
-          :value="formData.confirmTime"
+          :value="timeFormat(formData.confirmTime,'YYYY-MM-DD')"
           readonly
           label-align="right"
           label-width="120px"
         />
+        <!-- :value="formData.passTime" -->
         <van-field
           v-if="formData.passName"
           label="订单审核通过时间"
           label-width="130px"
           colon
-          :value="formData.passTime"
+          :value="timeFormat(formData.passTime,'YYYY-MM-DD')"
           readonly
           label-align="right"
         />
+        <!-- :value="formData.notPassTime" -->
         <van-field
           v-if="formData.notPassName"
           label="订单审核不通过时间"
           colon
-          :value="formData.notPassTime"
+          :value="timeFormat(formData.notPassName,'YYYY-MM-DD')"
           readonly
           label-align="right"
           label-width="140px"
         />
+        <!-- :value="formData.updateDate" -->
         <van-field
           v-if="formData.status === 10"
           label="订单取消时间"
           colon
-          :value="formData.updateDate"
+          :value="timeFormat(formData.updateDate,'YYYY-MM-DD')"
           readonly
           label-align="right"
           label-width="120px"
@@ -314,6 +319,7 @@
 </template>
 <script>
 import { Notify } from 'vant';
+import dayjs from 'dayjs'
 import { ImagePreview } from 'vant';
 import { orderDetail, auditOrderNoPass } from '@/api/order.js';
 export default {
@@ -337,6 +343,10 @@ export default {
     this.getOrderDetail(id);
   },
   methods: {
+    // YYYY-MM-DD dddd HH:mm:ss
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
+    },
     /**
      *返回按钮
      */
@@ -379,7 +389,11 @@ export default {
     async getOrderDetail(id) {
       try {
         this.$loading(true);
-        let { data: res } = await orderDetail({ driverId: id });
+        let params = {
+          operateFlag: 'detial',
+          driverId: id
+        }
+        let { data: res } = await orderDetail(params);
         if (res.success) {
           this.formData = res.data;
         } else {
