@@ -478,7 +478,6 @@ export default {
 
 <style lang='scss' scoped>
 .projectListContainer {
-  font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
     flex-direction: row;

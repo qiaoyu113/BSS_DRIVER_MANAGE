@@ -416,7 +416,6 @@ export default {
 
 <style lang='scss' scoped>
 .customerListContainer {
-  font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
     flex-direction: row;

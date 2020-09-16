@@ -154,7 +154,7 @@ export default {
 
 <style lang='scss' scoped>
 .lineSearchContainer {
-  font-family: PingFangSC-Regular;
+
   .lineHeight {
     background: #F9F9F9;
     height:10px;

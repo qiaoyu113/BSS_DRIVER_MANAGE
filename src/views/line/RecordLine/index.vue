@@ -286,7 +286,7 @@ export default {
 
 <style lang='scss' scoped>
 .RecordLineContainer {
-  font-family: PingFangSC-Medium;
+
   .title {
     margin:10px 0px 0px 0px;
     padding-left: 15px;
