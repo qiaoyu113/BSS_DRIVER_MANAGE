@@ -633,7 +633,7 @@
   </div>
 </template>
 <script>
-import { getOperateTime, historyList, getInterview } from '@/api/driver.js';
+import { getOperateTime, historyList, driverDetail } from '@/api/driver.js';
 export default {
   data() {
     return {
@@ -696,9 +696,11 @@ export default {
         let params = {
           driverId: id
         };
-        let { data: res } = await getInterview(params);
+        let { data: res } = await driverDetail(params);
         if (res.success) {
-          this.detail = res.data
+          this.detail = res.data.interviewInfoVOList.find(ele => {
+            return ele.busiType === this.busiType
+          })
         } else {
           this.$toast.fail(res);
         }

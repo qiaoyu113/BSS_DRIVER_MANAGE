@@ -1,5 +1,5 @@
 <template>
-  <div v-if="obj.orderId" class="OrderInfo">
+  <div v-if="Object.keys(obj).length > 0" class="OrderInfo">
     <van-cell :title="obj.orderId">
       <template #right-icon>
         <span
@@ -46,7 +46,7 @@
       <van-field
         label="支付时间"
         colon
-        :value="obj.updateDate | parseTime('{y}-{m}-{d}')"
+        :value="obj.updateDate | parseTime('{y}/{m}/{d}')"
         readonly
       />
     </van-cell-group>

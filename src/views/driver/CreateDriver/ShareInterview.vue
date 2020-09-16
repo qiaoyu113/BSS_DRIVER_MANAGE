@@ -146,6 +146,7 @@
         />
         <van-field
           v-model="formData.experience"
+          v-only-number="{min: 0, max: 500, precision: 0}"
           name="货物运输经验（月）"
           clickable
           label="货物运输经验（月）"
@@ -278,7 +279,8 @@
           @click.native="copyData('intentWork')"
         />
         <van-field
-          v-model.number="formData.originIncomeAvg"
+          v-model="formData.originIncomeAvg"
+          v-only-number="{min: 0, max: 25000, precision: 0}"
           label-width="160px"
           name="原收入（去油）（元/月）"
           label="原收入（去油）（元/月）"
@@ -290,7 +292,8 @@
           @focus="copyData('originIncomeAvg')"
         />
         <van-field
-          v-model.number="formData.expIncomeAvg"
+          v-model="formData.expIncomeAvg"
+          v-only-number="{min: 0, max: 25000, precision: 0}"
           label-width="160px"
           name="期望收入（去油）（元/月）"
           label="期望收入（去油）（元/月）"
@@ -302,7 +305,8 @@
           @focus="copyData('expIncomeAvg')"
         />
         <van-field
-          v-model.number="formData.workDuration"
+          v-model="formData.workDuration"
+          v-only-number="{min: 0, max: 500, precision: 0}"
           name="从业时间（月）"
           label="从业时间（月）"
           required
@@ -312,7 +316,8 @@
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '从业时间应在0至500个月之间'}]"
         />
         <van-field
-          v-model.number="formData.scatteredJobRate"
+          v-model="formData.scatteredJobRate"
+          v-only-number="{min: 0, max: 100, precision: 0}"
           name="零散活占比（%）"
           label="零散活占比（%）"
           required
