@@ -64,6 +64,9 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     // if (res.code === 40101 || res.code === 40301) {
+    if (res.errorCode) {
+      res.message = res.errorMsg || '接口错误' + res.errorCode + ',请联系技术人员。'
+    }
     if (res.code === 40101) {
       Toast({
         message: res.message,
