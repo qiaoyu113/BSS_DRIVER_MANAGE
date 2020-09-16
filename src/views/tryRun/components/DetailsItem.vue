@@ -328,14 +328,14 @@ export default {
 .DetailsItem {
   .van-collapse {
     ::v-deep {
-      .van-cell::after {
-        border-bottom: 2px solid #e5e9ef;
-        transform: scale(1);
-      }
-      .van-collapse-item--border::after {
-        border-top: 2px solid #e5e9ef;
-        transform: scale(1);
-      }
+      // .van-cell::after {
+      //   border-bottom: 2px solid #e5e9ef;
+      //   transform: scale(1);
+      // }
+      // .van-collapse-item--border::after {
+      //   border-top: 2px solid #e5e9ef;
+      //   transform: scale(1);
+      // }
       .van-collapse-item__content {
         .van-cell::after {
           display: none;
@@ -361,6 +361,7 @@ export default {
       font-size: @font-size-sm;
       color: #eff5fe;
       background: #7f8fbd;
+      line-height: normal;
       border-radius: 3px;
       &::before {
         display: none;
@@ -374,8 +375,8 @@ export default {
       height: 35px;
       .details {
         width: 70px;
-        height: 20px;
-        line-height: 20px;
+        padding: 2px 0;
+        line-height: normal;
         color: #838a9d;
         border-radius: 10px;
         text-align: center;
