@@ -50,7 +50,7 @@
           <van-checkbox-group ref="checkboxGroup" v-model="checkResult" max="20">
             <div v-for="sub in lists" :key="sub.id" class="listBox">
               <p v-if="optionsType" class="checked-box">
-                <van-checkbox v-if="sub.gmStatusCode === 0" :disabled="sub.gmStatusCode !== 0" shape="square" />
+                <van-checkbox v-if="sub.gmStatusCode === 0" :name="sub.wayBillId" :disabled="sub.gmStatusCode !== 0" shape="square" />
               </p>
               <CardItem :obj="sub" />
             </div>
@@ -345,7 +345,7 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } else {
-        this.$toast.fail('请选择上报的')
+        this.$toast.fail('请选择')
       }
     },
     cancel() {

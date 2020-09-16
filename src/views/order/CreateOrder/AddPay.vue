@@ -223,11 +223,10 @@ export default {
       Toast('图片大小不能超过 5M');
     },
     onConfirm(time) {
-      let timeText = parseTime(time, '{y}-{m}-{d} {h}:{i}:{s}');
+      let timeText = parseTime(time, '{y}/{m}/{d} {h}:{i}:{s}');
       let timeCode = new Date(time).getTime();
       this.showForm.payDate = timeText;
       this.form.payDate = timeCode;
-      console.log(time, this.form.payDate, new Date(time).getTime())
       this.showTime = false;
     },
     onConfirmPicker(value) {
@@ -300,6 +299,7 @@ export default {
     },
     // 上传文件
     async uploadFile(file, key) {
+      this.$loading(true)
       try {
         let formData = new FormData(); // 创建form对象
         formData.append('file', file.file);
@@ -310,8 +310,10 @@ export default {
         };
         let { data: res } = await upload(params, formData);
         if (res.success) {
+          this.$loading(false)
           this.form.payImageUrl = res.data.url;
         } else {
+          this.$loading(false)
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
@@ -322,7 +324,6 @@ export default {
      * 删除文件
      */
     handleDeleteFile(file, { index, name }) {
-      this.form[name].splice(index, 1);
       this.showForm[name].splice(index, 1);
     }
   }

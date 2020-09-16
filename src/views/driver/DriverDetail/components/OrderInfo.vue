@@ -1,5 +1,5 @@
 <template>
-  <div v-if="obj.orderId" class="OrderInfo">
+  <div v-if="Object.keys(obj).length > 0" class="OrderInfo">
     <van-cell :title="obj.orderId">
       <template #right-icon>
         <span
@@ -10,28 +10,24 @@
     </van-cell>
     <van-cell-group>
       <van-field
-        v-if="obj.busiTypeName"
         label="商品分类"
         :value="obj.busiTypeName"
         readonly
         colon
       />
       <van-field
-        v-if="obj.cooperationModelName"
         label="合作模式"
         :value="obj.cooperationModelName"
         readonly
         colon
       />
       <van-field
-        v-if="obj.cooperationCarName"
         label="合作车型"
         :value="obj.cooperationCarName"
         colon
         readonly
       />
       <van-field
-        v-if="obj.cooperationTime"
         label="合作期限"
         colon
         :value="`${obj.cooperationTime}（月）`"
@@ -46,7 +42,7 @@
       <van-field
         label="支付时间"
         colon
-        :value="obj.updateDate | parseTime('{y}-{m}-{d}')"
+        :value="obj.updateDate | parseTime('{y}/{m}/{d}')"
         readonly
       />
     </van-cell-group>

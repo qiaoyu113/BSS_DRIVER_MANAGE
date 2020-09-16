@@ -71,7 +71,8 @@
               ]"
             />
             <van-field
-              v-model.number="formData.cooperationTime"
+              v-model="formData.cooperationTime"
+              v-only-number="{min: 0, max: 900, precision: 0}"
               colon
               clickable
               label="合作期限（月）"
@@ -83,7 +84,9 @@
                        {validator:validatorNum(0,999), message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model.number="formData.incomeGuarantee"
+              v-if="formData.busiType === 0"
+              v-model="formData.incomeGuarantee"
+              v-only-number="{min: 0, max:1000000, precision: 2}"
               colon
               clickable
               label="收入保障（元）"
@@ -94,7 +97,8 @@
                        {validator:moneyCheck1, message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model.number="formData.rake"
+              v-model="formData.rake"
+              v-only-number="{min: 0, max: 100, precision: 0}"
               colon
               clickable
               label="抽佣比例（%）"
@@ -106,7 +110,8 @@
                        {validator:checkPercent, message: '请填写正确的数字'}]"
             />
             <van-field
-              v-model.number="formData.goodsAmount"
+              v-model="formData.goodsAmount"
+              v-only-number="{min: 0, max: 999999.99, precision: 0}"
               colon
               clickable
               label="商品金额（元）"
@@ -710,7 +715,13 @@ export default {
     async getOrderDetail(id) {
       try {
         this.$loading(true);
-        let { data: res } = await orderDetail({ driverId: id });
+        let params = {
+          driverId: id
+        }
+        if (this.routeName === '/resetOrder') {
+          params.operateFlag = 'detial'
+        }
+        let { data: res } = await orderDetail(params);
         if (res.success) {
           if (res.data !== null) {
             this.formData = { ...this.formData, ...res.data };
@@ -718,8 +729,10 @@ export default {
             this.formData.driverInfoFORM = this.formData.driverInfoVO;
             this.formData.driverId = this.driverId
             this.orderId = res.data.orderId
-            if (res.data.orderPayRecordInfoVOList !== null) {
-              this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
+            if (this.formData.orderPayRecordInfoFORMList.length === 0) {
+              if (res.data.orderPayRecordInfoVOList !== null) {
+                this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
+              }
             }
             this.formData.inspectionTime = new Date(res.data.inspectionTime).getTime()
             this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
@@ -820,11 +833,10 @@ export default {
       }
     },
     onConfirm1(time) {
-      let timeText = parseTime(time, '{y}-{m}-{d}');
+      let timeText = parseTime(time, '{y}/{m}/{d}');
+      console.log('timeText', timeText)
       let timeCode = time.getTime();
       this.formText[this.pickerKey] = timeText;
-      // this.formData[this.pickerKey] = timeCode;
-      // this.formData[this.pickerKey] = 1231231232;
       console.log(this.formData[this.pickerKey], this.pickerKey, timeCode, time)
       this.showPickerDate = false;
     },
