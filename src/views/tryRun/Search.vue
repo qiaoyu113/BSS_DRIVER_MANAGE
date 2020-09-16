@@ -8,29 +8,34 @@
         @click-left="onClickLeft"
       />
       <!-- 搜索 -->
-      <van-search
-        v-model.trim="keyWord"
-        show-action
-        placeholder="请输入搜索关键词"
-        @input="onSearch"
-        @search="onSearch"
-        @clear="onCancel"
-      >
-        <template #action>
-          <div @click="onRunList">
-            搜索
-          </div>
-        </template>
-      </van-search>
+      <form action="/" @submit.prevent="() => false">
+        <van-search
+          v-model.trim="keyWord"
+          show-action
+          type="search"
+          placeholder="请输入搜索关键词"
+          @search="onSearch"
+          @clear="onCancel"
+          @input="onInput"
+        >
+          <template #action>
+            <div @click="onSearch">
+              搜索
+            </div>
+          </template>
+        </van-search>
+      </form>
     </div>
     <!-- 搜索结果 -->
     <div class="bottom">
       <template v-if="lists.length > 0">
-        <ListItem
-          v-for="(item, index) in lists"
-          :key="index"
-          :item="item"
-        />
+        <div class="list-bg">
+          <ListItem
+            v-for="(item, index) in lists"
+            :key="index"
+            :item="item"
+          />
+        </div>
       </template>
       <template v-else>
         <div v-show="options.length === 0" class="history">
@@ -47,7 +52,7 @@
               v-for="item in historyItems"
               :key="item"
               type="primary"
-              class="history-item"
+              class="history-item flex align-center justify-center"
               @click="handleItemClick(item)"
             >
               {{ item }}
@@ -62,7 +67,6 @@
 
 <script>
 import ListItem from './components/ListItem';
-import { debounce } from '@/utils/index';
 import { GetRunTestInfoList } from '@/api/tryrun';
 export default {
   name: 'Search',
@@ -108,37 +112,49 @@ export default {
         .then(() => {
           localStorage.removeItem('tryrun');
           this.historyItems = [];
-        });
+        }).catch(() => {});
     },
     // 搜索
-    onSearch: debounce(function() {
+    onSearch() {
       if (!this.keyWord) {
         return false;
       }
       this.handleSearch(this.keyWord);
-    }, 200),
+    },
     // 取消
     onCancel() {
       this.keyWord = '';
       this.lists = [];
     },
+    // onInput
+    onInput() {
+      if (!this.keyWord) {
+        this.lists = []
+      }
+    },
     handleItemClick(value) {
       this.keyWord = value;
-      this.onRunList();
+      this.onSearch();
     },
     // 搜索
     async handleSearch(keyword = '') {
       try {
+        this.$loading(true);
         let params = {};
         keyword && (params.key = keyword);
         let { data: res } = await GetRunTestInfoList(params);
         if (res.success) {
+          if (this.keyWord && res.data.length > 0) {
+            this.setHistory(this.keyWord);
+          }
           this.lists = res.data;
         } else {
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
         console.log(`get search data fail:${err}`);
+      } finally {
+        this.$loading(false);
       }
     },
     // 存localStorage
@@ -160,18 +176,6 @@ export default {
       if (history) {
         return history;
       }
-    },
-    // 跳转页面
-    onRunList() {
-      if (this.keyWord) {
-        this.setHistory(this.keyWord);
-      }
-      this.$router.replace({
-        path: '/try-list',
-        query: {
-          q: this.keyWord
-        }
-      })
     }
   }
 };
@@ -188,12 +192,12 @@ export default {
   .bottom {
     flex: 1;
     overflow: auto;
+    // background-color: @body-bg;
   }
   .history-item {
-    display: block;
     min-width: 60px;
     height: 28px;
-    line-height: 28px;
+    line-height: normal;
     padding: 0 14px;
     font-size: @font-size-sm-1;
     color: @text-color-sm;
@@ -202,6 +206,9 @@ export default {
     box-sizing: border-box;
     margin-bottom: 8px;
     margin-right: 5px;
+  }
+  .list-bg{
+    background-color: @body-bg;
   }
   .history {
     padding: 10px 15px;
