@@ -74,7 +74,7 @@
           </template>
           <van-cell
             title="上岗时间："
-            :value="lineInfoVO.driverWorkTime | DataIsNull"
+            :value="timeFormat(lineInfoVO.driverWorkTime,'YYYY-MM-DD')"
           ></van-cell>
           <van-cell
             title="到仓时间："
@@ -116,8 +116,6 @@
                 'km/'
                 +
                 DataIsNull(lineInfoVO.timeDiff)
-                +
-                DataIsNull(lineInfoVO.countyAreaName)
             "
           ></van-cell>
           <div
@@ -246,6 +244,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 export default {
   name: 'DetailsItem',
   props: {
@@ -277,6 +276,10 @@ export default {
     }
   },
   methods: {
+    // YYYY-MM-DD dddd HH:mm:ss
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
+    },
     DataIsNull(value) {
       if (value === 0) {
         return value;
