@@ -20,7 +20,7 @@
         <p class="text ellipsis">
           出车编号：<span>{{ obj.wayBillId }}</span>
         </p>
-        <p v-if="obj.gmState === 1" class="text ellipsis">
+        <p class="text ellipsis">
           加盟经理：<span>{{ obj.gmName }}/{{ obj.gmPhone }}</span>
         </p>
         <p class="text ellipsis">
