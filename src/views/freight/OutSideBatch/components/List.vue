@@ -91,7 +91,7 @@ export default {
         let wayBillId = this.checkedarr.map(item => item.wayBillId)
         this.reportMoneyBatchByGM(wayBillId)
       } else {
-        this.$toast.fail('请选择上报的')
+        this.$toast.fail('请选择')
       }
     },
     async reportMoneyBatchByGM(wayBillId) { // 确认运费回显

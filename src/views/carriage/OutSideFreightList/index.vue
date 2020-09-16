@@ -223,7 +223,7 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } else {
-        this.$toast.fail('请选择上报的')
+        this.$toast.fail('请选择')
       }
     },
     cancel() {
