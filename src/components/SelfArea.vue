@@ -81,7 +81,11 @@ export default {
       this.areaList.province_list = provinceLists
     },
     // 获取label
-    getLable() {
+    async getLable() {
+      let result = await this.loadCityByCode(['100000', this.form[this.pickerKey][0]])
+      this.areaList.city_list = result
+      let result1 = await this.loadCityByCode(['100000', this.form[this.pickerKey][0], this.form[this.pickerKey][1]])
+      this.areaList.county_list = result1
       this.label = `${this.form[this.props.provinceAreaName]}/${this.form[this.props.cityAreaName]}/${this.form[this.props.countyAreaName]}`
     },
     // 打开picker

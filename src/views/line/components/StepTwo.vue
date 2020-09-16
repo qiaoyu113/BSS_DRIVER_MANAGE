@@ -307,7 +307,8 @@ export default {
         }
       ],
       isStable: false,
-      timeBucket: [] // 时间段
+      timeBucket: [], // 时间段
+      assignment: true // 是否赋值
     }
   },
   computed: {
@@ -467,6 +468,12 @@ export default {
       if (val < 0 || val > 9) {
         this.form.dayNum = 1
         this.form.workingTime = []
+      } else if (['edit', 'copy', 'active'].includes(this.type)) {
+        if (this.assignment) {
+          this.assignment = false
+        } else {
+          this.form.workingTime = []
+        }
       } else {
         this.form.workingTime = []
       }

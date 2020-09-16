@@ -145,6 +145,7 @@ export default {
           ]
           break;
         case 200:
+        case 500:
           this.actions = [
             { name: '转掉线', index: 2 }
           ]

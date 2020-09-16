@@ -2,7 +2,7 @@
   <div class="OutSideList">
     <!-- navbar -->
     <div class="top">
-      <van-nav-bar title="项目名称" left-text="返回" left-arrow @click-left="onClickLeft">
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
           <div v-if="listQuery.reportState !== 1" class="headerRight" @click="batch">
             批量上报
@@ -50,7 +50,7 @@
           <van-checkbox-group ref="checkboxGroup" v-model="checkResult" max="20">
             <div v-for="sub in lists" :key="sub.id" class="listBox">
               <p v-if="optionsType" class="checked-box">
-                <van-checkbox :name="sub.wayBillId" shape="square" />
+                <van-checkbox v-if="sub.lineStatusCode === 0" :name="sub.wayBillId" :disabled="sub.lineStatusCode !== 0" shape="square" />
               </p>
               <CardItem :obj="sub" />
             </div>
@@ -141,7 +141,8 @@ export default {
         total: 0,
         limit: 20
       },
-      checkedNum: 0
+      checkedNum: 0,
+      title: ''
     }
   },
   computed: {
@@ -162,9 +163,10 @@ export default {
   },
   mounted() {
     this.listQuery.projectId = this.$route.query.id;
-    const { start, end } = this.$route.query;
+    const { start, end, title } = this.$route.query;
     this.listQuery.startDate = start;
     this.listQuery.endDate = end;
+    this.title = title.trim().split(' ')[0];
     this.formStr.date = new Date(Number(start));
     this.minDate = new Date(Number(start));
     this.maxDate = new Date(Number(end));
@@ -221,7 +223,7 @@ export default {
           this.$toast.fail(res.errorMsg)
         }
       } else {
-        this.$toast.fail('请选择上报的')
+        this.$toast.fail('请选择')
       }
     },
     cancel() {
