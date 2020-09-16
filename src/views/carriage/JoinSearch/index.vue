@@ -9,7 +9,7 @@
       v-model="keyWord"
       show-action
       placeholder="请输入司机名称/手机号"
-      @input="onSearcha"
+      @input="onSearch"
       @search="onSearch"
       @clear="onCancel"
     >
