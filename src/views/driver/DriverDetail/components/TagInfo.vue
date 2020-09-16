@@ -39,7 +39,7 @@
         />
         <van-field
           label="创建时间："
-          :value="item.createDate | parseTime('{y}/{m}/{d} {h}:{i}:{s}')"
+          :value="timeFormat(item.createDate,'YYYY-MM-DD')"
           readonly
         />
       </div>
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 export default {
   props: {
     obj: {
@@ -59,6 +60,11 @@ export default {
     return {
 
     };
+  },
+  methods: {
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
+    }
   }
 };
 </script>
