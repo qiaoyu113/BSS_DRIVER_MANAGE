@@ -19,7 +19,7 @@
       </p>
 
       <!--共享-->
-      <div v-if="detail.busiType === 1" class="tableBox">
+      <div v-if="busiType === 1" class="tableBox">
         <van-grid :column-num="3">
           <van-grid-item>
             <span>字段名称</span>
@@ -268,7 +268,7 @@
       </div>
 
       <!--专车-->
-      <div v-if="detail.busiType === 0" class="tableBox">
+      <div v-if="busiType === 0" class="tableBox">
         <van-grid :column-num="3">
           <van-grid-item>
             <span>字段名称</span>
@@ -662,6 +662,7 @@ export default {
   mounted() {
     let id = this.$route.query.id
     let busiType = this.$route.query.busiType
+    this.busiType = Number(busiType)
     let params = {
       driverId: id,
       busiType: busiType
