@@ -497,10 +497,10 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin:100px 15px 0px;
-    width: 345px;
+    margin:26.66vw 4vw 13.333vw;/*no*/
+    width: 92vw;/*no*/
     .lastStep {
-      margin-right:5px;
+      margin-right:1.333vw;/*no*/
     }
   }
   .cycle {
