@@ -84,8 +84,9 @@
                        {validator:validatorNum(0,999), message: '请填写正确的数字'}]"
             />
             <van-field
+              v-if="formData.busiType === 0"
               v-model="formData.incomeGuarantee"
-              v-only-number="{min: 0, max: 999999.99, precision: 0}"
+              v-only-number="{min: 0, max:1000000, precision: 2}"
               colon
               clickable
               label="收入保障（元）"
@@ -728,8 +729,10 @@ export default {
             this.formData.driverInfoFORM = this.formData.driverInfoVO;
             this.formData.driverId = this.driverId
             this.orderId = res.data.orderId
-            if (res.data.orderPayRecordInfoVOList !== null) {
-              this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
+            if (this.formData.orderPayRecordInfoFORMList.length === 0) {
+              if (res.data.orderPayRecordInfoVOList !== null) {
+                this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
+              }
             }
             this.formData.inspectionTime = new Date(res.data.inspectionTime).getTime()
             this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
