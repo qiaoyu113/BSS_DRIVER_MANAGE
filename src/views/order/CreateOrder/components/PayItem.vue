@@ -13,7 +13,7 @@
     </van-field>
     <van-field
       label="支付时间"
-      :value="obj.payDate | parseTime('{y}-{m}-{d} {h}:{i}:{s}')"
+      :value="obj.payDate | parseTime('{y}/{m}/{d} {h}:{i}:{s}')"
       colon
       readonly
       :border="false"

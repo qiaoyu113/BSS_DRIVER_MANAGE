@@ -341,7 +341,7 @@ export default {
 
 <style lang='scss' scoped>
 .lineDetailContainer {
-  font-family: PingFangSC-Medium;
+
   .btn {
     margin: 50px 16px;
     width: calc(100% - 32px);

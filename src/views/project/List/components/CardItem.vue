@@ -79,7 +79,6 @@ export default {
 <style lang='scss' scoped>
 .CardItemcontainer {
   padding: 0px 15px;
-  font-family: PingFangSC-Semibold;
   .title {
     margin: 10px 0px;
     font-size: 14px;

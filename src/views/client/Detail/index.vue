@@ -110,13 +110,6 @@ export default {
 
 </script>
 
-<style lang='scss' scoped>
-.customertDetailContainer {
-  font-family: PingFangSC-Medium;
-}
-
-</style>
-
 <style scoped>
   .customertDetailContainer >>> .van-collapse-item__content {
     padding-top: 0px;

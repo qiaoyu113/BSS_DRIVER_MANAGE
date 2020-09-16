@@ -196,7 +196,7 @@ export default {
 <style lang='scss' scoped>
 .StepThireeContainer {
   position: relative;
-  font-family: PingFangSC-Medium;
+
   .title {
     margin: 0px;
     padding: 10px 0px 12.5px 15px;
