@@ -26,7 +26,7 @@
       <van-field label="合同止期" label-width="100" readonly :value="form.contractEnd ?timeFormat(form.contractEnd,'YYYY-MM-DD') : '暂无数据'" :border="false" colon />
       <van-field label="创建日期" label-width="100" readonly :value="form.createDate ?timeFormat(form.createDate,'YYYY-MM-DD HH:mm:ss') : '暂无数据'" :border="false" colon />
       <van-field label="所在区域" label-width="100" readonly :value="region | DataIsNull" :border="false" colon />
-      <van-field label="详细地址" label-width="100" readonly :value="form.address | DataIsNull" :border="false" colon />
+      <van-field label="详细地址" label-width="100" readonly autosize type="textarea" :value="form.address | DataIsNull" :border="false" colon />
       <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.remark" colon />
       <van-cell-group v-if="form.customerType ===1" title="营业执照" class="busiLicense">
         <ImagePreview :image-arrs="form.businessLicenseUrl" />
@@ -70,7 +70,9 @@ export default {
      *返回按钮
      */
     onClickLeft() {
-      this.$router.go(-1)
+      this.$router.replace({
+        path: '/client'
+      })
     },
 
     /**

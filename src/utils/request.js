@@ -73,8 +73,8 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-      // localStorage.removeItem('token')
-      // localStorage.removeItem('code')
+      localStorage.removeItem('token')
+      localStorage.removeItem('code')
       // location.reload()
       let unauthorityUrl = window.location.href;
       localStorage.setItem('unauthorityUrl', unauthorityUrl)

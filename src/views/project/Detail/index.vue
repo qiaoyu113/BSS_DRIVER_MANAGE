@@ -32,9 +32,9 @@
         <van-field label="仓联系人" label-width="100" readonly :value="form.warehouseContactName | DataIsNull" :border="false" colon />
         <van-field label="仓联系电话" label-width="100" readonly :value="form.warehouseContactPhone | DataIsNull" :border="false" colon />
         <van-field label="开放时间" label-width="100" readonly :value="`${form.warehouseOpen}-${form.warehouseClose}`" :border="false" colon />
-        <van-field label="所在区域" label-width="100" readonly :value="region | DataIsNull" :border="false" colon />
-        <van-field label="详细地址" label-width="100" readonly :value="form.warehouseDistrict | DataIsNull" :border="false" colon />
-        <van-field label="备注" label-width="100" readonly :value="form.warehouseRemark | DataIsNull" :border="false" colon />
+        <van-field label="所在区域" label-width="100" autosize type="textarea" readonly :value="region | DataIsNull" :border="false" colon />
+        <van-field label="详细地址" label-width="100" autosize type="textarea" readonly :value="form.warehouseDistrict | DataIsNull" :border="false" colon />
+        <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.warehouseRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送信息" name="3">
         <van-field label="是否走高速" label-width="100" readonly :value="form.runSpeed ===1 ? '是':'否'" :border="false" colon />
@@ -43,13 +43,13 @@
         <van-field label="配送点数量" label-width="100" readonly :value="form.deliveryNum | DataIsNull" :border="false" colon />
         <van-field label="配送总里程" label-width="100" readonly :value="form.distance | DataIsNull" :border="false" colon />
         <van-field label="预计工作时间" label-width="100" readonly :value="form.timeDiff | DataIsNull" :border="false" colon />
-        <van-field label="限行区域说明" label-width="100" readonly :value="form.limitRemark | DataIsNull" :border="false" colon />
+        <van-field label="限行区域说明" label-width="100" readonly autosize type="textarea" :value="form.limitRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="货物信息" name="4">
         <van-field label="货物类型" label-width="100" readonly :value="form.cargoTypeName | DataIsNull" :border="false" colon />
         <van-field label="货物件数" label-width="100" readonly :value="form.cargoNum | DataIsNull" :border="false" colon />
         <van-field label="是否需要搬运" label-width="100" readonly :value="form.carry === 1 ? '是':'否'" :border="false" colon />
-        <van-field label="其他上岗要求" label-width="100" readonly :value="form.dutyRemark | DataIsNull" :border="false" colon />
+        <van-field label="其他上岗要求" label-width="100" readonly autosize type="textarea" :value="form.dutyRemark | DataIsNull" :border="false" colon />
       </van-collapse-item>
     </van-collapse>
     <div v-if="form.projectState ===2 && form.auditState ===2" class="btn">
@@ -115,7 +115,9 @@ export default {
      *返回按钮
      */
     onClickLeft() {
-      this.$router.go(-1)
+      this.$router.replace({
+        path: '/project'
+      })
     },
 
     /**
