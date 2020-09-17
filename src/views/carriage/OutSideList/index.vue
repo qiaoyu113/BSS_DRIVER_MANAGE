@@ -244,14 +244,14 @@ export default {
     // 模糊搜索
     handleSearchChange(value) {
       let params = {
-        nickname: value,
-        roleId: 3
+        keyword: value,
+        roleType: 3
       }
       this.getSpecifiedRoleList(params)
     },
     // 打开模糊查询框
     async handleShowModal() {
-      this.getSpecifiedRoleList({ roleId: 3, nickname: '' })
+      this.getSpecifiedRoleList({ roleType: 3, keyword: '' })
       this.showModal = true
     },
     handleValueClick(obj) {
