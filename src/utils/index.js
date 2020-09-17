@@ -302,7 +302,7 @@ export const IdPattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
 export const carNoRegExp = /^([京津晋冀蒙辽吉黑沪苏浙皖闽赣鲁豫鄂湘粤桂琼渝川贵云藏陕甘青宁新][ABCDEFGHJKLMNPQRSTUVWXY][1-9DF][1-9ABCDEFGHJKLMNPQRSTUVWXYZ]\d{3}[1-9DF]|[京津晋冀蒙辽吉黑沪苏浙皖闽赣鲁豫鄂湘粤桂琼渝川贵云藏陕甘青宁新][ABCDEFGHJKLMNPQRSTUVWXY][\dABCDEFGHJKLNMxPQRSTUVWXYZ]{5})$/
 
 // 延迟3秒
-export const delay = 3000
+export const delay = 0
 
 // 验证是否为正整数
 export function formatter(val) {
