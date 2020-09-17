@@ -96,7 +96,7 @@
 import { Popup, Notify } from 'vant';
 import { delay } from '@/utils';
 import { updateGmByDriverId } from '@/api/driver.js'
-import { getCurrentLowerOfficeCityData, getGMListByProductLineAndCC } from '@/api/common'
+import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -133,10 +133,14 @@ export default {
     active(val) {
       this.resetform();
       this.getGmId()
+      this.formData.gmId = ''
+      this.pickerNames.gmId = ''
     },
     'formData.workCity'(val) {
       if (val) {
         this.getGmId(val)
+        this.formData.gmId = ''
+        this.pickerNames.gmId = ''
       }
     }
   },
@@ -146,22 +150,23 @@ export default {
   },
   methods: {
     async getGmId(val) {
-      if (!this.formData.workCity) {
-        return
-      }
       let params = {
-        'cityCode': Number(this.formData.workCity),
-        // 'gmGroup': 0,
-        'productLine': this.active
+        'cityCode': this.formData.workCity,
+        'productLine': this.active,
+        'roleType': 1
       }
-      getGMListByProductLineAndCC(params)
-        .then(({ data }) => {
-          if (data.success) {
-            this.columns_gmId = data.data.map(ele => {
-              return { name: ele.name, code: ele.id }
-            });
-          }
-        })
+      GetSpecifiedRoleList(params).then(({ data }) => {
+        if (data.success) {
+          this.columns_gmId = data.data.map(ele => {
+            return { name: ele.name, code: ele.id }
+          })
+        } else {
+          this.$toast(data.errorMsg)
+        }
+      })
+        .catch((err) => {
+          console.log(err)
+        });
     },
     fetchData() {
       getCurrentLowerOfficeCityData({})
@@ -172,6 +177,7 @@ export default {
         }).catch((err) => {
           console.log(err)
         });
+      this.getGmId()
     },
     async onSubmit(values) {
       try {

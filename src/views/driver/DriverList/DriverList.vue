@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, getGMListByProductLineAndCC, GetSpecifiedRoleList } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -304,55 +304,40 @@ export default {
     'ruleForm.workCity'(val) {
       if (val !== '') {
         this.getGmId()
+        this.ruleForm.gmId = ''
+        this.formText.gmId = ''
       }
     },
     'ruleForm.busiType'(val) {
       if (val !== '') {
         this.getGmId()
+        this.ruleForm.gmId = ''
+        this.formText.gmId = ''
       }
     }
   },
   mounted() {
-    // 请求字典
-    this.fetchData();
   },
   methods: {
     // 联动请求加盟经理
     getGmId() {
-      // this.ruleForm.gmId = ''
-      // this.formText.gmId = ''
-      // if (this.ruleForm.workCity === '' && this.ruleForm.busiType === '') {
-      //   GetSpecifiedRoleList({ roleId: 1 }).then(({ data }) => {
-      //     if (data.success) {
-      //       this.columns_GmManager = data.data.map(ele => {
-      //         return { name: ele.name, code: ele.id }
-      //       });
-      //     } else {
-      //       this.$toast(data.errorMsg)
-      //     }
-      //   })
-      //     .catch((err) => {
-      //       console.log(err)
-      //     });
-      // } else {
-      //   let params = {
-      //     'cityCode': Number(this.ruleForm.workCity),
-      //     // 'gmGroup': 0,
-      //     'productLine': this.ruleForm.busiType
-      //   }
-      //   getGMListByProductLineAndCC(params)
-      //     .then(({ data }) => {
-      //       if (data.success) {
-      //         this.columns_GmManager = data.data.map(ele => {
-      //           return { name: ele.name, code: ele.id }
-      //         });
-      //       } else {
-      //         this.$toast(data.errorMsg)
-      //       }
-      //     }).catch((err) => {
-      //       console.log(err)
-      //     });
-      // }
+      let params = {
+        'cityCode': this.ruleForm.workCity,
+        'productLine': this.ruleForm.busiType,
+        'roleType': 1
+      }
+      GetSpecifiedRoleList(params).then(({ data }) => {
+        if (data.success) {
+          this.columns_GmManager = data.data.map(ele => {
+            return { name: ele.name, code: ele.id }
+          })
+        } else {
+          this.$toast(data.errorMsg)
+        }
+      })
+        .catch((err) => {
+          console.log(err)
+        });
     },
     /**
      * 请求字典接口
@@ -491,6 +476,7 @@ export default {
      */
     startScreen(val) {
       this.showScreen = val.show;
+      this.fetchData()
     },
     /**
      * 更换加盟经理
