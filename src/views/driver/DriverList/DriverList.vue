@@ -319,40 +319,40 @@ export default {
   methods: {
     // 联动请求加盟经理
     getGmId() {
-      this.ruleForm.gmId = ''
-      this.formText.gmId = ''
-      if (this.ruleForm.workCity === '' && this.ruleForm.busiType === '') {
-        GetSpecifiedRoleList({ roleId: 1 }).then(({ data }) => {
-          if (data.success) {
-            this.columns_GmManager = data.data.map(ele => {
-              return { name: ele.name, code: ele.id }
-            });
-          } else {
-            this.$toast(data.errorMsg)
-          }
-        })
-          .catch((err) => {
-            console.log(err)
-          });
-      } else {
-        let params = {
-          'cityCode': Number(this.ruleForm.workCity),
-          // 'gmGroup': 0,
-          'productLine': this.ruleForm.busiType
-        }
-        getGMListByProductLineAndCC(params)
-          .then(({ data }) => {
-            if (data.success) {
-              this.columns_GmManager = data.data.map(ele => {
-                return { name: ele.name, code: ele.id }
-              });
-            } else {
-              this.$toast(data.errorMsg)
-            }
-          }).catch((err) => {
-            console.log(err)
-          });
-      }
+      // this.ruleForm.gmId = ''
+      // this.formText.gmId = ''
+      // if (this.ruleForm.workCity === '' && this.ruleForm.busiType === '') {
+      //   GetSpecifiedRoleList({ roleId: 1 }).then(({ data }) => {
+      //     if (data.success) {
+      //       this.columns_GmManager = data.data.map(ele => {
+      //         return { name: ele.name, code: ele.id }
+      //       });
+      //     } else {
+      //       this.$toast(data.errorMsg)
+      //     }
+      //   })
+      //     .catch((err) => {
+      //       console.log(err)
+      //     });
+      // } else {
+      //   let params = {
+      //     'cityCode': Number(this.ruleForm.workCity),
+      //     // 'gmGroup': 0,
+      //     'productLine': this.ruleForm.busiType
+      //   }
+      //   getGMListByProductLineAndCC(params)
+      //     .then(({ data }) => {
+      //       if (data.success) {
+      //         this.columns_GmManager = data.data.map(ele => {
+      //           return { name: ele.name, code: ele.id }
+      //         });
+      //       } else {
+      //         this.$toast(data.errorMsg)
+      //       }
+      //     }).catch((err) => {
+      //       console.log(err)
+      //     });
+      // }
     },
     /**
      * 请求字典接口
@@ -372,11 +372,11 @@ export default {
         .then(({ data }) => {
           if (data.success) {
             this.columns_workCity = data.data;
+            this.getGmId()
           }
         }).catch((err) => {
           console.log(err)
         });
-      this.getGmId()
     },
     async onLoad(isInit = false) {
       if (isInit === true) { // 下拉刷新
