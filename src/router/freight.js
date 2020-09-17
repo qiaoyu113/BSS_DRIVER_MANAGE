@@ -4,7 +4,8 @@ export default [
     name: 'freight',
     component: resolve => require(['@/views/carriage/JoinList'], resolve),
     meta: {
-      title: '运费管理'
+      title: '运费管理',
+      keepAlive: true
     }
   },
   {

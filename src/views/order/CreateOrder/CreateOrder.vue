@@ -72,7 +72,7 @@
             />
             <van-field
               v-model="formData.cooperationTime"
-              v-only-number="{min: 0, max: 900, precision: 0}"
+              v-only-number="{min: 0, max: 999,precision: 0}"
               colon
               clickable
               label="合作期限（月）"
@@ -111,7 +111,7 @@
             />
             <van-field
               v-model="formData.goodsAmount"
-              v-only-number="{min: 0, max: 999999.99, precision: 0}"
+              v-only-number="{min: 0, max: 1000000, precision: 2}"
               colon
               clickable
               label="商品金额（元）"
@@ -255,7 +255,7 @@
                   v-show="formData.supplier && formData.cooperationModel === 1"
                   label="无税车价"
                   placeholder="无税车价"
-                  :value="formText.carPrice"
+                  :value="formData.carPrice"
                   required
                   readonly
                   colon
@@ -401,6 +401,7 @@ export default {
       showPicker: false,
       pickerKey: '',
       formData: {
+        carPrice: '',
         cooperationModel: '',
         cooperationTime: '',
         incomeGuarantee: '',
@@ -569,6 +570,7 @@ export default {
       if (data.success) {
         if (data.data) {
           this.formText.carPrice = data.data.price;
+          this.formData.carPrice = data.data.price;
           this.formText.describe = data.data.describe;
           this.formData.productId = data.data.productCode;
         }
@@ -776,6 +778,7 @@ export default {
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
           orderId: this.orderId,
           driverId: this.driverId,
+          carPrice: this.formData.carPrice,
           havePayAmount: this.payMoneyed
         }
         params.driverInfoFORM.driverId = this.driverId
@@ -815,7 +818,8 @@ export default {
           driverInfoFORM: this.formData.driverInfoFORM,
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
           orderId: this.orderId,
-          driverId: this.driverId
+          driverId: this.driverId,
+          carPrice: this.formData.carPrice
         }
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);

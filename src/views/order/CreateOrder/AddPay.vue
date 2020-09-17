@@ -35,7 +35,7 @@
         label="支付时间"
         required
         readonly
-        :value="upTime"
+        :value="showForm.payDate"
         placeholder="请填写"
         type="number"
         :rules="[{ required: true, message: '请填写' }]"
@@ -147,7 +147,6 @@
 </template>
 
 <script>
-import { parseTime } from '@/utils';
 import { Toast } from 'vant';
 import dayjs from 'dayjs'
 import { upload, GetDictionaryList } from '@/api/common';
@@ -181,12 +180,6 @@ export default {
   computed: {
     title() {
       return this.$route.meta.title;
-    },
-    upTime() {
-      if (this.form.payDate) {
-        return dayjs(this.form.payDate).format('YYYY/MM/DD')
-      }
-      return ''
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -230,10 +223,11 @@ export default {
       Toast('图片大小不能超过 5M');
     },
     onConfirm(time) {
-      let timeText = parseTime(time, '{y}/{m}/{d} {h}:{i}:{s}');
-      let timeCode = new Date(time).getTime();
+      let timeText = dayjs(time).format('YYYY/MM/DD');
+      // let timeCode = new Date(time).getTime();
+      // console.log('timeCode', timeCode, time)
       this.showForm.payDate = timeText;
-      this.form.payDate = timeCode;
+      // this.form.payDate = timeCode;
       this.showTime = false;
     },
     onConfirmPicker(value) {
