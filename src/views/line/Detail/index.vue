@@ -157,9 +157,7 @@ export default {
      *返回按钮
      */
     onClickLeft() {
-      this.$router.replace({
-        path: '/line'
-      })
+      this.$router.go(-1)
     },
     /**
      * 下架
