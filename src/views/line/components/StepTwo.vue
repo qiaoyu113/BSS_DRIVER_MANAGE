@@ -93,7 +93,7 @@
       />
       <template v-for="item in form.dayNum">
         <div :key="'time'+item">
-          <customSelect :index="item" :value="form.workingTime[item-1]" :columns="timeBucket" :is-computed="form.workingTime[item-1]!==''" @date="handleDateChange" />
+          <customSelect :index="item-1" :value="form.workingTime[item-1]" :columns="timeBucket" :is-computed="form.workingTime[item-1]!==''" @date="handleDateChange" />
         </div>
       </template>
       <h4 class="title van-hairline--bottom">
@@ -398,33 +398,36 @@ export default {
     },
     // 生成时间段
     generaTimelist() {
+      this.timeBucket = []
       let arrs = []
       for (let i = 0; i < 23; i++) {
         let hour = ''
-        let hourNext = ''
         if (i < 10) {
           hour = `0${i}`
         } else {
           hour = i
         }
-        if (i + 1 < 10) {
-          hourNext = `0${i + 1}`
-        } else {
-          hourNext = i + 1
-        }
+
         let brr = [
-          `${hour}:00-${hour}:15`,
-          `${hour}:15-${hour}:30`,
-          `${hour}:30-${hour}:45`,
-          `${hour}:45-${hourNext}:00`
+          `${hour}:00`,
+          `${hour}:15`,
+          `${hour}:30`,
+          `${hour}:45`
         ]
         arrs.push(...brr)
       }
-      arrs.forEach(item => {
-        this.timeBucket.push({
-          label: item,
-          value: item
-        })
+
+      let crrs = arrs.map(item => ({
+        label: item,
+        value: item
+      }))
+      this.timeBucket.push({
+        values: crrs,
+        defaultIndex: 1
+      })
+      this.timeBucket.push({
+        values: crrs,
+        defaultIndex: 1
       })
     },
     // 校验配送时间

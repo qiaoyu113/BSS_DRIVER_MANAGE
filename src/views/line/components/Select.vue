@@ -49,8 +49,6 @@ export default {
   data() {
     return {
       showPicker: false,
-      isFirst: false,
-      idx: 0,
       label: ''
     }
   },
@@ -67,29 +65,24 @@ export default {
   methods: {
     // 回显第一次获取label和索引index
     getLabel() {
-      let index = this.columns.findIndex(item => item.value === this.value)
-      if (index === -1) {
-        index = 0
-      } else {
-        this.idx = index
-        this.isFirst = true
-        this.label = this.columns[index].label
-      }
+      let step1 = this.value.split('-')[0]
+      let step2 = this.value.split('-')[1]
+      let index1 = this.columns[0].values.findIndex(item => item.value === step1)
+      let index2 = this.columns[1].values.findIndex(item => item.value === step2)
+      this.columns[0].defaultIndex = index1
+      this.columns[1].defaultIndex = index2
+      this.label = `${this.columns[0].values[index1].label}-${this.columns[1].values[index2].label}`
     },
     // 司机上岗时间
     onConfirm(obj) {
-      this.$emit('date', obj.value, this.index)
-      this.label = obj.label
+      let label = `${obj[0].label}-${obj[1].label}`
+      let value = `${obj[0].value}-${obj[1].value}`
+      this.$emit('date', value, this.index)
+      this.label = label
       this.showPicker = false
     },
     showPickerFn() {
       this.showPicker = true
-      if (this.isFirst) { // 第一次回显
-        setTimeout(() => {
-          this.$refs.timePicker.setIndexes([this.idx])
-          this.isFirst = false
-        }, 20)
-      }
     }
   }
 }
