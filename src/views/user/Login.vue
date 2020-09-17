@@ -68,7 +68,7 @@
       </template>
 
       <van-button type="info" block class="loginBtn" color="#2F448A">
-        登陆
+        登录
       </van-button>
       <!-- <span class="loginWay" @click="handleChangeLoginWay">{{ loginWay === 'account' ? '使用手机登陆' :'使用账号登陆' }}</span> -->
     </van-form>
