@@ -16,7 +16,7 @@
       <p class="text ellipsis">
         线路名称:{{ obj.lineName }}/{{ obj.lineId }} <span v-if="obj.gmStatusCode === 1 && obj.feeDiff === 0" class="differ">{{ obj.gmFee || 0 }}元</span>
       </p>
-      <div v-if="obj.gmStatusCode === 1 && obj.feeDiff === 1" class="text2 ellipsis">
+      <div v-if="(obj.gmStatusCode === 1 || obj.gmStatusCode === 2) && obj.feeDiff === 1" class="text2 ellipsis">
         <p class="differ">
           有差异
         </p>
