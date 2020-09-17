@@ -291,7 +291,8 @@ export default {
           setTimeout(() => {
             if (this.actionVal === '1') { // 1提交 2提交并创建试跑
             // 返回试跑列表
-              this.$router.push('/try-run')
+              // this.$router.replace('/try-run')
+              this.$router.go(-1);
             }
           }, delay);
         } else {
