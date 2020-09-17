@@ -29,7 +29,7 @@
         <p v-if="obj.gmState === 1" class="text ellipsis">
           上报人：<span>{{ obj.gmReportName }}/{{ obj.gmReportPhone }}</span>
         </p>
-        <p v-if="obj.gmState === 1" class="text ellipsis">
+        <p v-if="obj.gmState === 1 || obj.gmState === 2" class="text ellipsis">
           上报时间：<span>{{ obj.gmReportTime }}({{ obj.gmReportName }})</span>
         </p>
         <div v-if="obj.gmState !== 2">
@@ -37,7 +37,7 @@
             趟数{{ item.tripNo }}金额：<span>{{ item.gmFee || 0 }}元</span>
           </p>
         </div>
-        <p v-if="obj.gmState === 1" class="text">
+        <p v-if="obj.gmState === 1 || obj.gmState === 2" class="text">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
         <p class="text ellipsis">
