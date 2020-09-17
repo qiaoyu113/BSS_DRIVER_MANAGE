@@ -15,7 +15,7 @@
         @clear="onCancel"
       >
         <template #action>
-          <div @click="handleSearch(keyWord,true)">
+          <div @click="handleSearch(keyWord)">
             搜索
           </div>
         </template>
@@ -102,7 +102,7 @@ export default {
       this.handleSearch(this.keyWord)
     },
     // 搜索
-    async handleSearch(keyword = '', isAddHistory = false) {
+    async handleSearch(keyword = '') {
       try {
         let params = {}
         keyword && (params.key = keyword)
@@ -110,7 +110,7 @@ export default {
         let { data: res } = await getProjectSearch(params)
         if (res.success) {
           this.lists = res.data
-          if (keyword && isAddHistory) {
+          if (keyword) {
             this.setHistory(keyword)
           }
         } else {
