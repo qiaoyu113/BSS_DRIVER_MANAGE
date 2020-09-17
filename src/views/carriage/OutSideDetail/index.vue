@@ -38,7 +38,9 @@
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
         <p class="text ellipsis">
-          确认状态：<span>{{ obj.confirmStateName }}/{{ obj.confirmMoney || 0 }}元</span>
+          确认状态：<span>{{ obj.confirmStateName }}</span>
+          <span v-if="obj.gmState === 2 && obj.lineState === 2">/ 未出车</span>
+          <span v-else>/ {{ obj.confirmMoney || 0 }}元</span>
         </p>
       </div>
     </div>
