@@ -32,9 +32,11 @@
         <p v-if="obj.gmState === 1" class="text ellipsis">
           上报时间：<span>{{ obj.gmReportTime }}</span>
         </p>
-        <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
-          趟数{{ item.tripNo }}金额：<span>{{ item.gmFee || 0 }}元</span>
-        </p>
+        <div v-if="obj.gmState !== 2">
+          <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
+            趟数{{ item.tripNo }}金额：<span>{{ item.gmFee || 0 }}元</span>
+          </p>
+        </div>
         <p v-if="obj.gmState === 1" class="text">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
