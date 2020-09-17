@@ -35,7 +35,7 @@
         label="支付时间"
         required
         readonly
-        :value="upTime"
+        :value="showForm.payDate"
         placeholder="请填写"
         type="number"
         :rules="[{ required: true, message: '请填写' }]"
@@ -147,7 +147,6 @@
 </template>
 
 <script>
-import { parseTime } from '@/utils';
 import { Toast } from 'vant';
 import dayjs from 'dayjs'
 import { upload, GetDictionaryList } from '@/api/common';
@@ -230,7 +229,7 @@ export default {
       Toast('图片大小不能超过 5M');
     },
     onConfirm(time) {
-      let timeText = parseTime(time, '{y}/{m}/{d} {h}:{i}:{s}');
+      let timeText = dayjs(time).format('YYYY/MM/DD');
       let timeCode = new Date(time).getTime();
       this.showForm.payDate = timeText;
       this.form.payDate = timeCode;
