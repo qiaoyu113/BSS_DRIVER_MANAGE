@@ -98,9 +98,7 @@ export default {
       this.getProjectWayBillLists(this.keyWord)
     }, 200),
     onSearcha() {
-      if (this.keyWord) {
-        this.setHistory(this.keyWord)
-      } else {
+      if (!this.keyWord) {
         this.lists = []
         return false
       }
@@ -142,6 +140,9 @@ export default {
         let { data: res } = await getLineInfoListSearch(params)
         this.$loading(false)
         if (res.success) {
+          if (res.data && res.data.length > 0) {
+            this.setHistory(this.keyWord)
+          }
           this.lists = res.data
         } else {
           this.$toast.fail(res.errorMsg)
