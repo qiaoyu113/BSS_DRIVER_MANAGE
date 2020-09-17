@@ -157,7 +157,6 @@ export default {
 
 <style lang='scss' scoped>
 .projectDetailContainer {
-  font-family: PingFangSC-Medium;
   .btn {
     padding: 15px;
     display: flex;

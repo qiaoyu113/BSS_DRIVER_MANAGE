@@ -119,11 +119,12 @@ export const GetCityByCode = (data) =>
   })
 
 // 加盟经理(1)  外销销售(2) 上岗经理(3)
-export const GetSpecifiedRoleList = (params) =>
+export const GetSpecifiedRoleList = (data) =>
   request({
-    url: `${prefix}/v2/base/user/getSpecifiedUserList`,
+    // url: `${prefix}/v2/base/user/getSpecifiedUserList`,
+    url: `${prefix}/v2/base/user/getSpecifiedLowerUserListByCondition`,
     method: 'post',
-    params
+    data
   })
 
 // 查询当前用户组织下的城市列表或者所归属的城市 工作城市

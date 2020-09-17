@@ -132,7 +132,7 @@ export default {
   background-color: @white;
   .title {
     height: 40px;
-    line-height: 40px;
+    line-height: normal;
     .title-tag {
       margin-right: 10px;
       padding: 0 10px;
@@ -142,6 +142,7 @@ export default {
       background: #7f8fbd;
       border-radius: 3px;
       white-space: nowrap;
+      line-height: normal;
     }
     h3 {
       margin: 0;
@@ -159,6 +160,7 @@ export default {
     color: @tab-active-color;
     font-size: @font-size-xs-1;
     border-radius: 12px;
+    line-height: normal;
     & + .tag-item {
       margin-left: 10px;
     }
@@ -205,8 +207,8 @@ export default {
     height: 30px;
     .details {
       width: 70px;
-      height: 20px;
-      line-height: 20px;
+      padding: 2px 0;
+      line-height: normal;
       color: #838a9d;
       border-radius: 10px;
       text-align: center;

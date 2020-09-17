@@ -5,34 +5,33 @@
       <van-nav-bar title="客户详情" left-text="返回" left-arrow @click-left="onClickLeft">
       </van-nav-bar>
     </van-sticky>
-
-    <van-field label="客户名称" label-width="100" readonly :value="form.customerCompanyName | DataIsNull" :border="false" colon />
-    <van-field label="客户类型" label-width="100" readonly :value="form.customerTypeName | DataIsNull" :border="false" colon />
-    <!-- 公司 -->
-    <van-field v-if="form.customerType ===1" label="公司主体" label-width="100" readonly :value="form.customerCompanyMain | DataIsNull" :border="false" colon />
-    <van-field label="客户编号" label-width="100" readonly :value="form.customerId | DataIsNull" :border="false" colon />
-    <van-field label="创建人" label-width="100" readonly :value="form.createName | DataIsNull" :border="false" colon />
-    <van-field label="审核状态" label-width="100" readonly :value="form.reviewStateName | DataIsNull" :border="false" colon />
-    <van-field label="客户状态" label-width="100" readonly :value="form.customerStateName | DataIsNull" :border="false" colon />
-    <van-field label="客户渠道" label-width="100" readonly :value="form.customerChannelsName | DataIsNull" :border="false" colon />
-    <van-field label="客户分类" label-width="100" readonly :value="form.classificationName | DataIsNull" :border="false" colon />
-    <van-field label="所属城市" label-width="100" readonly :value="form.cityName | DataIsNull" :border="false" colon />
-    <van-field label="联系人" label-width="100" readonly :value="form.bussinessName | DataIsNull" :border="false" colon />
-    <van-field label="联系电话" label-width="100" readonly :value="form.bussinessPhone | DataIsNull" :border="false" colon />
-    <van-field label="职务" label-width="100" readonly :value="form.bussinessPosition | DataIsNull" :border="false" colon />
-
-    <van-field label="身份证号" label-width="100" readonly :value="form.bussinessCard | DataIsNull" :border="false" colon />
-    <van-field label="客户意向度" label-width="100" readonly :value="form.customerIntentionName | DataIsNull" :border="false" colon />
-    <van-field label="客户体量" label-width="100" readonly :value="form.customerSize | DataIsNull" :border="false" colon />
-    <van-field label="合同止期" label-width="100" readonly :value="timeFormat(form.contractEnd,'YYYY-MM-DD')" :border="false" colon />
-    <van-field label="创建日期" label-width="100" readonly :value="timeFormat(form.contractEnd,'YYYY-MM-DD HH:mm:ss')" :border="false" colon />
-    <van-field label="所在区域" label-width="100" readonly :value="region | DataIsNull" :border="false" colon />
-    <van-field label="详细地址" label-width="100" readonly :value="form.address | DataIsNull" :border="false" colon />
-    <van-field label="备注" label-width="100" readonly :value="form.remark" colon />
-
-    <van-cell-group v-if="form.customerType ===1" title="营业执照" class="busiLicense">
-      <ImagePreview :image-arrs="form.businessLicenseUrl" />
-    </van-cell-group>
+    <van-collapse v-model="activeNames">
+      <van-field label="客户名称" label-width="100" readonly :value="form.customerCompanyName | DataIsNull" :border="false" colon />
+      <van-field label="客户类型" label-width="100" readonly :value="form.customerTypeName | DataIsNull" :border="false" colon />
+      <!-- 公司 -->
+      <van-field v-if="form.customerType ===1" label="公司主体" label-width="100" readonly :value="form.customerCompanyMain | DataIsNull" :border="false" colon />
+      <van-field label="客户编号" label-width="100" readonly :value="form.customerId | DataIsNull" :border="false" colon />
+      <van-field label="创建人" label-width="100" readonly :value="form.createName | DataIsNull" :border="false" colon />
+      <van-field label="审核状态" label-width="100" readonly :value="form.reviewStateName | DataIsNull" :border="false" colon />
+      <van-field label="客户状态" label-width="100" readonly :value="form.customerStateName | DataIsNull" :border="false" colon />
+      <van-field label="客户渠道" label-width="100" readonly :value="form.customerChannelsName | DataIsNull" :border="false" colon />
+      <van-field label="客户分类" label-width="100" readonly :value="form.classificationName | DataIsNull" :border="false" colon />
+      <van-field label="所属城市" label-width="100" readonly :value="form.cityName | DataIsNull" :border="false" colon />
+      <van-field label="联系人" label-width="100" readonly :value="form.bussinessName | DataIsNull" :border="false" colon />
+      <van-field label="联系电话" label-width="100" readonly :value="form.bussinessPhone | DataIsNull" :border="false" colon />
+      <van-field label="职务" label-width="100" readonly :value="form.bussinessPosition | DataIsNull" :border="false" colon />
+      <van-field label="身份证号" label-width="100" readonly :value="form.bussinessCard | DataIsNull" :border="false" colon />
+      <van-field label="客户意向度" label-width="100" readonly :value="form.customerIntentionName | DataIsNull" :border="false" colon />
+      <van-field label="客户体量" label-width="100" readonly :value="form.customerSize | DataIsNull" :border="false" colon />
+      <van-field label="合同止期" label-width="100" readonly :value="form.contractEnd ?timeFormat(form.contractEnd,'YYYY-MM-DD') : '暂无数据'" :border="false" colon />
+      <van-field label="创建日期" label-width="100" readonly :value="form.createDate ?timeFormat(form.createDate,'YYYY-MM-DD HH:mm:ss') : '暂无数据'" :border="false" colon />
+      <van-field label="所在区域" label-width="100" readonly :value="region | DataIsNull" :border="false" colon />
+      <van-field label="详细地址" label-width="100" readonly :value="form.address | DataIsNull" :border="false" colon />
+      <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.remark" colon />
+      <van-cell-group v-if="form.customerType ===1" title="营业执照" class="busiLicense">
+        <ImagePreview :image-arrs="form.businessLicenseUrl" />
+      </van-cell-group>
+    </van-collapse>
   </div>
 </template>
 
@@ -46,6 +45,7 @@ export default {
   },
   data() {
     return {
+      activeNames: ['1'],
       form: {},
       customerId: '' // 客户详情
     }
@@ -109,13 +109,6 @@ export default {
 }
 
 </script>
-
-<style lang='scss' scoped>
-.customertDetailContainer {
-  font-family: PingFangSC-Medium;
-}
-
-</style>
 
 <style scoped>
   .customertDetailContainer >>> .van-collapse-item__content {

@@ -5,25 +5,26 @@
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <!-- 搜索 -->
-    <van-search
-      v-model="keyWord"
-      show-action
-      placeholder="请输入司机名称/手机号"
-      @input="onSearcha"
-      @search="onSearch"
-      @clear="onCancel"
-    >
-      <template #action>
-        <div @click="onSearcha">
-          搜索
-        </div>
-      </template>
-      <template #label>
-        <div v-if="options.length > 0" class="van-hairline--top">
-          <van-cell v-for="item in options" :key="item" :value="item" @click="handleItemClick(item)" />
-        </div>
-      </template>
-    </van-search>
+    <form action="/">
+      <van-search
+        v-model="keyWord"
+        show-action
+        placeholder="请输入司机名称/手机号"
+        @search="onSearcha"
+        @clear="onCancel"
+      >
+        <template #action>
+          <div @click="onSearcha">
+            搜索
+          </div>
+        </template>
+        <template #label>
+          <div v-if="options.length > 0" class="van-hairline--top">
+            <van-cell v-for="item in options" :key="item" :value="item" @click="handleItemClick(item)" />
+          </div>
+        </template>
+      </van-search>
+    </form>
 
     <!-- 搜索结果 -->
     <template v-if="lists.length > 0">
@@ -97,8 +98,9 @@ export default {
       this.getGmInfoListByKeyWorld(this.keyWord)
     }, 200),
     onSearcha() {
-      if (this.keyWord) {
-        this.setHistory(this.keyWord)
+      if (!this.keyWord) {
+        this.lists = []
+        return false
       }
       this.getGmInfoListByKeyWorld(this.keyWord)
     },
@@ -138,6 +140,9 @@ export default {
         let { data: res } = await getGmInfoListByKeyWord(params)
         this.$loading(false)
         if (res.success) {
+          if (res.data && res.data.length > 0) {
+            this.setHistory(this.keyWord)
+          }
           this.lists = res.data
         } else {
           this.$toast.fail(res.errorMsg)

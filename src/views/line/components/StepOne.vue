@@ -422,7 +422,6 @@ export default {
     },
     // 省、市、县校验
     areaValidator(val) {
-      console.log(this.form.area)
       let arr = this.form.area.filter(item => item)
       if (arr.length === 3) {
         return true
@@ -437,7 +436,6 @@ export default {
 <style lang='scss' scoped>
 .stepOneContainer {
   position: relative;
-  font-family: PingFangSC-Medium;
   .title {
     margin: 0px;
     padding: 10px 0px 12.5px 15px;
@@ -445,8 +443,8 @@ export default {
     color: #3C4353;
   }
   .btn {
-    margin:100px 15px 0px;
-    width: 345px;
+    margin:26.66vw 4vw 13.333vw;/*no*/
+    width: 92vw;/*no*/
   }
   .cycle {
     position: absolute;

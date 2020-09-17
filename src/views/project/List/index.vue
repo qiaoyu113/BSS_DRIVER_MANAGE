@@ -344,14 +344,14 @@ export default {
     handleSearchChange(value) {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
-          nickname: value,
-          roleId: 3
+          keyword: value,
+          roleType: 3
         }
         this.getOpenCityList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
-          nickname: value,
-          roleId: 2
+          keyword: value,
+          roleType: 2
         }
         this.getOpenCityList(params)
       }
@@ -367,9 +367,9 @@ export default {
     handleShowModal(key) {
       this.modalKey = key
       if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2 })
+        this.getSpecifiedRoleList({ roleType: 2 })
       } else if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3 })
+        this.getSpecifiedRoleList({ roleType: 3 })
       }
       this.showModal = true
     },
@@ -447,12 +447,10 @@ export default {
             total: res.page.total
           }
           this.tabArrs.forEach(item => {
-            if (item.name === '') {
-              item.num = res.title.all
-            } else if (item.name === 1) {
-              item.num = res.title.disableNumbers
-            } else if (item.name === 2) {
-              item.num = res.title.enableNumbers
+            if (item.name === this.form.projectState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
             }
           })
           return result
@@ -478,7 +476,6 @@ export default {
 
 <style lang='scss' scoped>
 .projectListContainer {
-  font-family: PingFangSC-Medium;
   .headerRight {
     display: flex;
     flex-direction: row;
