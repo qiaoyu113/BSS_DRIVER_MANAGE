@@ -72,7 +72,7 @@
             />
             <van-field
               v-model="formData.cooperationTime"
-              v-only-number="{min: 0, max: 900, precision: 0}"
+              v-only-number="{min: 0, max: 999,precision: 0}"
               colon
               clickable
               label="合作期限（月）"
@@ -111,7 +111,7 @@
             />
             <van-field
               v-model="formData.goodsAmount"
-              v-only-number="{min: 0, max: 999999.99, precision: 0}"
+              v-only-number="{min: 0, max: 1000000, precision: 2}"
               colon
               clickable
               label="商品金额（元）"
