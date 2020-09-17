@@ -180,12 +180,6 @@ export default {
   computed: {
     title() {
       return this.$route.meta.title;
-    },
-    upTime() {
-      if (this.form.payDate) {
-        return dayjs(this.form.payDate).format('YYYY/MM/DD')
-      }
-      return ''
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -230,9 +224,10 @@ export default {
     },
     onConfirm(time) {
       let timeText = dayjs(time).format('YYYY/MM/DD');
-      let timeCode = new Date(time).getTime();
+      // let timeCode = new Date(time).getTime();
+      // console.log('timeCode', timeCode, time)
       this.showForm.payDate = timeText;
-      this.form.payDate = timeCode;
+      // this.form.payDate = timeCode;
       this.showTime = false;
     },
     onConfirmPicker(value) {
