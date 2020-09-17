@@ -365,12 +365,10 @@ export default {
             total: res.page.total
           }
           this.tabArrs.forEach(item => {
-            if (item.name === '') {
-              item.num = res.title.all
-            } else if (item.name === 1) {
-              item.num = res.title.prevent
-            } else if (item.name === 2) {
-              item.num = res.title.enable
+            if (item.name === this.form.customerState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
             }
           })
           return result

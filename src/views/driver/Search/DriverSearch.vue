@@ -11,33 +11,21 @@
       :offset-top="46"
       :style="{height: checked ? '72px' : '54px'}"
     >
-      <van-search
-        v-model="keyWord"
-        show-action
-        placeholder="请输入搜索关键词"
-        @input="onSearch"
-        @search="onSearch"
-        @clear="onCancel"
-      >
-        <template #action>
-          <div @click="onSearch">
-            搜索
-          </div>
-        </template>
-        <template #label>
-          <div
-            v-if="options.length > 0"
-            class="van-hairline--top"
-          >
-            <van-cell
-              v-for="item in options"
-              :key="item"
-              :value="item"
-              @click="handleItemClick(item)"
-            />
-          </div>
-        </template>
-      </van-search>
+      <form action="/">
+        <van-search
+          v-model="keyWord"
+          show-action
+          placeholder="请输入搜索关键词"
+          @search="onSearch"
+          @clear="onCancel"
+        >
+          <template #action>
+            <div @click="onSearch">
+              搜索
+            </div>
+          </template>
+        </van-search>
+      </form>
       <div
         v-if="checked"
         class="checkAll"
@@ -131,7 +119,6 @@ import { getDriverList } from '@/api/driver.js'
 import DriverTitle from '../DriverList/components/DriverTitle';
 import CardItem from '../DriverList/components/ListItem';
 import changeManager from '../DriverList/components/ChangeManager'
-import { debounce } from '@/utils/index';
 import { Notify, Dialog } from 'vant';
 export default {
   components: {
@@ -256,7 +243,7 @@ export default {
         });
     },
     // 搜索
-    onSearch: debounce(function() {
+    onSearch() {
       if (!this.keyWord) {
         return false;
       }
@@ -265,7 +252,7 @@ export default {
       // if (this.keyWord === 'd') {
       //   this.options = ['京东', '京东12121', '京东121212ddasddasd'];
       this.getLists(this.keyWord)
-    }, 1000),
+    },
     // 取消
     onCancel() {
       this.keyWord = '';

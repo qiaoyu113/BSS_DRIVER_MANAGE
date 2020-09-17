@@ -104,7 +104,6 @@ export default {
           if (ret.indexOf(i.wayBillId) === -1) {
             ret.push(i.wayBillId)
             i.check = true
-            i.price = ''
             i.list = []
             let lists = Object.assign({}, i)
             lists.list.push({
@@ -112,21 +111,20 @@ export default {
               wayBillId: lists.wayBillId,
               wayBillAmountId: lists.wayBillAmountId,
               check: lists.check,
-              price: lists.price
+              price: lists.preMoney
             })
             list.push(lists)
           } else {
             list.forEach((e) => {
               if (e.wayBillId === i.wayBillId) {
                 i.check = true
-                i.price = ''
                 let lists = Object.assign({}, i)
                 e.list.push({
                   deliverTime: lists.deliverTime,
                   wayBillId: lists.wayBillId,
                   wayBillAmountId: lists.wayBillAmountId,
                   check: lists.check,
-                  price: lists.price
+                  price: lists.preMoney
                 })
               }
             })

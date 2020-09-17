@@ -280,8 +280,9 @@
             <van-field
               label="户籍详细地址"
               :value="type.householdDistrict"
-              autosize
+              colon
               type="textarea"
+              :autosize=" { maxHeight: 100, minHeight: 30 }"
               readonly
             />
             <van-field

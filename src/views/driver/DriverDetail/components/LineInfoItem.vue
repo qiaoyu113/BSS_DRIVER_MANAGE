@@ -45,7 +45,7 @@
           title-class="cell-title"
           value-class="cell-value"
           title="创建时间："
-          :value="obj.createDate | parseTime('{y}/{m}/{d}')"
+          :value="timeFormat(obj.createDate,'YYYY-MM-DD')"
         />
       </div>
       <div class="detailBtn">
@@ -57,6 +57,7 @@
   </div>
 </template>
 <script>
+import dayjs from 'dayjs'
 export default {
   name: 'LineInfoItem',
   props: {
@@ -71,6 +72,9 @@ export default {
   methods: {
     goRouter() {
       this.$router.push({ path: '/lineDetail', query: { lineId: this.obj.lineId }})
+    },
+    timeFormat(date, format) {
+      return dayjs(date).format(format)
     }
   }
 }

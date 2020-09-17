@@ -306,7 +306,8 @@ export default {
         if (res.success) {
           this.$toast.success('创建试跑成功');
           setTimeout(() => {
-            this.$router.push('/try-run')
+            this.$router.go(-1);
+            // this.$router.push('/try-run')
           }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
@@ -328,7 +329,7 @@ export default {
 
 <style lang="less" scoped>
 .StepTwo{
-  height: 100%;
+  // height: 100%;
   .btn-container{
     position: absolute;
     bottom: 15px;

@@ -5,26 +5,27 @@
       <van-nav-bar title="搜索项目" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <!-- 搜索 -->
-    <van-search
-      v-model="keyWord"
-      show-action
-      placeholder="请输入搜索关键词"
-      maxlength="30"
-      @input="onSearch"
-      @search="onSearch"
-      @clear="onCancel"
-    >
-      <template #action>
-        <div @click="handleSearch(keyWord,true)">
-          搜索
-        </div>
-      </template>
-      <template #label>
-        <div v-if="options.length > 0" class="van-hairline--top">
-          <van-cell v-for="item in options" :key="item" :value="item" @click="handleItemClick(item)" />
-        </div>
-      </template>
-    </van-search>
+    <form action="/">
+      <van-search
+        v-model="keyWord"
+        show-action
+        placeholder="请输入搜索关键词"
+        maxlength="30"
+        @search="onSearch"
+        @clear="onCancel"
+      >
+        <template #action>
+          <div @click="handleSearch(keyWord)">
+            搜索
+          </div>
+        </template>
+        <template #label>
+          <div v-if="options.length > 0" class="van-hairline--top">
+            <van-cell v-for="item in options" :key="item" :value="item" @click="handleItemClick(item)" />
+          </div>
+        </template>
+      </van-search>
+    </form>
 
     <!-- 搜索结果 -->
     <template v-if="lists.length > 0">
@@ -55,7 +56,6 @@
 
 <script>
 import CardItem from '../List/components/CardItem'
-import { debounce } from '@/utils/index'
 import { getProjectSearch } from '@/api/project'
 export default {
   components: {
@@ -86,12 +86,12 @@ export default {
       this.$router.go(-1)
     },
     // 搜索
-    onSearch: debounce(function() {
+    onSearch() {
       if (!this.keyWord) {
         return false
       }
       this.handleSearch(this.keyWord)
-    }, 1000),
+    },
     // 取消
     onCancel() {
       this.keyWord = ''
@@ -102,7 +102,7 @@ export default {
       this.handleSearch(this.keyWord)
     },
     // 搜索
-    async handleSearch(keyword = '', isAddHistory = false) {
+    async handleSearch(keyword = '') {
       try {
         let params = {}
         keyword && (params.key = keyword)
@@ -110,7 +110,7 @@ export default {
         let { data: res } = await getProjectSearch(params)
         if (res.success) {
           this.lists = res.data
-          if (keyword && isAddHistory) {
+          if (keyword) {
             this.setHistory(keyword)
           }
         } else {

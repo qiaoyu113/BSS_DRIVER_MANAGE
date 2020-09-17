@@ -550,16 +550,10 @@ export default {
             total: res.page.total
           }
           this.tabArrs.forEach(item => {
-            if (item.name === '') {
-              item.num = res.title.all
-            } else if (item.name === 1) {
-              item.num = res.title.isShelvesNum
-            } else if (item.name === 2) {
-              item.num = res.title.isRunningNum
-            } else if (item.name === 3) {
-              item.num = res.title.isRunningShelvesNum
-            } else if (item.name === 4) {
-              item.num = res.title.noRunningShelvesNum
+            if (item.name === this.form.lineState) {
+              item.num = res.page.total
+            } else {
+              item.num = 0
             }
           })
           return result
