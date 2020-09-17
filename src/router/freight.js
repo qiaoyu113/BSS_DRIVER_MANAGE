@@ -5,7 +5,7 @@ export default [
     component: resolve => require(['@/views/carriage/JoinList'], resolve),
     meta: {
       title: '运费管理',
-      keepAlive: true
+      keepAlive: false
     }
   },
   {
@@ -14,7 +14,8 @@ export default [
     // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
     component: resolve => require(['@/views/carriage/JoinDetail'], resolve),
     meta: {
-      title: '运费详情'
+      title: '运费详情',
+      keepAlive: false
     }
   },
   {
@@ -22,7 +23,8 @@ export default [
     name: 'outsidereport',
     component: resolve => require(['@/views/carriage/OutSideReport'], resolve),
     meta: {
-      title: '外线批量上报运费'
+      title: '外线批量上报运费',
+      keepAlive: false
     }
   },
   {
@@ -30,7 +32,8 @@ export default [
     name: 'joinreport',
     component: resolve => require(['@/views/carriage/JoinReport'], resolve),
     meta: {
-      title: '加盟批量上报运费'
+      title: '加盟批量上报运费',
+      keepAlive: false
     }
   },
   {
@@ -38,7 +41,8 @@ export default [
     name: 'outsidefreight',
     component: resolve => require(['@/views/carriage/OutSideList'], resolve),
     meta: {
-      title: '外线运费上报'
+      title: '外线运费上报',
+      keepAlive: false
     }
   },
   {
@@ -46,7 +50,8 @@ export default [
     name: 'outsidefreightlist',
     component: resolve => require(['@/views/carriage/OutSideFreightList'], resolve),
     meta: {
-      title: '外线运费上报'
+      title: '外线运费上报',
+      keepAlive: false
     }
   },
   {
@@ -54,7 +59,8 @@ export default [
     name: 'outsidedetail',
     component: resolve => require(['@/views/carriage/OutSideDetail'], resolve),
     meta: {
-      title: '外线运费详情'
+      title: '外线运费详情',
+      keepAlive: false
     }
   },
   {
@@ -62,7 +68,8 @@ export default [
     name: 'joinsearch',
     component: resolve => require(['@/views/carriage/JoinSearch'], resolve),
     meta: {
-      title: '加盟运费'
+      title: '加盟运费',
+      keepAlive: false
     }
   },
   {
@@ -70,7 +77,8 @@ export default [
     name: 'outsidesearch',
     component: resolve => require(['@/views/carriage/OutSideListSearch'], resolve),
     meta: {
-      title: '外线运费上报'
+      title: '外线运费上报',
+      keepAlive: false
     }
   },
   {
@@ -78,7 +86,8 @@ export default [
     name: 'outsidelinesearch',
     component: resolve => require(['@/views/carriage/OutSideLineSearch'], resolve),
     meta: {
-      title: '项目名称'
+      title: '项目名称',
+      keepAlive: false
     }
   }
 
