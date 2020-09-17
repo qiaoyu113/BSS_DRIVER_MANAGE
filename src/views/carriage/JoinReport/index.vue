@@ -49,7 +49,7 @@
           </div>
         </ul>
         <div class="Bulk">
-          <van-button @click="cancel">
+          <van-button native-type="button" @click="cancel">
             全部未出车
           </van-button>
           <van-button native-type="submit">
