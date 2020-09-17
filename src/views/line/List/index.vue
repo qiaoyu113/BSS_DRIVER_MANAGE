@@ -419,14 +419,14 @@ export default {
     async handleSearchChange(value) {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
-          nickname: value,
-          roleId: 3
+          keyword: value,
+          roleType: 3
         }
         this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
-          nickname: value,
-          roleId: 2
+          keyword: value,
+          roleType: 2
         }
         this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'carType') {
@@ -445,9 +445,9 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleId: 3 })
+        this.getSpecifiedRoleList({ roleType: 3 })
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleId: 2 })
+        this.getSpecifiedRoleList({ roleType: 2 })
       } else if (key === 'carType') {
         let result = await this.getDictDataByKeyword('Intentional_compartment')
         this.options = result
