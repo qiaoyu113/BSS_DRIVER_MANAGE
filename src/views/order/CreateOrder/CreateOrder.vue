@@ -255,7 +255,7 @@
                   v-show="formData.supplier && formData.cooperationModel === 1"
                   label="无税车价"
                   placeholder="无税车价"
-                  :value="formText.carPrice"
+                  :value="formData.carPrice"
                   required
                   readonly
                   colon
@@ -401,6 +401,7 @@ export default {
       showPicker: false,
       pickerKey: '',
       formData: {
+        carPrice: '',
         cooperationModel: '',
         cooperationTime: '',
         incomeGuarantee: '',
@@ -569,6 +570,7 @@ export default {
       if (data.success) {
         if (data.data) {
           this.formText.carPrice = data.data.price;
+          this.formData.carPrice = data.data.price;
           this.formText.describe = data.data.describe;
           this.formData.productId = data.data.productCode;
         }
@@ -776,6 +778,7 @@ export default {
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
           orderId: this.orderId,
           driverId: this.driverId,
+          carPrice: this.formData.carPrice,
           havePayAmount: this.payMoneyed
         }
         params.driverInfoFORM.driverId = this.driverId
@@ -815,7 +818,8 @@ export default {
           driverInfoFORM: this.formData.driverInfoFORM,
           orderPayRecordInfoFORMList: this.formData.orderPayRecordInfoFORMList,
           orderId: this.orderId,
-          driverId: this.driverId
+          driverId: this.driverId,
+          carPrice: this.formData.carPrice
         }
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);
