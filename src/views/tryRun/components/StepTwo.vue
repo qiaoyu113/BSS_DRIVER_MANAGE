@@ -329,7 +329,7 @@ export default {
 
 <style lang="less" scoped>
 .StepTwo{
-  height: 100%;
+  // height: 100%;
   .btn-container{
     position: absolute;
     bottom: 15px;
