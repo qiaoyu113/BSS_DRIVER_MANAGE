@@ -70,9 +70,7 @@ export default {
      *返回按钮
      */
     onClickLeft() {
-      this.$router.replace({
-        path: '/client'
-      })
+      this.$router.go(-1)
     },
 
     /**
