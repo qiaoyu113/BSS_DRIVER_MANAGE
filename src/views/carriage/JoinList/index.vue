@@ -256,6 +256,10 @@ export default {
   mounted() {
     this.fetchData();
   },
+  activated() {
+    console.log(document.getElementsByClassName('OutSideList'))
+    document.getElementByClassName('OutSideList')[0].scrollTop = 400
+  },
   methods: {
     // 获取外线销售和上岗经理
     async getSpecifiedRoleList(params) {
