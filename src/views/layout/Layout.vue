@@ -21,7 +21,8 @@ export default {
   },
   data() {
     return {
-      showFooter: true
+      showFooter: true,
+      arr: []
     }
   },
   computed: {
@@ -33,12 +34,32 @@ export default {
     }
   },
   watch: {
-    $route: {
-      handler(newVal) {
-        const { showFooter } = newVal.meta;
-        this.setShowFooter(showFooter);
-      },
-      deep: true
+    // $route: {
+    //   handler(to, from) {
+    //     console.log(to, from)
+    //     const { showFooter } = to.meta;
+    //     this.setShowFooter(showFooter);
+    //   },
+    //   deep: true
+    // }
+    // 监听router
+    $route(to, from) {
+      console.log(to)
+      if (from.meta.keepAlive) {
+        this.arr.includes(from.name) || this.arr.push(from.name)
+      } else {
+        var name = from.name
+        if (this.arr.includes(name)) {
+          var index = this.arr.findIndex(function(item) {
+            return item === name
+          })
+          this.arr.splice(index, 1)
+        }
+      }
+      if (to) {
+        this.arr.includes(to.name) || this.arr.push(to.name)
+      }
+      // console.log(`从${from.name}去${to.name},缓存页面有： ${this.arr}`)
     }
   },
   mounted() {
