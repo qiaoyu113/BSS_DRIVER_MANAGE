@@ -1,5 +1,5 @@
 <template>
-  <div class="CardItemcontainer">
+  <div class="CardItemcontainer" @click="handleDetailClick(obj)">
     <h4 class="title ellipsis">
       {{ obj.projectName }}
     </h4>
@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="detail">
-      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj)">
+      <van-button type="default" plain round color="#AEB1BD">
         详情
       </van-button>
     </div>
