@@ -309,11 +309,9 @@ export default {
       }
     },
     'ruleForm.busiType'(val) {
-      if (val !== '') {
-        this.getGmId()
-        this.ruleForm.gmId = ''
-        this.formText.gmId = ''
-      }
+      this.getGmId()
+      this.ruleForm.gmId = ''
+      this.formText.gmId = ''
     }
   },
   mounted() {
@@ -325,6 +323,9 @@ export default {
         'cityCode': this.ruleForm.workCity,
         'productLine': this.ruleForm.busiType,
         'roleType': 1
+      }
+      if (this.ruleForm.busiType !== '') {
+        params.productLine = params.productLine + 2
       }
       GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {

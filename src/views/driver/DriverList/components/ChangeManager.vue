@@ -152,7 +152,7 @@ export default {
     async getGmId(val) {
       let params = {
         'cityCode': this.formData.workCity,
-        'productLine': this.active,
+        'productLine': this.active + 2,
         'roleType': 1
       }
       GetSpecifiedRoleList(params).then(({ data }) => {
