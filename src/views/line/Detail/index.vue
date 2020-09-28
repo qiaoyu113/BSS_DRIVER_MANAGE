@@ -84,7 +84,7 @@
     >
       更多操作
     </van-button>
-    <van-action-sheet v-model="show" :actions="actions" @select="onSelect" />
+    <van-action-sheet v-model="show" :actions="actions | isPermission" @select="onSelect" />
   </div>
 </template>
 
@@ -270,21 +270,28 @@ export default {
       }
     },
     getActions() {
-      let arrs = [{ name: '复制线路' }]
+      let arrs = [
+        { name: '复制线路',
+          pUrl: ['/v2/line/lineInfo/copyTemporaryLine', '/v2/line/lineInfo/copyStableLine'] }
+      ]
       if ([1, 2].includes(this.form.lineState)) {
         if ([1].includes(this.form.lineState)) {
           arrs.push({
-            name: '编辑'
+            name: '编辑',
+            pUrl: ['/v2/line/lineInfo/editTemporaryLine', '/v2/line/lineInfo/editStableLine']
           })
           arrs.push({
-            name: '下架'
+            name: '下架',
+            pUrl: ['/v2/line/lineInfo/shelveLine']
           })
         }
         arrs.push({
-          name: '采线'
+          name: '采线',
+          pUrl: ['/v2/line/lineInfo/saveInLine', '/v2/line/lineInfo/updateInLine']
         })
         arrs.push({
-          name: '打标签'
+          name: '打标签',
+          pUrl: ['/v2/line/lineInfo/tagging']
         })
       } else if ([3, 4].includes(this.form.lineState)) {
         arrs.push({

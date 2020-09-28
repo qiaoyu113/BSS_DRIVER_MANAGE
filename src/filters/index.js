@@ -1,5 +1,6 @@
 // set function parseTime,formatTime to filter
 export { parseTime, formatTime } from '@/utils'
+import store from '../store/modules/user'
 
 function pluralize(time, label) {
   if (time === 1) {
@@ -141,5 +142,23 @@ export function TimestampYMD(timestamp) {
     return Y + M + D;
   } else {
     return '暂无数据'
+  }
+}
+
+// 判断是否有权限存在
+export function isPermission(value) {
+  let roles = store.state.user.stringPermissions;
+  if (value && value instanceof Array && value.length > 0) {
+    let values = value.filter(item => {
+      if (item.pUrl) {
+        return item.pUrl.some(sub => {
+          return roles.includes(sub)
+        })
+      }
+      return item
+    })
+    return values
+  } else {
+    return []
   }
 }
