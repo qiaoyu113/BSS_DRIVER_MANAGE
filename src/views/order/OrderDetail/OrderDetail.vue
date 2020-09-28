@@ -255,7 +255,7 @@
           label-width="120px"
         />
         <!-- :value="formData.confirmTime" -->
-        <van-field
+        <!-- <van-field
           v-if="formData.confirmName"
           label="订单确定时间"
           colon
@@ -263,7 +263,7 @@
           readonly
           label-align="right"
           label-width="120px"
-        />
+        /> -->
         <!-- :value="formData.passTime" -->
         <van-field
           v-if="formData.passName"

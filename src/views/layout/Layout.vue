@@ -32,15 +32,6 @@ export default {
       return ''
     }
   },
-  watch: {
-    $route: {
-      handler(newVal) {
-        const { showFooter } = newVal.meta;
-        this.setShowFooter(showFooter);
-      },
-      deep: true
-    }
-  },
   mounted() {
     const { showFooter } = this.$route.meta;
     this.setShowFooter(showFooter);

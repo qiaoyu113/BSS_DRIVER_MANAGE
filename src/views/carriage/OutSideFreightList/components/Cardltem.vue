@@ -1,5 +1,5 @@
 <template>
-  <div class="CardItemcontainer">
+  <div class="CardItemcontainer" @click="handleDetailClick(obj.wayBillId)">
     <h4 class="title ellipsis">
       {{ obj.departureDate |formatDate }} /{{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="detail">
-      <van-button type="default" plain round color="#AEB1BD" @click="handleDetailClick(obj.wayBillId)">
+      <van-button type="default" plain round color="#AEB1BD">
         详情
       </van-button>
     </div>
