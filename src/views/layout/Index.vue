@@ -88,7 +88,8 @@ export default {
         },
         {
           name: '试跑-在跑',
-          value: 2
+          value: 2,
+          pUrl: ['/v2/runtest/getRunTestInfoList']
         },
         {
           name: '运费管理',
