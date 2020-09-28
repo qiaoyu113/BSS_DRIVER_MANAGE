@@ -18,6 +18,7 @@
           <van-grid-item
             v-for="(item, index) in list[activeIndex]"
             :key="index"
+            v-permission="[item.pUrl]"
             :to="item.url"
           >
             <div class="grid-ct flex-sub">
@@ -36,7 +37,7 @@
       </div>
       <van-action-sheet
         v-model="show"
-        :actions="actions"
+        :actions="actions | isPermission"
         cancel-text="取消"
         close-on-click-action
         @select="onSelect"
@@ -75,10 +76,25 @@ export default {
       page: 1,
       loadedAll: false,
       actions: [
-        { name: '线路云', value: 0 },
-        { name: '司机云', value: 1 },
-        { name: '试跑-在跑', value: 2 },
-        { name: '运费管理', value: 3 }
+        {
+          name: '线路云',
+          value: 0,
+          pUrl: ['/v2/line/customer/queryLineCustomerList', '/v2/line/project/queryProjectQueryList', '/v2/line/lineInfo/queryLineListByConditionsQuery']
+        },
+        {
+          name: '司机云',
+          value: 1,
+          pUrl: ['/v2/driver/getDriverList']
+        },
+        {
+          name: '试跑-在跑',
+          value: 2
+        },
+        {
+          name: '运费管理',
+          value: 3,
+          pUrl: ['/v2/waybill/getGmInfoList', '/v2/waybill/getLineInfoList']
+        }
       ],
       activeIndex: 0,
       show: false,
@@ -89,6 +105,7 @@ export default {
             title: '客户管理',
             url: '/client',
             icon: require('../../assets/Home/icon_1.png'),
+            pUrl: '/v2/line/customer/queryLineCustomerList',
             style: {
               width: '1.0933rem',
               height: '1.0933rem'
@@ -98,6 +115,7 @@ export default {
             title: '项目管理',
             url: '/project',
             icon: require('../../assets/Home/icon_2.png'),
+            pUrl: '/v2/line/project/queryProjectQueryList',
             style: {
               width: '0.9333rem',
               height: '1.0933rem'
@@ -107,6 +125,7 @@ export default {
             title: '线路管理',
             url: '/line',
             icon: require('../../assets/Home/icon_3.png'),
+            pUrl: '/v2/line/lineInfo/queryLineListByConditionsQuery',
             style: {
               width: '1.0267rem',
               height: '1.0933rem'
@@ -128,6 +147,7 @@ export default {
             title: '司机管理',
             url: '/driverlist',
             icon: require('../../assets/Home/icon_5.png'),
+            pUrl: '/v2/driver/getDriverList',
             style: {
               width: '1.0933rem',
               height: '1.0933rem'
@@ -149,6 +169,7 @@ export default {
             title: '试跑-在跑',
             url: '/try-run',
             icon: require('../../assets/Home/icon_7.png'),
+            pUrl: '/v2/runtest/getRunTestInfoList',
             style: {
               width: '1.28rem',
               height: '1.0933rem'
@@ -161,6 +182,7 @@ export default {
             title: '加盟运费上报',
             url: '/freight',
             icon: require('../../assets/Home/icon_8.png'),
+            pUrl: '/v2/waybill/getGmInfoList',
             style: {
               width: '1.2267rem',
               height: '1rem'
@@ -170,6 +192,7 @@ export default {
             title: '外线运费上报',
             url: '/outsidefreight',
             icon: require('../../assets/Home/icon_9.png'),
+            pUrl: '/v2/waybill/getLineInfoList',
             style: {
               width: '1.1733rem',
               height: '0.9467rem',
