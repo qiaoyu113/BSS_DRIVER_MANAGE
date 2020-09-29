@@ -15,7 +15,7 @@
             <span
               class="orderBtn"
               @click="showOrder = true"
-            >订单</span>
+            >最新订单</span>
             <van-icon
               name="arrow-down"
               size="12"
@@ -102,7 +102,7 @@
         :title="item.type"
       >
         <div
-          v-if="active === 3"
+          v-if="active === 4"
           class="lineInfo"
         >
           <div
@@ -112,8 +112,21 @@
             <LineInfoItem :obj="info" />
           </div>
         </div>
+        <div v-if="active === 3">
+          <div
+            v-for="(info,ind) in contractList"
+            :key="ind"
+          >
+            <ContractInfoItem :obj="info" @activeContract="activeContract" />
+          </div>
+        </div>
         <div v-if="active === 2">
-          <OrderInfo :obj="orderInfo" />
+          <div
+            v-for="(info,ind) in orderInfoList"
+            :key="ind"
+          >
+            <OrderInfo :obj="info" @orderStop="orderStop" />
+          </div>
         </div>
         <div v-if="active === 1">
           <TagInfo :obj="tagInfo" />
@@ -154,10 +167,11 @@ import {
 import FormInfo from './components/FormInfo';
 import TagInfo from './components/TagInfo';
 import LineInfoItem from './components/LineInfoItem';
+import ContractInfoItem from './components/ContractInfoItem';
 import OrderInfo from './components/OrderInfo';
 import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
 import dayjs from 'dayjs'
-import { orderDetail } from '@/api/order.js';
+import { contractList, orderAbort, getOrderList } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
 export default {
   name: 'DriverDetail',
@@ -170,7 +184,8 @@ export default {
     LineInfoItem,
     FormInfo,
     TagInfo,
-    OrderInfo
+    OrderInfo,
+    ContractInfoItem
   },
   data() {
     return {
@@ -179,28 +194,17 @@ export default {
         { type: '面试信息', code: '' },
         { type: '标签信息', code: 1 },
         { type: '订单信息', code: 2 },
-        { type: '线路信息', code: 3 }
+        { type: '合同信息', code: 3 },
+        { type: '线路信息', code: 4 }
       ],
       showOrder: false,
-      // orderActions: [
-      //   { name: '录入订单', url: '/createOrder' },
-      //   { name: '审核', url: '/orderAudit' },
-      //   { name: '详情', url: '/orderDetail' },
-      //   { name: '重新提交', url: '/resetOrder' }
-      // ],
       showDothing: false,
-      // dothingActions: [
-      //   { name: '编辑面试', url: '/editTailored' },
-      //   { name: '编辑面试', url: '/editShare' },
-      //   { name: '打标签', url: '/tagView' },
-      //   { name: '标记退出' },
-      //   { name: '标记成交' }
-      // ],
       driverId: '',
       detailInfo: {},
       tagInfo: {},
-      orderInfo: {},
-      lineList: []
+      orderInfoList: [],
+      lineList: [],
+      contractList: []
     };
   },
   computed: {
@@ -209,12 +213,26 @@ export default {
     },
     doOrder() {
       return this.orderList();
+    },
+    isStep() {
+      if (this.orderInfoList.length < 1) {
+        return true
+      } else {
+        return this.orderInfoList.map(ele => {
+          if (ele.status === 30) {
+            return false
+          } else {
+            return true
+          }
+        })
+      }
     }
   },
   mounted() {
     let id = this.$route.query.id;
     this.driverId = id;
     this.getDetail(id);
+    this.getOrderLabel(id)
   },
   methods: {
     // YYYY-MM-DD dddd HH:mm:ss
@@ -224,9 +242,12 @@ export default {
     orderList() {
       if (
         this.detailInfo.orderStatus === null ||
-        this.detailInfo.orderStatus === 0
+        this.detailInfo.orderStatus === 0 || this.detailInfo.orderStatus === 45
       ) {
-        let arr = [{ name: '录入订单', url: '/createOrder' }];
+        let arr = []
+        if (this.isStep) {
+          arr = [{ name: '录入订单', url: '/createOrder' }];
+        }
         return arr;
       } else if (this.detailInfo.orderStatus === 20) {
         let arr = [
@@ -236,13 +257,14 @@ export default {
         return arr;
       } else if (this.detailInfo.orderStatus === 25) {
         let arr = [
-          { name: '重新提交', url: '/resetOrder' },
-          { name: '详情', url: '/orderDetail' }
+          { name: '详情', url: '/orderDetail' },
+          { name: '重新提交', url: '/resetOrder' }
         ];
         return arr;
       } else if (this.detailInfo.orderStatus === 30) {
         // 订单状态已成交
-        let arr = [{ name: '详情', url: '/orderDetail' }];
+        let arr = [{ name: '详情', url: '/orderDetail' },
+          { name: '终止', url: 'stop' }];
         return arr;
       }
     },
@@ -303,8 +325,15 @@ export default {
             orderId: this.detailInfo.orderId
           }
         });
+      } else if (item.url === 'stop') {
+        let params = {
+          driverId: this.driverId,
+          orderId: this.detailInfo.orderId,
+          status: this.detailInfo.orderStatus,
+          operateFlag: 'abort'
+        }
+        this.stopOrder(params)
       } else {
-        console.log('this.driverId', this.driverId);
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },
@@ -357,6 +386,8 @@ export default {
         this.getDetail(id);
       } else if (name === 2) {
         this.getOrderLabel(id);
+      } else if (name === 3) {
+        this.getContract(id);
       } else {
         this.getLineLabel(id);
       }
@@ -378,7 +409,7 @@ export default {
     },
     async getDetail(id) {
       try {
-        this.$loading(true);
+        // this.$loading(true);
         let { data: res } = await driverDetail({ driverId: id });
         if (res.success) {
           this.detailInfo = res.data;
@@ -388,7 +419,7 @@ export default {
       } catch (err) {
         console.log(`fail:${err}`);
       } finally {
-        this.$loading(false);
+        // this.$loading(false);
       }
     },
     async getLineLabel(id) {
@@ -406,18 +437,12 @@ export default {
         this.$loading(false);
       }
     },
-    async getOrderLabel(id) {
+    async getContract(id) {
       try {
         this.$loading(true);
-        let params = {
-          operateFlag: 'detial',
-          driverId: id
-        }
-        let { data: res } = await orderDetail(params);
+        let { data: res } = await contractList({ driverId: id });
         if (res.success) {
-          if (res.data !== null) {
-            this.orderInfo = res.data;
-          }
+          this.contractList = res.data;
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -425,6 +450,43 @@ export default {
         console.log(`fail:${err}`);
       } finally {
         this.$loading(false);
+      }
+    },
+    async getOrderLabel(id) {
+      try {
+        this.$loading(true);
+        let params = {
+          driverId: id
+        }
+        let { data: res } = await getOrderList(params);
+        if (res.success) {
+          if (res.data !== null) {
+            this.orderInfoList = res.data;
+          }
+          this.$loading(false);
+        } else {
+          this.$toast.fail(res.errorMsg);
+          this.$loading(false);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+        this.$loading(false);
+      }
+    },
+    activeContract() {
+      this.getDetail(this.driverId);
+      // this.getContract(this.driverId)
+    },
+    orderStop() {
+      this.getOrderLabel(this.driverId)
+    },
+    async stopOrder(params) {
+      let { data: res } = await orderAbort(params)
+      if (res.success) {
+        Notify({ type: 'success', message: '订单终止成功' });
+        this.getOrderLabel(this.driverId)
+      } else {
+        Notify({ type: 'warning', message: res.errorMsg });
       }
     }
   }
