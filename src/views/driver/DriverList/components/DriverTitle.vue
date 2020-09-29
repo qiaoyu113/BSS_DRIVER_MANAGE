@@ -3,10 +3,10 @@
     <van-sticky :offset-top="0">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-1)">
         <template v-if="showChange" #right>
-          <div style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
+          <div v-permission="['/v2/driver/share/interview','/v2/driver/special/interview']" style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
             新建
           </div>
-          <div style="color: #fff; font-size: 12px;" @click="changeManager">
+          <div v-permission="['/v2/driver/updateGmByDriverId']" style="color: #fff; font-size: 12px;" @click="changeManager">
             更换加盟经理
           </div>
         </template>

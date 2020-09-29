@@ -139,7 +139,7 @@
 
     <van-action-sheet
       v-model="showOrder"
-      :actions="doOrder"
+      :actions="doOrder | isPermission"
       cancel-text="取消"
       close-on-click-action
       @cancel="showOrder = false"
@@ -147,7 +147,7 @@
     />
     <van-action-sheet
       v-model="showDothing"
-      :actions="doMore"
+      :actions="doMore | isPermission"
       cancel-text="取消"
       close-on-click-action
       @cancel="showDothing = false"
@@ -246,19 +246,19 @@ export default {
       ) {
         let arr = []
         if (this.isStep) {
-          arr = [{ name: '录入订单', url: '/createOrder' }];
+          arr = [{ name: '录入订单', url: '/createOrder', pUrl: ['/v2/order/createOrUpdateOrder'] }];
         }
         return arr;
       } else if (this.detailInfo.orderStatus === 20) {
         let arr = [
-          { name: '审核', url: '/orderAudit' },
+          { name: '审核', url: '/orderAudit', pUrl: ['/v2/order/auditOrderNoPass'] },
           { name: '详情', url: '/orderDetail' }
         ];
         return arr;
       } else if (this.detailInfo.orderStatus === 25) {
         let arr = [
-          { name: '详情', url: '/orderDetail' },
-          { name: '重新提交', url: '/resetOrder' }
+          { name: '重新提交', url: '/resetOrder', pUrl: ['/v2/order/createOrUpdateOrder'] },
+          { name: '详情', url: '/orderDetail' }
         ];
         return arr;
       } else if (this.detailInfo.orderStatus === 30) {
@@ -274,27 +274,27 @@ export default {
         this.detailInfo.status === 2 ||
         this.detailInfo.status === 4
       ) {
-        let arr = [{ name: '打标签', url: '/tagView' }];
+        let arr = [{ name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }];
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored' });
+          arr.push({ name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] });
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare' });
+          arr.push({ name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] });
         }
         return arr;
       } else if (this.detailInfo.status === 3) {
-        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记退出' }];
+        let arr = [{ name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }, { name: '标记退出', pUrl: ['/v2/driver/signOut'] }];
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored' });
+          arr.push({ name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] });
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare' });
+          arr.push({ name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] });
         }
         return arr;
       } else if (this.detailInfo.status === 5) {
-        let arr = [{ name: '打标签', url: '/tagView' }, { name: '标记成交' }];
+        let arr = [{ name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }, { name: '标记成交', pUrl: ['/v2/driver/signDeal'] }];
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored' });
+          arr.push({ name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] });
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare' });
+          arr.push({ name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] });
         }
         return arr;
       }
