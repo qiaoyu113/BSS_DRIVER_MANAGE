@@ -8,7 +8,10 @@
       :border="false"
     >
       <template #button>
-        <span class="delete" @click="deleteItem">删除</span>
+        <span
+          class="delete"
+          @click="deleteItem"
+        >删除</span>
       </template>
     </van-field>
     <van-field
@@ -19,18 +22,31 @@
       :border="false"
     />
     <van-field
+      v-if="obj.useWithdrawable === 0"
       label="支付方式"
       :value="obj.payTypeName"
       :border="false"
       colon
       readonly
     />
-    <van-field name="uploader" label="支付图片：" readonly :border="false" @click="lookPic(obj.payImageUrl)">
+    <van-field
+      v-if="obj.useWithdrawable === 0"
+      name="uploader"
+      label="支付图片："
+      readonly
+      :border="false"
+      @click="lookPic(obj.payImageUrl)"
+    >
       <template #input>
-        <van-image width="100" height="100" :src="obj.payImageUrl" />
+        <van-image
+          width="100"
+          height="100"
+          :src="obj.payImageUrl"
+        />
       </template>
     </van-field>
     <van-field
+      v-if="obj.useWithdrawable === 0"
       :border="false"
       label="交易编号"
       :value="obj.transactionId"
@@ -48,8 +64,8 @@
   </div>
 </template>
 <script>
-import dayjs from 'dayjs'
-import { ImagePreview } from 'vant'
+import dayjs from 'dayjs';
+import { ImagePreview, Dialog } from 'vant';
 export default {
   props: {
     obj: {
@@ -62,25 +78,36 @@ export default {
     }
   },
   data() {
-    return {}
+    return {};
   },
   methods: {
     lookPic(url) {
-      ImagePreview([
-        url
-      ]);
+      ImagePreview([url]);
     },
     timeFormat(date, format) {
-      return dayjs(date).format(format)
+      return dayjs(date).format(format);
     },
     deleteItem() {
-      this.$emit('delete', this.index)
+      Dialog.confirm({
+        title: '删除',
+        message: '是否删除该支付记录'
+      })
+        .then(() => {
+          // on confirm
+          this.$emit('delete', this.index);
+        })
+        .catch(() => {
+          // on cancel
+        });
     }
   }
-}
+};
 </script>
 <style lang="less" scoped>
-.delete{
-  color: #EB3303;
+.delete {
+  color: #eb3303;
+}
+.PayItem{
+  border-bottom:1px solid #c8c9cc;
 }
 </style>

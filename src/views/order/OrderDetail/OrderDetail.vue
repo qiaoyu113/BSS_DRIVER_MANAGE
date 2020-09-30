@@ -276,10 +276,10 @@
         />
         <!-- :value="formData.notPassTime" -->
         <van-field
-          v-if="formData.notPassName"
+          v-if="formData.notPassTime"
           label="订单审核不通过时间"
           colon
-          :value="timeFormat(formData.notPassName,'YYYY-MM-DD')"
+          :value="timeFormat(formData.notPassTime,'YYYY-MM-DD')"
           readonly
           label-align="right"
           label-width="140px"

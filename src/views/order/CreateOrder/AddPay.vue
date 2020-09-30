@@ -17,6 +17,32 @@
       @submit="onSubmit"
     >
       <van-field
+        name="radio"
+        label="是否采用可提现金额"
+        colon
+        required
+      >
+        <template #input>
+          <van-radio-group
+            v-model="form.useWithdrawable"
+            direction="horizontal"
+          >
+            <van-radio
+              :name="0"
+              shape="square"
+            >
+              否
+            </van-radio>
+            <van-radio
+              :name="1"
+              shape="square"
+            >
+              是
+            </van-radio>
+          </van-radio-group>
+        </template>
+      </van-field>
+      <van-field
         v-model.number="form.money"
         label-width="120px"
         colon
@@ -26,7 +52,8 @@
         placeholder="请填写"
         type="number"
         :rules="[{ required: true, message: '请填写' },
-                 {validator:moneyCheck2, message: '请填写正确的数字'}]"
+                 {validator:moneyCheck2, message: '请填写1-100000的数字'},
+                 { validator: asyncValidatorMoney, message: '该司机可提现金额不足' }]"
       />
       <van-field
         label-width="120px"
@@ -42,6 +69,7 @@
         @click="showTime = true"
       />
       <van-field
+        v-if="form.useWithdrawable === 0"
         v-model="form.transactionId"
         label-width="120px"
         colon
@@ -53,6 +81,7 @@
         :rules="[{ required: true, message: '请填写' }]"
       />
       <van-field
+        v-if="form.useWithdrawable === 0"
         label-width="120px"
         colon
         clickable
@@ -65,6 +94,7 @@
         @click="showPicker = true"
       />
       <van-field
+        v-if="form.useWithdrawable === 0"
         label="支付截图"
         colon
         label-width="100"
@@ -82,7 +112,10 @@
           @oversize="onOversize"
         />
       </van-field>
-      <p class="tips van-hairline--bottom">
+      <p
+        v-if="form.useWithdrawable === 0"
+        class="tips van-hairline--bottom"
+      >
         提示:上传图片限制5M
       </p>
 
@@ -148,8 +181,9 @@
 
 <script>
 import { Toast } from 'vant';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import { upload, GetDictionaryList } from '@/api/common';
+import { checkWithdrawable } from '@/api/order.js';
 export default {
   components: {
     [Toast.name]: Toast
@@ -159,21 +193,22 @@ export default {
       showTime: false,
       showPicker: false,
       columns: [],
+      driverId: '',
       showForm: {
         payDate: '',
         payType: '',
         payImageUrl: [] // 库房装货图片
       },
       form: {
-        status: '3',
+        useWithdrawable: 0,
         orderId: '',
         transactionId: '',
         payDate: '',
         payType: '',
         payTypeName: '',
         money: '',
-        payImageUrl: [], // 库房装货图片
-        remarks: '' // 现场信息说明
+        payImageUrl: [],
+        remarks: ''
       }
     };
   },
@@ -182,17 +217,24 @@ export default {
       return this.$route.meta.title;
     }
   },
+  watch: {
+    'form.useWithdrawable'(val) {
+      if (val) {
+        this.asyncValidatorMoney(this.form.money)
+      }
+    }
+  },
   beforeRouteLeave(to, from, next) {
-    console.log(to.path)
     // ...
     if (to.path !== '/createOrder' && to.path !== '/resetOrder') {
-      window.localStorage.removeItem('payItemInfo')
+      window.localStorage.removeItem('payItemInfo');
     }
     next();
   },
   mounted() {
     this.fetchData();
-    this.form.orderId = this.$route.query.orderId
+    this.form.orderId = this.$route.query.orderId;
+    this.driverId = this.$route.query.id;
   },
   methods: {
     /**
@@ -202,21 +244,17 @@ export default {
       this.$router.go(-1);
     },
     async fetchData() {
-      const { data } = await GetDictionaryList([
-        'pay_type'
-      ]);
+      const { data } = await GetDictionaryList(['pay_type']);
       if (data.success) {
-        this.columns = data.data.pay_type.map(
-          (ele) => {
-            return { name: ele.dictLabel, code: ele.dictValue };
-          }
-        );
+        this.columns = data.data.pay_type.map((ele) => {
+          return { name: ele.dictLabel, code: ele.dictValue };
+        });
       } else {
         this.$toast.fail(data);
       }
     },
     cancelform() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     onOversize(file) {
       console.log(file);
@@ -234,7 +272,7 @@ export default {
       this.showForm.payType = value.name;
       this.form.payType = value.code;
       this.showPicker = false;
-      this.form.payTypeName = value.name
+      this.form.payTypeName = value.name;
     },
     moneyCheck2(val) {
       if (Number(val) < 0) {
@@ -262,24 +300,53 @@ export default {
         }
       }
     },
+    asyncValidatorMoney(val) {
+      if (this.form.useWithdrawable !== 1) {
+        return
+      }
+      return new Promise((resolve) => {
+        Toast.loading('验证中...');
+        let params = {
+          payMoney: val,
+          driverId: this.driverId
+        }
+        checkWithdrawable(params).then(
+          ({ data }) => {
+            if (data.success) {
+              Toast.clear();
+              resolve(true);
+            } else {
+              Toast.clear();
+              // this.$toast.fail(data.errorMsg);
+              resolve(false);
+            }
+          }
+        )
+      });
+    },
     /**
      *提交
      */
     onSubmit(values) {
       try {
         let params = { ...this.form };
-        params.payDate = new Date(this.form.payDate).getTime()
-        let arr = []
-        arr.push(params)
-        console.log(arr)
-        if (window.localStorage.getItem('payItemInfo')) {
-          let itemArr = JSON.parse(window.localStorage.getItem('payItemInfo'))
-          let allArr = arr.concat(itemArr)
-          window.localStorage.setItem('payItemInfo', JSON.stringify(allArr))
-        } else {
-          window.localStorage.setItem('payItemInfo', JSON.stringify(arr))
+        if (params.useWithdrawable !== 0) {
+          delete params.transactionId;
+          delete params.payType;
+          delete params.payTypeName;
+          delete params.payImageUrl;
         }
-        this.$router.go(-1)
+        params.payDate = new Date(this.form.payDate).getTime();
+        let arr = [];
+        arr.push(params);
+        if (window.localStorage.getItem('payItemInfo')) {
+          let itemArr = JSON.parse(window.localStorage.getItem('payItemInfo'));
+          let allArr = arr.concat(itemArr);
+          window.localStorage.setItem('payItemInfo', JSON.stringify(allArr));
+        } else {
+          window.localStorage.setItem('payItemInfo', JSON.stringify(arr));
+        }
+        this.$router.go(-1);
       } catch (err) {
         console.log(`submit fail:${err}`);
       }
@@ -300,7 +367,7 @@ export default {
     },
     // 上传文件
     async uploadFile(file, key) {
-      this.$loading(true)
+      this.$loading(true);
       try {
         let formData = new FormData(); // 创建form对象
         formData.append('file', file.file);
@@ -311,10 +378,10 @@ export default {
         };
         let { data: res } = await upload(params, formData);
         if (res.success) {
-          this.$loading(false)
+          this.$loading(false);
           this.form.payImageUrl = res.data.url;
         } else {
-          this.$loading(false)
+          this.$loading(false);
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
@@ -370,6 +437,9 @@ export default {
 <style scoped>
 .AddPay >>> .van-image__img {
   border-radius: 8px;
+}
+.AddPay >>> .van-cell__title {
+  width: 100%;
 }
 .AddPay >>> .van-cell {
   display: flex;

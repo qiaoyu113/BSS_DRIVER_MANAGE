@@ -4,6 +4,8 @@ let prefix = '/business_center'
 // let productPrefix = '/mock/111'
 let productPrefix = '/product'
 
+let orderPrefix = '/order'
+
 /**
  * 订单审核
  */
@@ -12,6 +14,17 @@ export function auditOrderNoPass(data) {
     url: `${prefix}/v2/order/auditOrderNoPass`,
     method: 'post',
     data
+  })
+}
+
+/**
+ * 订单列表
+ */
+export function getOrderList(data) {
+  return request({
+    url: `${prefix}/v2/order/getOrderListByDriverId`,
+    method: 'get',
+    params: data
   })
 }
 
@@ -34,6 +47,51 @@ export function createOrUpdateOrder(data) {
     url: `${prefix}/v2/order/createOrUpdateOrder`,
     method: 'post',
     data
+  })
+}
+
+/**
+ * 合同列表
+ */
+export function contractList(data) {
+  return request({
+    url: `${prefix}/v2/contract/contractList`,
+    method: 'get',
+    params: data
+  })
+}
+
+/**
+ * 合同激活
+ */
+export function activeContract(data) {
+  return request({
+    url: `${prefix}/v2/contract/activeContract`,
+    method: 'get',
+    params: data,
+    timeout: 10000
+  })
+}
+
+/**
+ * 订单终止
+ */
+export function orderAbort(data) {
+  return request({
+    url: `${orderPrefix}/v2/order/abort`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 订单支付时,可提现余额校验
+ */
+export function checkWithdrawable(data) {
+  return request({
+    url: `${orderPrefix}/v2/order/checkWithdrawable`,
+    method: 'get',
+    params: data
   })
 }
 

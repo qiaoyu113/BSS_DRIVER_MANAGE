@@ -689,15 +689,6 @@ export default {
             return { name: ele.dictLabel, code: Number(ele.dictValue) };
           }
         );
-        let payItemInfo = JSON.parse(
-          window.localStorage.getItem('payItemInfo')
-        );
-        if (payItemInfo) {
-          this.formData.orderPayRecordInfoFORMList = payItemInfo;
-          this.formStatus = 3;
-        }
-        // this.optionsPay = data.data.pay_type
-        // this.columns_busitype = data.data.busi_type.splice(0, 2)
       } else {
         this.$toast.fail(data);
       }
@@ -711,7 +702,7 @@ export default {
     goRouter() {
       this.$router.push({
         path: '/addPay',
-        query: { id: this.formData.driverInfoFORM.driverId, orderId: this.id }
+        query: { id: this.driverId, orderId: this.orderId }
       });
     },
     async getOrderDetail(id) {
@@ -722,6 +713,9 @@ export default {
         }
         if (this.routeName === '/resetOrder') {
           params.operateFlag = 'detial'
+          params.orderId = this.orderId
+        } else {
+          params.operateFlag = 'step1'
         }
         let { data: res } = await orderDetail(params);
         if (res.success) {
@@ -731,15 +725,32 @@ export default {
             this.formData.driverInfoFORM = this.formData.driverInfoVO;
             this.formData.driverId = this.driverId
             this.orderId = res.data.orderId
+            this.formData.inspectionTime = new Date(res.data.inspectionTime).getTime()
+            this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
+            this.formText.inspectionTime = res.data.inspectionTime
+            this.formText.insuranceTime = res.data.insuranceTime
+            let payItemInfo = JSON.parse(
+              window.localStorage.getItem('payItemInfo')
+            );
+            if (payItemInfo) {
+              this.formData.orderPayRecordInfoFORMList = payItemInfo;
+              // .concat(res.data.orderPayRecordInfoVOList)
+              this.formStatus = 3;
+            }
             if (this.formData.orderPayRecordInfoFORMList.length === 0) {
               if (res.data.orderPayRecordInfoVOList !== null) {
                 this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
               }
             }
-            this.formData.inspectionTime = new Date(res.data.inspectionTime).getTime()
-            this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
-            this.formText.inspectionTime = res.data.inspectionTime
-            this.formText.insuranceTime = res.data.insuranceTime
+            // let payItemInfo = JSON.parse(
+            //   window.localStorage.getItem('payItemInfo')
+            // );
+            // if (payItemInfo) {
+            //   this.formData.orderPayRecordInfoFORMList = payItemInfo.concat(res.data.orderPayRecordInfoVOList);
+            //   this.formStatus = 3;
+            // } else {
+            //   this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
+            // }
           }
         } else {
           this.$toast.fail(res.errorMsg);
@@ -799,7 +810,6 @@ export default {
     },
     async onSubmit1(values) {
       try {
-        console.log(123, 456)
         this.$loading(true);
         let params = {
           cooperationModel: this.formData.cooperationModel,
@@ -825,7 +835,6 @@ export default {
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
           this.formStatus++;
-          console.log(res.data)
           this.orderId = res.data
         } else {
           this.$toast.fail(res.errorMsg);
@@ -838,10 +847,7 @@ export default {
     },
     onConfirm1(time) {
       let timeText = parseTime(time, '{y}/{m}/{d}');
-      console.log('timeText', timeText)
-      let timeCode = time.getTime();
       this.formText[this.pickerKey] = timeText;
-      console.log(this.formData[this.pickerKey], this.pickerKey, timeCode, time)
       this.showPickerDate = false;
     },
     changeDate(key) {
@@ -933,7 +939,6 @@ export default {
       }
     },
     deleteItem(index) {
-      console.log('this.formDatathis.orderPayRecordInfoFORMList', this.formData.orderPayRecordInfoFORMList, index)
       this.formData.orderPayRecordInfoFORMList.splice(index, 1);
       window.localStorage.setItem('payItemInfo', JSON.stringify(this.formData.orderPayRecordInfoFORMList))
     }

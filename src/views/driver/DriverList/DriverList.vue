@@ -233,9 +233,9 @@ export default {
         { name: '全部', code: '' },
         { name: '已成交', code: 30 },
         { name: '审核不通过', code: 25 },
-        { name: '待审核', code: 20 }
+        { name: '待审核', code: 20 },
         // { name: '待确认', code: 15 }
-        // { label: '已退出', value: '5' }
+        { name: '已终止服务', code: 45 }
       ],
       columns_carType: [],
       showPicker: false,
@@ -270,7 +270,7 @@ export default {
         { type: '待成交', code: '2', num: '' },
         { type: '已成交', code: '3', num: '' },
         { type: '已上岗', code: '4', num: '' },
-        { type: '已退出', code: '5', num: '' }
+        { type: '已终止服务', code: '5', num: '' }
       ],
       checked: false,
       changeManagerStatus: false,
