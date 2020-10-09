@@ -1,6 +1,6 @@
 <template>
   <div class="FormInfo">
-    <van-cell-group v-if="Object.keys(obj).length > 0">
+    <div v-if="Object.keys(obj).length > 0">
       <van-field
         label="姓名"
         :value="obj.name"
@@ -60,7 +60,7 @@
         readonly
         colon
       />
-    </van-cell-group>
+    </div>
   </div>
 </template>
 <script>

@@ -10,38 +10,13 @@
       >
       </van-nav-bar>
     </van-sticky>
+    <van-cell :value="form.useWithdrawable === 0 ? '非可提现金额支付' : '可提现金额支付'" />
     <!-- form表单 -->
     <van-form
       ref="recordLine"
       :show-error="false"
       @submit="onSubmit"
     >
-      <van-field
-        name="radio"
-        label="是否采用可提现金额"
-        colon
-        required
-      >
-        <template #input>
-          <van-radio-group
-            v-model="form.useWithdrawable"
-            direction="horizontal"
-          >
-            <van-radio
-              :name="0"
-              shape="square"
-            >
-              否
-            </van-radio>
-            <van-radio
-              :name="1"
-              shape="square"
-            >
-              是
-            </van-radio>
-          </van-radio-group>
-        </template>
-      </van-field>
       <van-field
         v-model.number="form.money"
         label-width="120px"
@@ -184,6 +159,7 @@ import { Toast } from 'vant';
 import dayjs from 'dayjs';
 import { upload, GetDictionaryList } from '@/api/common';
 import { checkWithdrawable } from '@/api/order.js';
+import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   components: {
     [Toast.name]: Toast
@@ -215,19 +191,15 @@ export default {
   computed: {
     title() {
       return this.$route.meta.title;
-    }
-  },
-  watch: {
-    'form.useWithdrawable'(val) {
-      if (val) {
-        this.asyncValidatorMoney(this.form.money)
-      }
-    }
+    },
+    ...mapState({
+      payList: state => state.orderPayList.payList
+    })
   },
   beforeRouteLeave(to, from, next) {
     // ...
     if (to.path !== '/createOrder' && to.path !== '/resetOrder') {
-      window.localStorage.removeItem('payItemInfo');
+      this.deleteAll()
     }
     next();
   },
@@ -235,12 +207,22 @@ export default {
     this.fetchData();
     this.form.orderId = this.$route.query.orderId;
     this.driverId = this.$route.query.id;
+    this.form.useWithdrawable = Number(this.$route.query.type);
   },
   methods: {
+    ...mapActions({
+      asyncSetPay: 'orderPayList/ASYNCSETPAY'
+    }),
+    ...mapMutations({
+      delete: 'orderPayList/DELETEITEM',
+      setStatus: 'orderPayList/SETSTATUS',
+      deleteAll: 'orderPayList/DELETEALL'
+    }),
     /**
      *返回按钮
      */
     onClickLeft() {
+      this.setStatus(true)
       this.$router.go(-1);
     },
     async fetchData() {
@@ -339,13 +321,8 @@ export default {
         params.payDate = new Date(this.form.payDate).getTime();
         let arr = [];
         arr.push(params);
-        if (window.localStorage.getItem('payItemInfo')) {
-          let itemArr = JSON.parse(window.localStorage.getItem('payItemInfo'));
-          let allArr = arr.concat(itemArr);
-          window.localStorage.setItem('payItemInfo', JSON.stringify(allArr));
-        } else {
-          window.localStorage.setItem('payItemInfo', JSON.stringify(arr));
-        }
+        this.asyncSetPay(arr.concat(this.payList))
+        this.setStatus(true)
         this.$router.go(-1);
       } catch (err) {
         console.log(`submit fail:${err}`);
@@ -400,6 +377,9 @@ export default {
 
 <style lang='scss' scoped>
 .AddPay {
+  .tagText{
+    padding: 0.26667rem 0.42667rem;
+  }
   font-family: PingFangSC-Medium;
   .title {
     margin: 10px 0px 0px 0px;

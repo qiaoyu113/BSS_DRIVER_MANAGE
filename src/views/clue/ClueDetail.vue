@@ -209,7 +209,7 @@ export default {
 <style lang="less" scoped>
 @import "../driver/DriverList/components/DriverItem.less";
 .ClueDetail {
-  background-color: @body-bg;
+  background-color: #fff;
   .doBox {
     display: flex;
     align-items: center;

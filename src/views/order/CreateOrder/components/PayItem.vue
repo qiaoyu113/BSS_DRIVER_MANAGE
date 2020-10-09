@@ -2,7 +2,7 @@
   <div class="PayItem">
     <van-field
       label="支付金额"
-      :value="`${obj.money}元`"
+      :value="moneyDeal(obj.money)"
       colon
       readonly
       :border="false"
@@ -87,6 +87,13 @@ export default {
     timeFormat(date, format) {
       return dayjs(date).format(format);
     },
+    moneyDeal(val) {
+      if (this.obj.useWithdrawable === 0) {
+        return val + '元'
+      } else {
+        return val + '元（可提现金额支付）'
+      }
+    },
     deleteItem() {
       Dialog.confirm({
         title: '删除',
@@ -108,6 +115,6 @@ export default {
   color: #eb3303;
 }
 .PayItem{
-  border-bottom:1px solid #c8c9cc;
+  border-bottom: 1px solid #c8c9cc;
 }
 </style>

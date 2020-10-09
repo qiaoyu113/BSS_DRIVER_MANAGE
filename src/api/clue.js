@@ -19,3 +19,14 @@ export function clueInfo(data) {
     params: data
   })
 }
+
+/**
+ * 线索编辑
+ */
+export function clueEdit(data) {
+  return request({
+    url: `${prefix}/v2/clue/edit`,
+    method: 'post',
+    data
+  })
+}
