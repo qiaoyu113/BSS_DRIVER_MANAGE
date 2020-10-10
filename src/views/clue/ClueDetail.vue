@@ -82,37 +82,6 @@
         :key="index"
         :title="item.type"
       >
-        <!-- <div
-          v-if="active === 4"
-          class="lineInfo"
-        >
-          <div
-            v-for="(info,ind) in lineList"
-            :key="ind"
-          >
-            <LineInfoItem :obj="info" />
-          </div>
-        </div>
-        <div v-if="active === 3">
-          <div
-            v-for="(info,ind) in contractList"
-            :key="ind"
-          >
-            <ContractInfoItem :obj="info" @activeContract="activeContract" />
-          </div>
-        </div>
-        <div v-if="active === 2">
-          <div
-            v-for="(info,ind) in orderInfoList"
-            :key="ind"
-          >
-            <OrderInfo :obj="info" @orderStop="orderStop" />
-          </div>
-        </div>
-        <div v-if="active === 1">
-          <TagInfo :obj="tagInfo" />
-        </div>
-         -->
         <div v-if="active === 0">
           <FormInfo :obj="detailInfo" />
         </div>
