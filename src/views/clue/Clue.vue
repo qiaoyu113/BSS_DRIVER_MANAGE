@@ -1,317 +1,685 @@
 <template>
-  <div class="clue">
-    <div class="list-wrap">
-      <van-tabs v-model="listQuery.state" color="#3986CB" sticky @click="getList">
-        <van-tab title="待跟进">
-        </van-tab>
-        <van-tab title="已跟进">
-        </van-tab>
-        <van-tab title="已转化">
+  <div :class="checked ? 'ClueList padd' : 'ClueList'">
+    <ClueTitle
+      @screen="startScreen"
+      @changeManager="changeManager"
+    />
+    <van-sticky
+      :offset-top="90"
+      :style="{height: checked ? '72px' : '56px'}"
+    >
+      <van-tabs
+        v-model="active"
+        sticky
+        animated
+        line-width="30"
+        line-height="2"
+        @change="handleTabChange"
+      >
+        <van-tab
+          v-for="(item,index) in tabType"
+          :key="index"
+        >
+          <template #title>
+            {{ item.type }}<div class="van-info">
+              {{ item.num }}
+            </div>
+          </template>
         </van-tab>
       </van-tabs>
-      <vo-pages
-        :data="list"
-        :loaded-all="loadedAll"
-        :no-data-hint="false"
-        @pullingUp="pullingUp"
-        @pullingDown="pullingDown"
+      <div
+        v-if="checked"
+        class="checkAll"
       >
-        <ul v-if="list.length" class="article-list">
-          <li
-            v-for="article in list"
-            :key="article.id"
-            class="article"
-          >
-            <div class="left">
-              <img
-                v-lazy="article.imageUri"
-                alt="thumb"
-              >
-            </div>
-            <div class="right">
-              <p>{{ article.title }}</p>
-              <p class="more-info">
-                <span class="author">作者：{{ article.author }}</span>
-                <span class="time">发布时间：{{ article.displayTimeFormart }}</span>
-              </p>
-            </div>
-          </li>
-        </ul>
-        <div v-else class="focus">
-          <img src="../../assets/coming_soon.png" alt="">
-          <p>正在开发中，敬请期待...</p>
-        </div>
-      </vo-pages>
+        <van-checkbox
+          v-model="checkall"
+          class="checked"
+          checked-color="#7F8FBD"
+          shape="square"
+        >
+          全选({{ checkedList.length }})
+        </van-checkbox>
+      </div>
+    </van-sticky>
+
+    <div class="list">
+      <van-pull-refresh
+        v-model="refreshing"
+        @refresh="onLoad(true)"
+      >
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <ListItem
+            v-for="(item, index) in lists"
+            :key="index"
+            class="items"
+            :item="item"
+            :checked="checked"
+            :checkall="checkedList"
+            @changeCheck="changeCheck"
+          />
+        </van-list>
+      </van-pull-refresh>
     </div>
-    <footer-tabbar />
+
+    <SelfPopup
+      :show.sync="showScreen"
+      form-ref="form"
+      @submit="onSubmit"
+      @reset="onReset"
+    >
+      <van-field
+        v-model="formText.workCity"
+        readonly
+        name="workCity"
+        label="工作城市"
+        placeholder="请选择"
+        @click="showPickerFn('workCity')"
+      />
+      <van-field
+        v-model="formText.busiType"
+        readonly
+        name="busiType"
+        label="业务线"
+        placeholder="请选择"
+        @click="showPickerFn('busiType')"
+      />
+      <van-field
+        v-model="formText.carType"
+        readonly
+        name="carType"
+        label="车型"
+        placeholder="请选择"
+        @click="showPickerFn('carType')"
+      />
+      <van-field
+        v-model="formText.gmGroupId"
+        readonly
+        name="gmGroupId"
+        label="加盟小组"
+        placeholder="请选择"
+        @click="showPickerFn('gmGroupId')"
+      />
+      <van-field
+        v-model="formText.gmId"
+        readonly
+        name="gmId"
+        label="加盟经理"
+        placeholder="请选择"
+        @click="showPickerFn('gmId')"
+      />
+      <van-field
+        v-model="formText.scGmId"
+        readonly
+        name="scGmId"
+        label="渠道经理"
+        placeholder="请选择"
+        @click="showPickerFn('scGmId')"
+      />
+      <van-field
+        v-model="formText.dealStatus"
+        readonly
+        name="dealStatus"
+        label="是否成交"
+        placeholder="请选择"
+        @click="showPickerFn('dealStatus')"
+      />
+      <van-field
+        v-model="formText.sourceChannel"
+        readonly
+        name="sourceChannel"
+        label="渠道"
+        placeholder="请选择"
+        @click="showPickerFn('sourceChannel')"
+      />
+      <van-field
+        v-model="formText.mode"
+        readonly
+        name="mode"
+        label="来源"
+        placeholder="请选择"
+        @click="showPickerFn('mode')"
+      />
+      <van-field
+        v-model="formText.joinType"
+        readonly
+        name="joinType"
+        label="方式"
+        placeholder="请选择"
+        @click="showPickerFn('joinType')"
+      />
+      <van-field
+        v-model="formText.dateArr"
+        readonly
+        label="创建时间"
+        placeholder="请选择"
+        @click="dateShow = true"
+      />
+    </SelfPopup>
+
+    <!-- :show-confirm="false" -->
+    <van-calendar
+      v-model="dateShow"
+      type="range"
+      :min-date="minTime"
+      :max-date="maxTime"
+      :allow-same-day="true"
+      @confirm="onConfirm"
+    />
+
+    <!-- picker -->
+    <van-popup
+      v-model="showPicker"
+      round
+      position="bottom"
+    >
+      <van-picker
+        show-toolbar
+        value-key="name"
+        :columns="columns"
+        @cancel="showPicker = false"
+        @confirm="onConfirmPicker"
+      />
+    </van-popup>
+
+    <!-- 选择归属人弹窗 -->
+    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" @changeOver="changeOver" />
+
+    <div
+      v-if="checked"
+      class="bottomBtn"
+    >
+      <van-button
+        color="#2F448A"
+        plain
+        native-type="button"
+        style="width:38%"
+        @click="cancelManager"
+      >
+        取消
+      </van-button>
+      <van-button
+        native-type="button"
+        type="primary"
+        style="width:61%"
+        @click="confirmManager"
+      >
+        更换归属人
+      </van-button>
+    </div>
   </div>
 </template>
 <script>
-import { Tabbar, TabbarItem, Toast, Tab, Tabs } from 'vant'
-// import { fetchList } from '@/api/clue'
-import FooterTabbar from '@/components/FooterTabbar'
-import VoPages from 'vo-pages'
-import 'vo-pages/lib/vo-pages.css'
-// import wx from 'jWeixin';
+import { parseTime } from '@/utils';
+import ListItem from './components/ListItem';
+import ClueTitle from './components/ClueTitle';
+import SelfPopup from '@/components/SelfPopup';
+import changeManager from './components/ChangeManager'
+import { Toast, Cell, Form, Tab, Notify } from 'vant';
+import { getClueList } from '@/api/clue.js'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
-  name: 'Clue',
+  name: 'ClueList',
   components: {
-    [Tabbar.name]: Tabbar,
-    [TabbarItem.name]: TabbarItem,
     [Toast.name]: Toast,
+    [Cell.name]: Cell,
+    [Form.name]: Form,
     [Tab.name]: Tab,
-    [Tabs.name]: Tabs,
-    VoPages,
-    FooterTabbar
+    [Notify.name]: Notify,
+    ClueTitle,
+    SelfPopup,
+    ListItem,
+    changeManager
   },
   data() {
     return {
-      listQuery: {
-        key: '',
-        page: 1,
-        limit: 100,
-        endDate: '',
-        appletSource: '',
-        startDate: '',
-        expandManager: '',
-        clueType: '',
-        carType: '',
-        isSettledIn: '',
-        workCity: '',
-        sourceType: '',
-        isPayDeposit: '',
-        state: '1'
+      minTime: new Date(2000, 12, 31),
+      maxTime: new Date(2125, 12, 31),
+      checkedList: [],
+      lists: [],
+      loading: false,
+      finished: false,
+      error: false,
+      refreshing: false,
+      columns: [],
+      pickerKey: '',
+      columns_busiType: [ // 业务线
+        { name: '全部', code: '' },
+        { name: '专车', code: 0 },
+        { name: '共享', code: 1 }
+      ],
+      columns_workCity: [], // 工作城市
+      columns_GmGroup: [ // 加盟小组
+        { name: '共享一组', code: '' },
+        { name: '共享二组', code: 0 },
+        { name: '共享三组', code: 1 }
+      ],
+      columns_GmManager: [], // 加盟经理
+      columns_carType: [], // 车型
+      columns_dealStatus: [ // 是否成交
+        { name: '全部', code: '' },
+        { name: '未成交', code: 0 },
+        { name: '已成交', code: 1 }
+      ],
+      columns_sourceChannel: [ // 渠道
+        { name: '全部', code: '' },
+        { name: '梧桐喜鹊小程序', code: 0 },
+        { name: '梧桐云雀小程序', code: 1 }
+      ],
+      columns_mode: [ // 来源
+        { name: '全部', code: '' },
+        { name: '扫描推广码', code: 1 },
+        { name: '转发', code: 2 },
+        { name: '填写推荐信息', code: 3 },
+        { name: '其他', code: 4 }
+      ],
+      columns_joinType: [ // 方式
+        { name: '全部', code: '' },
+        { name: '微信授权', code: 1 },
+        { name: '入驻', code: 2 }
+      ],
+      columns_gmGroupId: [], // 加盟小组
+      columns_scGmId: [], // 加盟小组
+      showPicker: false,
+      showScreen: false,
+      minDate: new Date(+new Date() - 86400000 * 365),
+      maxDate: new Date(+new Date() + 86400000 * 365),
+      dateShow: false,
+      active: 0,
+      formText: {
+        workCity: '', // 工作城市
+        busiType: '', // 业务线
+        carType: '', // 车类型
+        gmGroupId: '', // 加盟小组
+        gmId: '', // 加盟经理Id
+        scGmId: '', // 渠道经理
+        dealStatus: '', // 是否成交 0 未成交 1 成交
+        sourceChannel: '', // 渠道
+        mode: '', // 来源 1 扫描推广码 2 转发  3 填写推荐信息 4 其他
+        joinType: '', // 方式 1 微信授权 2 入驻 3 推荐
+        status: '', // 线索状态 0 喜鹊 1云雀
+        dateArr: ''
       },
-      active: 1,
-      list: [],
-      total: 0,
-      page: 1,
-      loadedAll: false
+      ruleForm: {
+        workCity: '', // 工作城市
+        busiType: '', // 业务线
+        carType: '', // 车类型
+        gmGroupId: '', // 加盟小组
+        gmId: '', // 加盟经理Id
+        scGmId: '', // 渠道经理
+        dealStatus: '', // 是否成交 0 未成交 1 成交
+        sourceChannel: '', // 渠道
+        mode: '', // 来源 1 扫描推广码 2 转发  3 填写推荐信息 4 其他
+        joinType: '', // 方式 1 微信授权 2 入驻 3 推荐
+        status: '', // 线索状态 0 喜鹊 1云雀
+        startDate: '',
+        endDate: ''
+      },
+      tabType: [
+        { type: '全部', code: '', num: '' },
+        { type: '待跟进', code: '1', num: '' },
+        { type: '已转化', code: '2', num: '' }
+      ],
+      checked: false,
+      changeManagerStatus: false,
+      page: {
+        current: 0,
+        size: 10
+      }
+    };
+  },
+  computed: {
+    checkall: {
+      get: function() {
+        return this.lists.length === this.checkedList.length;
+      },
+      set: function(val) {
+        if (val) {
+          this.checkedList = [];
+          this.lists.map((ele) => {
+            this.checkedList.push(ele.driverId);
+          });
+        } else {
+          this.checkedList = [];
+        }
+      }
+    }
+  },
+  watch: {
+    active(val) {
+      this.checkedList = [];
+    },
+    'ruleForm.workCity'(val) {
+      if (val !== '') {
+        this.getGmId()
+        this.ruleForm.gmId = ''
+        this.formText.gmId = ''
+      }
+    },
+    'ruleForm.busiType'(val) {
+      this.getGmId()
+      this.ruleForm.gmId = ''
+      this.formText.gmId = ''
     }
   },
   mounted() {
-    // const wx = window.wx;
-    // this.getList()
-    // wx.config({
-    //   beta: true,
-    //   debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //   appId: 'ww1350e9d33db61819', // 必填，企业号的唯一标识，此处填写企业号corpid
-    //   timestamp: 1584529830, // 必填，生成签名的时间戳
-    //   nonceStr: '6xABWDk2tJGMDqB3', // 必填，生成签名的随机串
-    //   signature: '23d17bad21f8f7809ec72dc63e3079a0e7cab760', // 必填，签名，见附录1
-    //   jsApiList: ['agentConfig', 'sendChatMessage', 'getCurExternalContact'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-    // });
-    // wx.ready(function() {
-    //   // 开启企业微信debug模式wx.config里的debug为true
-    //   wx.checkJsApi({
-    //     jsApiList: [
-    //       'agentConfig',
-    //       'sendChatMessage',
-    //       'getCurExternalContact'
-    //     ],
-    //     success: function(res) {
-    //       wx.agentConfig({
-    //         corpid: 'ww1350e9d33db61819', // 必填，企业微信的corpid，必须与当前登录的企业一致
-    //         agentid: '1000013', // 必填，企业微信的应用id （e.g. 1000247）
-    //         timestamp: 1584529872, // 必填，生成签名的时间戳
-    //         nonceStr: '78yFxktUYuKnvwSo', // 必填，生成签名的随机串
-    //         signature: '1c6e582e3b7942258fbdf8351d8135898051af62', // 必填，签名，见附录1
-    //         jsApiList: ['sendChatMessage', 'getCurExternalContact'], // 必填
-    //         success: function(res) {
-    //           console.log('success', res)
-    //           wx.invoke('getCurExternalContact', {
-    //           }, function(res) {
-    //             if (res.err_msg === 'getCurExternalContact:ok') {
-    //               console.log(res.userId) // 返回当前外部联系人userId
-    //             } else {
-    //               // 错误处理
-    //             }
-    //           });
-    //           wx.invoke('sendChatMessage', {
-    //             msgtype: 'text', // 消息类型，必填
-    //             text: {
-    //               content: '测试' // 文本内容
-    //             },
-    //             image:
-    //               {
-    //                 mediaid: '2TLVdgtYCwWc3BXOlAErsdp93e7IKfqA__9OYWVOtNEA_ex0lGEK3cxC1yze78X09' // 图片的素材id
-    //               },
-    //             video:
-    //               {
-    //                 mediaid: '' // 视频的素材id
-    //               },
-    //             file:
-    //               {
-    //                 mediaid: '' // 文件的素材id
-    //               },
-    //             news:
-    //               {
-    //                 link: 'www.baidu.com', // H5消息页面url 必填
-    //                 title: '百度', // H5消息标题
-    //                 desc: '百度', // H5消息摘要
-    //                 imgUrl: 'https://upload.jianshu.io/users/upload_avatars/10311999/16dbb33b-6d2d-47c9-9d6a-fbadccc67e85.png?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp' // H5消息封面图片URL
-    //               }
-    //           }, function(res) {
-    //             console.log('测试1通过')
-    //             wx.invoke('sendChatMessage', {
-    //               msgtype: 'text', // 消息类型，必填
-    //               text: {
-    //                 content: '测试22222' // 文本内容
-    //               },
-    //               image:
-    //               {
-    //                 mediaid: '2TLVdgtYCwWc3BXOlAErsdp93e7IKfqA__9OYWVOtNEA_ex0lGEK3cxC1yze78X09' // 图片的素材id
-    //               },
-    //               video:
-    //               {
-    //                 mediaid: '' // 视频的素材id
-    //               },
-    //               file:
-    //               {
-    //                 mediaid: '' // 文件的素材id
-    //               },
-    //               news:
-    //               {
-    //                 link: 'www.baidu.com', // H5消息页面url 必填
-    //                 title: '百度', // H5消息标题
-    //                 desc: '百度', // H5消息摘要
-    //                 imgUrl: 'https://upload.jianshu.io/users/upload_avatars/10311999/16dbb33b-6d2d-47c9-9d6a-fbadccc67e85.png?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96/format/webp' // H5消息封面图片URL
-    //               }
-    //             }, function(res) {
-    //               console.log('测试2通过')
-    //             })
-    //           })
-    //         },
-    //         fail: function(res) {
-    //           console.log('err', res)
-    //           if (res.errMsg.indexOf('is not a function') > -1) {
-    //             alert('<i class="weui-icon-warn">版本过低请升级</i>')
-    //           }
-    //         }
-    //       });
-    //     },
-    //     fail: function(res) {
-    //       alert('版本过低请升级');
-    //     }
-    //   });
-    // });
-    // wx.error(function(res) {
-    //   console.log(res);
-    // });
   },
   methods: {
-    pullingDown() {
-      this.beforePullDown = false
-      this.listQuery.page = 1
-      this.getList(false)
+    // 联动请求加盟经理
+    getGmId() {
+      let params = {
+        'cityCode': this.ruleForm.workCity,
+        'productLine': this.ruleForm.busiType,
+        'roleType': 1
+      }
+      if (this.ruleForm.busiType !== '') {
+        params.productLine = params.productLine + 2
+      }
+      GetSpecifiedRoleList(params)
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_GmManager = data.data.map(ele => {
+              return { name: ele.name + ' ' + ele.mobile + '（加盟经理）', code: ele.id, nameInput: ele.name }
+            })
+          } else {
+            this.$toast(data.errorMsg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        });
     },
-    pullingUp() {
-      this.listQuery.page += 1
-      this.getList()
+    /**
+     * 请求字典接口
+     */
+    fetchData() {
+      GetDictionaryList(['Intentional_compartment'])
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_carType = data.data.Intentional_compartment.map(ele => {
+              return { name: ele.dictLabel, code: ele.dictValue }
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
+      getCurrentLowerOfficeCityData({})
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_workCity = data.data;
+            this.getGmId()
+          }
+        }).catch((err) => {
+          console.log(err)
+        });
     },
-    async getList(loadMore = true) {
-      // fetchList(this.listQuery).then(result => {
-      // console.log(result)
-      // letresult.data.data = []
-      this.total = 0
-      const newList = []
-      if (loadMore) {
-        this.list = this.list.concat(newList)
+    async onLoad(isInit = false) {
+      if (isInit === true) { // 下拉刷新
+        this.page.current = 1
+        this.lists = []
+      } else { // 上拉加载更多
+        this.page.current++
+      }
+      let result = await this.getLists(isInit)
+      if (!result) {
+        return false
+      }
+
+      if (isInit === true) { // 下拉刷新
+        this.lists = result.lists
+        this.refreshing = false
+        this.loading = false
+        this.finished = false
+      } else { // 上拉加载更多
+        this.lists.push(...result.lists)
+        this.loading = false;
+        let hasMore = result.total > this.lists.length
+        if (!hasMore) {
+          this.finished = true
+        }
+      }
+    },
+    /**
+     * 下拉刷新
+     */
+    onRefresh() {
+      // 清空列表数据
+      this.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.onLoad();
+    },
+    // 状态切换
+    async handleTabChange(tab) {
+      if (tab === 0) {
+        this.ruleForm.status = ''
       } else {
-        this.list = newList
+        this.ruleForm.status = String(tab)
       }
-      if (!this.beforePullDown) {
-        this.beforePullDown = true
+      this.loading = true
+      this.onLoad(true)
+    },
+    // 获取列表
+    async getLists(isInit) {
+      try {
+        let params = {
+          page: this.page.current,
+          limit: this.page.size
+        }
+        this.ruleForm.workCity && (params.workCity = Number(this.ruleForm.workCity))
+        this.ruleForm.busiType !== '' && (params.busiType = this.ruleForm.busiType)
+        this.ruleForm.gmId && (params.gmId = this.ruleForm.gmId)
+        this.ruleForm.carType && (params.carType = Number(this.ruleForm.carType))
+        this.ruleForm.status && (params.status = Number(this.ruleForm.status))
+        this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
+        if (this.ruleForm.startDate && this.ruleForm.endDate) {
+          this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
+        }
+        let { data: res } = await getClueList(params)
+        if (res.success) {
+          let newLists = res.data
+          let result = {
+            lists: newLists,
+            total: res.page.total
+          }
+          this.tabType.forEach(item => {
+            console.log(item.code, this.ruleForm.status);
+            if (item.code === this.ruleForm.status) {
+              item.num = res.page.total
+            } else {
+              item.num = ''
+            }
+          })
+          return result
+        } else {
+          this.loading = false;
+          this.error = true;
+          this.finished = true
+          this.refreshing = false
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        this.loading = false;
+        this.error = true;
+        this.finished = true
+        this.refreshing = false
+        console.log(`get list fail:${err}`)
       }
-      this.loadedAll = this.total <= this.list.length
-      // }).catch(error => {
-      //   Toast.error(error)
-      // })
+    },
+    async onSubmit(value) {
+      this.loading = true
+      this.onLoad(true)
+      this.showScreen = false
+    },
+    /**
+     * 重置form
+     */
+    onReset(form) {
+      this.ruleForm = this.$options.data().ruleForm;
+      this.formText = this.$options.data().formText;
+      form.resetValidation();
+    },
+    /**
+     * 新建面试表单入口
+     */
+    startScreen(val) {
+      this.showScreen = val.show;
+      this.fetchData()
+    },
+    /**
+     * 更换归属人
+     */
+    changeManager(val) {
+      this.checked = val.show;
+    },
+    /**
+     * picker 选择
+     */
+    onConfirmPicker(value) {
+      this.formText[this.pickerKey] = value.nameInput ? value.nameInput : value.name;
+      this.ruleForm[this.pickerKey] = value.code;
+      this.showPicker = false;
+    },
+    /**
+     * 显示picker
+     */
+    showPickerFn(key) {
+      this.pickerKey = key;
+      switch (key) {
+        case 'workCity':
+          this.columns = this.columns_workCity;
+          break;
+        case 'busiType':
+          this.columns = this.columns_busiType;
+          break;
+        case 'scGmId':
+          this.columns = this.columns_scGmId;
+          break;
+        case 'gmGroupId':
+          this.columns = this.columns_gmGroupId;
+          break;
+        case 'gmId':
+          this.columns = this.columns_GmManager;
+          break;
+        case 'carType':
+          this.columns = this.columns_carType;
+          break;
+        case 'dealStatus':
+          this.columns = this.columns_dealStatus;
+          break;
+        case 'sourceChannel':
+          this.columns = this.columns_sourceChannel;
+          break;
+        case 'mode':
+          this.columns = this.columns_mode;
+          break;
+        case 'joinType':
+          this.columns = this.columns_joinType;
+          break;
+      }
+      this.showPicker = true;
+    },
+    onConfirm(date) {
+      const [start, end] = date;
+      this.dateShow = false;
+      let startDate = parseTime(start, '{y}-{m}-{d}');
+      let endDate = parseTime(end, '{y}-{m}-{d}');
+      this.formText.dateArr = `${startDate} - ${endDate}`;
+      this.ruleForm.startDate = start;
+      this.ruleForm.endDate = end;
+    },
+    closeManagerPop(val) {
+      this.changeManagerStatus = val.status
+    },
+    /**
+     * 取消选择归属人
+     */
+    cancelManager() {
+      this.checked = false;
+      this.checkedList = [];
+    },
+    changeOver() {
+      this.checked = false;
+      this.changeManagerStatus = false;
+      this.loading = true
+      this.onLoad(true)
+    },
+    /**
+     * 选则加盟经理
+     */
+    confirmManager() {
+      if (this.checkedList.length === 0) {
+        return Notify({
+          type: 'warning',
+          message: '请选择线索',
+          duration: 2000
+        });
+      } else {
+        this.changeManagerStatus = true
+      }
+    },
+    /**
+     * item选中
+     */
+    changeCheck(val) {
+      if (val.change) {
+        this.checkedList.push(val.item);
+      } else {
+        let arr = this.checkedList.filter((ele) => {
+          return ele !== val.item;
+        });
+        this.checkedList = arr;
+      }
     }
+  }
+};
+</script>
+<style scoped lang="less">
+.ClueList {
+  background-color: @body-bg;
+  position: relative;
+  .bottomBtn {
+    padding: 15px 0;
+    box-sizing: border-box;
+    margin: 0 15px;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100vw - 30px);
+    background-color: @body-bg;
+  }
+  .checkAll {
+    padding: 5px 15px 7px 15px;
+    box-sizing: border-box;
+    font-size: 13px;
+    color: #7f8fbd;
+    letter-spacing: 0;
+    text-align: center;
+    z-index: 99;
+    background-color: @body-bg;
+  }
+  .list {
+    margin-top: 5px;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+  .items {
+    margin-bottom: 10px;
   }
 }
-</script>
-<style lang="scss" scoped>
-.clue {
-  p{
-    margin-block-start: 0;
-    margin-block-end: 0;
-  }
-  .container{
-    height: 100%;
-    width: 100%;
-    background: #f5f5f5;
-    .list-wrap{
-      height: calc(100% - 50px);
-      overflow-y: hidden;
-    }
-  }
-
-  .article-list {
-    width: 100%;
-    height: auto;
-    box-sizing: border-box;
-    padding: 15px 15px 0;
-    .article {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding: 10px 15px;
-      box-sizing: border-box;
-      background: #FFF;
-      border-radius: 5px;
-      box-shadow: 0 0 6px #e3e3e3;
-      .left {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        img {
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-        }
-      }
-      .right {
-        padding-left: 15px;
-        box-sizing: border-box;
-        display: flex;
-        width: 235px;
-        height: 80px;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: space-around;
-        p {
-          width: 100%;
-          line-height: 20px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 16px;
-        }
-        .more-info{
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 14px;
-          color: #666;
-        }
-      }
-    }
-  }
-  .focus{
-    width:100%;
-    text-align: center;
-    padding-top: 1rem;
-    box-sizing: border-box;
-    img{
-      width: 60%;
-    }
-    p{
-      color:#666;
-      font-size: 14px;
-    }
-  }
+.padd {
+  padding-bottom: 60px;
+  box-sizing: border-box;
 }
 </style>

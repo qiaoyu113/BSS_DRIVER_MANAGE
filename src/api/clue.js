@@ -1,8 +1,10 @@
 import request from '@/utils/request'
-
-export function fetchList(data) {
+/**
+ * 获取线索列表
+ */
+export function getClueList(data) {
   return request({
-    url: 'api/bss/v1/bss/driver/clue/selectListByKey',
+    url: 'carrier_center/v2/clue/getClueList',
     method: 'post',
     data
   })
