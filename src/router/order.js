@@ -29,6 +29,7 @@ export default [
     component: resolve => require(['@/views/order/CreateOrder/CreateOrder'], resolve),
     meta: {
       title: '重新录入'
+      // keepAlive: true
     }
   },
   {

@@ -18,6 +18,16 @@ export default [
       // auth: true,
       keepAlive: true
     }
+  },
+  {
+    path: '/clueedit',
+    name: 'clueedit',
+    component: resolve => require(['@/views/clue/ClueEdit'], resolve),
+    meta: {
+      title: '线索编辑',
+      // auth: true,
+      keepAlive: true
+    }
   }
 ]
 
