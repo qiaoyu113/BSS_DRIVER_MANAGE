@@ -14,9 +14,8 @@ export default [
     name: 'cluedetail',
     component: resolve => require(['@/views/clue/ClueDetail'], resolve),
     meta: {
-      title: '线索详情',
+      title: '线索详情'
       // auth: true,
-      keepAlive: true
     }
   },
   {
@@ -24,9 +23,8 @@ export default [
     name: 'clueedit',
     component: resolve => require(['@/views/clue/ClueEdit'], resolve),
     meta: {
-      title: '线索编辑',
+      title: '线索编辑'
       // auth: true,
-      keepAlive: true
     }
   }
 ]

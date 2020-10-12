@@ -16,7 +16,7 @@
             style="margin-left:6px"
           >
             <span
-              v-if="detailInfo.status !== 1"
+              v-if="detailInfo.status !== 2"
               class="orderBtn"
               @click="goRouter"
             >编辑</span>
@@ -35,20 +35,22 @@
             </div>
           </template>
         </van-cell>
-        <van-cell>
-          <template #title>
-            <div class="itemStatus">
-              {{ detailInfo.statusName | DataIsNull }}
-            </div>
-          </template>
-        </van-cell>
         <div class="itemInfo">
-          <van-cell
-            title-class="cell-title"
-            value-class="cell-value"
-            title="线索编号："
-            :value="detailInfo.clueId | DataIsNull"
-          />
+          <div class="itemStatusBox">
+            <van-cell
+              title-class="cell-title"
+              value-class="cell-value"
+              title="线索编号："
+              :value="detailInfo.clueId | DataIsNull"
+            />
+            <van-cell class="cellStatus">
+              <template #title>
+                <div class="itemStatus">
+                  {{ detailInfo.statusName | DataIsNull }}
+                </div>
+              </template>
+            </van-cell>
+          </div>
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
@@ -59,7 +61,7 @@
             title-class="cell-title"
             value-class="cell-value"
             title="创建时间："
-            :value="timeFormat(detailInfo.createDate,'YYYY-MM-DD')"
+            :value="timeFormat(detailInfo.createDate,'YYYY-MM-DD HH:mm:ss')"
           />
         </div>
       </div>
@@ -128,7 +130,7 @@ export default {
         { type: '推荐人信息', code: 2 },
         { type: '收藏线路', code: 3 }
       ],
-      clueId: '19980822',
+      clueId: '',
       detailInfo: {}
     };
   },
@@ -197,6 +199,14 @@ export default {
     }
     .itemInfo {
       border: none;
+      .itemStatusBox{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .van-cell{
+          width: auto;
+        }
+      }
     }
     .itemBox {
       margin-bottom: 0;

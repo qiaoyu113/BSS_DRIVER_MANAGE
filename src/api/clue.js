@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-let prefix = '/mock/81'
+let prefix = '/driver'
 
 export function fetchList(data) {
   return request({

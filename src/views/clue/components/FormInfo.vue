@@ -3,7 +3,7 @@
     <div v-if="Object.keys(obj).length > 0">
       <van-field
         label="姓名"
-        :value="obj.name"
+        :value="obj.name | DataIsNull"
         readonly
         colon
       >
@@ -13,25 +13,25 @@
       </van-field>
       <van-field
         label="联系方式"
-        :value="obj.phone"
+        :value="obj.phone | DataIsNull"
         readonly
         colon
       />
       <van-field
         label="工作城市"
         colon
-        :value="obj.workCityName"
+        :value="obj.workCityName | DataIsNull"
         readonly
       />
 
       <van-field
         label="车型"
-        :value="obj.carTypeName"
+        :value="obj.carTypeName | DataIsNull"
         readonly
         colon
       />
       <van-field
-        :label="obj.gmType === 1 ? '渠道经理' : '加盟经理'"
+        :label="obj.gmDutyName === '渠道经理' ? '渠道经理' : '加盟经理'"
         :value="`${obj.gmName}（${obj.gmMobile}）`"
         readonly
         colon
@@ -39,24 +39,24 @@
       <van-field
         label="渠道"
         colon
-        :value="obj.sourceChannelName"
+        :value="obj.sourceChannelName | DataIsNull"
         readonly
       />
       <van-field
         label="来源"
-        :value="obj.modeName"
+        :value="obj.modeName | DataIsNull"
         readonly
         colon
       />
       <van-field
         label="方式"
-        :value="obj.joinTypeName"
+        :value="obj.joinTypeName | DataIsNull"
         readonly
         colon
       />
       <van-field
         label="备注"
-        :value="obj.remake"
+        :value="obj.remark | DataIsNull"
         readonly
         colon
       />
