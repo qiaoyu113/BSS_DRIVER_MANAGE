@@ -22,7 +22,7 @@
           label="姓名"
           clearable
           maxlength="10"
-          placeholder="请输入"
+          placeholder="请输入姓名"
         />
         <van-field
           v-model="formData.phone"
@@ -31,8 +31,8 @@
           clearable
           required
           placeholder="请输入"
-          :rules="[{ required: true, message: '请填写司机姓名' },
-                   {pattern:phonePattern, message: '请输入正确的手机号'}]"
+          :rules="[{ required: true, message: '请输入联系方式！' },
+                   {pattern:phonePattern, message: '手机号码不符合规范，请重新输入！'}]"
         />
         <selftPicker
           :props="keyValue"
@@ -61,10 +61,10 @@
           placeholder="请选择"
         />
         <van-field
-          v-model="formData.remake"
+          v-model="formData.remark"
           rows="2"
           autosize
-          name="remake"
+          name="remark"
           label="备注"
           type="textarea"
           maxlength="100"
@@ -110,7 +110,7 @@ export default {
         phone: '',
         workCity: '',
         carType: '',
-        remake: ''
+        remark: ''
       },
       columns_workCity: [],
       columns_carType: [],
@@ -155,7 +155,7 @@ export default {
         this.formData.phone && (params.phone = this.formData.phone)
         this.formData.workCity && (params.workCity = this.formData.workCity)
         this.formData.carType && (params.carType = this.formData.carType)
-        this.formData.remake && (params.remake = this.formData.remake)
+        this.formData.remark && (params.remark = this.formData.remark)
         params.clueId = this.clueId
         let { data: res } = await clueEdit(params);
         if (res.success) {
