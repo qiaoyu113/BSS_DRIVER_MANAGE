@@ -46,13 +46,13 @@
               clickable
               colon
               :border="false"
-              name="gmId"
-              :value="pickerNames.gmId"
+              name="gmGroupId"
+              :value="pickerNames.gmGroupId"
               label="加盟小组"
               clearable
               placeholder="请选择"
-              :rules="[{ required: true, message: '请选择加盟经理' }]"
-              @click="showPickerFn('gmId')"
+              :rules="[{ required: true, message: '请选择加盟小组' }]"
+              @click="showPickerFn('gmGroupId')"
             />
             <van-field
               v-if="active === 0"
@@ -60,13 +60,13 @@
               clickable
               colon
               :border="false"
-              name="gmId"
-              :value="pickerNames.gmId"
+              name="gmScIds"
+              :value="pickerNames.gmScIds"
               label="归属人"
               clearable
               placeholder="请选择"
               :rules="[{ required: true, message: '请选择归属人' }]"
-              @click="showPickerFn('gmId')"
+              @click="showPickerFn('gmScIds')"
             />
             <van-field
               v-else
@@ -123,7 +123,7 @@
 <script>
 import { Popup, Notify } from 'vant';
 import { delay } from '@/utils';
-import { updateGmByDriverId } from '@/api/driver.js'
+import { updateGmByClueId } from '@/api/clue.js'
 import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
   components: {
@@ -140,10 +140,14 @@ export default {
       active: 0,
       pickerNames: {
         gmId: '',
+        gmScIds: '',
+        gmGroupId: '',
         workCity: ''
       },
       formData: {
         gmId: '',
+        gmScIds: '',
+        gmGroupId: '',
         workCity: ''
       },
       columns: [],
@@ -151,6 +155,12 @@ export default {
       showPicker: false,
       columns_workCity: [],
       columns_gmId: [],
+      columns_gmGroupId: [
+        { name: '共享一组', code: '' },
+        { name: '共享二组', code: 0 },
+        { name: '共享三组', code: 1 }
+      ], // 加盟小组
+      columns_scGmId: [], // 渠道经理
       managerStatus: false
     };
   },
@@ -161,15 +171,35 @@ export default {
     active(val) {
       this.resetform();
       this.getGmId()
+      this.getGmGroupId()
+      this.getScGmId()
+      this.formData.gmScIds = ''
+      this.pickerNames.gmScIds = ''
       this.formData.gmId = ''
       this.pickerNames.gmId = ''
+      this.formData.gmGroupId = ''
+      this.pickerNames.gmGroupId = ''
     },
     'formData.workCity'(val) {
       if (val) {
-        this.getGmId(val)
+        this.getGmGroupId()
+        this.getGmId()
+        this.getScGmId()
+        this.formData.gmScIds = ''
+        this.pickerNames.gmScIds = ''
         this.formData.gmId = ''
         this.pickerNames.gmId = ''
+        this.formData.gmGroupId = ''
+        this.pickerNames.gmGroupId = ''
       }
+    },
+    'formData.gmGroupId'() {
+      this.getGmId()
+      this.getScGmId()
+      this.formData.gmId = ''
+      this.pickerNames.gmId = ''
+      this.formData.gmScIds = ''
+      this.pickerNames.gmScIds = ''
     }
   },
   mounted() {
@@ -177,7 +207,48 @@ export default {
     this.fetchData();
   },
   methods: {
-    async getGmId(val) {
+    // 获取渠道经理
+    getScGmId(val) {
+      let params = {
+        'cityCode': this.formData.workCity,
+        'productLine': this.active + 2,
+        'roleType': 1
+      }
+      GetSpecifiedRoleList(params).then(({ data }) => {
+        if (data.success) {
+          this.columns_scGmId = data.data.map(ele => {
+            return { name: ele.name + ' ' + ele.mobile + '（渠道经理）', code: ele.id, nameInput: ele.name }
+          })
+        } else {
+          this.$toast(data.errorMsg)
+        }
+      })
+        .catch((err) => {
+          console.log(err)
+        });
+    },
+    // 获取加盟小组
+    getGmGroupId(val) {
+      // let params = {
+      //   'cityCode': this.formData.workCity,
+      //   'productLine': this.active + 2,
+      //   'roleType': 1
+      // }
+      // GetSpecifiedRoleList(params).then(({ data }) => {
+      //   if (data.success) {
+      //     this.columns_gmId = data.data.map(ele => {
+      //       return { name: ele.name, code: ele.id }
+      //     })
+      //   } else {
+      //     this.$toast(data.errorMsg)
+      //   }
+      // })
+      //   .catch((err) => {
+      //     console.log(err)
+      //   });
+    },
+    // 获取加盟经理
+    async getGmId() {
       let params = {
         'cityCode': this.formData.workCity,
         'productLine': this.active + 2,
@@ -186,7 +257,7 @@ export default {
       GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {
           this.columns_gmId = data.data.map(ele => {
-            return { name: ele.name, code: ele.id }
+            return { name: ele.name + ' ' + ele.mobile + '（加盟经理）', code: ele.id, nameInput: ele.name }
           })
         } else {
           this.$toast(data.errorMsg)
@@ -212,14 +283,17 @@ export default {
         this.$loading(true)
         let params = {
           'gmId': this.formData.gmId,
-          'driverId': this.$parent.checkedList
+          'clueIds': this.$parent.checkedList
         };
-        let { data: res } = await updateGmByDriverId(params);
+        if (!this.active) {
+          params.gmId = this.formData.gmScIds
+        }
+        let { data: res } = await updateGmByClueId(params);
         if (res.success) {
           this.managerStatus = false;
           this.$loading(false)
           if (res.data.flag) {
-            Notify({ type: 'success', message: '加盟经理更改成功' });
+            Notify({ type: 'success', message: '归属人更改成功' });
             this.$parent.checkedList = []
           } else {
             Notify({ type: 'warn', message: res.data.msg });
@@ -251,6 +325,12 @@ export default {
         case 'gmId':
           this.columns = this.columns_gmId;
           break;
+        case 'gmGroupId':
+          this.columns = this.columns_gmGroupId;
+          break;
+        case 'gmScIds':
+          this.columns = this.columns_gmId.concat(this.columns_scGmId);
+          break;
         case 'workCity':
           this.columns = this.columns_workCity;
           break;
@@ -261,7 +341,8 @@ export default {
      * picker 选择
      */
     onConfirmPicker(value) {
-      this.pickerNames[this.pickerKey] = value.name;
+      console.log(value);
+      this.pickerNames[this.pickerKey] = value.nameInput ? value.nameInput : value.name;
       this.formData[this.pickerKey] = value.code;
       this.showPicker = false;
     }

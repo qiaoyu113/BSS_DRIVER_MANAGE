@@ -146,11 +146,10 @@ export default {
         return this.lists.length === this.checkedList.length;
       },
       set: function(val) {
-        console.log(val);
         if (val) {
           this.checkedList = [];
           this.lists.map((ele) => {
-            this.checkedList.push(ele.driverId);
+            this.checkedList.push(ele.clueId);
           });
         } else {
           this.checkedList = [];

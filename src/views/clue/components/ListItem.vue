@@ -86,7 +86,7 @@ export default {
     checkall(val) {
       let status = false;
       val.map(ele => {
-        if (ele === this.item.driverId) {
+        if (ele === this.item.clueId) {
           status = true
         }
         return
@@ -100,14 +100,14 @@ export default {
   methods: {
     checkChange() {
       if (this.checked) {
-        this.$emit('changeCheck', { change: !this.check, item: this.item.driverId })
+        this.$emit('changeCheck', { change: !this.check, item: this.item.clueId })
         this.check = !this.check
       } else {
-        this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+        this.$router.push({ path: '/cluedetail', query: { id: this.item.clueId }})
       }
     },
     goRouter() {
-      this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+      this.$router.push({ path: '/cluedetail', query: { id: this.item.clueId }})
     }
   }
 };

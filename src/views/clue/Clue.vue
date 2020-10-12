@@ -255,11 +255,6 @@ export default {
         { name: '共享', code: 1 }
       ],
       columns_workCity: [], // 工作城市
-      columns_GmGroup: [ // 加盟小组
-        { name: '共享一组', code: '' },
-        { name: '共享二组', code: 0 },
-        { name: '共享三组', code: 1 }
-      ],
       columns_GmManager: [], // 加盟经理
       columns_carType: [], // 车型
       columns_dealStatus: [ // 是否成交
@@ -284,8 +279,12 @@ export default {
         { name: '微信授权', code: 1 },
         { name: '入驻', code: 2 }
       ],
-      columns_gmGroupId: [], // 加盟小组
-      columns_scGmId: [], // 加盟小组
+      columns_gmGroupId: [
+        { name: '共享一组', code: '' },
+        { name: '共享二组', code: 0 },
+        { name: '共享三组', code: 1 }
+      ], // 加盟小组
+      columns_scGmId: [], // 渠道经理
       showPicker: false,
       showScreen: false,
       minDate: new Date(+new Date() - 86400000 * 365),
@@ -343,7 +342,7 @@ export default {
         if (val) {
           this.checkedList = [];
           this.lists.map((ele) => {
-            this.checkedList.push(ele.driverId);
+            this.checkedList.push(ele.clueId);
           });
         } else {
           this.checkedList = [];
@@ -358,24 +357,93 @@ export default {
     'ruleForm.workCity'(val) {
       if (val !== '') {
         this.getGmId()
+        this.getScGmId()
+        this.getGmGroupId()
         this.ruleForm.gmId = ''
         this.formText.gmId = ''
+        this.ruleForm.scGmId = ''
+        this.formText.scGmId = ''
+        this.ruleForm.gmGroupId = ''
+        this.formText.gmGroupId = ''
       }
     },
     'ruleForm.busiType'(val) {
       this.getGmId()
+      this.getScGmId()
+      this.getGmGroupId()
       this.ruleForm.gmId = ''
       this.formText.gmId = ''
+      this.ruleForm.scGmId = ''
+      this.formText.scGmId = ''
+      this.ruleForm.gmGroupId = ''
+      this.formText.gmGroupId = ''
+    },
+    'ruleForm.gmGroupId'(val) {
+      this.getGmId()
+      this.getScGmId()
+      this.ruleForm.gmId = ''
+      this.formText.gmId = ''
+      this.ruleForm.scGmId = ''
+      this.formText.scGmId = ''
     }
   },
   mounted() {
   },
   methods: {
+    // 联动请求加盟小组
+    getGmGroupId() {
+      let params = {
+        'cityCode': this.ruleForm.workCity, // 工作城市
+        'productLine': this.ruleForm.busiType // 业务线
+      }
+      if (this.ruleForm.busiType !== '') {
+        params.productLine = params.productLine + 2
+      }
+      // GetSpecifiedRoleList(params)
+      //   .then(({ data }) => {
+      //     if (data.success) {
+      //       this.columns_gmGroupId = data.data.map(ele => {
+      //         return { name: ele.name, code: ele.id, nameInput: ele.name }
+      //       })
+      //     } else {
+      //       this.$toast(data.errorMsg)
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err)
+      //   });
+    },
+    // 联动请求渠道经理
+    getScGmId() {
+      let params = {
+        'cityCode': this.ruleForm.workCity, // 工作城市
+        'productLine': this.ruleForm.busiType, // 业务线
+        'gmGroupId': this.ruleForm.gmGroupId, // 加盟小组
+        'roleType': 1
+      }
+      if (this.ruleForm.busiType !== '') {
+        params.productLine = params.productLine + 2
+      }
+      GetSpecifiedRoleList(params)
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_scGmId = data.data.map(ele => {
+              return { name: ele.name + ' ' + ele.mobile + '（渠道经理）', code: ele.id, nameInput: ele.name }
+            })
+          } else {
+            this.$toast(data.errorMsg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        });
+    },
     // 联动请求加盟经理
     getGmId() {
       let params = {
-        'cityCode': this.ruleForm.workCity,
-        'productLine': this.ruleForm.busiType,
+        'cityCode': this.ruleForm.workCity, // 工作城市
+        'productLine': this.ruleForm.busiType, // 业务线
+        'gmGroupId': this.ruleForm.gmGroupId, // 加盟小组
         'roleType': 1
       }
       if (this.ruleForm.busiType !== '') {
@@ -414,6 +482,8 @@ export default {
           if (data.success) {
             this.columns_workCity = data.data;
             this.getGmId()
+            this.getGmGroupId()
+            this.getScGmId()
           }
         }).catch((err) => {
           console.log(err)
@@ -492,7 +562,6 @@ export default {
             total: res.page.total
           }
           this.tabType.forEach(item => {
-            console.log(item.code, this.ruleForm.status);
             if (item.code === this.ruleForm.status) {
               item.num = res.page.total
             } else {
