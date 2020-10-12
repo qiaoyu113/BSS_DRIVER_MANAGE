@@ -107,17 +107,16 @@ export default {
     goRouter() {
       this.$router.push({
         path: '/orderDetail',
-        query: { id: this.obj.driverId }
+        query: { id: this.obj.driverId, orderId: this.obj.orderId }
       });
     },
     goDothing(orderId, driverId) {
-      console.log(orderId, driverId, this.orderText);
       if (this.orderText.code) {
         switch (this.orderText.code) {
           case 1:
             this.$router.push({
               path: '/orderAudit',
-              query: { id: this.obj.driverId }
+              query: { id: this.obj.driverId, orderId: this.obj.orderId }
             });
             break;
           case 2:
@@ -145,7 +144,8 @@ export default {
                 driverPhone: this.obj.driverInfoVO.phone,
                 workCityName: this.obj.driverInfoVO.workCityName,
                 workCity: this.obj.driverInfoVO.workCity,
-                busiType: this.obj.driverInfoVO.busiType
+                busiType: this.obj.driverInfoVO.busiType,
+                orderId: this.obj.orderId
               }
             });
             break;

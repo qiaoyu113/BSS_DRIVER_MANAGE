@@ -187,7 +187,7 @@
               label-width="100px"
               label="支付金额（元）"
               colon
-              :value="payInfo.money"
+              :value="moneyDeal(payInfo)"
               readonly
             />
             <van-field
@@ -328,7 +328,8 @@ export default {
       activeNames: [],
       formData: {},
       routeName: '',
-      driverId: ''
+      driverId: '',
+      orderId: ''
     };
   },
   computed: {
@@ -338,6 +339,7 @@ export default {
   },
   mounted() {
     const id = this.$route.query.id;
+    this.orderId = this.$route.query.orderId;
     this.routeName = this.$route.path;
     this.driverId = id;
     this.getOrderDetail(id);
@@ -346,6 +348,13 @@ export default {
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
       return dayjs(date).format(format)
+    },
+    moneyDeal(val) {
+      if (val.useWithdrawable === 0) {
+        return val.money + '元'
+      } else {
+        return val.money + '元（可提现金额支付）'
+      }
     },
     /**
      *返回按钮
@@ -365,7 +374,8 @@ export default {
           driverId: this.formData.driverId,
           operateFlag: type,
           orderId: this.formData.orderId,
-          status: this.formData.status
+          status: this.formData.status,
+          goodsAmount: this.formData.goodsAmount
         };
         let { data: res } = await auditOrderNoPass(params);
         if (res.success) {
@@ -382,6 +392,7 @@ export default {
         }
       } catch (err) {
         console.log(`fail:${err}`);
+        this.$toast.fail(err);
       } finally {
         this.$loading(false);
       }
@@ -392,6 +403,9 @@ export default {
         let params = {
           operateFlag: 'detial',
           driverId: id
+        }
+        if (this.orderId) {
+          params.orderId = this.orderId
         }
         let { data: res } = await orderDetail(params);
         if (res.success) {

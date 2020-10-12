@@ -369,7 +369,7 @@
 <script>
 import dayjs from 'dayjs'
 import { parseTime } from '@/utils';
-import { Notify } from 'vant';
+import { Notify, Dialog } from 'vant';
 import { IdPattern, carNoRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import PayItem from './components/PayItem';
@@ -386,6 +386,7 @@ import {
   GetPriceAndByTypeAndCityAndSupplierAndCarType,
   GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel
 } from '@/api/order.js';
+import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   components: {
     PayItem,
@@ -461,6 +462,10 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      payList: state => state.orderPayList.payList,
+      orderStaus: state => state.orderPayList.orderStatus
+    }),
     title() {
       return this.$route.meta.title;
     },
@@ -495,7 +500,8 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (to.path !== '/addPay') {
-      window.localStorage.removeItem('payItemInfo');
+      this.deleteAll()
+      this.setStatus(false)
     }
     next();
   },
@@ -554,6 +560,14 @@ export default {
     this.updataFrom();
   },
   methods: {
+    ...mapActions({
+      asyncSetPay: 'orderPayList/ASYNCSETPAY'
+    }),
+    ...mapMutations({
+      delete: 'orderPayList/DELETEITEM',
+      setStatus: 'orderPayList/SETSTATUS',
+      deleteAll: 'orderPayList/DELETEALL'
+    }),
     timeFormat(date, format) {
       return dayjs(date).format(format)
     },
@@ -700,10 +714,29 @@ export default {
       this.$router.go(-1);
     },
     goRouter() {
-      this.$router.push({
-        path: '/addPay',
-        query: { id: this.driverId, orderId: this.orderId }
-      });
+      let typePath = { id: this.driverId, orderId: this.orderId }
+      Dialog.confirm({
+        title: '是否使用可提现金额支付？',
+        message: '',
+        confirmButtonText: '是',
+        cancelButtonText: '否'
+      })
+        .then(() => {
+          // on confirm
+          typePath.type = 1
+          this.$router.push({
+            path: '/addPay',
+            query: typePath
+          });
+        })
+        .catch(() => {
+          // on cancel
+          typePath.type = 0
+          this.$router.push({
+            path: '/addPay',
+            query: typePath
+          });
+        });
     },
     async getOrderDetail(id) {
       try {
@@ -717,6 +750,9 @@ export default {
         } else {
           params.operateFlag = 'step1'
         }
+        if (this.orderId) {
+          params.orderId = this.orderId
+        }
         let { data: res } = await orderDetail(params);
         if (res.success) {
           if (res.data !== null) {
@@ -729,28 +765,16 @@ export default {
             this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
             this.formText.inspectionTime = res.data.inspectionTime
             this.formText.insuranceTime = res.data.insuranceTime
-            let payItemInfo = JSON.parse(
-              window.localStorage.getItem('payItemInfo')
-            );
-            if (payItemInfo) {
-              this.formData.orderPayRecordInfoFORMList = payItemInfo;
-              // .concat(res.data.orderPayRecordInfoVOList)
-              this.formStatus = 3;
+            // 保存历史记录
+            if (this.payList.length > 0) {
+              this.formData.orderPayRecordInfoFORMList = this.payList;
+            } else {
+              this.formData.orderPayRecordInfoFORMList = res.data.orderPayRecordInfoVOList || []
+              this.asyncSetPay([...res.data.orderPayRecordInfoVOList])
             }
-            if (this.formData.orderPayRecordInfoFORMList.length === 0) {
-              if (res.data.orderPayRecordInfoVOList !== null) {
-                this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
-              }
+            if (this.orderStaus) {
+              this.formStatus = 3
             }
-            // let payItemInfo = JSON.parse(
-            //   window.localStorage.getItem('payItemInfo')
-            // );
-            // if (payItemInfo) {
-            //   this.formData.orderPayRecordInfoFORMList = payItemInfo.concat(res.data.orderPayRecordInfoVOList);
-            //   this.formStatus = 3;
-            // } else {
-            //   this.formData.orderPayRecordInfoFORMList = [...res.data.orderPayRecordInfoVOList]
-            // }
           }
         } else {
           this.$toast.fail(res.errorMsg);
@@ -939,8 +963,8 @@ export default {
       }
     },
     deleteItem(index) {
-      this.formData.orderPayRecordInfoFORMList.splice(index, 1);
-      window.localStorage.setItem('payItemInfo', JSON.stringify(this.formData.orderPayRecordInfoFORMList))
+      this.delete(index)
+      this.formData.orderPayRecordInfoFORMList = this.payList
     }
   }
 };

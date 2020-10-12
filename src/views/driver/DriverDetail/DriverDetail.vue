@@ -240,61 +240,73 @@ export default {
       return dayjs(date).format(format)
     },
     orderList() {
+      let arr = []
+      const createOrder = { name: '录入订单', url: '/createOrder', pUrl: [''] }
+      // /v2/order/createOrUpdateOrder
+      const orderAudit = { name: '审核', url: '/orderAudit', pUrl: [''] }
+      // /v2/order/auditOrderNoPass
+      const resetOrder = { name: '重新提交', url: '/resetOrder', pUrl: [''] }
+      // /v2/order/createOrUpdateOrder
+      const orderDetail = { name: '详情', url: '/orderDetail' }
+      const orderStop = { name: '终止', url: 'stop' }
       if (
         this.detailInfo.orderStatus === null ||
         this.detailInfo.orderStatus === 0 || this.detailInfo.orderStatus === 45
       ) {
-        let arr = []
         if (this.isStep) {
-          arr = [{ name: '录入订单', url: '/createOrder', pUrl: ['/v2/order/createOrUpdateOrder'] }];
+          arr.push(createOrder)
         }
         return arr;
       } else if (this.detailInfo.orderStatus === 20) {
-        let arr = [
-          { name: '审核', url: '/orderAudit', pUrl: ['/v2/order/auditOrderNoPass'] },
-          { name: '详情', url: '/orderDetail' }
-        ];
+        arr.push(orderDetail)
+        arr.push(orderAudit)
         return arr;
       } else if (this.detailInfo.orderStatus === 25) {
-        let arr = [
-          { name: '重新提交', url: '/resetOrder', pUrl: ['/v2/order/createOrUpdateOrder'] },
-          { name: '详情', url: '/orderDetail' }
-        ];
+        arr.push(resetOrder)
+        arr.push(orderDetail)
         return arr;
       } else if (this.detailInfo.orderStatus === 30) {
         // 订单状态已成交
-        let arr = [{ name: '详情', url: '/orderDetail' },
-          { name: '终止', url: 'stop' }];
+        arr.push(orderDetail)
+        arr.push(orderStop)
         return arr;
       }
     },
     arrList() {
+      let arr = []
+      const tagView = { name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }
+      const editTailored = { name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] }
+      const editShare = { name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] }
+      const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] }
+      const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] }
       if (
         this.detailInfo.status === 1 ||
         this.detailInfo.status === 2 ||
         this.detailInfo.status === 4
       ) {
-        let arr = [{ name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }];
+        arr.push(tagView)
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] });
+          arr.push(editTailored)
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] });
+          arr.push(editShare)
         }
         return arr;
       } else if (this.detailInfo.status === 3) {
-        let arr = [{ name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }, { name: '标记退出', pUrl: ['/v2/driver/signOut'] }];
+        arr.push(tagView)
+        arr.push(signOut)
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] });
+          arr.push(editTailored)
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] });
+          arr.push(editShare)
         }
         return arr;
       } else if (this.detailInfo.status === 5) {
-        let arr = [{ name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }, { name: '标记成交', pUrl: ['/v2/driver/signDeal'] }];
+        arr.push(tagView)
+        arr.push(signDeal)
         if (this.detailInfo.busiType === 0) {
-          arr.push({ name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] });
+          arr.push(editTailored)
         } else if (this.detailInfo.busiType === 1) {
-          arr.push({ name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] });
+          arr.push(editShare)
         }
         return arr;
       }
@@ -475,7 +487,7 @@ export default {
     },
     activeContract() {
       this.getDetail(this.driverId);
-      // this.getContract(this.driverId)
+      this.getContract(this.driverId)
     },
     orderStop() {
       this.getOrderLabel(this.driverId)
@@ -485,6 +497,7 @@ export default {
       if (res.success) {
         Notify({ type: 'success', message: '订单终止成功' });
         this.getOrderLabel(this.driverId)
+        this.getDetail(this.driverId);
       } else {
         Notify({ type: 'warning', message: res.errorMsg });
       }
