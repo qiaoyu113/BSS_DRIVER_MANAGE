@@ -1,0 +1,61 @@
+.itemBox{
+  margin-bottom: 10px;
+  padding: 0 15px;
+  color: @text-color;
+  background-color: @white;
+  padding-top: 10px;
+  box-sizing: border-box;
+  flex: 1;
+  .van-cell{
+    padding: 0 ;
+    box-sizing: border-box;
+    &::after{
+      display: none;
+    }
+    .cell-title,
+    .cell-value{
+      font-size: @font-size-sm-1;
+      color: @text-color;
+      line-height: 23px;
+      flex: none;
+    }
+    .cell-title{
+      flex-shrink : 0;
+    }
+    .cell-value{
+      flex: auto;
+      text-align: left;
+    }
+  }
+}
+.title {
+  font-size: @font-size-md;
+  font-weight: bold;
+  color: #3C4353;
+  display: flex;
+  align-items: center;
+}
+.itemStatus{
+  display: inline-block;
+  border: 1px solid #3ACB8D;
+  border-radius: 24px;
+  color: #3ACB8D;
+  padding: 2px 8px;
+  line-height: normal;
+  box-sizing: border-box;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+.itemInfo{
+  padding: 6px 0 6px 15px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #D8D8D8
+}
+.detailBtn{
+  text-align: center;
+  .routeBtn{
+    margin: 5px 0;
+    width: 70px;
+    height: 25px;
+  }
+}

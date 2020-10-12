@@ -4,9 +4,15 @@ export default [
     name: 'clue',
     component: resolve => require(['@/views/clue/Clue'], resolve),
     meta: {
-      title: '线索管理',
-      // auth: true,
-      keepAlive: true
+      title: '线索管理'
+    }
+  },
+  {
+    path: '/cluesearch',
+    name: 'cluesearch',
+    component: resolve => require(['@/views/clue/ClueSearch'], resolve),
+    meta: {
+      title: '线索搜索'
     }
   },
   {
