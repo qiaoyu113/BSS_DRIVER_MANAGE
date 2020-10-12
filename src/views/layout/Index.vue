@@ -145,6 +145,15 @@ export default {
         // 司机云
         [
           {
+            title: '线索管理',
+            url: '/clue',
+            icon: require('../../assets/Home/icon_11.png'),
+            style: {
+              width: '1.0133rem',
+              height: '1.0133rem'
+            }
+          },
+          {
             title: '司机管理',
             url: '/driverlist',
             icon: require('../../assets/Home/icon_5.png'),
@@ -159,8 +168,8 @@ export default {
           //   url: '',
           //   icon: require('../../assets/Home/icon_6.png'),
           //   style: {
-          //     width: '1.3867rem',
-          //     height: '0.96rem'
+          //     width: '1.1466rem',
+          //     height: '1.053rem'
           //   }
           // }
         ],
@@ -172,8 +181,8 @@ export default {
             icon: require('../../assets/Home/icon_7.png'),
             pUrl: '/v2/runtest/getRunTestInfoList',
             style: {
-              width: '1.28rem',
-              height: '1.0933rem'
+              width: '1.0933rem',
+              height: '1.026rem'
             }
           }
         ],
