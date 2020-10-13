@@ -33,7 +33,7 @@
               </div>
             </div>
           </van-grid-item>
-          <wxCode v-if="list[activeIndex][0].url === '/driverlist'" />
+          <wxCode v-if="activeIndex === 1" />
         </van-grid>
       </div>
       <van-action-sheet
