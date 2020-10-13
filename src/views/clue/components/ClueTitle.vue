@@ -3,7 +3,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-1)">
         <template v-if="showChange" #right>
-          <div v-premission="['/v2/clue/updateGmByClueId']" style="color: #fff; font-size: 0.37333rem;" @click="changeManager">
+          <div v-permission="['/v2/clue/updateGmByClueId']" style="color: #fff; font-size: 0.37333rem;" @click="changeManager">
             更换归属人
           </div>
         </template>
