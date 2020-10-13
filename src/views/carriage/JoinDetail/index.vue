@@ -30,7 +30,7 @@
           上报人：<span>{{ obj.gmReportName }}/{{ obj.gmReportPhone }}</span>
         </p>
         <p v-if="obj.gmState === 1 || obj.gmState === 2" class="text ellipsis">
-          上报时间：<span>{{ obj.gmReportTime }}({{ obj.gmReportName }})</span>
+          上报时间：<span>{{ obj.gmReportTime }}</span>
         </p>
         <div v-if="obj.gmState !== 2">
           <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">

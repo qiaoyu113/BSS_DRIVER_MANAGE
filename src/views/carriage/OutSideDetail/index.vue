@@ -27,7 +27,10 @@
           客户名称：<span>{{ obj.customerName }}/{{ obj.customerId }}</span>
         </p>
         <p v-if="obj.lineState === 1 || obj.lineState === 2" class="text ellipsis">
-          上报时间：<span>{{ obj.lineReportTime }}({{ obj.lineReportName }})</span>
+          上报人：<span>{{ obj.lineReportName }}/{{ obj.lineReportPhone }}</span>
+        </p>
+        <p v-if="obj.lineState === 1 || obj.lineState === 2" class="text ellipsis">
+          上报时间：<span>{{ obj.lineReportTime }}</span>
         </p>
         <div v-if="obj.lineState !== 2">
           <p v-for="item in obj.wayBillAmountVOS" :key="item.id" class="text ellipsis">
