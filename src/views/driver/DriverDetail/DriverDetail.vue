@@ -342,6 +342,7 @@ export default {
           driverId: this.driverId,
           orderId: this.detailInfo.orderId,
           status: this.detailInfo.orderStatus,
+          goodsAmount: this.detailInfo.goodsAmount,
           operateFlag: 'abort'
         }
         this.stopOrder(params)
