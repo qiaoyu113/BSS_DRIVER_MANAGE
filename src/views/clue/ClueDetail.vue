@@ -16,7 +16,7 @@
             style="margin-left:6px"
           >
             <span
-              v-if="detailInfo.status !== 2"
+              v-if="detailInfo.status === 1"
               class="orderBtn"
               @click="goRouter"
             >编辑</span>
