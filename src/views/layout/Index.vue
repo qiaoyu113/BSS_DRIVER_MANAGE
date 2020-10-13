@@ -33,6 +33,7 @@
               </div>
             </div>
           </van-grid-item>
+          <wxCode v-if="+activeIndex === 1" />
         </van-grid>
       </div>
       <van-action-sheet
@@ -48,10 +49,12 @@
 </template>
 <script>
 import FooterTabbar from '@/components/FooterTabbar';
+import WxCode from '@/components/wxCode'
 export default {
   name: 'Index',
   components: {
-    FooterTabbar
+    FooterTabbar,
+    WxCode
   },
   data() {
     return {
@@ -148,6 +151,7 @@ export default {
             title: '线索管理',
             url: '/clue',
             icon: require('../../assets/Home/icon_11.png'),
+            pUrl: '/v2/clue/getClueList',
             style: {
               width: '1.0133rem',
               height: '1.0133rem'
