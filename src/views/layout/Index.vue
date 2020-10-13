@@ -33,6 +33,7 @@
               </div>
             </div>
           </van-grid-item>
+          <wxCode v-if="list[activeIndex][0].url === '/driverlist'" />
         </van-grid>
       </div>
       <van-action-sheet
@@ -48,10 +49,12 @@
 </template>
 <script>
 import FooterTabbar from '@/components/FooterTabbar';
+import WxCode from '@/components/wxCode'
 export default {
   name: 'Index',
   components: {
-    FooterTabbar
+    FooterTabbar,
+    WxCode
   },
   data() {
     return {
