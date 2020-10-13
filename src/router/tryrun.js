@@ -4,7 +4,7 @@ export default [
     name: 'TryRun',
     component: resolve => require(['@/views/tryRun/TryRun'], resolve),
     meta: {
-      title: '试跑-在跑'
+      title: '试跑在跑'
     }
   },
   {
@@ -12,7 +12,7 @@ export default [
     name: 'TryRunSearch',
     component: resolve => require(['@/views/tryRun/Search'], resolve),
     meta: {
-      title: '试跑-在跑'
+      title: '试跑在跑'
     }
   },
   {
@@ -20,7 +20,7 @@ export default [
     name: 'TryRunList',
     component: resolve => require(['@/views/tryRun/TryRunList'], resolve),
     meta: {
-      title: '试跑-在跑'
+      title: '试跑在跑'
     }
   },
   {

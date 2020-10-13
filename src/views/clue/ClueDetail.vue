@@ -54,7 +54,7 @@
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
-            title="加盟经理："
+            :title="setLabel(detailInfo.gmDutyName) + '：'"
             :value="`${detailInfo.gmName}/${detailInfo.gmMobile}`"
           />
           <van-cell
@@ -140,6 +140,12 @@ export default {
     this.getDetail(id);
   },
   methods: {
+    setLabel(val) {
+      if (val.includes('加盟')) {
+        return val.substr(2)
+      }
+      return val
+    },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
       return dayjs(date).format(format)
