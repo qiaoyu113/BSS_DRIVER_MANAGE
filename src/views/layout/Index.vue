@@ -33,7 +33,7 @@
               </div>
             </div>
           </van-grid-item>
-          <wxCode v-if="activeIndex === 1" />
+          <wxCode v-if="+activeIndex === 1" />
         </van-grid>
       </div>
       <van-action-sheet
