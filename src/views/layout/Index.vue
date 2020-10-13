@@ -148,6 +148,7 @@ export default {
             title: '线索管理',
             url: '/clue',
             icon: require('../../assets/Home/icon_11.png'),
+            pUrl: '/v2/clue/getClueList',
             style: {
               width: '1.0133rem',
               height: '1.0133rem'

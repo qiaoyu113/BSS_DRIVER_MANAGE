@@ -8,7 +8,7 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div class="navBarTit" @click="onCreateRun">
+          <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit" @click="onCreateRun">
             创建试跑
           </div>
         </template>
