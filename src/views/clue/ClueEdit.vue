@@ -30,7 +30,7 @@
           label="联系方式"
           clearable
           required
-          placeholder="请输入"
+          placeholder="请输入联系方式"
           :rules="[{ required: true, message: '请输入联系方式！' },
                    {pattern:phonePattern, message: '手机号码不符合规范，请重新输入！'}]"
         />
@@ -46,7 +46,7 @@
           label="工作城市"
           placeholder="请选择"
           :rules="[
-            { required: true, message: '请选择' },
+            { required: true, message: '请选择城市' },
           ]"
         />
         <selftPicker

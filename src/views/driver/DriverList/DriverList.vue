@@ -235,7 +235,7 @@ export default {
         { name: '审核不通过', code: 25 },
         { name: '待审核', code: 20 },
         // { name: '待确认', code: 15 }
-        { name: '已终止服务', code: 45 }
+        { name: '已终止', code: 45 }
       ],
       columns_carType: [],
       showPicker: false,

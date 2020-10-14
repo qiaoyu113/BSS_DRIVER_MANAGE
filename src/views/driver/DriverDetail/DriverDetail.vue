@@ -204,7 +204,8 @@ export default {
       tagInfo: {},
       orderInfoList: [],
       lineList: [],
-      contractList: []
+      contractList: [],
+      recentOrder: {}
     };
   },
   computed: {
@@ -249,26 +250,22 @@ export default {
       // /v2/order/createOrUpdateOrder
       const orderDetail = { name: '详情', url: '/orderDetail' }
       const orderStop = { name: '终止', url: 'stop' }
-      if (this.detailInfo.orderStatus === 0 || this.detailInfo.orderStatus === 45
-      ) {
-        if (this.isStep) {
-          arr.push(createOrder)
-        }
-        return arr;
-      } else if (this.detailInfo.orderStatus === 20) {
+      if (this.isStep) {
+        arr.push(createOrder)
+      }
+      if (this.recentOrder.status === 20) {
         arr.push(orderDetail)
         arr.push(orderAudit)
-        return arr;
-      } else if (this.detailInfo.orderStatus === 25) {
-        arr.push(resetOrder)
+      }
+      if (this.recentOrder.status === 25) {
         arr.push(orderDetail)
-        return arr;
-      } else if (this.detailInfo.orderStatus === 30) {
-        // 订单状态已成交
+        arr.push(resetOrder)
+      }
+      if (this.recentOrder.status === 30) {
         arr.push(orderDetail)
         arr.push(orderStop)
-        return arr;
       }
+      return arr;
     },
     arrList() {
       let arr = []
@@ -471,8 +468,9 @@ export default {
         }
         let { data: res } = await getOrderList(params);
         if (res.success) {
+          this.orderInfoList = res.data || [];
           if (res.data !== null) {
-            this.orderInfoList = res.data;
+            this.recentOrder = res.data[0]
           }
           this.$loading(false);
         } else {
