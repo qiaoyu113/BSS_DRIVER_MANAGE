@@ -215,16 +215,16 @@ export default {
       return this.orderList();
     },
     isStep() {
-      if (this.orderInfoList.length < 1) {
+      if (this.orderInfoList.length === 0) {
         return true
       } else {
-        return this.orderInfoList.map(ele => {
-          if (ele.status === 30) {
-            return false
-          } else {
-            return true
+        let statusArr = []
+        this.orderInfoList.map(ele => {
+          if (ele.status === 45 || ele.status === 0) {
+            statusArr.push(ele)
           }
         })
+        return statusArr.length === this.orderInfoList.length
       }
     }
   },
@@ -249,9 +249,7 @@ export default {
       // /v2/order/createOrUpdateOrder
       const orderDetail = { name: '详情', url: '/orderDetail' }
       const orderStop = { name: '终止', url: 'stop' }
-      if (
-        this.detailInfo.orderStatus === null ||
-        this.detailInfo.orderStatus === 0 || this.detailInfo.orderStatus === 45
+      if (this.detailInfo.orderStatus === 0 || this.detailInfo.orderStatus === 45
       ) {
         if (this.isStep) {
           arr.push(createOrder)
