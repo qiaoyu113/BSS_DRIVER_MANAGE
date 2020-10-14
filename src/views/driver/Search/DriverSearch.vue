@@ -260,6 +260,7 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value;
+      this.getLists(this.keyWord)
     },
     async getLists(keyword = '') {
       try {
