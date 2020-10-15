@@ -5,8 +5,8 @@
       <van-cell>
         <template #title>
           <div class="title">
-            <span>{{ item.name }}</span>
-            <span>{{ item.phone }}</span>
+            <span>{{ item.name }}</span>&#8194;
+            <span>{{ item.phone }}</span>&#8194;
           </div>
         </template>
       </van-cell>

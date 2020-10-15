@@ -9,54 +9,55 @@
         <!-- 客户信息 -->
         <van-collapse-item title="客户信息" :name="0">
           <!-- 使用 title 插槽来自定义标题 -->
-          <van-cell
-            title="客户名称："
-            :value="
-              DataIsNull(lineInfoVO.customerName) +
-                '/' +
-                DataIsNull(lineInfoVO.customerId)
-            "
-          ></van-cell>
-          <van-cell
-            title="项目名称："
-            :value="
-              DataIsNull(lineCloudProjectVO.projectName) +
-                '/' +
-                DataIsNull(lineCloudProjectVO.projectId)
-            "
-          ></van-cell>
-          <van-cell
-            title="线路名称："
-            :value="
-              DataIsNull(lineInfoVO.lineName) +
-                '/' +
-                DataIsNull(lineInfoVO.lineId)
-            "
-          ></van-cell>
-          <van-cell
-            title="上岗经理："
-            :value="
-              DataIsNull(lineInfoVO.dutyManagerIdName) +
-                '/' +
-                DataIsNull(lineInfoVO.dutyManagerPhone)
-            "
-          ></van-cell>
-          <van-cell
-            title="外线销售："
-            :value="
-              DataIsNull(lineInfoVO.lineSaleName) +
-                '/' +
-                DataIsNull(lineInfoVO.lineSalePhone)
-            "
-          ></van-cell>
-          <div
-            class="bottom van-hairline--top flex flex align-center justify-center"
-          >
+          <div @click="goCustomDetail(lineInfoVO.customerId)">
+            <van-cell
+              title="客户名称："
+              :value="
+                DataIsNull(lineInfoVO.customerName) +
+                  '/' +
+                  DataIsNull(lineInfoVO.customerId)
+              "
+            ></van-cell>
+            <van-cell
+              title="项目名称："
+              :value="
+                DataIsNull(lineCloudProjectVO.projectName) +
+                  '/' +
+                  DataIsNull(lineCloudProjectVO.projectId)
+              "
+            ></van-cell>
+            <van-cell
+              title="线路名称："
+              :value="
+                DataIsNull(lineInfoVO.lineName) +
+                  '/' +
+                  DataIsNull(lineInfoVO.lineId)
+              "
+            ></van-cell>
+            <van-cell
+              title="上岗经理："
+              :value="
+                DataIsNull(lineInfoVO.dutyManagerIdName) +
+                  '/' +
+                  DataIsNull(lineInfoVO.dutyManagerPhone)
+              "
+            ></van-cell>
+            <van-cell
+              title="外线销售："
+              :value="
+                DataIsNull(lineInfoVO.lineSaleName) +
+                  '/' +
+                  DataIsNull(lineInfoVO.lineSalePhone)
+              "
+            ></van-cell>
             <div
-              class="details van-hairline--surround"
-              @click="goCustomDetail(lineInfoVO.customerId)"
+              class="bottom van-hairline--top flex flex align-center justify-center"
             >
-              详情
+              <div
+                class="details van-hairline--surround"
+              >
+                详情
+              </div>
             </div>
           </div>
         </van-collapse-item>
@@ -72,103 +73,105 @@
               {{ lineInfoVO.busiTypeName | DataIsNull }}
             </van-tag>
           </template>
-          <van-cell
-            title="上岗时间："
-            :value="timeFormat(lineInfoVO.driverWorkTime,'YYYY-MM-DD')"
-          ></van-cell>
-          <van-cell
-            title="到仓时间："
-            :value="lineInfoVO.deliveryStartDate | DataIsNull"
-          ></van-cell>
-          <van-cell
-            title="仓库位置："
-            :value="
-              DataIsNull(lineCloudProjectVO.warehouseProvinceName)
-                +
-                DataIsNull(lineCloudProjectVO.warehouseCityName)
-                +
-                DataIsNull(lineCloudProjectVO.warehouseCountyName)
-                +
-                DataIsNull(lineCloudProjectVO.warehouseDistrict)
-            "
-          ></van-cell>
-          <van-cell
-            title="配送车型："
-            :value="lineInfoVO.carTypeName | DataIsNull"
-          ></van-cell>
-          <van-cell
-            title="配送区域："
-            :value="
-              DataIsNull(lineInfoVO.provinceAreaName)
-                +
-                DataIsNull(lineInfoVO.cityAreaName)
-                +
-                DataIsNull(lineInfoVO.countyAreaName)
-                +
-                DataIsNull(lineInfoVO.districtArea)
-            "
-          ></van-cell>
-          <van-cell
-            title="里程时间："
-            :value="
-              DataIsNull(lineInfoVO.distance)
-                +
-                'km/'
-                +
-                DataIsNull(lineInfoVO.timeDiff)
-            "
-          ></van-cell>
-          <div
-            class="bottom van-hairline--top flex flex align-center justify-center"
-          >
+          <div @click="goLineDetail(lineInfoVO.lineId)">
+            <van-cell
+              title="上岗时间："
+              :value="timeFormat(lineInfoVO.driverWorkTime,'YYYY-MM-DD')"
+            ></van-cell>
+            <van-cell
+              title="到仓时间："
+              :value="lineInfoVO.deliveryStartDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="仓库位置："
+              :value="
+                DataIsNull(lineCloudProjectVO.warehouseProvinceName)
+                  +
+                  DataIsNull(lineCloudProjectVO.warehouseCityName)
+                  +
+                  DataIsNull(lineCloudProjectVO.warehouseCountyName)
+                  +
+                  DataIsNull(lineCloudProjectVO.warehouseDistrict)
+              "
+            ></van-cell>
+            <van-cell
+              title="配送车型："
+              :value="lineInfoVO.carTypeName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="配送区域："
+              :value="
+                DataIsNull(lineInfoVO.provinceAreaName)
+                  +
+                  DataIsNull(lineInfoVO.cityAreaName)
+                  +
+                  DataIsNull(lineInfoVO.countyAreaName)
+                  +
+                  DataIsNull(lineInfoVO.districtArea)
+              "
+            ></van-cell>
+            <van-cell
+              title="里程时间："
+              :value="
+                DataIsNull(lineInfoVO.distance)
+                  +
+                  'km/'
+                  +
+                  DataIsNull(lineInfoVO.timeDiff)
+              "
+            ></van-cell>
             <div
-              class="details van-hairline--surround"
-              @click="goLineDetail(lineInfoVO.lineId)"
+              class="bottom van-hairline--top flex flex align-center justify-center"
             >
-              详情
+              <div
+                class="details van-hairline--surround"
+              >
+                详情
+              </div>
             </div>
           </div>
         </van-collapse-item>
         <!-- 司机信息 -->
         <van-collapse-item title="司机信息" :name="2">
-          <van-cell
-            title="司机信息："
-            :value="
-              DataIsNull(driverBusiInfoVO.name)
-                +
-                DataIsNull(driverBusiInfoVO.phone)
-            "
-          ></van-cell>
-          <van-cell
-            title="车型："
-            :value="driverBusiInfoVO.carTypeName | DataIsNull"
-          ></van-cell>
-          <van-cell
-            title="车牌号："
-            :value="driverBusiInfoVO.carNo | DataIsNull"
-          ></van-cell>
-          <van-cell
-            title="现住址："
-            :value="driverBusiInfoVO.workCityName | DataIsNull"
-          ></van-cell>
-          <van-cell
-            title="加盟经理："
-            :value="
-              DataIsNull(driverBusiInfoVO.gmName)
-                +
-                '/'
-                +
-                DataIsNull(driverBusiInfoVO.gmPhone)
-            "
-          ></van-cell>
-          <div
-            class="bottom van-hairline--top flex flex align-center justify-center"
-          >
+          <div @click="goDriverDetail(detail.driverId)">
+            <van-cell
+              title="司机信息："
+              :value="
+                DataIsNull(driverBusiInfoVO.name)
+                  + '/' +
+                  DataIsNull(driverBusiInfoVO.phone)
+              "
+            ></van-cell>
+            <van-cell
+              title="车型："
+              :value="driverBusiInfoVO.carTypeName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="车牌号："
+              :value="driverBusiInfoVO.carNo | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="现住址："
+              :value="driverBusiInfoVO.workCityName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="加盟经理："
+              :value="
+                DataIsNull(driverBusiInfoVO.gmName)
+                  +
+                  '/'
+                  +
+                  DataIsNull(driverBusiInfoVO.gmPhone)
+              "
+            ></van-cell>
             <div
-              class="details van-hairline--surround"
-              @click="goDriverDetail(detail.driverId)"
+              class="bottom van-hairline--top flex flex align-center justify-center"
             >
-              详情
+              <div
+                class="details van-hairline--surround"
+              >
+                详情
+              </div>
             </div>
           </div>
         </van-collapse-item>

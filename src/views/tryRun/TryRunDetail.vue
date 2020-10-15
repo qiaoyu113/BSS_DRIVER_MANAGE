@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import DetailsItem from './components/DetailsItem';
 import { GetDetails } from '@/api/tryrun'
 export default {
@@ -58,6 +59,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters([
+      'userData'
+    ]),
     title() {
       return this.$route.meta.title;
     }
@@ -135,25 +139,29 @@ export default {
       switch (status) {
         case 100:
           this.actions = [
-            { name: '创建试跑', index: 0 }
+            { name: '创建试跑', index: 0, disabled: this.permission('/v2/runtest/creatIntentionRun') }
           ]
           break;
         case 300:
           this.actions = [
-            { name: '转试跑', index: 1 },
-            { name: '转掉线', index: 2 }
+            { name: '转试跑', index: 1, disabled: this.permission('/v2/runtest/switchTryRun') },
+            { name: '转掉线', index: 2, disabled: this.permission('/v2/runtest/switchDropped') }
           ]
           break;
         case 200:
         case 500:
           this.actions = [
-            { name: '转掉线', index: 2 }
+            { name: '转掉线', index: 2, disabled: this.permission('/v2/runtest/switchDropped') }
           ]
           break;
         default:
           this.actions = []
           break;
       }
+    },
+    permission(val) {
+      const permissionList = this.userData.stringPermissions
+      return !permissionList.some(item => item === val)
     }
   }
 };

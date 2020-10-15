@@ -15,7 +15,6 @@ import JsCookie from 'js-cookie'
 //     // url = 'http://firmiana-wechat.m1.yunniao.cn/'注释
 //   }
 // }
-
 // create an axios instance
 const service = axios.create({
 

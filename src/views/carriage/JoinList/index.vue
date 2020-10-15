@@ -50,7 +50,9 @@
           <van-checkbox-group ref="checkboxGroup" v-model="checkResult" max="20">
             <div v-for="sub in lists" :key="sub.id" class="listBox">
               <p v-if="optionsType" class="checked-box">
-                <van-checkbox v-if="sub.gmStatusCode === 0" :name="sub.wayBillId" :disabled="sub.gmStatusCode !== 0" shape="square" />
+                <!----sub.gmStatusCode !== 0 判断未确认是否使用的逻辑--->
+                <!-- <van-checkbox v-if="sub.gmStatusCode === 0" :disabled="disabledCheck(sub.departureDate, sub.gmStatusCode !== 0)" :name="sub.wayBillId" shape="square" /> -->
+                <van-checkbox v-if="sub.gmStatusCode === 0" :disabled="disabledCheck(sub.departureDate)" :name="sub.wayBillId" shape="square" />
               </p>
               <CardItem :obj="sub" />
             </div>
@@ -553,6 +555,11 @@ export default {
         this.columns = this.whyList;
       }
       this.showPicker = true;
+    },
+    disabledCheck(time) {
+      let now = new Date().setHours(0, 0, 0, 0);
+      let ThreeDayAgo = now - 86400000 * 3;// 一天86400秒
+      return time < ThreeDayAgo
     }
   }
 }

@@ -159,16 +159,13 @@ export default {
         driverId: this.obj.driverId,
         orderId: this.obj.orderId,
         operateFlag: 'abort',
+        goodsAmount: this.obj.goodsAmount,
         status: this.obj.status
       }
       let { data: res } = await orderAbort(params);
       if (res.success) {
-        if (res.data.flag) {
-          Notify({ type: 'success', message: '订单终止成功' });
-          this.$emit('orderStop')
-        } else {
-          Notify({ type: 'warning', message: res.errorMsg });
-        }
+        Notify({ type: 'success', message: '订单终止成功' });
+        this.$emit('orderStop')
       } else {
         Notify({ type: 'warning', message: res.errorMsg });
       }

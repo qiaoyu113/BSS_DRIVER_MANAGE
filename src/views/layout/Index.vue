@@ -90,15 +90,15 @@ export default {
           pUrl: ['/v2/driver/getDriverList']
         },
         {
-          name: '试跑-在跑',
+          name: '试跑在跑',
           value: 2,
-          pUrl: ['/v2/runtest/getRunTestInfoList']
-        },
-        {
-          name: '运费管理',
-          value: 3,
-          pUrl: ['/v2/waybill/getGmInfoList', '/v2/waybill/getLineInfoList']
+          pUrl: ['/v2/runtest/getRunTestInfoList', '/v2/waybill/getGmInfoList', '/v2/waybill/getLineInfoList']
         }
+        // {
+        //   name: '运费管理',
+        //   value: 3,
+        //   pUrl: ['/v2/waybill/getGmInfoList', '/v2/waybill/getLineInfoList']
+        // }
       ],
       activeIndex: 0,
       show: false,
@@ -151,6 +151,7 @@ export default {
             title: '线索管理',
             url: '/clue',
             icon: require('../../assets/Home/icon_11.png'),
+            pUrl: '/v2/clue/getClueList',
             style: {
               width: '1.0133rem',
               height: '1.0133rem'
@@ -179,7 +180,7 @@ export default {
         // 试跑-在跑
         [
           {
-            title: '试跑-在跑',
+            title: '试跑在跑',
             url: '/try-run',
             icon: require('../../assets/Home/icon_7.png'),
             pUrl: '/v2/runtest/getRunTestInfoList',
@@ -187,10 +188,7 @@ export default {
               width: '1.0933rem',
               height: '1.026rem'
             }
-          }
-        ],
-        // 运费
-        [
+          },
           {
             title: '加盟运费上报',
             url: '/freight',
@@ -212,30 +210,34 @@ export default {
               marginTop: '0.1rem'
             }
           }
-          // {
-          //   title: '运费确认',
-          //   url: '/report',
-          //   icon: require('../../assets/Home/icon_10.png'),
-          //   style: {
-          //     width: '1.04rem',
-          //     height: '1.1333rem',
-          //     marginTop: '-0.1rem'
-          //   }
-          // }
-        ],
-        // 试跑-在跑
-        [
-          {
-            title: '运费管理',
-            url: '/freight',
-            icon: ''
-          },
-          {
-            title: '外线运费上报',
-            url: '/outsidefreight',
-            icon: ''
-          }
         ]
+        // 运费
+        // [
+
+        // {
+        //   title: '运费确认',
+        //   url: '/report',
+        //   icon: require('../../assets/Home/icon_10.png'),
+        //   style: {
+        //     width: '1.04rem',
+        //     height: '1.1333rem',
+        //     marginTop: '-0.1rem'
+        //   }
+        // }
+        // ],
+        // 试跑-在跑
+        // [
+        //   {
+        //     title: '运费管理',
+        //     url: '/freight',
+        //     icon: ''
+        //   },
+        //   {
+        //     title: '外线运费上报',
+        //     url: '/outsidefreight',
+        //     icon: ''
+        //   }
+        // ]
       ]
     };
   },
