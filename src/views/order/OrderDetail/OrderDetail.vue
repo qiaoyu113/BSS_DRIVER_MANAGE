@@ -193,12 +193,12 @@
             <van-field
               label="支付时间"
               colon
-              :value="payInfo.payDate"
+              :value="payInfo.payDate | DataIsNull"
               readonly
             />
             <van-field
               label="支付方式"
-              :value="payInfo.payTypeName"
+              :value="payInfo.payTypeName | DataIsNull"
               readonly
               colon
             />
@@ -220,12 +220,12 @@
             <van-field
               label="交易编号"
               colon
-              :value="payInfo.transactionId"
+              :value="payInfo.transactionId | DataIsNull"
               readonly
             />
             <van-field
               label="备注"
-              :value="payInfo.remarks"
+              :value="payInfo.remarks | DataIsNull "
               readonly
               colon
             />
@@ -382,11 +382,12 @@ export default {
           // 成功通知
           if (type === 'auditNotPass') {
             Notify({ type: 'warning', message: '已驳回' });
-            this.$router.go(-1);
           } else {
             Notify({ type: 'success', message: '审核通过' });
-            this.$router.go(-1);
           }
+          setTimeout(() => {
+            this.$router.go(-1);
+          }, 1000);
         } else {
           this.$toast.fail(res.errorMsg);
         }
