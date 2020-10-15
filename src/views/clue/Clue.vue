@@ -275,11 +275,7 @@ export default {
         { name: '微信授权', code: 1 },
         { name: '入驻', code: 2 }
       ],
-      columns_gmGroupId: [
-        { name: '共享一组', code: '' },
-        { name: '共享二组', code: 0 },
-        { name: '共享三组', code: 1 }
-      ], // 加盟小组
+      columns_gmGroupId: [], // 加盟小组
       columns_scGmId: [], // 渠道经理
       showPicker: false,
       showScreen: false,
@@ -318,8 +314,8 @@ export default {
       },
       tabType: [
         { type: '全部', code: '', num: '' },
-        { type: '待跟进', code: '0', num: '' },
-        { type: '已转化', code: '1', num: '' }
+        { type: '待跟进', code: 0, num: '' },
+        { type: '已转化', code: 1, num: '' }
       ],
       checked: false,
       changeManagerStatus: false,
@@ -537,7 +533,7 @@ export default {
       if (tab === 0) {
         this.ruleForm.status = ''
       } else {
-        this.ruleForm.status = String(tab)
+        this.ruleForm.status = String(tab - 1)
       }
       this.loading = true
       this.onLoad(true)
@@ -572,7 +568,7 @@ export default {
             total: res.page.total
           }
           this.tabType.forEach(item => {
-            if (item.code === this.ruleForm.status) {
+            if (String(item.code) === this.ruleForm.status) {
               item.num = res.page.total
             } else {
               item.num = ''
