@@ -135,6 +135,14 @@ export const getSpecifiedUserListByCondition = (data) =>
     data
   })
 
+// 角色标识。加盟经理roleId=1 外销销售=2,上岗经理=3 ,渠道经理=4
+export const GetUserList = (data) =>
+  request({
+    // url: `${prefix}/v2/base/user/getSpecifiedUserList`,
+    url: `${prefix}/v2/base/user/getUserListByProductLineAndCC`,
+    method: 'post',
+    data
+  })
 // 查询当前用户组织下的城市列表或者所归属的城市 工作城市
 export function getCurrentLowerOfficeCityData(params) {
   return request({
@@ -150,4 +158,11 @@ export const getGMListByProductLineAndCC = (data) =>
     url: `${prefix}/v2/base/user/getGMListByProductLineAndCC`,
     method: 'post',
     data
+  })
+// 根据地市和产品线查询当前用户所属得组织信息
+export const GetGmGroup = (params) =>
+  request({
+    url: `${prefix}/v2/base/office/getGroupInfoByCityCodeAndProductLine`,
+    method: 'get',
+    params
   })

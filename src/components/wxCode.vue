@@ -3,7 +3,7 @@
     <van-grid-item>
       <div class="grid-ct flex-sub">
         <img
-          :src="url"
+          v-lazy="url"
           class="grid-pic wxIcon"
           @click.stop="preview"
         >
@@ -18,9 +18,11 @@
 <script>
 import { GetcreateQrCodeFrontUrl } from '@/api/driver.js'
 import { ImagePreview } from 'vant';
+// import { Lazyload } from 'vant';
 export default {
   components: {
     [ImagePreview.Component.name]: ImagePreview.Component
+    // [Lazyload.Component.name]: Lazyload.Component
   },
   data() {
     return {

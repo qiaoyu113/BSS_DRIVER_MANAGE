@@ -183,7 +183,8 @@ export function updateGmByDriverId(data) {
 // 获取当前加盟经理的推广码
 export function GetcreateQrCodeFrontUrl() {
   return request({
-    url: '/mock/112/v2/driver/applet/createQrCodeFront',
+    // url: '/mock/112/v2/driver/applet/createQrCodeFront',
+    url: `${prefix}/v2/driver/applet/createQrCodeFront`,
     method: 'get'
   })
 }
