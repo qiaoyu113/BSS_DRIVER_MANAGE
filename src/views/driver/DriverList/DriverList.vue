@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, getSpecifiedUserListByCondition } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -234,7 +234,6 @@ export default {
         { name: '已成交', code: 30 },
         { name: '审核不通过', code: 25 },
         { name: '待审核', code: 20 },
-        // { name: '待确认', code: 15 }
         { name: '已终止', code: 45 }
       ],
       columns_carType: [],
@@ -256,7 +255,6 @@ export default {
       ruleForm: {
         workCity: '',
         busiType: '',
-        // GmGroup: '',
         gmId: '',
         carType: '',
         status: '',
@@ -302,11 +300,9 @@ export default {
       this.checkedList = [];
     },
     'ruleForm.workCity'(val) {
-      if (val !== '') {
-        this.getGmId()
-        this.ruleForm.gmId = ''
-        this.formText.gmId = ''
-      }
+      this.getGmId()
+      this.ruleForm.gmId = ''
+      this.formText.gmId = ''
     },
     'ruleForm.busiType'(val) {
       this.getGmId()
@@ -314,24 +310,24 @@ export default {
       this.formText.gmId = ''
     }
   },
-  mounted() {
-  },
   methods: {
     // 联动请求加盟经理
     getGmId() {
-      let params = {
-        'cityCode': this.ruleForm.workCity,
-        'productLine': this.ruleForm.busiType,
-        'roleType': 1
-      }
+      let params = {}
+      this.ruleForm.workCity !== '' && (params.cityCode = this.ruleForm.workCity)
+      this.ruleForm.busiType !== '' && (params.productLine = this.ruleForm.busiType)
       if (this.ruleForm.busiType !== '') {
         params.productLine = params.productLine + 2
       }
-      GetSpecifiedRoleList(params).then(({ data }) => {
+      params.roleType = 1
+      getSpecifiedUserListByCondition(params).then(({ data }) => {
         if (data.success) {
           this.columns_GmManager = data.data.map(ele => {
             return { name: ele.name, code: ele.id }
           })
+          if (data.data.length > 0) {
+            this.columns_GmManager.unshift({ name: '全部', code: '' })
+          }
         } else {
           this.$toast(data.errorMsg)
         }
@@ -350,6 +346,7 @@ export default {
             this.columns_carType = data.data.Intentional_compartment.map(ele => {
               return { name: ele.dictLabel, code: ele.dictValue }
             })
+            this.columns_carType.unshift({ name: '全部', code: '' })
           }
         }).catch((err) => {
           console.log(err)
@@ -358,6 +355,9 @@ export default {
         .then(({ data }) => {
           if (data.success) {
             this.columns_workCity = data.data;
+            if (data.data.length > 0) {
+              this.columns_workCity.unshift({ name: '全部', code: '' })
+            }
             this.getGmId()
           }
         }).catch((err) => {

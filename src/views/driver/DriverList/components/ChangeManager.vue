@@ -38,7 +38,7 @@
               clearable
               :border="false"
               placeholder="请选择"
-              :rules="[{ required: true, message: '请填写工作城市' }]"
+              :rules="[{ required: true, message: '请选择工作城市' }]"
               @click="showPickerFn('workCity')"
             />
             <van-field
@@ -51,7 +51,7 @@
               label="加盟经理"
               clearable
               placeholder="请选择"
-              :rules="[{ required: true, message: '请填写加盟经理' }]"
+              :rules="[{ required: true, message: '请选择加盟经理' }]"
               @click="showPickerFn('gmId')"
             />
           </div>
@@ -96,7 +96,7 @@
 import { Popup, Notify } from 'vant';
 import { delay } from '@/utils';
 import { updateGmByDriverId } from '@/api/driver.js'
-import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { getCurrentLowerOfficeCityData, getSpecifiedUserListByCondition } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -112,7 +112,7 @@ export default {
       active: 0,
       pickerNames: {
         gmId: '',
-        workCity: ''
+        workCity: '全部'
       },
       formData: {
         gmId: '',
@@ -121,7 +121,7 @@ export default {
       columns: [],
       pickerKey: '',
       showPicker: false,
-      columns_workCity: [],
+      columns_workCity: [{ name: '全部', code: '' }],
       columns_gmId: [],
       managerStatus: false
     };
@@ -129,19 +129,20 @@ export default {
   watch: {
     status(val) {
       this.managerStatus = val
+      if (val) {
+        this.getGmId()
+      }
     },
     active(val) {
       this.resetform();
-      this.getGmId()
       this.formData.gmId = ''
       this.pickerNames.gmId = ''
+      this.getGmId()
     },
     'formData.workCity'(val) {
-      if (val) {
-        this.getGmId(val)
-        this.formData.gmId = ''
-        this.pickerNames.gmId = ''
-      }
+      this.getGmId(val)
+      this.formData.gmId = ''
+      this.pickerNames.gmId = ''
     }
   },
   mounted() {
@@ -151,15 +152,14 @@ export default {
   methods: {
     async getGmId(val) {
       let params = {
-        'cityCode': this.formData.workCity,
         'productLine': this.active + 2,
         'roleType': 1
       }
-      GetSpecifiedRoleList(params).then(({ data }) => {
+      this.formData.workCity !== '' && (params.cityCode = this.formData.workCity)
+      getSpecifiedUserListByCondition(params).then(({ data }) => {
         if (data.success) {
-          this.columns_gmId = data.data.map(ele => {
-            return { name: ele.name, code: ele.id }
-          })
+          this.columns_gmId = []
+          this.columns_gmId = data.data.map(ele => ({ name: ele.name, code: ele.id }))
         } else {
           this.$toast(data.errorMsg)
         }
@@ -172,20 +172,20 @@ export default {
       getCurrentLowerOfficeCityData({})
         .then(({ data }) => {
           if (data.success) {
-            this.columns_workCity = data.data;
+            this.columns_workCity.push(...data.data);
           }
         }).catch((err) => {
           console.log(err)
         });
-      this.getGmId()
+      // this.getGmId()
     },
     async onSubmit(values) {
       try {
         this.$loading(true)
         let params = {
-          'gmId': this.formData.gmId,
           'driverId': this.$parent.checkedList
         };
+        this.formData.gmId !== '' && (params.gmId = this.formData.gmId)
         let { data: res } = await updateGmByDriverId(params);
         if (res.success) {
           this.managerStatus = false;

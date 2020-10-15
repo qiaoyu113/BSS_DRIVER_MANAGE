@@ -776,9 +776,7 @@ export default {
                 this.asyncSetPay([...res.data.orderPayRecordInfoVOList])
               }
             }
-            console.log(this.orderStatus, 'this.orderStatus222')
             if (this.orderStatus) {
-              console.log(this.orderStatus, 'this.orderStatus')
               this.formStatus = 3
             }
           }
