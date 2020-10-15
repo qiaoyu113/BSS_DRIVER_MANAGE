@@ -66,6 +66,7 @@ export default {
           wayBillId: id
         }
         let { data: res } = await shippingDetailByGM(parmas)
+        res.data.departureDate = this.obj.departureDate
         if (res.success) {
           this.$router.push({
             path: '/joindetail',

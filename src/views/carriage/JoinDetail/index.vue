@@ -4,7 +4,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="加盟运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div v-if="obj.gmState === 0" class="headerRight" @click="showPopup(obj)">
+          <div v-if="obj.gmState === 0" class="headerRight" @click="showPopup(obj.departureDate)">
             上报
           </div>
         </template>
@@ -115,6 +115,7 @@ export default {
   },
   mounted() {
     this.obj = JSON.parse(this.$route.query.obj);
+    console.log(this.obj)
   },
   methods: {
     /**
@@ -179,8 +180,14 @@ export default {
       // this.$loading(false)
       }
     },
-    showPopup(id) {
-      this.wayBillAmountDetail(this.obj.wayBillId)
+    showPopup(time) {
+      let now = new Date().setHours(0, 0, 0, 0);
+      let ThreeDayAgo = now - 86400000 * 3;// 一天86400秒
+      if (time < ThreeDayAgo) {
+        this.$toast.fail('超过出车日期三天（含当天）不可上报运费，请联系总线运营')
+      } else {
+        this.wayBillAmountDetail(this.obj.wayBillId)
+      }
     },
     async wayBillAmountDetail(id) { // 确认运费回显
       try {
