@@ -242,7 +242,7 @@
           :value="formData.statusName"
           readonly
           colon
-          label-align="right"
+          label-align="left"
           label-width="120px"
         />
         <!-- :value="formData.createDate" -->
@@ -250,7 +250,7 @@
           label="订单生成时间"
           colon
           :value="timeFormat(formData.createDate,'YYYY-MM-DD')"
-          label-align="right"
+          label-align="left"
           readonly
           label-width="120px"
         />
@@ -261,7 +261,7 @@
           colon
           :value="timeFormat(formData.confirmTime,'YYYY-MM-DD')"
           readonly
-          label-align="right"
+          label-align="left"
           label-width="120px"
         /> -->
         <!-- :value="formData.passTime" -->
@@ -272,7 +272,7 @@
           colon
           :value="timeFormat(formData.passTime,'YYYY-MM-DD')"
           readonly
-          label-align="right"
+          label-align="left"
         />
         <!-- :value="formData.notPassTime" -->
         <van-field
@@ -281,7 +281,7 @@
           colon
           :value="timeFormat(formData.notPassTime,'YYYY-MM-DD')"
           readonly
-          label-align="right"
+          label-align="left"
           label-width="140px"
         />
         <!-- :value="formData.updateDate" -->
@@ -291,7 +291,7 @@
           colon
           :value="timeFormat(formData.updateDate,'YYYY-MM-DD')"
           readonly
-          label-align="right"
+          label-align="left"
           label-width="120px"
         />
       </van-cell-group>

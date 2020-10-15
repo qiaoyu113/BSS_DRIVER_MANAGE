@@ -236,6 +236,7 @@ export default {
       }
     },
     cancelform() {
+      this.setStatus(true)
       this.$router.go(-1);
     },
     onOversize(file) {
@@ -314,9 +315,9 @@ export default {
         let params = { ...this.form };
         if (params.useWithdrawable !== 0) {
           delete params.transactionId;
-          delete params.payType;
           delete params.payTypeName;
           delete params.payImageUrl;
+          params.payType = 9;
         }
         params.payDate = new Date(this.form.payDate).getTime();
         let arr = [];

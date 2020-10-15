@@ -135,7 +135,7 @@
             title="司机信息："
             :value="
               DataIsNull(driverBusiInfoVO.name)
-                +
+                + '/' +
                 DataIsNull(driverBusiInfoVO.phone)
             "
           ></van-cell>

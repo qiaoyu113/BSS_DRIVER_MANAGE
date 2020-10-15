@@ -16,7 +16,7 @@
             style="margin-left:6px"
           >
             <span
-              v-if="detailInfo.status !== 2"
+              v-if="detailInfo.status === 0"
               class="orderBtn"
               @click="goRouter"
             >编辑</span>
@@ -35,26 +35,24 @@
             </div>
           </template>
         </van-cell>
+        <van-cell>
+          <template #title>
+            <div class="itemStatus">
+              {{ detailInfo.statusName | DataIsNull }}
+            </div>
+          </template>
+        </van-cell>
         <div class="itemInfo">
-          <div class="itemStatusBox">
-            <van-cell
-              title-class="cell-title"
-              value-class="cell-value"
-              title="线索编号："
-              :value="detailInfo.clueId | DataIsNull"
-            />
-            <van-cell class="cellStatus">
-              <template #title>
-                <div class="itemStatus">
-                  {{ detailInfo.statusName | DataIsNull }}
-                </div>
-              </template>
-            </van-cell>
-          </div>
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
-            title="加盟经理："
+            title="线索编号："
+            :value="detailInfo.clueId | DataIsNull"
+          />
+          <van-cell
+            title-class="cell-title"
+            value-class="cell-value"
+            :title="setLabel(detailInfo.gmDutyName) + '：'"
             :value="`${detailInfo.gmName}/${detailInfo.gmMobile}`"
           />
           <van-cell
@@ -140,6 +138,12 @@ export default {
     this.getDetail(id);
   },
   methods: {
+    setLabel(val) {
+      if (val.includes('加盟')) {
+        return val.substr(2)
+      }
+      return val
+    },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
       return dayjs(date).format(format)
@@ -199,14 +203,6 @@ export default {
     }
     .itemInfo {
       border: none;
-      .itemStatusBox{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        .van-cell{
-          width: auto;
-        }
-      }
     }
     .itemBox {
       margin-bottom: 0;
