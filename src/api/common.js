@@ -127,6 +127,14 @@ export const GetSpecifiedRoleList = (data) =>
     data
   })
 
+// 加盟经理(1)  外销销售(2) 上岗经理(3)
+export const getSpecifiedUserListByCondition = (data) =>
+  request({
+    url: `${prefix}/v2/base/user/getSpecifiedUserListByCondition`,
+    method: 'post',
+    data
+  })
+
 // 查询当前用户组织下的城市列表或者所归属的城市 工作城市
 export function getCurrentLowerOfficeCityData(params) {
   return request({
