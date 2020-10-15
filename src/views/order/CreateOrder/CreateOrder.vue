@@ -464,7 +464,7 @@ export default {
   computed: {
     ...mapState({
       payList: state => state.orderPayList.payList,
-      orderStaus: state => state.orderPayList.orderStatus
+      orderStatus: state => state.orderPayList.orderStatus
     }),
     title() {
       return this.$route.meta.title;
@@ -770,9 +770,15 @@ export default {
               this.formData.orderPayRecordInfoFORMList = this.payList;
             } else {
               this.formData.orderPayRecordInfoFORMList = res.data.orderPayRecordInfoVOList || []
-              this.asyncSetPay([...res.data.orderPayRecordInfoVOList])
+              if (res.data.orderPayRecordInfoVOList === null) {
+                this.asyncSetPay([])
+              } else {
+                this.asyncSetPay([...res.data.orderPayRecordInfoVOList])
+              }
             }
-            if (this.orderStaus) {
+            console.log(this.orderStatus, 'this.orderStatus222')
+            if (this.orderStatus) {
+              console.log(this.orderStatus, 'this.orderStatus')
               this.formStatus = 3
             }
           }
