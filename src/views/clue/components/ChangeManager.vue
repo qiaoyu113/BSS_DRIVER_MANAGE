@@ -38,7 +38,6 @@
               clearable
               :border="false"
               placeholder="请选择"
-              :rules="[{ required: true, message: '请填写工作城市' }]"
               @click="showPickerFn('workCity')"
             />
             <van-field
@@ -51,7 +50,6 @@
               label="加盟小组"
               clearable
               placeholder="请选择"
-              :rules="[{ required: true, message: '请选择加盟小组' }]"
               @click="showPickerFn('gmGroupId')"
             />
             <van-field
@@ -124,7 +122,7 @@
 import { Popup, Notify } from 'vant';
 import { delay } from '@/utils';
 import { updateGmByClueId } from '@/api/clue.js'
-import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { getCurrentLowerOfficeCityData, GetUserList, GetGmGroup } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -155,11 +153,7 @@ export default {
       showPicker: false,
       columns_workCity: [],
       columns_gmId: [],
-      columns_gmGroupId: [
-        { name: '共享一组', code: '' },
-        { name: '共享二组', code: 0 },
-        { name: '共享三组', code: 1 }
-      ], // 加盟小组
+      columns_gmGroupId: [], // 加盟小组
       columns_scGmId: [], // 渠道经理
       managerStatus: false
     };
@@ -210,11 +204,16 @@ export default {
     // 获取渠道经理
     getScGmId(val) {
       let params = {
-        'cityCode': this.formData.workCity,
-        'productLine': this.active + 2,
-        'roleType': 1
+        'cityCode': this.formData.workCity, // 工作城市
+        'productLine': this.active, // 业务线
+        'gmGroup': this.formData.gmGroupId, // 加盟小组
+        'roleType': 4
       }
-      GetSpecifiedRoleList(params).then(({ data }) => {
+      if (this.formData.busiType !== '') {
+        params.productLine = params.productLine + 2
+      }
+      params = this.removeEmpty(params)
+      GetUserList(params).then(({ data }) => {
         if (data.success) {
           this.columns_scGmId = data.data.map(ele => {
             return { name: ele.name + ' ' + ele.mobile + '（渠道经理）', code: ele.id, nameInput: ele.name }
@@ -227,42 +226,49 @@ export default {
           console.log(err)
         });
     },
-    // 获取加盟小组
-    getGmGroupId(val) {
-      // let params = {
-      //   'cityCode': this.formData.workCity,
-      //   'productLine': this.active + 2,
-      //   'roleType': 1
-      // }
-      // GetSpecifiedRoleList(params).then(({ data }) => {
-      //   if (data.success) {
-      //     this.columns_gmId = data.data.map(ele => {
-      //       return { name: ele.name, code: ele.id }
-      //     })
-      //   } else {
-      //     this.$toast(data.errorMsg)
-      //   }
-      // })
-      //   .catch((err) => {
-      //     console.log(err)
-      //   });
+    // 联动请求加盟小组
+    getGmGroupId() {
+      let params = {
+        'cityCode': this.formData.workCity, // 工作城市
+        'busiLine': this.active + 2 // 业务线
+      }
+      params = this.removeEmpty(params)
+      GetGmGroup(params)
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_gmGroupId = data.data.map(ele => {
+              return { name: ele.name, code: ele.id, nameInput: ele.name }
+            })
+          } else {
+            this.$toast(data.errorMsg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        });
     },
     // 获取加盟经理
-    async getGmId() {
+    getGmId() {
       let params = {
-        'cityCode': this.formData.workCity,
-        'productLine': this.active + 2,
+        'cityCode': this.formData.workCity, // 工作城市
+        'productLine': this.active, // 业务线
+        'gmGroup': this.formData.gmGroupId, // 加盟小组
         'roleType': 1
       }
-      GetSpecifiedRoleList(params).then(({ data }) => {
-        if (data.success) {
-          this.columns_gmId = data.data.map(ele => {
-            return { name: ele.name + ' ' + ele.mobile + '（加盟经理）', code: ele.id, nameInput: ele.name }
-          })
-        } else {
-          this.$toast(data.errorMsg)
-        }
-      })
+      if (this.formData.busiType !== '') {
+        params.productLine = params.productLine + 2
+      }
+      params = this.removeEmpty(params)
+      GetUserList(params)
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_gmId = data.data.map(ele => {
+              return { name: ele.name + ' ' + ele.mobile + '（加盟经理）', code: ele.id, nameInput: ele.name }
+            })
+          } else {
+            this.$toast(data.errorMsg)
+          }
+        })
         .catch((err) => {
           console.log(err)
         });
@@ -277,6 +283,8 @@ export default {
           console.log(err)
         });
       this.getGmId()
+      this.getScGmId()
+      this.getGmGroupId()
     },
     async onSubmit(values) {
       try {
@@ -337,11 +345,16 @@ export default {
       }
       this.showPicker = true;
     },
+    // 删除对象空属性
+    removeEmpty(obj) {
+      Object.keys(obj).forEach((key) => (obj[key] === '') && delete obj[key]);
+      return obj
+    },
     /**
      * picker 选择
      */
     onConfirmPicker(value) {
-      console.log(value);
+      if (!value) return;
       this.pickerNames[this.pickerKey] = value.nameInput ? value.nameInput : value.name;
       this.formData[this.pickerKey] = value.code;
       this.showPicker = false;

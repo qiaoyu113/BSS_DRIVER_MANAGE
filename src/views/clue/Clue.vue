@@ -1,13 +1,10 @@
 <template>
   <div :class="checked ? 'ClueList padd' : 'ClueList'">
-    <ClueTitle
-      @screen="startScreen"
-      @changeManager="changeManager"
-    />
-    <van-sticky
-      :offset-top="90"
-      :style="{height: checked ? '72px' : '56px'}"
-    >
+    <div class="top">
+      <ClueTitle
+        @screen="startScreen"
+        @changeManager="changeManager"
+      />
       <van-tabs
         v-model="active"
         sticky
@@ -40,8 +37,7 @@
           全选({{ checkedList.length }})
         </van-checkbox>
       </div>
-    </van-sticky>
-
+    </div>
     <div class="list">
       <van-pull-refresh
         v-model="refreshing"
@@ -147,6 +143,7 @@
         @click="showPickerFn('mode')"
       />
       <van-field
+        v-show="ruleForm.mode !== 3"
         v-model="formText.joinType"
         readonly
         name="joinType"
@@ -223,7 +220,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getClueList } from '@/api/clue.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, GetUserList, GetGmGroup } from '@/api/common'
 export default {
   name: 'ClueList',
   components: {
@@ -250,7 +247,6 @@ export default {
       columns: [],
       pickerKey: '',
       columns_busiType: [ // 业务线
-        { name: '全部', code: '' },
         { name: '专车', code: 0 },
         { name: '共享', code: 1 }
       ],
@@ -259,8 +255,8 @@ export default {
       columns_carType: [], // 车型
       columns_dealStatus: [ // 是否成交
         { name: '全部', code: '' },
-        { name: '未成交', code: 0 },
-        { name: '已成交', code: 1 }
+        { name: '是', code: 1 },
+        { name: '否', code: 0 }
       ],
       columns_sourceChannel: [ // 渠道
         { name: '全部', code: '' },
@@ -322,8 +318,8 @@ export default {
       },
       tabType: [
         { type: '全部', code: '', num: '' },
-        { type: '待跟进', code: '1', num: '' },
-        { type: '已转化', code: '2', num: '' }
+        { type: '待跟进', code: '0', num: '' },
+        { type: '已转化', code: '1', num: '' }
       ],
       checked: false,
       changeManagerStatus: false,
@@ -385,6 +381,12 @@ export default {
       this.formText.gmId = ''
       this.ruleForm.scGmId = ''
       this.formText.scGmId = ''
+    },
+    'ruleForm.mode'(val) {
+      if (val === 3) {
+        this.ruleForm.joinType = ''
+        this.formText.joinType = ''
+      }
     }
   },
   mounted() {
@@ -394,37 +396,39 @@ export default {
     getGmGroupId() {
       let params = {
         'cityCode': this.ruleForm.workCity, // 工作城市
-        'productLine': this.ruleForm.busiType // 业务线
+        'busiLine': this.ruleForm.busiType // 业务线
       }
       if (this.ruleForm.busiType !== '') {
-        params.productLine = params.productLine + 2
+        params.busiLine = params.busiLine + 2
       }
-      // GetSpecifiedRoleList(params)
-      //   .then(({ data }) => {
-      //     if (data.success) {
-      //       this.columns_gmGroupId = data.data.map(ele => {
-      //         return { name: ele.name, code: ele.id, nameInput: ele.name }
-      //       })
-      //     } else {
-      //       this.$toast(data.errorMsg)
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err)
-      //   });
+      params = this.removeEmpty(params)
+      GetGmGroup(params)
+        .then(({ data }) => {
+          if (data.success) {
+            this.columns_gmGroupId = data.data.map(ele => {
+              return { name: ele.name, code: ele.id, nameInput: ele.name }
+            })
+          } else {
+            this.$toast(data.errorMsg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        });
     },
     // 联动请求渠道经理
     getScGmId() {
       let params = {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
-        'gmGroupId': this.ruleForm.gmGroupId, // 加盟小组
-        'roleType': 1
+        'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
+        'roleType': 4
       }
       if (this.ruleForm.busiType !== '') {
         params.productLine = params.productLine + 2
       }
-      GetSpecifiedRoleList(params)
+      params = this.removeEmpty(params)
+      GetUserList(params)
         .then(({ data }) => {
           if (data.success) {
             this.columns_scGmId = data.data.map(ele => {
@@ -443,13 +447,14 @@ export default {
       let params = {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
-        'gmGroupId': this.ruleForm.gmGroupId, // 加盟小组
+        'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
         'roleType': 1
       }
       if (this.ruleForm.busiType !== '') {
         params.productLine = params.productLine + 2
       }
-      GetSpecifiedRoleList(params)
+      params = this.removeEmpty(params)
+      GetUserList(params)
         .then(({ data }) => {
           if (data.success) {
             this.columns_GmManager = data.data.map(ele => {
@@ -546,10 +551,15 @@ export default {
         }
         this.ruleForm.workCity && (params.workCity = Number(this.ruleForm.workCity))
         this.ruleForm.busiType !== '' && (params.busiType = this.ruleForm.busiType)
-        this.ruleForm.gmId && (params.gmId = this.ruleForm.gmId)
         this.ruleForm.carType && (params.carType = Number(this.ruleForm.carType))
+        this.ruleForm.gmGroupId && (params.gmGroupId = this.ruleForm.gmGroupId)
+        this.ruleForm.gmId && (params.gmId = this.ruleForm.gmId)
+        this.ruleForm.scGmId && (params.scGmId = this.ruleForm.scGmId)
+        this.ruleForm.dealStatus && (params.dealStatus = this.ruleForm.dealStatus)
+        this.ruleForm.sourceChannel && (params.sourceChannel = this.ruleForm.sourceChannel)
+        this.ruleForm.mode && (params.mode = this.ruleForm.mode)
+        this.ruleForm.joinType && (params.joinType = this.ruleForm.joinType)
         this.ruleForm.status && (params.status = Number(this.ruleForm.status))
-        this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
         if (this.ruleForm.startDate && this.ruleForm.endDate) {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
           this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
@@ -614,6 +624,7 @@ export default {
      * picker 选择
      */
     onConfirmPicker(value) {
+      if (!value) return;
       this.formText[this.pickerKey] = value.nameInput ? value.nameInput : value.name;
       this.ruleForm[this.pickerKey] = value.code;
       this.showPicker = false;
@@ -669,6 +680,11 @@ export default {
     closeManagerPop(val) {
       this.changeManagerStatus = val.status
     },
+    // 删除对象空属性
+    removeEmpty(obj) {
+      Object.keys(obj).forEach((key) => (obj[key] === '') && delete obj[key]);
+      return obj
+    },
     /**
      * 取消选择归属人
      */
@@ -714,8 +730,15 @@ export default {
 </script>
 <style scoped lang="less">
 .ClueList {
+  display: flex;
+  flex-direction: column;
+  background: @body-bg;
   background-color: @body-bg;
   position: relative;
+  .top {
+    margin-bottom: 5px;
+    background-color: @body-bg;
+  }
   .bottomBtn {
     padding: 15px 0;
     box-sizing: border-box;
@@ -742,6 +765,8 @@ export default {
     margin-top: 5px;
     padding: 0 15px;
     box-sizing: border-box;
+    flex: 1;
+    overflow: auto;
   }
   .items {
     margin-bottom: 10px;
