@@ -317,6 +317,9 @@ export default {
           delete params.payType;
           delete params.payTypeName;
           delete params.payImageUrl;
+        } else {
+          // 可提现金额payType
+          params.payType = 9
         }
         params.payDate = new Date(this.form.payDate).getTime();
         let arr = [];
