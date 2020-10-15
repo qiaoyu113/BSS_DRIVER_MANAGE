@@ -115,7 +115,6 @@ export default {
   },
   mounted() {
     this.obj = JSON.parse(this.$route.query.obj);
-    console.log(this.obj)
   },
   methods: {
     /**
