@@ -558,8 +558,8 @@ export default {
     },
     disabledCheck(time) {
       let now = new Date().setHours(0, 0, 0, 0);
-      let ThreeDayAgo = now - 86400000 * 3;// 一天86400秒
-      return time < ThreeDayAgo
+      let ThreeDayAgo = now - 86400000 * 3 + 1;// 一天86400秒
+      return time - 1 < ThreeDayAgo
     }
   }
 }
