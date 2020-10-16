@@ -16,6 +16,9 @@ import * as filters from '@/filters'
 import global_ from 'components/Global'
 import { Toast } from 'vant'
 import * as directives from '@/directives'
+import { Lazyload } from 'vant';
+
+Vue.use(Lazyload);
 
 Vue.prototype.$toast = Toast
 let loading = null

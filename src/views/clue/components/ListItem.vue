@@ -32,13 +32,13 @@
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
-          :value="`${item.busiTypeName}/${item.workCityName}/${item.carTypeName}`"
+          :value="removeEmpty([item.busiTypeName,item.workCityName,item.carTypeName])"
         />
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
           :title="setLabel(item.gmDutyName) + '：'"
-          :value="`${item.gmName}/${item.gmMobile}`"
+          :value="removeEmpty([item.gmName,item.gmMobile])"
         />
         <van-cell
           title-class="cell-title"
@@ -98,6 +98,9 @@ export default {
     // console.log(this.obj)
   },
   methods: {
+    removeEmpty(arr) {
+      return (arr.filter(item => item) || []).join('/')
+    },
     setLabel(val) {
       if (val.includes('加盟')) {
         return val.substr(2)

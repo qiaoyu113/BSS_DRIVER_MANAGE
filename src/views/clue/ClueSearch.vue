@@ -245,8 +245,6 @@ export default {
       if (!this.keyWord) {
         return false;
       }
-
-      console.log(this.keyWord);
       // if (this.keyWord === 'd') {
       //   this.options = ['京东', '京东12121', '京东121212ddasddasd'];
       this.getLists(this.keyWord)
@@ -258,6 +256,7 @@ export default {
     },
     handleItemClick(value) {
       this.keyWord = value;
+      this.onSearch()
     },
     async getLists(keyword = '') {
       try {
@@ -292,7 +291,7 @@ export default {
       if (this.historyItems.length >= 5) {
         this.historyItems.shift()
       }
-      this.historyItems.push(keyword)
+      this.historyItems.unshift(keyword)
       localStorage.setItem('clue', JSON.stringify(this.historyItems))
     },
     // 获取从localStorage
