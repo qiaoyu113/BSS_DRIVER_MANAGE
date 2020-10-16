@@ -349,7 +349,7 @@ export default {
         this.$loading(true);
         const postData = {
           busiType: this.lineDetail.busiType,
-          workCity: this.lineDetail.city,
+          // workCity: this.lineDetail.city,
           key: this.driverValue,
           status: 3
         }
