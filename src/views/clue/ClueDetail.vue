@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     setLabel(val) {
-      if (val.includes('加盟')) {
+      if (String(val).indexOf('加盟') !== -1) {
         return val.substr(2)
       }
       return val
