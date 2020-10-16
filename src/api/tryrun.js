@@ -13,7 +13,7 @@ export function CreateLntentionRun(data) {
 // 选择司机
 export function GetDriverList(data) {
   return request({
-    url: `${prefix}/carrier_center/v2/driver/getDriverList`,
+    url: `${prefix}/carrier_center/v2/driver/getDriverListWhitOutAuth`,
     // url: '/mock/103/v2/driver/getDriverList',
     method: 'post',
     data
