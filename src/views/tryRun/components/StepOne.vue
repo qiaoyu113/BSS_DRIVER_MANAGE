@@ -315,7 +315,7 @@ export default {
         // 搜索司机
         this.getDriver();
       }
-    }, 200),
+    }, 500),
     onSelectLine(item) {
       this.form.lineId = item.lineId;
       this.lineDetail = item;
