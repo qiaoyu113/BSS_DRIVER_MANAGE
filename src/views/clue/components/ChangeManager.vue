@@ -3,6 +3,7 @@
     <van-popup
       v-model="managerStatus"
       round
+      closeable
       @click-overlay="colsedPop"
     >
       <div class="managerBox">
@@ -34,7 +35,7 @@
               colon
               name="workCity"
               :value="pickerNames.workCity"
-              label="工作城市"
+              label="所属城市"
               clearable
               :border="false"
               placeholder="请选择"
