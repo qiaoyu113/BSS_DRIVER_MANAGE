@@ -58,6 +58,9 @@
         label="备注"
         :value="obj.remark | DataIsNull"
         readonly
+        type="textarea"
+        rows="1"
+        autosize
         colon
       />
     </div>
