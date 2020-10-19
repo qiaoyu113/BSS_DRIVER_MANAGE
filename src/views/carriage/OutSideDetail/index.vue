@@ -40,9 +40,8 @@
         <p v-if="obj.lineState === 1 || obj.lineState === 2" class="text">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
-        <p class="text ellipsis">
-          确认状态：<span v-if="obj.gmState === 0">{{ obj.gmStateName }}</span>
-          <span v-if="obj.gmState !== 0">{{ obj.confirmStateName }}</span>
+        <p v-if="obj.gmState !== 0" class="text ellipsis">
+          确认状态：<span>{{ obj.confirmStateName }}</span>
           <span v-if="obj.confirmState === 20">/ {{ obj.confirmMoney }}</span>
           <span v-if="obj.confirmState === 40">/ {{ obj.againConfirmMoney }}</span>
           <!-- <span v-if="obj.gmState === 2 && obj.lineState === 2">/ 未出车</span>
@@ -118,7 +117,6 @@ export default {
   },
   mounted() {
     let objs = JSON.parse(this.$route.query.obj);
-    console.log(objs)
     this.obj = objs
   },
 
