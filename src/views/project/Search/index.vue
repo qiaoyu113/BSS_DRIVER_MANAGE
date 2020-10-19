@@ -57,8 +57,10 @@
 <script>
 import CardItem from '../List/components/CardItem'
 import { getProjectSearch } from '@/api/project'
+import { Dialog } from 'vant';
 export default {
   components: {
+    [Dialog.Component.name]: Dialog.Component,
     CardItem
   },
   data() {
@@ -144,6 +146,18 @@ export default {
     },
     // 删除历史
     deleteHistory() {
+      Dialog.confirm({
+        title: '提示',
+        message: '确定删除全部历史记录?'
+      })
+        .then(() => {
+          this.delete()
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    delete() {
       localStorage.removeItem('project')
       this.getHistoryFromDisk()
     }

@@ -182,7 +182,7 @@ export default {
     showPopup(time) {
       let now = new Date().setHours(0, 0, 0, 0);
       let ThreeDayAgo = now - 86400000 * 3;// 一天86400秒
-      if (time < ThreeDayAgo) {
+      if (time - 1 < ThreeDayAgo) {
         this.$toast.fail('超过出车日期三天（含当天）不可上报运费，请联系总线运营')
       } else {
         this.wayBillAmountDetail(this.obj.wayBillId)
