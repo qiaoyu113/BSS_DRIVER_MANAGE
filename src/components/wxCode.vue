@@ -1,5 +1,5 @@
 <template>
-  <div class="wxCodeContainer">
+  <div v-if="url" class="wxCodeContainer">
     <van-grid-item>
       <div class="grid-ct flex-sub">
         <img
@@ -39,7 +39,8 @@ export default {
         if (res.success) {
           this.url = res.data
         } else {
-          this.$toast.fail(res.errorMsg)
+          // this.$toast.fail(res.errorMsg)
+          this.url = ''
         }
       } catch (err) {
         console.log(`get wx code fail:${err}`)
