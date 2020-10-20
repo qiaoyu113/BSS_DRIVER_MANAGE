@@ -384,7 +384,8 @@ import {
   GetModelByTypeAndCityAndSupplierAndCarType,
   GetRentalCarTypeByParams,
   GetPriceAndByTypeAndCityAndSupplierAndCarType,
-  GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel
+  GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel,
+  getCanExtractByUserId
 } from '@/api/order.js';
 import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
@@ -713,31 +714,56 @@ export default {
     onClickLeft() {
       this.$router.go(-1);
     },
-    goRouter() {
+    async goRouter() {
+      let extract = await this.getCanExtract()
       let typePath = { id: this.driverId, orderId: this.orderId }
-      Dialog.confirm({
-        title: '是否使用可提现金额支付？',
-        message: '',
-        confirmButtonText: '是',
-        cancelButtonText: '否'
-      })
-        .then(() => {
-          // on confirm
-          typePath.type = 1
-          this.$router.push({
-            path: '/addPay',
-            query: typePath
-          });
+      if (extract > 0) {
+        Dialog.confirm({
+          title: '是否使用可提现金额支付？',
+          message: '',
+          confirmButtonText: '是',
+          cancelButtonText: '否'
         })
-        .catch(() => {
+          .then(() => {
+          // on confirm
+            typePath.type = 1
+            this.$router.push({
+              path: '/addPay',
+              query: typePath
+            });
+          })
+          .catch(() => {
           // on cancel
-          typePath.type = 0
-          this.$router.push({
-            path: '/addPay',
-            query: typePath
+            typePath.type = 0
+            this.$router.push({
+              path: '/addPay',
+              query: typePath
+            });
           });
+      } else {
+        typePath.type = 0
+        this.$router.push({
+          path: '/addPay',
+          query: typePath
         });
+      }
     },
+    async getCanExtract() {
+      try {
+        let params = {
+          driverId: this.driverId
+        }
+        let { data: res } = await getCanExtractByUserId(params)
+        if (res.success) {
+          return res.data
+        } else {
+          this.$toast.fail(res.errorMsg);
+        }
+      } catch (err) {
+        console.log(`fail:${err}`);
+      }
+    },
+
     async getOrderDetail(id) {
       try {
         this.$loading(true);
