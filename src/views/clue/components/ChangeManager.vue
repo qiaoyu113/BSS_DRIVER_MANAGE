@@ -210,9 +210,6 @@ export default {
         'gmGroup': this.formData.gmGroupId, // 加盟小组
         'roleType': 4
       }
-      if (this.formData.busiType !== '') {
-        params.productLine = params.productLine + 2
-      }
       params = this.removeEmpty(params)
       GetUserList(params).then(({ data }) => {
         if (data.success) {
@@ -231,7 +228,7 @@ export default {
     getGmGroupId() {
       let params = {
         'cityCode': this.formData.workCity, // 工作城市
-        'busiLine': this.active + 2 // 业务线
+        'busiLine': this.active // 业务线
       }
       params = this.removeEmpty(params)
       GetGmGroup(params)
@@ -255,9 +252,6 @@ export default {
         'productLine': this.active, // 业务线
         'gmGroup': this.formData.gmGroupId, // 加盟小组
         'roleType': 1
-      }
-      if (this.formData.busiType !== '') {
-        params.productLine = params.productLine + 2
       }
       params = this.removeEmpty(params)
       GetUserList(params)

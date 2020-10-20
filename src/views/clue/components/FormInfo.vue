@@ -2,8 +2,9 @@
   <div class="FormInfo">
     <div v-if="Object.keys(obj).length > 0">
       <van-field
+        v-if="obj.name"
         label="姓名"
-        :value="obj.name | DataIsNull"
+        :value="obj.name"
         readonly
         colon
       >
@@ -12,51 +13,59 @@
         </template>
       </van-field>
       <van-field
+        v-if="obj.phone"
         label="联系方式"
-        :value="obj.phone | DataIsNull"
+        :value="obj.phone"
         readonly
         colon
       />
       <van-field
+        v-if="obj.workCityName"
         label="工作城市"
         colon
-        :value="obj.workCityName | DataIsNull"
+        :value="obj.workCityName"
         readonly
       />
 
       <van-field
+        v-if="obj.carTypeName"
         label="车型"
-        :value="obj.carTypeName | DataIsNull"
+        :value="obj.carTypeName"
         readonly
         colon
       />
       <van-field
+        v-if="obj.gmDutyName"
         :label="obj.gmDutyName === '渠道经理' ? '渠道经理' : '加盟经理'"
         :value="`${obj.gmName}（${obj.gmMobile}）`"
         readonly
         colon
       />
       <van-field
+        v-if="obj.sourceChannelName"
         label="渠道"
         colon
-        :value="obj.sourceChannelName | DataIsNull"
+        :value="obj.sourceChannelName"
         readonly
       />
       <van-field
+        v-if="obj.modeName"
         label="来源"
-        :value="obj.modeName | DataIsNull"
+        :value="obj.modeName"
         readonly
         colon
       />
       <van-field
+        v-if="obj.joinTypeName"
         label="方式"
-        :value="obj.joinTypeName | DataIsNull"
+        :value="obj.joinTypeName"
         readonly
         colon
       />
       <van-field
+        v-if="obj.remark"
         label="备注"
-        :value="obj.remark | DataIsNull"
+        :value="obj.remark"
         readonly
         type="textarea"
         rows="1"

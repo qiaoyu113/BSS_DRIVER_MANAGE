@@ -152,7 +152,7 @@ export default {
   methods: {
     async getGmId(val) {
       let params = {
-        'productLine': this.active + 2,
+        'productLine': this.active,
         'roleType': 1
       }
       this.formData.workCity !== '' && (params.cityCode = this.formData.workCity)
