@@ -142,7 +142,7 @@ import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getProjectList } from '@/api/project'
-import { GetSpecifiedRoleList } from '@/api/common'
+import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
 export default {
   components: {
     CardItem,
@@ -184,40 +184,8 @@ export default {
         projectState: '', // 当前激活的tab,
         date: []
       },
-      receivingPointArr: [ // 收货点类型数组
-        {
-          label: '仓库',
-          value: 1
-        },
-        {
-          label: '门店',
-          value: 2
-        },
-        {
-          label: '到户',
-          value: 3
-        },
-        {
-          label: '宅配',
-          value: 4
-        },
-        {
-          label: '指定位置',
-          value: 5
-        },
-        {
-          label: '无人值守货架',
-          value: 6
-        },
-        {
-          label: '无人便利店',
-          value: 7
-        },
-        {
-          label: '自动售货机',
-          value: 8
-        }
-      ],
+      receivingPointArr: [], // 收货点类型数组
+
       isDeliveryArr: [ // 配送经验数组
         {
           label: '有需求',
@@ -283,7 +251,29 @@ export default {
       return this.dateLists.includes(this.pickerKey)
     }
   },
+  mounted() {
+    this.getConsigneeTypeList()
+  },
   methods: {
+    // 获取收货点类型
+    async getConsigneeTypeList() {
+      try {
+        let params = {
+          type: 'consignee_type'
+        }
+        let { data: res } = await getDictDataByKeyword(params)
+        if (res.success) {
+          this.receivingPointArr = res.data.map(item => ({
+            value: item.dictValue,
+            label: item.dictLabel
+          }))
+        } else {
+          this.$toast.fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get consignee_type fail:${err}`)
+      }
+    },
     // 状态切换
     handleTabChange() {
       this.loading = true
