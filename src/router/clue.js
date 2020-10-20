@@ -5,6 +5,7 @@ export default [
     component: resolve => require(['@/views/clue/Clue'], resolve),
     meta: {
       title: '线索管理'
+      // keepAlive: true
     }
   },
   {
