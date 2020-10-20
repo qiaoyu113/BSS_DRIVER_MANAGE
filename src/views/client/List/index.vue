@@ -130,6 +130,7 @@ export default {
   },
   data() {
     return {
+      scrollTop: 0,
       show: false, // 打开查询抽屉
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
@@ -194,8 +195,22 @@ export default {
       return this.dateLists.includes(this.pickerKey)
     }
   },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.customerListContainer').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.customerListContainer').scrollTop
+    next()
+  },
   mounted() {
     this.init()
+  },
+  activated() {
+    document.querySelector('.van-pull-refresh').scrollTop = 200
   },
   methods: {
     // 状态切换
