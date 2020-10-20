@@ -5,6 +5,7 @@ export default [
     component: resolve => require(['@/views/tryRun/TryRun'], resolve),
     meta: {
       title: '试跑在跑'
+      // keepAlive: true
     }
   },
   {
