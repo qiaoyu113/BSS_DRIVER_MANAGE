@@ -50,6 +50,9 @@
       :border="false"
       label="交易编号"
       :value="obj.transactionId"
+      type="textarea"
+      rows="1"
+      autosize
       colon
       readonly
     />
@@ -57,6 +60,9 @@
       v-if="obj.remarks !== ''"
       style="border-bottom: 1px solid #c8c9cc;"
       label="备注"
+      type="textarea"
+      rows="1"
+      autosize
       :value="obj.remarks"
       colon
       readonly

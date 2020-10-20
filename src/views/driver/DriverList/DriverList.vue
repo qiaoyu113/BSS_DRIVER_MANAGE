@@ -275,7 +275,8 @@ export default {
       page: {
         current: 0,
         size: 10
-      }
+      },
+      scrollTop: ''
     };
   },
   computed: {
