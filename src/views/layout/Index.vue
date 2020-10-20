@@ -2,7 +2,7 @@
   <div class="index">
     <van-nav-bar :title="title">
       <template #right>
-        <div class="navBarTit" @click="show = true">
+        <div v-if="showHeader" class="navBarTit" @click="show = true">
           <div :class="{open: show, 'right-btn': true}">
             {{ actions[activeIndex]['name'] }}
           </div>
@@ -15,24 +15,26 @@
       </div>
       <div class="list-content">
         <van-grid :gutter="5" :border="false">
-          <van-grid-item
-            v-for="(item, index) in list[activeIndex]"
-            :key="index"
-            v-permission="[item.pUrl]"
-            :to="item.url"
-          >
-            <div class="grid-ct flex-sub">
-              <img
-                :src="item.icon"
-                alt=""
-                :style="item.style"
-                class="grid-pic"
-              >
-              <div class="grid-text">
-                {{ item.title }}
+          <template v-for="(item, index) in list[activeIndex]">
+            <van-grid-item
+
+              v-if="setPermissions(item.pUrl)"
+              :key="index"
+              :to="item.url"
+            >
+              <div class="grid-ct flex-sub">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  :style="item.style"
+                  class="grid-pic"
+                >
+                <div class="grid-text">
+                  {{ item.title }}
+                </div>
               </div>
-            </div>
-          </van-grid-item>
+            </van-grid-item>
+          </template>
           <wxCode v-if="+activeIndex === 1" />
         </van-grid>
       </div>
@@ -48,6 +50,8 @@
   </div>
 </template>
 <script>
+import { isPermission } from 'filters/index';
+import { mapGetters } from 'vuex'
 import FooterTabbar from '@/components/FooterTabbar';
 import WxCode from '@/components/wxCode'
 export default {
@@ -58,26 +62,7 @@ export default {
   },
   data() {
     return {
-      listQuery: {
-        key: '',
-        page: 1,
-        limit: 100,
-        endDate: '',
-        appletSource: '',
-        startDate: '',
-        expandManager: '',
-        clueType: '',
-        carType: '',
-        isSettledIn: '',
-        workCity: '',
-        sourceType: '',
-        isPayDeposit: '',
-        state: '1'
-      },
-      active: 1,
-      total: 0,
-      page: 1,
-      loadedAll: false,
+      showHeader: true,
       actions: [
         {
           name: '线路云',
@@ -87,7 +72,7 @@ export default {
         {
           name: '司机云',
           value: 1,
-          pUrl: ['/v2/driver/getDriverList']
+          pUrl: ['/v2/driver/getDriverList', '/v2/clue/getClueList']
         },
         {
           name: '试跑在跑',
@@ -244,16 +229,26 @@ export default {
   computed: {
     title() {
       return this.$route.meta.title;
-    }
+    },
+    ...mapGetters(['userData'])
   },
   mounted() {
-    this.activeIndex = localStorage.getItem('HOME_ACTIVE') || 0;
+    // this.activeIndex = localStorage.getItem('HOME_ACTIVE') || 0;
+    const actionsList = isPermission(this.actions)
+    if (actionsList.length > 0) {
+      this.activeIndex = actionsList[0].value
+    } else {
+      this.showHeader = false;
+    }
   },
   methods: {
+    setPermissions(value) {
+      const permission = this.userData.stringPermissions
+      return permission.some(item => item === value)
+    },
     onSelect(item) {
       this.activeIndex = item.value;
       // 设置缓存，下次进入取缓存值
-      localStorage.setItem('HOME_ACTIVE', this.activeIndex)
     }
   }
 };
