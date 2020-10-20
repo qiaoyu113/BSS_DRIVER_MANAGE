@@ -151,6 +151,7 @@ export default {
   },
   data() {
     return {
+      scrollTop: 0,
       show: false, // 打开查询抽屉
       refreshing: false, // 下拉刷新
       loading: false, // 上拉加载
@@ -259,6 +260,17 @@ export default {
       },
       minDate1: new Date(2000, 0, 1)
     }
+  },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.projectListContainer').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.projectListContainer').scrollTop
+    next()
   },
   computed: {
     minDate() {
