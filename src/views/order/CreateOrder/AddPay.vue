@@ -104,7 +104,7 @@
         label="备注"
         placeholder="请输入..."
         type="textarea"
-        maxlength="300"
+        maxlength="150"
         show-word-limit
         class="textarea"
       />
