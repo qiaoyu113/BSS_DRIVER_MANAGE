@@ -17,6 +17,7 @@
         <van-cell
           value="司机信息"
           is-link
+          arrow-direction="down"
         />
         <van-field
           label="司机姓名"
@@ -24,6 +25,7 @@
           colon
           required
           readonly
+          :border="false"
         />
         <van-field
           label="司机电话"
@@ -31,6 +33,7 @@
           required
           colon
           readonly
+          :border="false"
         />
         <van-field
           label="工作城市"
@@ -38,6 +41,7 @@
           readonly
           required
           colon
+          :border="false"
         />
         <van-field
           label="身份证号"
@@ -45,12 +49,14 @@
           readonly
           required
           colon
+          :border="false"
         />
       </van-cell-group>
       <van-cell-group>
         <van-cell
           value="商品信息"
           is-link
+          arrow-direction="down"
         />
         <van-field
           label="商品分类"
@@ -58,6 +64,7 @@
           required
           readonly
           colon
+          :border="false"
         />
         <van-field
           label="合作模式"
@@ -65,6 +72,7 @@
           required
           readonly
           colon
+          :border="false"
         />
         <van-field
           label-width="100px"
@@ -73,6 +81,7 @@
           readonly
           required
           colon
+          :border="false"
         />
         <!-- 专车才有该字段 -->
         <van-field
@@ -83,6 +92,7 @@
           readonly
           required
           colon
+          :border="false"
         />
         <van-field
           label-width="100px"
@@ -90,6 +100,7 @@
           :value="formData.rake | DataIsNull"
           readonly
           colon
+          :border="false"
         />
         <van-field
           label-width="100px"
@@ -98,12 +109,14 @@
           readonly
           colon
           required
+          :border="false"
         />
       </van-cell-group>
       <van-cell-group>
         <van-cell
           value="商品附加信息"
           is-link
+          arrow-direction="down"
         />
         <van-field
           v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
@@ -112,6 +125,7 @@
           required
           colon
           readonly
+          :border="false"
         />
         <van-field
           v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
@@ -120,6 +134,7 @@
           required
           colon
           readonly
+          :border="false"
         />
         <van-field
           v-if="formData.cooperationModel === 2"
@@ -128,6 +143,7 @@
           readonly
           colon
           required
+          :border="false"
         />
         <van-field
           v-if="formData.cooperationModel === 1"
@@ -136,12 +152,14 @@
           readonly
           colon
           required
+          :border="false"
         />
         <van-field
           label="合作车型"
           :value="formData.cooperationCarName | DataIsNull"
           readonly
           colon
+          :border="false"
         />
         <van-field
           v-if="formData.cooperationModel === 1"
@@ -150,6 +168,7 @@
           readonly
           colon
           required
+          :border="false"
         />
         <van-field
           v-if="formData.cooperationModel !== 3"
@@ -158,6 +177,7 @@
           readonly
           required
           colon
+          :border="false"
         />
         <van-field
           v-if="formData.cooperationModel === 1"
@@ -166,6 +186,7 @@
           readonly
           required
           colon
+          :border="false"
         />
         <van-field
           v-if="formData.cooperationModel !== 1"
@@ -174,6 +195,7 @@
           colon
           readonly
           required
+          :border="false"
         />
       </van-cell-group>
       <van-cell-group>
@@ -182,31 +204,37 @@
           :value="`总支付金额：${formData.havePayAmount}元`"
         />
         <template v-for="(payInfo,index) in formData.orderPayRecordInfoVOList">
-          <div :key="index">
+          <div :key="index" class="van-hairline--bottom">
             <van-field
               label-width="100px"
               label="支付金额（元）"
               colon
               :value="moneyDeal(payInfo)"
               readonly
+              :border="false"
             />
             <van-field
               label="支付时间"
               colon
               :value="payInfo.payDate | DataIsNull"
               readonly
+              :border="false"
             />
             <van-field
+              v-if="payInfo.useWithdrawable === 0"
               label="支付方式"
               :value="payInfo.payTypeName | DataIsNull"
               readonly
               colon
+              :border="false"
             />
             <van-field
+              v-if="payInfo.useWithdrawable === 0"
               name="uploader"
               label="支付图片"
               colon
               readonly
+              :border="false"
               @click="lookPic(payInfo.payImageUrl)"
             >
               <template #input>
@@ -218,16 +246,19 @@
               </template>
             </van-field>
             <van-field
+              v-if="payInfo.useWithdrawable === 0"
               label="交易编号"
               colon
               :value="payInfo.transactionId | DataIsNull"
               readonly
+              :border="false"
             />
             <van-field
               label="备注"
               :value="payInfo.remarks | DataIsNull "
               readonly
               colon
+              :border="false"
             />
           </div>
         </template>
@@ -236,6 +267,7 @@
         <van-cell
           value="操作记录"
           is-link
+          arrow-direction="down"
         />
         <van-field
           label="订单状态"
@@ -244,8 +276,8 @@
           colon
           label-align="left"
           label-width="120px"
+          :border="false"
         />
-        <!-- :value="formData.createDate" -->
         <van-field
           label="订单生成时间"
           colon
@@ -253,18 +285,8 @@
           label-align="left"
           readonly
           label-width="120px"
+          :border="false"
         />
-        <!-- :value="formData.confirmTime" -->
-        <!-- <van-field
-          v-if="formData.confirmName"
-          label="订单确定时间"
-          colon
-          :value="timeFormat(formData.confirmTime,'YYYY-MM-DD')"
-          readonly
-          label-align="left"
-          label-width="120px"
-        /> -->
-        <!-- :value="formData.passTime" -->
         <van-field
           v-if="formData.passName"
           label="订单审核通过时间"
@@ -273,8 +295,8 @@
           :value="timeFormat(formData.passTime,'YYYY-MM-DD')"
           readonly
           label-align="left"
+          :border="false"
         />
-        <!-- :value="formData.notPassTime" -->
         <van-field
           v-if="formData.notPassTime"
           label="订单审核不通过时间"
@@ -283,8 +305,8 @@
           readonly
           label-align="left"
           label-width="140px"
+          :border="false"
         />
-        <!-- :value="formData.updateDate" -->
         <van-field
           v-if="formData.status === 10"
           label="订单取消时间"
@@ -293,6 +315,7 @@
           readonly
           label-align="left"
           label-width="120px"
+          :border="false"
         />
       </van-cell-group>
     </div>
@@ -424,6 +447,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.payItemBox{
+  border-bottom: 2px solid #c8c9cc;
+}
 .pm-72 {
   padding-bottom: 72px;
   box-sizing: border-box;
