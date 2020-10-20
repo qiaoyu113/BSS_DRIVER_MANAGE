@@ -15,24 +15,26 @@
       </div>
       <div class="list-content">
         <van-grid :gutter="5" :border="false">
-          <van-grid-item
-            v-for="(item, index) in list[activeIndex]"
-            :key="index"
-            v-permission="[item.pUrl]"
-            :to="item.url"
-          >
-            <div class="grid-ct flex-sub">
-              <img
-                :src="item.icon"
-                alt=""
-                :style="item.style"
-                class="grid-pic"
-              >
-              <div class="grid-text">
-                {{ item.title }}
+          <template v-for="(item, index) in list[activeIndex]">
+            <van-grid-item
+
+              v-if="setPermissions(item.pUrl)"
+              :key="index"
+              :to="item.url"
+            >
+              <div class="grid-ct flex-sub">
+                <img
+                  :src="item.icon"
+                  alt=""
+                  :style="item.style"
+                  class="grid-pic"
+                >
+                <div class="grid-text">
+                  {{ item.title }}
+                </div>
               </div>
-            </div>
-          </van-grid-item>
+            </van-grid-item>
+          </template>
           <wxCode v-if="+activeIndex === 1" />
         </van-grid>
       </div>
@@ -48,6 +50,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import FooterTabbar from '@/components/FooterTabbar';
 import WxCode from '@/components/wxCode'
 export default {
@@ -87,7 +90,7 @@ export default {
         {
           name: '司机云',
           value: 1,
-          pUrl: ['/v2/driver/getDriverList']
+          pUrl: ['/v2/driver/getDriverList', '/v2/clue/getClueList']
         },
         {
           name: '试跑在跑',
@@ -244,12 +247,17 @@ export default {
   computed: {
     title() {
       return this.$route.meta.title;
-    }
+    },
+    ...mapGetters(['userData'])
   },
   mounted() {
     this.activeIndex = localStorage.getItem('HOME_ACTIVE') || 0;
   },
   methods: {
+    setPermissions(value) {
+      const permission = this.userData.stringPermissions
+      return permission.some(item => item === value)
+    },
     onSelect(item) {
       this.activeIndex = item.value;
       // 设置缓存，下次进入取缓存值
