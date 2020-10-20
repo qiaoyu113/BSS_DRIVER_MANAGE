@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <transition :name="transitionName">
+      <!-- <keep-alive :include="cachedViews"> -->
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" class="router"></router-view>
       </keep-alive>
@@ -14,6 +15,7 @@
   </div>
 </template>
 <script>
+// import { mapState } from 'vuex';
 import defaultSetting from './settings'
 export default {
   name: 'App',
@@ -23,6 +25,9 @@ export default {
     }
   },
   computed: {
+    // ...mapState({
+    //   cachedViews: (state) => state['cached-views'].cachedViews
+    // }),
     transitionName() {
       if (defaultSetting.needPageTrans) {
         return this.$store.state.direction
@@ -30,8 +35,18 @@ export default {
       return ''
     }
   },
+  // watch: {
+  //   $route() {
+  //     const { name } = this.$route
+  //     if (name === 'index') {
+  //       this.$store.dispatch('cached-views/delAllViews')
+  //     }
+  //     if (name) {
+  //       this.$store.dispatch('cached-views/addView', this.$route)
+  //     }
+  //   }
+  // },
   mounted() {
-    // this.wxLogin()
     if (window.location.host !== 'firmiana-wechat.yunniao.cn') {
       this.version = this.GLOBAL.version
     }
