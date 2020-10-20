@@ -236,6 +236,7 @@ export default {
   },
   data() {
     return {
+      scrollTop: 0,
       minTime: new Date(2000, 12, 31),
       maxTime: new Date(2125, 12, 31),
       checkedList: [],
@@ -387,6 +388,17 @@ export default {
   },
   mounted() {
   },
+  // // 回来后还原
+  // beforeRouteEnter(to, from, next) {
+  //   next(vm => {
+  //     document.querySelector('.list').scrollTop = vm.scrollTop
+  //   })
+  // },
+  // // 离开前保存高度
+  // beforeRouteLeave(to, from, next) {
+  //   this.scrollTop = document.querySelector('.list').scrollTop
+  //   next()
+  // },
   methods: {
     // 联动请求加盟小组
     getGmGroupId() {

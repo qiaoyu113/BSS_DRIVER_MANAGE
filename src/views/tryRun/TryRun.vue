@@ -193,6 +193,7 @@ export default {
   },
   data() {
     return {
+      scrollTop: 0,
       showSuggest: true,
       tabArrs: [
         {
@@ -289,6 +290,17 @@ export default {
     // 请求字典
     this.fetchData();
   },
+  // // 回来后还原
+  // beforeRouteEnter(to, from, next) {
+  //   next(vm => {
+  //     document.querySelector('.list').scrollTop = vm.scrollTop
+  //   })
+  // },
+  // // 离开前保存高度
+  // beforeRouteLeave(to, from, next) {
+  //   this.scrollTop = document.querySelector('.list').scrollTop
+  //   next()
+  // },
   methods: {
     /**
      * 请求字典接口
