@@ -236,7 +236,7 @@ export default {
     // this.activeIndex = localStorage.getItem('HOME_ACTIVE') || 0;
     const actionsList = isPermission(this.actions)
     if (actionsList.length > 0) {
-      this.activeIndex = actionsList[0].value
+      this.activeIndex = localStorage.getItem('HOME_ACTIVE') || actionsList[0].value;
     } else {
       this.showHeader = false;
     }
@@ -249,6 +249,7 @@ export default {
     onSelect(item) {
       this.activeIndex = item.value;
       // 设置缓存，下次进入取缓存值
+      localStorage.setItem('HOME_ACTIVE', this.activeIndex)
     }
   }
 };
