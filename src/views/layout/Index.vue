@@ -2,7 +2,7 @@
   <div class="index">
     <van-nav-bar :title="title">
       <template #right>
-        <div class="navBarTit" @click="show = true">
+        <div v-if="showHeader" class="navBarTit" @click="show = true">
           <div :class="{open: show, 'right-btn': true}">
             {{ actions[activeIndex]['name'] }}
           </div>
@@ -50,6 +50,7 @@
   </div>
 </template>
 <script>
+import { isPermission } from 'filters/index';
 import { mapGetters } from 'vuex'
 import FooterTabbar from '@/components/FooterTabbar';
 import WxCode from '@/components/wxCode'
@@ -61,26 +62,7 @@ export default {
   },
   data() {
     return {
-      listQuery: {
-        key: '',
-        page: 1,
-        limit: 100,
-        endDate: '',
-        appletSource: '',
-        startDate: '',
-        expandManager: '',
-        clueType: '',
-        carType: '',
-        isSettledIn: '',
-        workCity: '',
-        sourceType: '',
-        isPayDeposit: '',
-        state: '1'
-      },
-      active: 1,
-      total: 0,
-      page: 1,
-      loadedAll: false,
+      showHeader: true,
       actions: [
         {
           name: '线路云',
@@ -251,7 +233,13 @@ export default {
     ...mapGetters(['userData'])
   },
   mounted() {
-    this.activeIndex = localStorage.getItem('HOME_ACTIVE') || 0;
+    // this.activeIndex = localStorage.getItem('HOME_ACTIVE') || 0;
+    const actionsList = isPermission(this.actions)
+    if (actionsList.length > 0) {
+      this.activeIndex = actionsList[0].value
+    } else {
+      this.showHeader = false;
+    }
   },
   methods: {
     setPermissions(value) {
@@ -261,7 +249,6 @@ export default {
     onSelect(item) {
       this.activeIndex = item.value;
       // 设置缓存，下次进入取缓存值
-      localStorage.setItem('HOME_ACTIVE', this.activeIndex)
     }
   }
 };
