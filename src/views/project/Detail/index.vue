@@ -22,7 +22,7 @@
         <van-field label="联系人" label-width="100" readonly :value="form.bussinessName | DataIsNull" :border="false" colon />
         <van-field label="联系电话" label-width="100" readonly :value="form.bussinessPhone | DataIsNull" :border="false" colon />
         <van-field label="配送经验" label-width="100" readonly :value="form.isDelivery ===1 ? '有需求':'无需求' " :border="false" colon />
-        <van-field label="收货点类型" label-width="100" readonly :value="receivingPointName | DataIsNull" :border="false" colon />
+        <van-field label="收货点类型" label-width="100" readonly :value="form.receivingPointName | DataIsNull" :border="false" colon />
         <van-field label="总线路数" label-width="100" readonly :value="form.lineNum | DataIsNull" :border="false" colon />
         <van-field label="在跑线路数" label-width="100" readonly :value="form.runLineNum | DataIsNull" :border="false" colon />
         <van-field label="有效线路数" label-width="100" readonly :value="form.effectiveLineNum | DataIsNull" :border="false" colon />
@@ -88,20 +88,6 @@ export default {
     },
     region() {
       return this.form.warehouseProvinceName + '/' + this.form.warehouseCityName + '/' + this.form.warehouseCountyName
-    },
-    receivingPointName() {
-      if (this.form.receivingPoint === 1) {
-        return '仓库'
-      } else if (this.form.receivingPoint === 2) {
-        return '门店'
-      } else if (this.form.receivingPoint === 3) {
-        return '宅配'
-      } else if (this.form.receivingPoint === 4) {
-        return '指定位置'
-      } else if (this.form.receivingPoint === 5) {
-        return '无人货架'
-      }
-      return ''
     }
   },
   mounted() {
