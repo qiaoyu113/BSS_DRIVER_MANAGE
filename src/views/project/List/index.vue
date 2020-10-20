@@ -231,9 +231,15 @@ export default {
   },
   // 回来后还原
   beforeRouteEnter(to, from, next) {
-    next(vm => {
-      document.querySelector('.projectListContainer').scrollTop = vm.scrollTop
-    })
+    if (from.path === '/projectDetail') {
+      to.meta.keepAlive = true
+      next(vm => {
+        document.querySelector('.projectListContainer').scrollTop = vm.scrollTop
+      })
+    } else {
+      to.meta.keepAlive = false
+      next()
+    }
   },
   // 离开前保存高度
   beforeRouteLeave(to, from, next) {
