@@ -406,9 +406,6 @@ export default {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'busiLine': this.ruleForm.busiType // 业务线
       }
-      if (this.ruleForm.busiType !== '') {
-        params.busiLine = params.busiLine + 2
-      }
       params = this.removeEmpty(params)
       GetGmGroup(params)
         .then(({ data }) => {
@@ -432,9 +429,6 @@ export default {
         'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
         'roleType': 4
       }
-      if (this.ruleForm.busiType !== '') {
-        params.productLine = params.productLine + 2
-      }
       params = this.removeEmpty(params)
       GetUserList(params)
         .then(({ data }) => {
@@ -457,9 +451,6 @@ export default {
         'productLine': this.ruleForm.busiType, // 业务线
         'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
         'roleType': 1
-      }
-      if (this.ruleForm.busiType !== '') {
-        params.productLine = params.productLine + 2
       }
       params = this.removeEmpty(params)
       GetUserList(params)
