@@ -275,8 +275,21 @@ export default {
       page: {
         current: 0,
         size: 10
-      }
+      },
+      scrollTop: ''
     };
+  },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.DriverList').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.DriverList').scrollTop
+    console.log(this.scrollTop)
+    next()
   },
   computed: {
     checkall: {

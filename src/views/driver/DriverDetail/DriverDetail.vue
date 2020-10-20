@@ -242,14 +242,14 @@ export default {
     },
     orderList() {
       let arr = []
-      const createOrder = { name: '录入订单', url: '/createOrder', pUrl: [''] }
-      // /v2/order/createOrUpdateOrder
-      const orderAudit = { name: '审核', url: '/orderAudit', pUrl: [''] }
-      // /v2/order/auditOrderNoPass
-      const resetOrder = { name: '重新提交', url: '/resetOrder', pUrl: [''] }
-      // /v2/order/createOrUpdateOrder
+      const createOrder = { name: '录入订单', url: '/createOrder', pUrl: ['/v2/order/createOrUpdateOrder'] }
+
+      const orderAudit = { name: '审核', url: '/orderAudit', pUrl: ['/v2/order/auditOrderNoPass'] }
+
+      const resetOrder = { name: '重新提交', url: '/resetOrder', pUrl: ['/v2/order/createOrUpdateOrder'] }
+
       const orderDetail = { name: '详情', url: '/orderDetail' }
-      const orderStop = { name: '终止', url: 'stop' }
+      const orderStop = { name: '终止', url: 'stop', pUrl: ['/v2/order/abort'] }
       if (this.isStep) {
         arr.push(createOrder)
       }

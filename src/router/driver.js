@@ -12,7 +12,8 @@ export default [
     name: 'driverlist',
     component: resolve => require(['@/views/driver/DriverList/DriverList'], resolve),
     meta: {
-      title: '司机管理'
+      title: '司机管理',
+      keepAlive: true
     }
   },
   {

@@ -17,6 +17,7 @@
           >
             <span
               v-if="detailInfo.status === 0"
+              v-permission="['/v2/clue/edit']"
               class="orderBtn"
               @click="goRouter"
             >编辑</span>
