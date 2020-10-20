@@ -26,10 +26,10 @@
         <p class="text ellipsis">
           线路名称：<span>{{ obj.lineName }}/{{ obj.lineId }}</span>
         </p>
-        <p v-if="obj.gmState === 1" class="text ellipsis">
+        <p v-if="obj.gmState !== 0" class="text ellipsis">
           上报人：<span>{{ obj.gmReportName }}/{{ obj.gmReportPhone }}</span>
         </p>
-        <p v-if="obj.gmState === 1 || obj.gmState === 2" class="text ellipsis">
+        <p v-if="obj.gmState !== 0" class="text ellipsis">
           上报时间：<span>{{ obj.gmReportTime }}</span>
         </p>
         <div v-if="obj.gmState !== 2">
@@ -40,7 +40,7 @@
         <p v-if="obj.gmState === 1 || obj.gmState === 2" class="text">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
-        <p class="text ellipsis">
+        <p v-if="obj.gmState !== 0" class="text ellipsis">
           确认状态：<span>{{ obj.confirmStateName }}</span>
           <span v-if="obj.confirmState === 20">/ {{ obj.confirmMoney }}</span>
           <span v-if="obj.confirmState === 40">/ {{ obj.againConfirmMoney }}</span>

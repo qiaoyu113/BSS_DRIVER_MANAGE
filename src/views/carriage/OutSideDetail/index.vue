@@ -26,10 +26,10 @@
         <p class="text ellipsis">
           客户名称：<span>{{ obj.customerName }}/{{ obj.customerId }}</span>
         </p>
-        <p v-if="obj.lineState === 1 || obj.lineState === 2" class="text ellipsis">
+        <p v-if="obj.lineState !== 0" class="text ellipsis">
           上报人：<span>{{ obj.lineReportName }}/{{ obj.lineReportPhone }}</span>
         </p>
-        <p v-if="obj.lineState === 1 || obj.lineState === 2" class="text ellipsis">
+        <p v-if="obj.lineState !== 0" class="text ellipsis">
           上报时间：<span>{{ obj.lineReportTime }}</span>
         </p>
         <div v-if="obj.lineState !== 2">
@@ -40,7 +40,7 @@
         <p v-if="obj.lineState === 1 || obj.lineState === 2" class="text">
           备注：<span>{{ obj.remark | DataIsNull }}</span>
         </p>
-        <p class="text ellipsis">
+        <p v-if="obj.gmState !== 0" class="text ellipsis">
           确认状态：<span>{{ obj.confirmStateName }}</span>
           <span v-if="obj.confirmState === 20">/ {{ obj.confirmMoney }}</span>
           <span v-if="obj.confirmState === 40">/ {{ obj.againConfirmMoney }}</span>

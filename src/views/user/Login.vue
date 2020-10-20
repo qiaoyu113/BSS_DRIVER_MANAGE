@@ -177,10 +177,12 @@ export default {
      * 校验账号
      */
     validatorAccount(val) {
-      if (phoneRegExp.test(val)) {
-        return true
-      }
-      return false
+      let isTrue = /\d{8,11}/.test(val)
+      return isTrue
+      // if (phoneRegExp.test(val)) {
+      //   return true
+      // }
+      // return false
     }
   }
 };

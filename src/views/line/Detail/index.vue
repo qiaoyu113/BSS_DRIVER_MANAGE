@@ -21,7 +21,7 @@
 
         <van-field label="上架截止日期" label-width="120" readonly :value="upTime | DataIsNull" :border="false" colon />
         <van-field label="线路稳定性" label-width="120" readonly :value="form.stabilityRateName | DataIsNull" :border="false" colon />
-        <van-field label="对外销售" label-width="120" readonly :value="form.lineSaleName | DataIsNull" :border="false" colon />
+        <van-field label="外线销售" label-width="120" readonly :value="form.lineSaleName | DataIsNull" :border="false" colon />
         <van-field label="上岗经理" label-width="120" readonly :value="form.dutyManagerIdName | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="配送信息" name="2">

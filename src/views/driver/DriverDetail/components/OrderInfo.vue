@@ -61,7 +61,7 @@
             class="detailBox"
             @click="goDothing(obj.orderId,obj.driverId)"
           >
-            <span>{{ orderText.name }}</span>
+            <span class="orderText">{{ orderText.name }}</span>
           </div>
         </template>
       </van-field>
@@ -96,10 +96,8 @@ export default {
         return { name: '终止', code: 2 };
       } else if (this.obj.status === 25) {
         return { name: '重新提交', url: '', code: 3 };
-      } else if (this.obj.status === 45) {
-        return { name: '录入订单', url: '', code: 4 };
       } else {
-        return { name: '' };
+        return false
       }
     }
   },
@@ -131,20 +129,6 @@ export default {
                 driverPhone: this.obj.driverInfoVO.phone,
                 workCityName: this.obj.driverInfoVO.workCityName,
                 workCity: this.obj.driverInfoVO.workCity,
-                orderId: this.obj.orderId
-              }
-            });
-            break;
-          case 4:
-            this.$router.push({
-              path: '/createOrder',
-              query: {
-                id: this.obj.driverId,
-                driverName: this.obj.driverInfoVO.name,
-                driverPhone: this.obj.driverInfoVO.phone,
-                workCityName: this.obj.driverInfoVO.workCityName,
-                workCity: this.obj.driverInfoVO.workCity,
-                busiType: this.obj.driverInfoVO.busiType,
                 orderId: this.obj.orderId
               }
             });
@@ -199,8 +183,11 @@ export default {
     justify-content: flex-start;
     align-items: center;
     color: #2f448a;
-    span {
-      margin-right: 3px;
+    .orderText{
+      margin-right: 13px;
+    }
+    .van-icon{
+      width: 13px;
     }
   }
 }

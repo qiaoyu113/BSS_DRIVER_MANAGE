@@ -1,10 +1,12 @@
 import request from '@/utils/request'
 // let prefix = '/mock/88'
-let prefix = '/business_center'
-// let productPrefix = '/mock/111'
-let productPrefix = '/product'
+const prefix = '/business_center'
+// const productPrefix = '/mock/111'
+const productPrefix = '/product'
 
-let orderPrefix = '/order'
+const orderPrefix = '/order'
+
+const billPrefix = '/bill'
 
 /**
  * 订单审核
@@ -91,6 +93,17 @@ export function checkWithdrawable(data) {
   return request({
     url: `${orderPrefix}/v2/order/checkWithdrawable`,
     method: 'get',
+    params: data
+  })
+}
+
+/**
+ * 订单支付时,可提现余额校验是否大于0
+ */
+export function getCanExtractByUserId(data) {
+  return request({
+    url: `${billPrefix}/v2/wt-driver-account/management/getCanExtractByUserId`,
+    method: 'post',
     params: data
   })
 }
