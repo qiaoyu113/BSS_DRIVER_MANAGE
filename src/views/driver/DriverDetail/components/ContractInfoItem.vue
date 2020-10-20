@@ -44,7 +44,7 @@
           :value="timeFormat(obj.signTime,'YYYY-MM-DD')"
         >
           <template #right-icon>
-            <span v-permission="['/v2/contract/activeContract']" class="active" @click="active(obj.contractId)">激活</span>
+            <span class="active" @click="active(obj.contractId)">激活</span>
           </template>
         </van-cell>
         <van-cell
