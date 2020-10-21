@@ -329,7 +329,7 @@ export default {
   computed: {
     checkall: {
       get: function() {
-        return this.lists.length === this.checkedList.length;
+        return this.lists.length === this.checkedList.length && this.lists.length !== 0;
       },
       set: function(val) {
         if (val) {
@@ -497,6 +497,8 @@ export default {
       if (isInit === true) { // 下拉刷新
         this.page.current = 1
         this.lists = []
+        // 清空选择
+        this.checkedList = []
       } else { // 上拉加载更多
         this.page.current++
       }

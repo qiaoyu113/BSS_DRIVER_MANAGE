@@ -4,7 +4,7 @@
       v-model="managerStatus"
       round
       closeable
-      @click-overlay="colsedPop"
+      @close="colsedPop"
     >
       <div class="managerBox">
         <div class="tabType">
