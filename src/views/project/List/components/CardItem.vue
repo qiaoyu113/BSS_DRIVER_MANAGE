@@ -43,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div class="detail van-hairline--top">
+    <div v-permission="['/v2/line/project/v2/line/project/info']" class="detail van-hairline--top">
       <van-button type="default" round hairline>
         详情
       </van-button>
@@ -64,6 +64,7 @@ export default {
      * 项目详情
      */
     handleDetailClick() {
+      if (!this.$permissionDetail('/v2/line/project/v2/line/project/info')) return
       this.$router.push({
         path: '/projectDetail',
         query: {
