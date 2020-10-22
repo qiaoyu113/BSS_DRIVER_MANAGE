@@ -426,7 +426,7 @@ export default {
       let params = {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
-        'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
+        'groupId': this.ruleForm.gmGroupId, // 加盟小组
         'roleTypes': [4],
         'uri': '/v2/clue/queryGmList'
       }
@@ -450,7 +450,7 @@ export default {
       let params = {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
-        'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
+        'groupId': this.ruleForm.gmGroupId, // 加盟小组
         'roleTypes': [1],
         'uri': '/v2/clue/queryGmList'
       }
