@@ -14,6 +14,7 @@
         </template>
       </van-nav-bar>
       <van-search
+        v-permission="['/v2/runtest/getRunTestInfoList']"
         readonly
         show-action
         placeholder="请输入线路名称/编号"

@@ -17,6 +17,8 @@ import global_ from 'components/Global'
 import { Toast } from 'vant'
 import * as directives from '@/directives'
 import { Lazyload } from 'vant';
+import { permissionDetail } from '@/utils'
+Vue.prototype.$permissionDetail = permissionDetail
 
 Vue.use(Lazyload);
 
