@@ -279,13 +279,18 @@ export default {
     handleSearchChange(value) {
       let params = {
         keyword: value,
-        roleType: 1
+        roleTypes: [1],
+        uri: '/v2/waybill/queryH5GM'
       }
       this.getSpecifiedRoleList(params)
     },
     // 打开模糊查询框
     async handleShowModal() {
-      this.getSpecifiedRoleList({ roleType: 1, keyword: '' })
+      this.getSpecifiedRoleList({
+        roleTypes: [1],
+        keyword: '',
+        uri: '/v2/waybill/queryH5GM'
+      })
       this.showModal = true
     },
     handleValueClick(obj) {

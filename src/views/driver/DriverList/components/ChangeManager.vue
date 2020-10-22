@@ -96,7 +96,7 @@
 import { Popup, Notify } from 'vant';
 import { delay } from '@/utils';
 import { updateGmByDriverId } from '@/api/driver.js'
-import { getCurrentLowerOfficeCityData, getSpecifiedUserListByCondition } from '@/api/common'
+import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -153,10 +153,11 @@ export default {
     async getGmId(val) {
       let params = {
         'productLine': this.active,
-        'roleType': 1
+        'roleTypes': [1],
+        'uri': '/driverGmInfo/role'
       }
       this.formData.workCity !== '' && (params.cityCode = this.formData.workCity)
-      getSpecifiedUserListByCondition(params).then(({ data }) => {
+      GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {
           this.columns_gmId = []
           this.columns_gmId = data.data.map(ele => ({ name: ele.name, code: ele.id }))
