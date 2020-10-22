@@ -52,7 +52,8 @@
         label="流水编号"
         required
         placeholder="请填写"
-        type="number"
+        maxlength="50"
+        show-word-limit
         :rules="[{ required: true, message: '请填写' }]"
       />
       <van-field
@@ -103,7 +104,7 @@
         label="备注"
         placeholder="请输入..."
         type="textarea"
-        maxlength="300"
+        maxlength="150"
         show-word-limit
         class="textarea"
       />
@@ -186,7 +187,7 @@ export default {
         payImageUrl: [],
         remarks: ''
       }
-    };
+    }
   },
   computed: {
     title() {

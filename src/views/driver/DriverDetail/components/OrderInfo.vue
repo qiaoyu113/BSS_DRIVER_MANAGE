@@ -58,6 +58,7 @@
       >
         <template #button>
           <div
+            v-permission="['/v2/order/createOrUpdateOrder','/v2/order/abort','/v2/order/auditOrderNoPass']"
             class="detailBox"
             @click="goDothing(obj.orderId,obj.driverId)"
           >

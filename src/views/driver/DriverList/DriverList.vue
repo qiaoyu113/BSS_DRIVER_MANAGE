@@ -275,7 +275,8 @@ export default {
       page: {
         current: 0,
         size: 10
-      }
+      },
+      scrollTop: ''
     };
   },
   computed: {
@@ -316,9 +317,6 @@ export default {
       let params = {}
       this.ruleForm.workCity !== '' && (params.cityCode = this.ruleForm.workCity)
       this.ruleForm.busiType !== '' && (params.productLine = this.ruleForm.busiType)
-      if (this.ruleForm.busiType !== '') {
-        params.productLine = params.productLine + 2
-      }
       params.roleType = 1
       getSpecifiedUserListByCondition(params).then(({ data }) => {
         if (data.success) {

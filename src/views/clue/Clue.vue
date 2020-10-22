@@ -329,7 +329,7 @@ export default {
   computed: {
     checkall: {
       get: function() {
-        return this.lists.length === this.checkedList.length;
+        return this.lists.length === this.checkedList.length && this.lists.length !== 0;
       },
       set: function(val) {
         if (val) {
@@ -406,9 +406,6 @@ export default {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'busiLine': this.ruleForm.busiType // 业务线
       }
-      if (this.ruleForm.busiType !== '') {
-        params.busiLine = params.busiLine + 2
-      }
       params = this.removeEmpty(params)
       GetGmGroup(params)
         .then(({ data }) => {
@@ -432,9 +429,6 @@ export default {
         'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
         'roleType': 4
       }
-      if (this.ruleForm.busiType !== '') {
-        params.productLine = params.productLine + 2
-      }
       params = this.removeEmpty(params)
       GetUserList(params)
         .then(({ data }) => {
@@ -457,9 +451,6 @@ export default {
         'productLine': this.ruleForm.busiType, // 业务线
         'gmGroup': this.ruleForm.gmGroupId, // 加盟小组
         'roleType': 1
-      }
-      if (this.ruleForm.busiType !== '') {
-        params.productLine = params.productLine + 2
       }
       params = this.removeEmpty(params)
       GetUserList(params)
@@ -506,6 +497,8 @@ export default {
       if (isInit === true) { // 下拉刷新
         this.page.current = 1
         this.lists = []
+        // 清空选择
+        this.checkedList = []
       } else { // 上拉加载更多
         this.page.current++
       }

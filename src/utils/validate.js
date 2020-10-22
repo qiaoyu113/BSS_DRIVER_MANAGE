@@ -97,13 +97,3 @@ export function validatorNum(min, max) {
     return vad
   }
 }
-
-/** 流水编号限制字母和数字
- * @param {String}
- */
-export function validatorNo(val) {
-  return function(val) {
-    let reg = (/[^\w\.\/]/ig, '')
-    return reg.test(val)
-  }
-}
