@@ -7,7 +7,7 @@
     >
       <div>
         <!-- 客户信息 -->
-        <van-collapse-item title="客户信息" :name="0">
+        <van-collapse-item v-permission="['/v2/line/customer/findCustomerInfo']" title="客户信息" :name="0">
           <!-- 使用 title 插槽来自定义标题 -->
           <div @click="goCustomDetail(lineInfoVO.customerId)">
             <van-cell
@@ -54,6 +54,7 @@
               class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
+                v-permission="['/v2/line/customer/findCustomerInfo']"
                 class="details van-hairline--surround"
               >
                 详情
@@ -62,7 +63,7 @@
           </div>
         </van-collapse-item>
         <!-- 线路信息 -->
-        <van-collapse-item :name="1">
+        <van-collapse-item v-permission="['/v2/line/lineInfo/detail']" :name="1">
           <!-- 使用 title 插槽来自定义标题 -->
           <template #title>
             <span class="margin-right-xs">线路信息</span>
@@ -124,6 +125,7 @@
               class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
+                v-permission="['/v2/line/lineInfo/detail']"
                 class="details van-hairline--surround"
               >
                 详情
@@ -132,7 +134,7 @@
           </div>
         </van-collapse-item>
         <!-- 司机信息 -->
-        <van-collapse-item title="司机信息" :name="2">
+        <van-collapse-item v-permission="['/v2/driver/selectDriverDetail']" title="司机信息" :name="2">
           <div @click="goDriverDetail(detail.driverId)">
             <van-cell
               title="司机信息："
@@ -168,6 +170,7 @@
               class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
+                v-permission="['/v2/driver/selectDriverDetail']"
                 class="details van-hairline--surround"
               >
                 详情
@@ -300,28 +303,34 @@ export default {
       return value;
     },
     goDriverDetail(id) {
-      this.$router.push({
-        path: '/driverdetail',
-        query: {
-          id
-        }
-      });
+      if (this.$permissionDetail('/v2/driver/selectDriverDetail')) {
+        this.$router.push({
+          path: '/driverdetail',
+          query: {
+            id
+          }
+        });
+      }
     },
     goLineDetail(lineId) {
-      this.$router.push({
-        path: '/lineDetail',
-        query: {
-          lineId
-        }
-      });
+      if (this.$permissionDetail('/v2/line/lineInfo/detail')) {
+        this.$router.push({
+          path: '/lineDetail',
+          query: {
+            lineId
+          }
+        });
+      }
     },
     goCustomDetail(customerId) {
-      this.$router.push({
-        path: '/clientDetail',
-        query: {
-          customerId
-        }
-      });
+      if (this.$permissionDetail('/v2/line/customer/findCustomerInfo')) {
+        this.$router.push({
+          path: '/clientDetail',
+          query: {
+            customerId
+          }
+        });
+      }
     }
   }
 };

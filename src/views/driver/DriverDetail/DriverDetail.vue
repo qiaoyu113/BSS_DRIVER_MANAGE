@@ -13,6 +13,7 @@
         <template #right>
           <div class="doBox">
             <span
+              v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']"
               class="orderBtn"
               @click="showOrder = true"
             >最新订单</span>
@@ -26,6 +27,7 @@
             style="margin-left:6px"
           >
             <span
+              v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']"
               class="orderBtn"
               @click="showDothing = true"
             >操作</span>
@@ -117,7 +119,10 @@
             v-for="(info,ind) in contractList"
             :key="ind"
           >
-            <ContractInfoItem :obj="info" @activeContract="activeContract" />
+            <ContractInfoItem
+              :obj="info"
+              @activeContract="activeContract"
+            />
           </div>
         </div>
         <div v-if="active === 2">
@@ -125,7 +130,10 @@
             v-for="(info,ind) in orderInfoList"
             :key="ind"
           >
-            <OrderInfo :obj="info" @orderStop="orderStop" />
+            <OrderInfo
+              :obj="info"
+              @orderStop="orderStop"
+            />
           </div>
         </div>
         <div v-if="active === 1">
@@ -170,7 +178,7 @@ import LineInfoItem from './components/LineInfoItem';
 import ContractInfoItem from './components/ContractInfoItem';
 import OrderInfo from './components/OrderInfo';
 import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import { contractList, orderAbort, getOrderList } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
 export default {
@@ -217,15 +225,15 @@ export default {
     },
     isStep() {
       if (this.orderInfoList.length === 0) {
-        return true
+        return true;
       } else {
-        let statusArr = []
-        this.orderInfoList.map(ele => {
+        let statusArr = [];
+        this.orderInfoList.map((ele) => {
           if (ele.status === 45 || ele.status === 0) {
-            statusArr.push(ele)
+            statusArr.push(ele);
           }
-        })
-        return statusArr.length === this.orderInfoList.length
+        });
+        return statusArr.length === this.orderInfoList.length;
       }
     }
   },
@@ -233,75 +241,107 @@ export default {
     let id = this.$route.query.id;
     this.driverId = id;
     this.getDetail(id);
-    this.getOrderLabel(id)
+    this.getOrderLabel(id);
   },
   methods: {
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
-      return dayjs(date).format(format)
+      return dayjs(date).format(format);
     },
     orderList() {
-      let arr = []
-      const createOrder = { name: '录入订单', url: '/createOrder', pUrl: ['/v2/order/createOrUpdateOrder'] }
+      let arr = [];
+      const createOrder = {
+        name: '录入订单',
+        url: '/createOrder',
+        pUrl: ['/v2/order/createOrUpdateOrder']
+      };
 
-      const orderAudit = { name: '审核', url: '/orderAudit', pUrl: ['/v2/order/auditOrderNoPass'] }
+      const orderAudit = {
+        name: '审核',
+        url: '/orderAudit',
+        pUrl: ['/v2/order/auditOrderNoPass']
+      };
 
-      const resetOrder = { name: '重新提交', url: '/resetOrder', pUrl: ['/v2/order/createOrUpdateOrder'] }
+      const resetOrder = {
+        name: '重新提交',
+        url: '/resetOrder',
+        pUrl: ['/v2/order/createOrUpdateOrder']
+      };
 
-      const orderDetail = { name: '详情', url: '/orderDetail' }
-      const orderStop = { name: '终止', url: 'stop', pUrl: ['/v2/order/abort'] }
+      const orderDetail = {
+        name: '详情',
+        url: '/orderDetail',
+        pUrl: ['/v2/order/getOrderDetialByDriverId']
+      };
+      const orderStop = {
+        name: '终止',
+        url: 'stop',
+        pUrl: ['/v2/order/abort']
+      };
       if (this.isStep) {
-        arr.push(createOrder)
+        arr.push(createOrder);
       }
       if (this.recentOrder.status === 20) {
-        arr.push(orderDetail)
-        arr.push(orderAudit)
+        arr.push(orderDetail);
+        arr.push(orderAudit);
       }
       if (this.recentOrder.status === 25) {
-        arr.push(orderDetail)
-        arr.push(resetOrder)
+        arr.push(orderDetail);
+        arr.push(resetOrder);
       }
       if (this.recentOrder.status === 30) {
-        arr.push(orderDetail)
-        arr.push(orderStop)
+        arr.push(orderDetail);
+        arr.push(orderStop);
       }
       return arr;
     },
     arrList() {
-      let arr = []
-      const tagView = { name: '打标签', url: '/tagView', pUrl: ['/v2/driver/insertLabel'] }
-      const editTailored = { name: '编辑专车面试', url: '/editTailored', pUrl: ['/v2/driver/edit/interview'] }
-      const editShare = { name: '编辑共享面试', url: '/editShare', pUrl: ['/v2/driver/edit/interview'] }
-      const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] }
-      const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] }
+      let arr = [];
+      const tagView = {
+        name: '打标签',
+        url: '/tagView',
+        pUrl: ['/v2/driver/insertLabel']
+      };
+      const editTailored = {
+        name: '编辑专车面试',
+        url: '/editTailored',
+        pUrl: ['/v2/driver/edit/interview']
+      };
+      const editShare = {
+        name: '编辑共享面试',
+        url: '/editShare',
+        pUrl: ['/v2/driver/edit/interview']
+      };
+      const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
+      const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
       if (
         this.detailInfo.status === 1 ||
         this.detailInfo.status === 2 ||
         this.detailInfo.status === 4
       ) {
-        arr.push(tagView)
+        arr.push(tagView);
         if (this.detailInfo.busiType === 0) {
-          arr.push(editTailored)
+          arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
-          arr.push(editShare)
+          arr.push(editShare);
         }
         return arr;
       } else if (this.detailInfo.status === 3) {
-        arr.push(tagView)
-        arr.push(signOut)
+        arr.push(tagView);
+        arr.push(signOut);
         if (this.detailInfo.busiType === 0) {
-          arr.push(editTailored)
+          arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
-          arr.push(editShare)
+          arr.push(editShare);
         }
         return arr;
       } else if (this.detailInfo.status === 5) {
-        arr.push(tagView)
-        arr.push(signDeal)
+        arr.push(tagView);
+        arr.push(signDeal);
         if (this.detailInfo.busiType === 0) {
-          arr.push(editTailored)
+          arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
-          arr.push(editShare)
+          arr.push(editShare);
         }
         return arr;
       }
@@ -339,8 +379,8 @@ export default {
           status: this.detailInfo.orderStatus,
           goodsAmount: this.detailInfo.goodsAmount,
           operateFlag: 'abort'
-        }
-        this.stopOrder(params)
+        };
+        this.stopOrder(params);
       } else {
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
@@ -352,7 +392,7 @@ export default {
       } else if (item.name === '标记成交') {
         this.dealSign(this.driverId);
       } else {
-        console.log('this.driverId', this.driverId)
+        console.log('this.driverId', this.driverId);
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },
@@ -465,12 +505,12 @@ export default {
         this.$loading(true);
         let params = {
           driverId: id
-        }
+        };
         let { data: res } = await getOrderList(params);
         if (res.success) {
           this.orderInfoList = res.data || [];
           if (res.data !== null) {
-            this.recentOrder = res.data[0]
+            this.recentOrder = res.data[0];
           }
           this.$loading(false);
         } else {
@@ -484,16 +524,16 @@ export default {
     },
     activeContract() {
       this.getDetail(this.driverId);
-      this.getContract(this.driverId)
+      this.getContract(this.driverId);
     },
     orderStop() {
-      this.getOrderLabel(this.driverId)
+      this.getOrderLabel(this.driverId);
     },
     async stopOrder(params) {
-      let { data: res } = await orderAbort(params)
+      let { data: res } = await orderAbort(params);
       if (res.success) {
         Notify({ type: 'success', message: '订单终止成功' });
-        this.getOrderLabel(this.driverId)
+        this.getOrderLabel(this.driverId);
         this.getDetail(this.driverId);
       } else {
         Notify({ type: 'warning', message: res.errorMsg });

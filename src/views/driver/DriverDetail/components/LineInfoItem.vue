@@ -48,7 +48,7 @@
           :value="timeFormat(obj.createDate,'YYYY-MM-DD')"
         />
       </div>
-      <div class="detailBtn">
+      <div v-permission="['/v2/line/lineInfo/detail']" class="detailBtn">
         <van-button round plain size="small" class="routeBtn" @click="goRouter">
           详情
         </van-button>
