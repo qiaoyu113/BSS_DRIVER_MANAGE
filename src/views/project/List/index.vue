@@ -144,6 +144,7 @@ import Suggest from '@/components/SuggestSearch'
 import { getProjectList } from '@/api/project'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
 export default {
+  name: 'ProjectList',
   components: {
     CardItem,
     SelfPopup,
