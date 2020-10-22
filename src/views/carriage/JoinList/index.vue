@@ -4,13 +4,18 @@
     <div class="top">
       <van-nav-bar title="加盟运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div v-if="form.wayBillGMSaleStatus !== 1" v-permission="['/v2/waybill/shipping/wayBillAmountDetail']" class="headerRight" @click="batch">
+          <div
+            v-if="form.wayBillGMSaleStatus !== 1"
+            v-permission="['/v2/waybill/reportMoneyBatchByGM', '/v2/waybill/noCarBatchByGM']"
+            class="headerRight"
+            @click="batch"
+          >
             批量上报
           </div>
         </template>
       </van-nav-bar>
       <!-- 搜索 -->
-      <van-search show-action placeholder="请输入司机名称/手机号" readonly @click="handleSearchClick">
+      <van-search v-permission="['/v2/waybill/getGmInfoListByKeyWord']" show-action placeholder="请输入司机名称/手机号" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="filter_left">
             筛选

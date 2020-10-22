@@ -463,9 +463,17 @@ export default {
     async handleShowModal(key) {
       this.modalKey = key
       if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleType: 3 })
+        let params = {
+          roleTypes: [3],
+          uri: '/v2/line/lineInfo/dutyManagerList'
+        }
+        this.getSpecifiedRoleList(params)
       } else if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleType: 2 })
+        let params = {
+          roleTypes: [2],
+          uri: '/v2/line/lineInfo/lineSaleList'
+        }
+        this.getSpecifiedRoleList(params)
       } else if (key === 'carType') {
         let result = await this.getDictDataByKeyword('Intentional_compartment')
         this.options = result

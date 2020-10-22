@@ -9,6 +9,7 @@
       >
       </van-nav-bar>
       <van-search
+        v-permission="['/v2/waybill/getLineInfoListByKeyWord', '/v2/waybill/getLineInfoList']"
         readonly
         show-action
         placeholder="搜索项目名称/编号"

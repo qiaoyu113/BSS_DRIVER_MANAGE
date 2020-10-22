@@ -4,7 +4,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="加盟运费详情" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div v-if="obj.gmState === 0" v-permission="['/v2/waybill/shipping/wayBillAmountDetail']" class="headerRight" @click="showPopup(obj.departureDate)">
+          <div v-if="obj.gmState === 0" v-permission="['/v2/waybill/reportMoneyBatchByGM']" class="headerRight" @click="showPopup(obj.departureDate)">
             上报
           </div>
         </template>
