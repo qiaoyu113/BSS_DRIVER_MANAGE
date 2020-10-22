@@ -17,6 +17,7 @@
           >
             <span
               v-if="detailInfo.status === 0"
+              v-permission="['/v2/clue/edit']"
               class="orderBtn"
               @click="goRouter"
             >编辑</span>
@@ -29,9 +30,9 @@
         <van-cell>
           <template #title>
             <div class="title">
-              <span>{{ detailInfo.name | DataIsNull }}</span>&#8194;
-              <span>{{ detailInfo.phone| DataIsNull }}</span>&#8194;
-              <span>({{ detailInfo.busiTypeName | DataIsNull }}/{{ detailInfo.workCityName | DataIsNull }})</span>
+              <span v-if="detailInfo.name">{{ detailInfo.name }}&#8194;</span>
+              <span v-if="detailInfo.phone">{{ detailInfo.phone }}&#8194;</span>
+              <span v-text="removeEmpty([detailInfo.busiTypeName ,detailInfo.workCityName])"></span>
             </div>
           </template>
         </van-cell>
@@ -50,6 +51,7 @@
             :value="detailInfo.clueId | DataIsNull"
           />
           <van-cell
+            v-if="detailInfo.gmDutyName"
             title-class="cell-title"
             value-class="cell-value"
             :title="setLabel(detailInfo.gmDutyName) + '：'"
@@ -143,6 +145,9 @@ export default {
         return val.substr(2)
       }
       return val
+    },
+    removeEmpty(arr) {
+      return (arr.filter(item => item) || []).join('/')
     },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {

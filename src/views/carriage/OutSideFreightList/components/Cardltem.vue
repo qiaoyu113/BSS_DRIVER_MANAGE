@@ -12,7 +12,7 @@
       </p>
       <p class="text ellipsis">
         线路名称:{{ obj.lineName }}/{{ obj.lineId }}
-        <span v-if="(obj.lineStatusCode !== obj.gmStatusCode) && (obj.lineStatusCode === 1 || obj.lineStatusCode === 2) && obj.feeDiff === 0" class="differ">{{ obj.lineFee || 0 }}元</span>
+        <span v-if="(obj.lineStatusCode !== obj.gmStatusCode) && obj.lineStatusCode !== 2 && obj.feeDiff === 0" class="differ">{{ obj.lineFee || 0 }}元</span>
         <!-- <span v-if="obj.lineStatusCode === 2 && obj.gmStatusCode === 2" class="differ">
           未出车
         </span> -->

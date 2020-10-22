@@ -250,6 +250,9 @@
               label="交易编号"
               colon
               :value="payInfo.transactionId | DataIsNull"
+              type="textarea"
+              rows="1"
+              autosize
               readonly
               :border="false"
             />
@@ -257,6 +260,9 @@
               label="备注"
               :value="payInfo.remarks | DataIsNull "
               readonly
+              type="textarea"
+              rows="1"
+              autosize
               colon
               :border="false"
             />
