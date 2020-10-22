@@ -24,8 +24,10 @@ export default {
     },
 
     [SetUserData](state, userData = {}) {
+      console.log(state)
       state.user = userData
       localStorage.setItem(USER_DATA, JSON.stringify(userData))
+      localStorage.setItem('permission', state.user.stringPermissions)
     },
     [LOGOUT](state) {
       state.user = null
