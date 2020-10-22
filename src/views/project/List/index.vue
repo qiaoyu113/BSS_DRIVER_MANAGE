@@ -375,9 +375,17 @@ export default {
     handleShowModal(key) {
       this.modalKey = key
       if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleType: 2 })
+        let params = {
+          roleTypes: [2],
+          uri: '/v2/line/project/lineSaleList'
+        }
+        this.getSpecifiedRoleList(params)
       } else if (key === 'dutyManagerId') {
-        this.getSpecifiedRoleList({ roleType: 3 })
+        let params = {
+          roleTypes: [3],
+          uri: '/v2/line/project/dutyManagerList'
+        }
+        this.getSpecifiedRoleList(params)
       }
       this.showModal = true
     },
