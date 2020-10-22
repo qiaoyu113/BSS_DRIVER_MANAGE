@@ -207,7 +207,7 @@ export default {
       let params = {
         'cityCode': this.formData.workCity, // 工作城市
         'productLine': this.active, // 业务线
-        'gmGroup': this.formData.gmGroupId, // 加盟小组
+        'groupId': this.formData.gmGroupId, // 加盟小组
         'roleTypes': [1, 4, 6],
         'uri': '/v2/clue/queryGmList'
       }
@@ -251,7 +251,7 @@ export default {
       let params = {
         'cityCode': this.formData.workCity, // 工作城市
         'productLine': this.active, // 业务线
-        'gmGroup': this.formData.gmGroupId, // 加盟小组
+        'groupId': this.formData.gmGroupId, // 加盟小组
         'roleTypes': [1, 7],
         'uri': '/v2/clue/queryGmList'
       }
