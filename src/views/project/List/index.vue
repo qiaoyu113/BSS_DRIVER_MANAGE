@@ -4,7 +4,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="项目管理" left-text="返回" left-arrow @click-left="onClickLeft" />
       <!-- 搜索 -->
-      <van-search show-action placeholder="项目名称/项目编号/项目联系人手机号搜索" readonly @click="handleSearchClick">
+      <van-search v-permission="['/v2/line/project/queryProjectQueryList']" show-action placeholder="项目名称/项目编号/项目联系人手机号搜索" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="show=true">
             筛选
@@ -144,6 +144,7 @@ import Suggest from '@/components/SuggestSearch'
 import { getProjectList } from '@/api/project'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
 export default {
+  name: 'ProjectList',
   components: {
     CardItem,
     SelfPopup,

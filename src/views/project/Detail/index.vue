@@ -53,11 +53,11 @@
       </van-collapse-item>
     </van-collapse>
     <div v-if="form.projectState ===2 && form.auditState ===2" class="btn">
-      <van-button type="plain" hairline block class="distance" @click="handleLinkClick(0)">
+      <van-button v-permission="['/v2/line/lineInfo/createStableLine']" type="plain" hairline block class="distance" @click="handleLinkClick(0)">
         发布临时线路
       </van-button>
 
-      <van-button type="primary" hairline block @click="handleLinkClick(1)">
+      <van-button v-permission="['/v2/line/lineInfo/createTemporaryLine']" type="primary" hairline block @click="handleLinkClick(1)">
         发布稳定线路
       </van-button>
     </div>

@@ -41,7 +41,7 @@
         </van-tag>
       </template>
     </div>
-    <div class="detail van-hairline--top">
+    <div v-permission="['/v2/line/lineInfo/detail']" class="detail van-hairline--top">
       <van-button type="default" round hairline>
         详情
       </van-button>
@@ -67,6 +67,7 @@ export default {
      * 线路详情
      */
     handleDetailClick() {
+      if (!this.$permissionDetail('/v2/line/lineInfo/detail')) return
       this.$router.push({
         path: '/lineDetail',
         query: {

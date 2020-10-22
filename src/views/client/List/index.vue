@@ -4,7 +4,7 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="客户管理" left-text="返回" left-arrow @click-left="onClickLeft" />
       <!-- 搜索 -->
-      <van-search show-action placeholder="客户名称/客户编号/客户联系人手机号搜索" readonly @click="handleSearchClick">
+      <van-search v-permission="['/v2/line/customer/queryLineCustomerList']" show-action placeholder="客户名称/客户编号/客户联系人手机号搜索" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="show=true">
             筛选
