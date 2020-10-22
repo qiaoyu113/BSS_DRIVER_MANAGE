@@ -4,7 +4,7 @@
     <div class="top">
       <van-nav-bar title="加盟运费" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div v-if="form.wayBillGMSaleStatus !== 1" class="headerRight" @click="batch">
+          <div v-if="form.wayBillGMSaleStatus !== 1" v-permission="['/v2/waybill/shipping/wayBillAmountDetail']" class="headerRight" @click="batch">
             批量上报
           </div>
         </template>
