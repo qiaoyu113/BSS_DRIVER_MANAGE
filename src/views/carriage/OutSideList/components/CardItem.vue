@@ -25,7 +25,10 @@
         </p>
       </div>
     </div>
-    <div class="detail">
+    <div
+      v-permission="['/v2/waybill/getProjectWayBillList']"
+      class="detail"
+    >
       <van-button type="default" plain round color="#AEB1BD">
         详情
       </van-button>
@@ -34,6 +37,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { shippingDetailByGM } from '@/api/freight'
 
 export default {
@@ -54,22 +58,35 @@ export default {
       default: () => {}
     }
   },
-
+  computed: {
+    ...mapGetters([
+      'userData'
+    ])
+  },
   methods: {
     /**
      * 线路详情
      */
     handleDetailClick(item) {
       // this.getGmInfoList(id)
-      this.$router.push({
-        path: '/outsidefreightlist',
-        query: {
-          id: item.projectId,
-          start: item.startDate,
-          end: item.endDate,
-          title: item.name
-        }
-      })
+      let disable = this.permission('/v2/waybill/getProjectWayBillList')
+      if (disable) {
+        this.$router.push({
+          path: '/outsidefreightlist',
+          query: {
+            id: item.projectId,
+            start: item.startDate,
+            end: item.endDate,
+            title: item.name
+          }
+        })
+      } else {
+        this.$toast.fail('暂无详情权限')
+      }
+    },
+    permission(val) {
+      const permissionList = this.userData.stringPermissions
+      return permissionList.some(item => item === val)
     },
     async getGmInfoList(id) {
       try {
@@ -84,7 +101,6 @@ export default {
               type: '1' }
           })
         } else {
-
           // this.$toast.fail(res.errorMsg)
         }
       } catch (err) {

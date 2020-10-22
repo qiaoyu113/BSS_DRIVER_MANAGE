@@ -191,7 +191,7 @@ import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, getSpecifiedUserListByCondition } from '@/api/common'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
 export default {
   name: 'DriverList',
   components: {
@@ -317,8 +317,9 @@ export default {
       let params = {}
       this.ruleForm.workCity !== '' && (params.cityCode = this.ruleForm.workCity)
       this.ruleForm.busiType !== '' && (params.productLine = this.ruleForm.busiType)
-      params.roleType = 1
-      getSpecifiedUserListByCondition(params).then(({ data }) => {
+      params.roleTypes = [1]
+      params.uri = '/driverGmInfo/role'
+      GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {
           this.columns_GmManager = data.data.map(ele => {
             return { name: ele.name, code: ele.id }

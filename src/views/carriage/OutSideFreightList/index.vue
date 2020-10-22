@@ -4,13 +4,19 @@
     <div class="top">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div v-if="listQuery.reportState !== 1" class="headerRight" @click="batch">
+          <div v-if="listQuery.reportState !== 1" v-permission="['/v2/waybill/reportMoneyBatchBySale', '/v2/waybill/noCarBatchBySale']" class="headerRight" @click="batch">
             批量上报
           </div>
         </template>
       </van-nav-bar>
       <!-- 搜索 -->
-      <van-search show-action placeholder="请输入司机名称/手机号" readonly @click="handleSearchClick">
+      <van-search
+        v-permission="['/v2/waybill/getLineInfoListByKeyWord', '/v2/waybill/getLineInfoList']"
+        show-action
+        placeholder="请输入司机名称/手机号"
+        readonly
+        @click="handleSearchClick"
+      >
         <template #action>
           <div class="searchSelect" @click="filter_left">
             日期
