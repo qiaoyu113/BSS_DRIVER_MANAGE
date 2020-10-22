@@ -49,10 +49,10 @@
           </div>
         </ul>
         <div class="Bulk">
-          <van-button native-type="button" @click="cancel">
+          <van-button v-permission="['/v2/waybill/noCarBatchBySale']" native-type="button" @click="cancel">
             全部未出车
           </van-button>
-          <van-button native-type="submit">
+          <van-button v-permission="['/v2/waybill/reportMoneyBatchBySale']" native-type="submit">
             全部上报
           </van-button>
         </div>
