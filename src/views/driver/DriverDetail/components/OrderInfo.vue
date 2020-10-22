@@ -42,6 +42,7 @@
       >
         <template #button>
           <div
+            v-permission="['/v2/order/getOrderDetialByDriverId']"
             class="detailBox"
             @click="goRouter"
           >

@@ -36,7 +36,7 @@
           :value="item.createDate | parseTime('{y}/{m}/{d}')"
         />
       </div>
-      <div class="detailBtn">
+      <div v-permission="['/v2/driver/selectDriverDetail']" class="detailBtn">
         <van-button round plain size="small" class="routeBtn" @click="goRouter">
           详情
         </van-button>
@@ -92,11 +92,15 @@ export default {
         this.$emit('changeCheck', { change: !this.check, item: this.item.driverId })
         this.check = !this.check
       } else {
-        this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+        if (this.$permissionDetail('/v2/driver/selectDriverDetail')) {
+          this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+        }
       }
     },
     goRouter() {
-      this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+      if (this.$permissionDetail('/v2/driver/selectDriverDetail')) {
+        this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+      }
     }
   }
 };

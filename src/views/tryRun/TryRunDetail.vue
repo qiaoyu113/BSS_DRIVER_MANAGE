@@ -8,7 +8,7 @@
         @click-left="onClickLeft"
       >
         <template v-if="actions.length > 0" #right>
-          <div class="navBarTit" @click="onClickRight">
+          <div v-permission="['/v2/runtest/creatIntentionRun', '/v2/runtest/switchTryRun' ,'/v2/runtest/switchDropped']" class="navBarTit" @click="onClickRight">
             操作
           </div>
         </template>

@@ -313,3 +313,15 @@ export function formatter(val) {
   }
   return val
 }
+
+// toast 详情跳转拦截权限
+export function permissionDetail(url = '') {
+  const permissionList = this.$store.state.user.user.stringPermissions
+  const permission = permissionList.some(item => item === url)
+  if (!permission) {
+    this.$fail('暂无详情权限！')
+    return false
+  } else {
+    return true
+  }
+}

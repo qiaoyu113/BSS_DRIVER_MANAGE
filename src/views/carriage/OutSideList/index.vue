@@ -9,6 +9,7 @@
       >
       </van-nav-bar>
       <van-search
+        v-permission="['/v2/waybill/getLineInfoListByKeyWord', '/v2/waybill/getLineInfoList']"
         readonly
         show-action
         placeholder="搜索项目名称/编号"
@@ -245,13 +246,14 @@ export default {
     handleSearchChange(value) {
       let params = {
         keyword: value,
-        roleType: 3
+        roleTypes: [3],
+        uri: '/v2/waybill/queryH5LineSale'
       }
       this.getSpecifiedRoleList(params)
     },
     // 打开模糊查询框
     async handleShowModal() {
-      this.getSpecifiedRoleList({ roleType: 3, keyword: '' })
+      this.getSpecifiedRoleList({ roleTypes: [3], keyword: '', uri: '/v2/waybill/queryH5LineSale' })
       this.showModal = true
     },
     handleValueClick(obj) {

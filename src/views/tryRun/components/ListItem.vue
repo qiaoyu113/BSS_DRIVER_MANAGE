@@ -66,7 +66,7 @@
         {{ item.droppedReasonName }}
       </van-tag>
     </div>
-    <div class="bottom van-hairline--top flex flex align-center justify-center">
+    <div v-permission="['/v2/runtest/runDetial']" class="bottom van-hairline--top flex flex align-center justify-center">
       <div class="details van-hairline--surround">
         详情
       </div>
@@ -113,12 +113,14 @@ export default {
   methods: {
     // 跳转详情
     onDetails(id) {
-      this.$router.push({
-        path: '/try-detail',
-        query: {
-          id
-        }
-      })
+      if (this.$permissionDetail('/v2/runtest/runDetial')) {
+        this.$router.push({
+          path: '/try-detail',
+          query: {
+            id
+          }
+        })
+      }
     }
   }
 };

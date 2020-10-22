@@ -123,7 +123,7 @@
 import { Popup, Notify } from 'vant';
 import { delay } from '@/utils';
 import { updateGmByClueId } from '@/api/clue.js'
-import { getCurrentLowerOfficeCityData, GetUserList, GetGmGroup } from '@/api/common'
+import { getCurrentLowerOfficeCityData, GetSpecifiedRoleList, GetGmGroup } from '@/api/common'
 export default {
   components: {
     [Popup.name]: Popup
@@ -202,19 +202,20 @@ export default {
     this.fetchData();
   },
   methods: {
-    // 获取渠道经理
+    // 获取归属人
     getScGmId(val) {
       let params = {
         'cityCode': this.formData.workCity, // 工作城市
         'productLine': this.active, // 业务线
-        'gmGroup': this.formData.gmGroupId, // 加盟小组
-        'roleType': 4
+        'groupId': this.formData.gmGroupId, // 加盟小组
+        'roleTypes': [1, 4, 6],
+        'uri': '/v2/clue/queryGmList'
       }
       params = this.removeEmpty(params)
-      GetUserList(params).then(({ data }) => {
+      GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {
           this.columns_scGmId = data.data.map(ele => {
-            return { name: ele.name + ' ' + ele.mobile + '（渠道经理）', code: ele.id, nameInput: ele.name }
+            return { name: ele.name + ' ' + ele.mobile, code: ele.id, nameInput: ele.name }
           })
         } else {
           this.$toast(data.errorMsg)
@@ -250,15 +251,16 @@ export default {
       let params = {
         'cityCode': this.formData.workCity, // 工作城市
         'productLine': this.active, // 业务线
-        'gmGroup': this.formData.gmGroupId, // 加盟小组
-        'roleType': 1
+        'groupId': this.formData.gmGroupId, // 加盟小组
+        'roleTypes': [1, 7],
+        'uri': '/v2/clue/queryGmList'
       }
       params = this.removeEmpty(params)
-      GetUserList(params)
+      GetSpecifiedRoleList(params)
         .then(({ data }) => {
           if (data.success) {
             this.columns_gmId = data.data.map(ele => {
-              return { name: ele.name + ' ' + ele.mobile + '（加盟经理）', code: ele.id, nameInput: ele.name }
+              return { name: ele.name + ' ' + ele.mobile, code: ele.id, nameInput: ele.name }
             })
           } else {
             this.$toast(data.errorMsg)
@@ -332,7 +334,7 @@ export default {
           this.columns = this.columns_gmGroupId;
           break;
         case 'gmScIds':
-          this.columns = this.columns_gmId.concat(this.columns_scGmId);
+          this.columns = this.columns_scGmId;
           break;
         case 'workCity':
           this.columns = this.columns_workCity;

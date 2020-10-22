@@ -118,7 +118,16 @@ export const GetCityByCode = (data) =>
     data
   })
 
-// 加盟经理(1)  外销销售(2) 上岗经理(3)
+/**
+ * 根据数据权限获取登录人相关角色的用户列表[加盟经理，外线销售...]，支持根据中文名模糊、产品线、城市编码、角色类型查询
+ * @param  {object} data
+ * @param  {string} datta.cityCode    城市编码
+ * @param  {number} datta.groupId     加盟小组
+ * @param  {string} datta.keyword     用户中文名/手机号，支持模糊查询
+ * @param  {number} datta.productLine 产品线，外线2,专车0，共享1,公共4,车资产5
+ * @param  {string} datta.roleTypes   角色标识。角色标识。加盟经理roleId=1 外销销售=2,上岗经理=3 ,渠道经理=4,专车BGP = 6共享BGP=7
+ * @param  {string} datta.uri         权限标识
+ */
 export const GetSpecifiedRoleList = (data) =>
   request({
     // url: `${prefix}/v2/base/user/getSpecifiedUserList`,
@@ -138,7 +147,6 @@ export const getSpecifiedUserListByCondition = (data) =>
 // 角色标识。加盟经理roleId=1 外销销售=2,上岗经理=3 ,渠道经理=4
 export const GetUserList = (data) =>
   request({
-    // url: `${prefix}/v2/base/user/getSpecifiedUserList`,
     url: `${prefix}/v2/base/user/getUserListByProductLineAndCC`,
     method: 'post',
     data

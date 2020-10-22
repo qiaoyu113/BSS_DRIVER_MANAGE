@@ -10,6 +10,7 @@
           <van-cell title="共享面试表">
             <template #right-icon>
               <span
+                v-permission="['/v2/driver/getOperateTime']"
                 class="doBtn"
                 @click="goRouter(type.driverId,type.busiType)"
               >操作记录</span>
@@ -412,7 +413,9 @@ export default {
   },
   methods: {
     goRouter(id, type) {
-      this.$router.push({ path: '/driverLog', query: { id: id, busiType: type }});
+      if (this.$permissionDetail('/v2/driver/getOperateTime')) {
+        this.$router.push({ path: '/driverLog', query: { id: id, busiType: type }});
+      }
     }
   }
 };

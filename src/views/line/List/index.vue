@@ -11,7 +11,7 @@
         </template>
       </van-nav-bar>
       <!-- 搜索 -->
-      <van-search show-action placeholder="请输入线路名称/线路编号" readonly @click="handleSearchClick">
+      <van-search v-permission="['/v2/line/lineInfo/queryLineListByConditionsQuery']" show-action placeholder="请输入线路名称/线路编号" readonly @click="handleSearchClick">
         <template #action>
           <div class="searchSelect" @click="show=true">
             筛选
