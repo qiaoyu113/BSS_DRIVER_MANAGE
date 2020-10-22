@@ -46,7 +46,7 @@
             <div class="title">
               <span>{{ detailInfo.name | DataIsNull }}</span>&#8194;
               <span>{{ detailInfo.phone| DataIsNull }}</span>&#8194;
-              <span>({{ detailInfo.busiTypeName | DataIsNull }}/{{ detailInfo.workCityName | DataIsNull }})</span>
+              <span v-text="removeEmpty([detailInfo.busiTypeName ,detailInfo.workCityName],true)"></span>
             </div>
           </template>
         </van-cell>
@@ -68,13 +68,13 @@
             title-class="cell-title"
             value-class="cell-value"
             title="加盟经理："
-            :value="`${detailInfo.gmName}/${detailInfo.gmPhone}`"
+            :value="removeEmpty([detailInfo.gmName ,detailInfo.gmPhone])"
           />
           <van-cell
             title-class="cell-title"
             value-class="cell-value"
             title="创建人："
-            :value="`${detailInfo.createName}/${detailInfo.createPhone}`"
+            :value="removeEmpty([detailInfo.createName ,detailInfo.createPhone])"
           />
           <van-cell
             title-class="cell-title"
@@ -244,6 +244,20 @@ export default {
     this.getOrderLabel(id);
   },
   methods: {
+    removeEmpty(arr, type) {
+      let text = (arr.map(item => {
+        if (item) {
+          return item
+        } else {
+          return '暂无数据'
+        }
+      }) || []).join('/')
+      if (type) {
+        return `(${text})`
+      } else {
+        return text
+      }
+    },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
       return dayjs(date).format(format);
