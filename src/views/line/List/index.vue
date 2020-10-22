@@ -438,13 +438,15 @@ export default {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
           keyword: value,
-          roleType: 3
+          roleTypes: [3],
+          uri: '/v2/line/lineInfo/dutyManagerList'
         }
         this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
           keyword: value,
-          roleType: 2
+          roleTypes: [2],
+          uri: '/v2/line/lineInfo/lineSaleList'
         }
         this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'carType') {

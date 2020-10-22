@@ -353,15 +353,17 @@ export default {
       if (this.modalKey === 'dutyManagerId') {
         let params = {
           keyword: value,
-          roleType: 3
+          roleTypes: [3],
+          uri: '/v2/line/project/dutyManagerList'
         }
-        this.getOpenCityList(params)
+        this.getSpecifiedRoleList(params)
       } else if (this.modalKey === 'lineSaleId') {
         let params = {
           keyword: value,
-          roleType: 2
+          roleTypes: [2],
+          uri: '/v2/line/project/lineSaleList'
         }
-        this.getOpenCityList(params)
+        this.getSpecifiedRoleList(params)
       }
     },
     /**
@@ -375,17 +377,9 @@ export default {
     handleShowModal(key) {
       this.modalKey = key
       if (key === 'lineSaleId') {
-        let params = {
-          roleTypes: [2],
-          uri: '/v2/line/project/lineSaleList'
-        }
-        this.getSpecifiedRoleList(params)
+        this.getSpecifiedRoleList({ roleTypes: [2], uri: '/v2/line/project/lineSaleList' })
       } else if (key === 'dutyManagerId') {
-        let params = {
-          roleTypes: [3],
-          uri: '/v2/line/project/dutyManagerList'
-        }
-        this.getSpecifiedRoleList(params)
+        this.getSpecifiedRoleList({ roleTypes: [3], uri: '/v2/line/project/dutyManagerList' })
       }
       this.showModal = true
     },
