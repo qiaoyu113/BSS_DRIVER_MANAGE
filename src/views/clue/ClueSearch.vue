@@ -288,7 +288,7 @@ export default {
         this.historyItems.splice(index, 1)
       }
 
-      if (this.historyItems.length >= 5) {
+      if (this.historyItems.length >= 10) {
         this.historyItems.shift()
       }
       this.historyItems.unshift(keyword)

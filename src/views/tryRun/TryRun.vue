@@ -184,7 +184,6 @@ import { GetRunTestInfoList } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
 import { parseTime } from '@/utils';
-import dayjs from 'dayjs'
 export default {
   name: 'TryRun',
   components: {
@@ -388,8 +387,8 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.pickerNames.date = `${startDate} - ${endDate}`;
-      this.form.startDate = +dayjs(startDate);
-      this.form.endDate = +dayjs(endDate);
+      this.form.startDate = +new Date(start.setHours(0, 0, 0))
+      this.form.endDate = +new Date(end.setHours(23, 59, 59))
     },
     /**
      * 提交查询

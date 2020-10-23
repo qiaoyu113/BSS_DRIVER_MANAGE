@@ -677,17 +677,9 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.formText.dateArr = `${startDate} - ${endDate}`;
-      const startY = start.getFullYear()
-      const startM = start.getMonth()
-      const startD = start.getDate()
-      const endY = end.getFullYear()
-      const endM = end.getMonth()
-      const endD = end.getDate()
 
-      const time = 1000 * 60 * 60 * 24 - 1
-
-      this.ruleForm.startDate = new Date(startY, startM, startD)
-      this.ruleForm.endDate = new Date(+new Date(endY, endM, endD) + time)
+      this.ruleForm.startDate = new Date(start.setHours(0, 0, 0))
+      this.ruleForm.endDate = new Date(end.setHours(23, 59, 59))
     },
     closeManagerPop(val) {
       this.changeManagerStatus = val.status
