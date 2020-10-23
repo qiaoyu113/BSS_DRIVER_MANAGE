@@ -12,29 +12,31 @@
       >
         <template #right>
           <div class="doBox">
-            <span
-              v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']"
-              class="orderBtn"
-              @click="showOrder = true"
-            >最新订单</span>
-            <van-icon
-              name="arrow-down"
-              size="12"
-            />
+            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']">
+              <span
+                class="orderBtn"
+                @click="showOrder = true"
+              >最新订单</span>
+              <van-icon
+                name="arrow-down"
+                size="12"
+              />
+            </div>
           </div>
           <div
             class="doBox"
             style="margin-left:6px"
           >
-            <span
-              v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']"
-              class="orderBtn"
-              @click="showDothing = true"
-            >操作</span>
-            <van-icon
-              name="arrow-down"
-              size="12"
-            />
+            <div v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']">
+              <span
+                class="orderBtn"
+                @click="showDothing = true"
+              >操作</span>
+              <van-icon
+                name="arrow-down"
+                size="12"
+              />
+            </div>
           </div>
         </template>
       </van-nav-bar>
