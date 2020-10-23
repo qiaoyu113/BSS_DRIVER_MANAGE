@@ -5,7 +5,7 @@
         :title="title"
         left-text="返回"
         left-arrow
-        @click-left="$router.go(-1)"
+        @click-left="cancelform"
       />
     </van-sticky>
     <div class="formBox">
@@ -349,7 +349,10 @@
           >
             取消
           </van-button>
-          <van-button type="primary" native-type="submit">
+          <van-button
+            type="primary"
+            native-type="submit"
+          >
             提交
           </van-button>
         </div>
@@ -365,8 +368,13 @@ import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import SelfArea from '@/components/SelfArea';
 import SelftPicker from '@/components/SelfPicker';
-import { delay } from '@/utils/index.js'
-import { shareInterview, getInterview, unqPhone, editInterview } from '@/api/driver.js';
+import { delay } from '@/utils/index.js';
+import {
+  shareInterview,
+  getInterview,
+  unqPhone,
+  editInterview
+} from '@/api/driver.js';
 export default {
   name: 'ShareInterview',
   components: {
@@ -493,55 +501,59 @@ export default {
   },
   methods: {
     validatorAddress(val) {
-      let arr = val.split('/')
-      if (arr[2] === '' || arr[1] === '' || arr.length === 2 || arr.length === 1) {
-        return false
+      let arr = val.split('/');
+      if (
+        arr[2] === '' ||
+        arr[1] === '' ||
+        arr.length === 2 ||
+        arr.length === 1
+      ) {
+        return false;
       } else {
-        return true
+        return true;
       }
     },
     phonePatternIshas(val) {
       // Toast.loading('验证中...');
       return new Promise((resolve) => {
-        if (this.routeName === '/editShare' && this.editForm.isChange !== null) {
+        if (
+          this.routeName === '/editShare' &&
+          this.editForm.isChange !== null
+        ) {
           if (this.phone === val) {
             resolve(true);
           } else {
-            unqPhone({ phone: val }).then(
-              ({ data }) => {
-                if (data.success) {
-                  if (data.data.flag) {
-                    resolve(true);
-                    this.errMsg = ''
-                  } else {
-                    this.errMsg = data.data.msg
-                    resolve(false);
-                    Toast.fail(this.errMsg);
-                  }
-                } else {
-                  this.$toast.fail(data);
-                  resolve(false);
-                }
-              }
-            )
-          }
-        } else {
-          unqPhone({ phone: val }).then(
-            ({ data }) => {
+            unqPhone({ phone: val }).then(({ data }) => {
               if (data.success) {
                 if (data.data.flag) {
                   resolve(true);
-                  this.errMsg = ''
+                  this.errMsg = '';
                 } else {
+                  this.errMsg = data.data.msg;
                   resolve(false);
-                  this.errMsg = data.data.msg
+                  Toast.fail(this.errMsg);
                 }
               } else {
                 this.$toast.fail(data);
                 resolve(false);
               }
+            });
+          }
+        } else {
+          unqPhone({ phone: val }).then(({ data }) => {
+            if (data.success) {
+              if (data.data.flag) {
+                resolve(true);
+                this.errMsg = '';
+              } else {
+                resolve(false);
+                this.errMsg = data.data.msg;
+              }
+            } else {
+              this.$toast.fail(data);
+              resolve(false);
             }
-          )
+          });
         }
       });
     },
@@ -589,8 +601,8 @@ export default {
       getOpenCitys()
         .then(({ data }) => {
           if (data.success) {
-            this.columns_workCity = data.data.map(ele => {
-              return { name: ele.name, code: Number(ele.code) }
+            this.columns_workCity = data.data.map((ele) => {
+              return { name: ele.name, code: Number(ele.code) };
             });
           }
         })
@@ -642,16 +654,16 @@ export default {
         this.$loading(true);
         let { data: res } = await getInterview(params);
         if (res.success) {
-          this.phone = res.data.phone
-          this.areaShow(res)
+          this.phone = res.data.phone;
+          this.areaShow(res);
           if (res.data.isChange !== null) {
-            this.Changed = false
+            this.Changed = false;
             this.editForm = {
               ...this.formData,
               ...res.data
-            }
+            };
           } else {
-            this.Changed = true
+            this.Changed = true;
             this.formData = {
               ...this.formData,
               ...res.data
@@ -668,7 +680,7 @@ export default {
     },
     areaShow(res) {
       if (res.data.isChange !== null) {
-        return
+        return;
       }
       let areaData = res.data;
       // 面试地址label回显
@@ -711,7 +723,7 @@ export default {
       params.interviewCity = this.area.interview[2];
       params.interviewCounty = this.area.interview[1];
       params.interviewProvince = this.area.interview[0];
-      params.driverId = this.driverId
+      params.driverId = this.driverId;
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';
       } else {
@@ -723,7 +735,7 @@ export default {
         setTimeout(() => {
           this.$loading(false);
           this.$router.go(-1);
-        }, delay)
+        }, delay);
       } else {
         this.$loading(false);
         this.$toast.fail(res.errorMsg);
@@ -752,7 +764,7 @@ export default {
         setTimeout(() => {
           this.$loading(false);
           this.$router.go(-1);
-        }, delay)
+        }, delay);
       } else {
         this.$loading(false);
         this.$toast.fail(res.errorMsg);
@@ -762,9 +774,9 @@ export default {
       try {
         this.$loading(true);
         if (this.routeName === '/editShare') {
-          this.editShared()
+          this.editShared();
         } else {
-          this.buildShared()
+          this.buildShared();
         }
       } catch (err) {
         this.$loading(false);
@@ -772,7 +784,7 @@ export default {
       }
     },
     onFailed(error) {
-      console.log('xxxxx:', error)
+      console.log('xxxxx:', error);
     },
     cancelform() {
       Dialog.confirm({
