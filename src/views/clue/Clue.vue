@@ -451,8 +451,14 @@ export default {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
         'groupId': this.ruleForm.gmGroupId, // 加盟小组
-        'roleTypes': [1],
+        'roleTypes': [1, 6, 7],
         'uri': '/v2/clue/queryGmList'
+      }
+      if (this.ruleForm.busiType === 0) { // 专车
+        params.roleTypes = [1, 6]
+      } else if (this.ruleForm.busiType === 1) {
+        // 共享
+        params.roleTypes = [1, 7]
       }
       params = this.removeEmpty(params)
       GetSpecifiedRoleList(params)
