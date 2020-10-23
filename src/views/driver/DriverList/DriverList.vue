@@ -317,7 +317,13 @@ export default {
       let params = {}
       this.ruleForm.workCity !== '' && (params.cityCode = this.ruleForm.workCity)
       this.ruleForm.busiType !== '' && (params.productLine = this.ruleForm.busiType)
-      params.roleTypes = [1]
+      params.roleTypes = [1, 6, 7]
+      if (this.ruleForm.busiType === 0) { // 专车
+        params.roleTypes = [1, 6]
+      } else if (this.ruleForm.busiType === 1) {
+        // 共享
+        params.roleTypes = [1, 7]
+      }
       params.uri = '/driverGmInfo/role'
       GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {
