@@ -144,9 +144,10 @@ export default {
         keyword && (params.key = keyword);
         let { data: res } = await GetRunTestInfoList(params);
         if (res.success) {
-          if (this.keyWord && res.data.length > 0) {
+          if (this.keyWord) {
             this.setHistory(this.keyWord);
           }
+
           this.lists = res.data;
         } else {
           this.$toast.fail(res.errorMsg);
