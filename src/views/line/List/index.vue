@@ -331,22 +331,22 @@ export default {
     }
   },
   // 回来后还原
-  // beforeRouteEnter(to, from, next) {
-  //   if (from.path === '/lineDetail') {
-  //     to.meta.keepAlive = true
-  //     next(vm => {
-  //       document.querySelector('.lineListContainer').scrollTop = vm.scrollTop
-  //     })
-  //   } else {
-  //     to.meta.keepAlive = false
-  //     next()
-  //   }
-  // },
-  // // 离开前保存高度
-  // beforeRouteLeave(to, from, next) {
-  //   this.scrollTop = document.querySelector('.lineListContainer').scrollTop
-  //   next()
-  // },
+  beforeRouteEnter(to, from, next) {
+    if (from.path === '/lineDetail') {
+      to.meta.keepAlive = true
+      next(vm => {
+        document.querySelector('.lineListContainer').scrollTop = vm.scrollTop
+      })
+    } else {
+      to.meta.keepAlive = false
+      next()
+    }
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.lineListContainer').scrollTop
+    next()
+  },
   computed: {
     minDate() {
       if (this.form.r) {
