@@ -51,8 +51,8 @@
               "
             ></van-cell>
             <div
-              class="bottom van-hairline--top flex flex align-center justify-center"
               v-permission="['/v2/line/customer/findCustomerInfo']"
+              class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
                 class="details van-hairline--surround"
@@ -122,8 +122,8 @@
               "
             ></van-cell>
             <div
-              class="bottom van-hairline--top flex flex align-center justify-center"
               v-permission="['/v2/line/lineInfo/detail']"
+              class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
                 class="details van-hairline--surround"
@@ -167,8 +167,8 @@
               "
             ></van-cell>
             <div
-              class="bottom van-hairline--top flex flex align-center justify-center"
               v-permission="['/v2/driver/selectDriverDetail']"
+              class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
                 class="details van-hairline--surround"
