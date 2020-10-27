@@ -571,7 +571,7 @@ export default {
         this.ruleForm.status !== '' && (params.status = Number(this.ruleForm.status))
         if (this.ruleForm.startDate && this.ruleForm.endDate) {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
-          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
         }
         let { data: res } = await getClueList(params)
         if (res.success) {
