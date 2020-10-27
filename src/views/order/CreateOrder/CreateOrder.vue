@@ -55,7 +55,13 @@
               value="商品信息"
               is-link
             />
-            <van-field label="商品分类" :value="formData.busiType === 0 ? '梧桐专车' : '梧桐共享' " placeholder="业务线" colon readonly />
+            <van-field
+              label="商品分类"
+              :value="formData.busiType === 0 ? '梧桐专车' : '梧桐共享' "
+              placeholder="业务线"
+              colon
+              readonly
+            />
             <selftPicker
               :props="keyValue"
               picker-key="cooperationModel"
@@ -352,22 +358,31 @@
         </div>
       </van-form>
     </div>
-    <van-popup
-      v-model="showPickerDate"
-      position="bottom"
-    >
-      <van-datetime-picker
-        v-model="formData[pickerKey]"
-        type="date"
-        title="选择年月日"
-        @confirm="onConfirm1"
-        @cancel="showPickerDate = false"
-      />
-    </van-popup>
+    <template v-if="showPickerDateSize">
+      <van-popup
+        v-model="showPickerDate"
+        position="bottom"
+      >
+        <van-datetime-picker
+          v-model="formData[pickerKey]"
+          type="date"
+          title="选择年月日"
+          @confirm="onConfirm1"
+          @cancel="() => {
+            showPickerDate = false;
+            setTimeout(() => {
+              showPickerDateSize = false;
+            }, 500)
+            pickerKey = '';
+            formData[pickerKey] = '';
+          }"
+        />
+      </van-popup>
+    </template>
   </div>
 </template>
 <script>
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import { parseTime } from '@/utils';
 import { Notify, Dialog } from 'vant';
 import { IdPattern, carNoRegExp } from '@/utils/index';
@@ -387,7 +402,7 @@ import {
   GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel,
   getCanExtractByUserId
 } from '@/api/order.js';
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex';
 export default {
   components: {
     PayItem,
@@ -400,6 +415,7 @@ export default {
         value: 'code'
       },
       showPickerDate: false,
+      showPickerDateSize: false,
       showPicker: false,
       pickerKey: '',
       formData: {
@@ -464,8 +480,8 @@ export default {
   },
   computed: {
     ...mapState({
-      payList: state => state.orderPayList.payList,
-      orderStatus: state => state.orderPayList.orderStatus
+      payList: (state) => state.orderPayList.payList,
+      orderStatus: (state) => state.orderPayList.orderStatus
     }),
     title() {
       return this.$route.meta.title;
@@ -475,13 +491,13 @@ export default {
         if (this.routeName === '/createOrder') {
           return 'step1';
         } else {
-          return 'resubmit'
+          return 'resubmit';
         }
       } else if (this.formStatus === 2) {
         if (this.routeName === '/createOrder') {
           return 'step2';
         } else {
-          return 'resubmit'
+          return 'resubmit';
         }
       } else {
         return 'submit';
@@ -501,8 +517,8 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (to.path !== '/addPay') {
-      this.deleteAll()
-      this.setStatus(false)
+      this.deleteAll();
+      this.setStatus(false);
     }
     next();
   },
@@ -570,7 +586,7 @@ export default {
       deleteAll: 'orderPayList/DELETEALL'
     }),
     timeFormat(date, format) {
-      return dayjs(date).format(format)
+      return dayjs(date).format(format);
     },
     async getBuyCarPrice() {
       let {
@@ -680,14 +696,14 @@ export default {
     updataFrom() {
       this.routeName = this.$route.path;
       const id = this.$route.query.id;
-      this.driverId = id
-      this.formData.driverId = id
+      this.driverId = id;
+      this.formData.driverId = id;
       this.formData.driverInfoFORM.driverId = id;
       this.formData.driverInfoFORM.name = this.$route.query.driverName;
       this.formData.driverInfoFORM.phone = this.$route.query.driverPhone;
       this.formData.driverInfoFORM.workCity = this.$route.query.workCity;
       this.formData.driverInfoFORM.workCityName = this.$route.query.workCityName;
-      this.formData.busiType = this.$route.query.busiType
+      this.formData.busiType = this.$route.query.busiType;
       let orderId = this.$route.query.orderId;
       if (orderId) {
         this.orderId = orderId;
@@ -695,9 +711,7 @@ export default {
       this.fetchData();
     },
     async fetchData() {
-      const { data } = await GetDictionaryList([
-        'Intentional_compartment'
-      ]);
+      const { data } = await GetDictionaryList(['Intentional_compartment']);
       if (data.success) {
         this.columns_cooperationCar2 = data.data.Intentional_compartment.map(
           (ele) => {
@@ -715,8 +729,8 @@ export default {
       this.$router.go(-1);
     },
     async goRouter() {
-      let extract = await this.getCanExtract()
-      let typePath = { id: this.driverId, orderId: this.orderId }
+      let extract = await this.getCanExtract();
+      let typePath = { id: this.driverId, orderId: this.orderId };
       if (extract > 0) {
         Dialog.confirm({
           title: '是否使用可提现金额支付？',
@@ -725,23 +739,23 @@ export default {
           cancelButtonText: '否'
         })
           .then(() => {
-          // on confirm
-            typePath.type = 1
+            // on confirm
+            typePath.type = 1;
             this.$router.push({
               path: '/addPay',
               query: typePath
             });
           })
           .catch(() => {
-          // on cancel
-            typePath.type = 0
+            // on cancel
+            typePath.type = 0;
             this.$router.push({
               path: '/addPay',
               query: typePath
             });
           });
       } else {
-        typePath.type = 0
+        typePath.type = 0;
         this.$router.push({
           path: '/addPay',
           query: typePath
@@ -752,10 +766,10 @@ export default {
       try {
         let params = {
           driverId: this.driverId
-        }
-        let { data: res } = await getCanExtractByUserId(params)
+        };
+        let { data: res } = await getCanExtractByUserId(params);
         if (res.success) {
-          return res.data
+          return res.data;
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -769,15 +783,15 @@ export default {
         this.$loading(true);
         let params = {
           driverId: id
-        }
+        };
         if (this.routeName === '/resetOrder') {
-          params.operateFlag = 'detial'
-          params.orderId = this.orderId
+          params.operateFlag = 'detial';
+          params.orderId = this.orderId;
         } else {
-          params.operateFlag = 'step1'
+          params.operateFlag = 'step1';
         }
         if (this.orderId) {
-          params.orderId = this.orderId
+          params.orderId = this.orderId;
         }
         let { data: res } = await orderDetail(params);
         if (res.success) {
@@ -785,33 +799,46 @@ export default {
             this.formData = { ...this.formData, ...res.data };
             this.formData.driverInfoFORM.idNo = res.data.driverInfoVO.idNo;
             this.formData.driverInfoFORM = this.formData.driverInfoVO;
-            this.formData.driverId = this.driverId
-            this.orderId = res.data.orderId
-            this.formData.inspectionTime = new Date(res.data.inspectionTime).getTime()
-            this.formData.insuranceTime = new Date(res.data.insuranceTime).getTime()
-            this.formText.inspectionTime = res.data.inspectionTime
-            this.formText.insuranceTime = res.data.insuranceTime
+            this.formData.driverId = this.driverId;
+            this.orderId = res.data.orderId;
+            if (res.data.inspectionTime) {
+              this.formData.inspectionTime = new Date(
+                res.data.inspectionTime
+              ).getTime();
+              this.formText.inspectionTime = res.data.inspectionTime;
+            }
+
+            if (res.data.insuranceTime) {
+              this.formData.insuranceTime = new Date(
+                res.data.insuranceTime
+              ).getTime();
+              this.formText.insuranceTime = res.data.insuranceTime;
+            }
+
             // 保存历史记录
             if (this.payList.length > 0) {
               this.formData.orderPayRecordInfoFORMList = this.payList;
             } else {
-              this.formData.orderPayRecordInfoFORMList = res.data.orderPayRecordInfoVOList || []
+              this.formData.orderPayRecordInfoFORMList =
+                res.data.orderPayRecordInfoVOList || [];
               if (res.data.orderPayRecordInfoVOList === null) {
-                this.asyncSetPay([])
+                this.asyncSetPay([]);
               } else {
-                this.asyncSetPay([...res.data.orderPayRecordInfoVOList])
+                this.asyncSetPay([...res.data.orderPayRecordInfoVOList]);
               }
             }
             if (this.orderStatus) {
-              this.formStatus = 3
+              this.formStatus = 3;
             }
           }
+          this.$loading(false);
         } else {
           this.$toast.fail(res.errorMsg);
+          this.$loading(false);
         }
       } catch (err) {
         console.log(`fail:${err}`);
-      } finally {
+        this.$toast.fail(err);
         this.$loading(false);
       }
     },
@@ -845,13 +872,16 @@ export default {
           driverId: this.driverId,
           carPrice: this.formData.carPrice,
           havePayAmount: this.payMoneyed
-        }
-        params.driverInfoFORM.driverId = this.driverId
+        };
+        params.driverInfoFORM.driverId = this.driverId;
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
           Notify({ type: 'success', message: '订单录入成功' });
-          this.$router.push({ path: '/driverdetail', query: { id: this.driverId }})
+          this.$router.push({
+            path: '/driverdetail',
+            query: { id: this.driverId }
+          });
           this.$loading(false);
         } else {
           this.$loading(false);
@@ -884,12 +914,12 @@ export default {
           orderId: this.orderId,
           driverId: this.driverId,
           carPrice: this.formData.carPrice
-        }
+        };
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
           this.formStatus++;
-          this.orderId = res.data
+          this.orderId = res.data;
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -900,13 +930,21 @@ export default {
       }
     },
     onConfirm1(time) {
+      console.log(this.pickerKey, time);
       let timeText = parseTime(time, '{y}/{m}/{d}');
       this.formText[this.pickerKey] = timeText;
       this.showPickerDate = false;
+      setTimeout(() => {
+        this.showPickerDateSize = false;
+      }, 500);
+      this.pickerKey = '';
     },
     changeDate(key) {
       this.pickerKey = key;
-      this.showPickerDate = true;
+      this.showPickerDateSize = true;
+      setTimeout(() => {
+        this.showPickerDate = true;
+      }, 200);
     },
     /**
      * 验证收入保障
@@ -993,8 +1031,8 @@ export default {
       }
     },
     deleteItem(index) {
-      this.delete(index)
-      this.formData.orderPayRecordInfoFORMList = this.payList
+      this.delete(index);
+      this.formData.orderPayRecordInfoFORMList = this.payList;
     }
   }
 };
