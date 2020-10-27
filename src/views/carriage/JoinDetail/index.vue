@@ -220,7 +220,6 @@ export default {
             setTimeout(() => {
               this.$router.go(-1)
             }, delay);
-            this.$router.back(-1)
           } else {
             this.$toast.fail(res.errorMsg)
           }
