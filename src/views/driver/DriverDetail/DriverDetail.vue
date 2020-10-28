@@ -281,7 +281,7 @@ export default {
       const resetOrder = {
         name: '重新提交',
         url: '/resetOrder',
-        pUrl: ['/v2/order/createOrUpdateOrder']
+        pUrl: ['/v2/order/resubmit']
       };
 
       const orderDetail = {
@@ -328,7 +328,7 @@ export default {
         url: '/editShare',
         pUrl: ['/v2/driver/edit/interview']
       };
-      const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
+      // const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
       const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
       if (
         this.detailInfo.status === 1 ||
@@ -344,7 +344,7 @@ export default {
         return arr;
       } else if (this.detailInfo.status === 3) {
         arr.push(tagView);
-        arr.push(signOut);
+        // arr.push(signOut);
         if (this.detailInfo.busiType === 0) {
           arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
