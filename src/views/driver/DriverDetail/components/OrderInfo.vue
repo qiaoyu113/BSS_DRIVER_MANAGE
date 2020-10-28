@@ -106,7 +106,7 @@ export default {
       } else if (this.obj.status === 30) {
         return { name: '终止', code: 2, pUrl: ['/v2/order/abort'] };
       } else if (this.obj.status === 25) {
-        return { name: '重新提交', url: '', code: 3, pUrl: ['/v2/order/createOrUpdateOrder'] };
+        return { name: '重新提交', url: '', code: 3, pUrl: ['/v2/order/resubmit'] };
       }
     },
     goRouter() {
