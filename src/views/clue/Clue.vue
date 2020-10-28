@@ -684,8 +684,8 @@ export default {
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.formText.dateArr = `${startDate} - ${endDate}`;
 
-      this.ruleForm.startDate = new Date(start.setHours(0, 0, 0))
-      this.ruleForm.endDate = new Date(end.setHours(23, 59, 59))
+      this.ruleForm.startDate = new Date(start.setHours(0, 0, 0, 0))
+      this.ruleForm.endDate = new Date(end.setHours(23, 59, 59, 999))
     },
     closeManagerPop(val) {
       this.changeManagerStatus = val.status

@@ -388,8 +388,8 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.pickerNames.date = `${startDate} - ${endDate}`;
-      this.form.startDate = +new Date(start.setHours(0, 0, 0))
-      this.form.endDate = +new Date(end.setHours(23, 59, 59))
+      this.form.startDate = +new Date(start.setHours(0, 0, 0, 0))
+      this.form.endDate = +new Date(end.setHours(23, 59, 59, 999))
     },
     /**
      * 提交查询
