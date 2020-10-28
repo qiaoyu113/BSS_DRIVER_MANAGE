@@ -388,17 +388,17 @@ export default {
   },
   mounted() {
   },
-  // // 回来后还原
-  // beforeRouteEnter(to, from, next) {
-  //   next(vm => {
-  //     document.querySelector('.list').scrollTop = vm.scrollTop
-  //   })
-  // },
-  // // 离开前保存高度
-  // beforeRouteLeave(to, from, next) {
-  //   this.scrollTop = document.querySelector('.list').scrollTop
-  //   next()
-  // },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.list').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.list').scrollTop
+    next()
+  },
   methods: {
     // 联动请求加盟小组
     getGmGroupId() {
