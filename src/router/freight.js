@@ -1,11 +1,11 @@
 export default [
   {
     path: '/freight',
-    name: 'freight',
+    name: 'Freight',
     component: resolve => require(['@/views/carriage/JoinList'], resolve),
     meta: {
       title: '运费管理',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {
@@ -38,20 +38,20 @@ export default [
   },
   {
     path: '/outsidefreight',
-    name: 'outsidefreight',
+    name: 'Outsidefreight',
     component: resolve => require(['@/views/carriage/OutSideList'], resolve),
     meta: {
       title: '外线运费上报',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {
     path: '/outsidefreightlist',
-    name: 'outsidefreightlist',
+    name: 'Outsidefreightlist',
     component: resolve => require(['@/views/carriage/OutSideFreightList'], resolve),
     meta: {
       title: '外线运费上报',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {

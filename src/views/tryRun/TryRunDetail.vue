@@ -37,11 +37,13 @@
 import { mapGetters } from 'vuex';
 import DetailsItem from './components/DetailsItem';
 import { GetDetails } from '@/api/tryrun'
+import { addCach } from '@/utils/mixins.js'
 export default {
   name: 'TryRunDetail',
   components: {
     DetailsItem
   },
+  mixins: [addCach],
   data() {
     return {
       detail: {},

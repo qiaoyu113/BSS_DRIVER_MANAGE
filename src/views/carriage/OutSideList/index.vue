@@ -36,7 +36,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <div class="list">
+    <div class="list OutSide-list">
       <!-- 下拉刷新  上拉加载 -->
       <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
@@ -154,7 +154,7 @@ import { parseTime } from '@/utils';
 import Suggest from '@/components/SuggestSearch'
 import dayjs from 'dayjs'
 export default {
-  name: 'OutSideList',
+  name: 'Outsidefreight',
   components: {
     SelfPopup,
     CardItem,
@@ -162,6 +162,7 @@ export default {
   },
   data() {
     return {
+      scrollTop: 0,
       showSuggest: true,
       tabArrs: [
         {
@@ -221,6 +222,17 @@ export default {
     title() {
       return this.$route.meta.title;
     }
+  },
+  // // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.OutSide-list').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.OutSide-list').scrollTop
+    next()
   },
   mounted() {
     this.fetchData();
