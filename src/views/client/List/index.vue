@@ -123,6 +123,7 @@ import Suggest from '@/components/SuggestSearch.vue'
 import { getClientList } from '@/api/client'
 import { getOpenCitys, getDictData } from '@/api/common'
 export default {
+  name: 'Client',
   components: {
     CardItem,
     SelfPopup,
@@ -196,27 +197,18 @@ export default {
     }
   },
   // 回来后还原
-  // beforeRouteEnter(to, from, next) {
-  //   if (from.path === '/clientDetail') {
-  //     to.meta.keepAlive = true
-  //     next(vm => {
-  //       document.querySelector('.customerListContainer').scrollTop = vm.scrollTop
-  //     })
-  //   } else {
-  //     to.meta.keepAlive = false
-  //     next()
-  //   }
-  // },
-  // // 离开前保存高度
-  // beforeRouteLeave(to, from, next) {
-  //   this.scrollTop = document.querySelector('.customerListContainer').scrollTop
-  //   next()
-  // },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.customerListContainer').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.customerListContainer').scrollTop
+    next()
+  },
   mounted() {
     this.init()
-  },
-  activated() {
-    document.querySelector('.van-pull-refresh').scrollTop = 200
   },
   methods: {
     // 状态切换

@@ -36,13 +36,19 @@ export default {
     }
   },
   watch: {
-    $route() {
+    $route(to, from) {
       const { name } = this.$route
       if (name === 'index') {
         this.$store.dispatch('cached-views/delAllViews')
+        return false
       }
       if (name) {
         this.$store.dispatch('cached-views/addView', this.$route)
+      }
+      if (from.name !== 'index' && to.meta.keepAlive && !to.meta.isCach) {
+        console.log('xxx')
+        this.$store.dispatch('cached-views/delView', this.$route)
+        to.meta.isCach = false
       }
     }
   },

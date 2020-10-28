@@ -7,14 +7,13 @@ export default {
   mutations: {
     // 添加缓存
     ADD_CACHED_VIEW(state, view) {
-      console.log(view, 12312312312312);
       if (state.cachedViews.includes(view.name)) return
       if (view.meta && view.meta.keepAlive) {
         state.cachedViews.push(view.name)
       }
     },
     DEL_CACHED_VIEW(state, view) {
-      for (const [i, v] of this.cachedViews.entries()) {
+      for (const [i, v] of state.cachedViews.entries()) {
         if (v === view.name) {
           state.cachedViews.splice(i, 1)
           break
@@ -38,7 +37,6 @@ export default {
   },
   getters: {
     cachedViews(state) {
-      console.log(state);
       return state.cachedViews
     },
     visitedViews(state) {

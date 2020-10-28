@@ -37,7 +37,7 @@
       </van-tabs>
     </div>
     <!-- 下拉刷新  上拉加载 -->
-    <div class="list">
+    <div class="list Outsidefreightlist">
       <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
           v-model="loading"
@@ -92,11 +92,13 @@
 import CardItem from './components/Cardltem'
 import { wayBillAmountDetail, getProjectWayBillList } from '@/api/freight'
 export default {
+  name: 'Outsidefreightlist',
   components: {
     CardItem
   },
   data() {
     return {
+      scrollTop: 0,
       error: false,
       showPopup: false, // 打开查询抽屉
       showCalendar: false, // 打开日历
@@ -152,6 +154,17 @@ export default {
     }
   },
   computed: {
+  },
+  // // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.Outsidefreightlist').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.Outsidefreightlist').scrollTop
+    next()
   },
   watch: {
     checkResult(val, newval) {
