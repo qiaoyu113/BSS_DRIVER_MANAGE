@@ -199,7 +199,7 @@ export default {
     },
     async noCarBatchByGM(arr) {
       try {
-        let { data: res } = await noCarBatchByGM(arr)
+        let { data: res } = await noCarBatchByGM(arr, this.message)
         if (res.success) {
           Toast.success('运费上报成功');
           setTimeout(() => {

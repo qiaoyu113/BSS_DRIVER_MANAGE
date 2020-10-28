@@ -213,7 +213,7 @@ export default {
       })
       if (this.arrstr.length) {
         try {
-          let { data: res } = await noCarBatchByGM(ids)
+          let { data: res } = await noCarBatchByGM(ids, this.message)
           if (res.success) {
             this.show = false;
             Toast.success('运费上报成功');
