@@ -70,12 +70,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .DriverTitle{
-  .checkStyle{
-    cursor: pointer;
-  }
   .checkStyle:active{
-    background-color: #2f448a;
-    color: yellow;
+    opacity: .7;
   }
   .createBox{
     width: 100%;
@@ -115,5 +111,6 @@ export default {
 .DriverTitle >>> .van-nav-bar__right:active{
   background: #2f448a;
   color: white;
+  opacity: 1;
 }
 </style>

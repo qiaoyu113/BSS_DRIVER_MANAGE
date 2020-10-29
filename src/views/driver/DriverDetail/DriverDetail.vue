@@ -12,7 +12,7 @@
       >
         <template #right>
           <div class="doBox">
-            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']">
+            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']" class="checkStyle">
               <span
                 class="orderBtn"
                 @click="showOrder = true"
@@ -27,7 +27,7 @@
             class="doBox"
             style="margin-left:6px"
           >
-            <div v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']">
+            <div v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']" class="checkStyle">
               <span
                 class="orderBtn"
                 @click="showDothing = true"
@@ -562,6 +562,9 @@ export default {
 <style lang="less" scoped>
 @import "../DriverList/components/DriverItem.less";
 .DriverDetail {
+  .checkStyle:active{
+    opacity: .7;
+  }
   background-color: @body-bg;
   .doBox {
     display: flex;
@@ -573,6 +576,9 @@ export default {
     letter-spacing: 0;
     text-align: center;
     margin-right: 3px;
+  }
+  .checkStyle:active{
+    opacity: .7;
   }
   .detailTitle {
     .cell-title,
@@ -589,6 +595,12 @@ export default {
 }
 </style>
 <style scoped>
+.DriverDetail >>> .van-nav-bar__right:active{
+  opacity: 1;
+}
+.DriverDetail >>> .van-nav-bar__title{
+  z-index: 999;
+}
 .DriverDetail >>> .van-dropdown-menu__bar {
   background-color: rgb(47, 68, 138);
   height: 46px;
