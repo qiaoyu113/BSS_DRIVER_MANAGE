@@ -329,7 +329,7 @@ export default {
         pUrl: ['/v2/driver/edit/interview']
       };
       // const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
-      const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
+      // const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
       if (
         this.detailInfo.status === 1 ||
         this.detailInfo.status === 2 ||
@@ -353,7 +353,7 @@ export default {
         return arr;
       } else if (this.detailInfo.status === 5) {
         arr.push(tagView);
-        arr.push(signDeal);
+        // arr.push(signDeal);
         if (this.detailInfo.busiType === 0) {
           arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
@@ -404,11 +404,12 @@ export default {
     onSelectDothing(item) {
       this.showDothing = false;
       if (item.name === '标记退出') {
-        this.outSign(this.driverId);
+        // this.outSign(this.driverId);
+        return
       } else if (item.name === '标记成交') {
-        this.dealSign(this.driverId);
+        // this.dealSign(this.driverId);
+        return
       } else {
-        console.log('this.driverId', this.driverId);
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },

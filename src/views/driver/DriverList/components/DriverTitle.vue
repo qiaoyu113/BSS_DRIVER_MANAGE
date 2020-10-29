@@ -3,10 +3,10 @@
     <van-sticky :offset-top="0">
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-1)">
         <template v-if="showChange" #right>
-          <div v-permission="['/v2/driver/share/interview','/v2/driver/special/interview']" style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
+          <div v-permission="['/v2/driver/share/interview','/v2/driver/special/interview']" class="checkStyle" style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
             新建
           </div>
-          <div v-permission="['/v2/driver/updateGmByDriverId']" style="color: #fff; font-size: 12px;" @click="changeManager">
+          <div v-permission="['/v2/driver/updateGmByDriverId']" class="checkStyle" style="color: #fff; font-size: 12px;" @click="changeManager">
             更换加盟经理
           </div>
         </template>
@@ -70,6 +70,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .DriverTitle{
+  .checkStyle{
+    cursor: pointer;
+  }
+  .checkStyle:active{
+    background-color: #2f448a;
+    color: yellow;
+  }
   .createBox{
     width: 100%;
     .van-cell__value--alone{
@@ -101,5 +108,12 @@ export default {
 .van-search{
   padding: 5px 10px 5px 15px;
   box-sizing: border-box;
+}
+.DriverTitle >>> .van-nav-bar__right{
+  cursor: none;
+}
+.DriverTitle >>> .van-nav-bar__right:active{
+  background: #2f448a;
+  color: white;
 }
 </style>

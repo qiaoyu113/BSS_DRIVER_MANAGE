@@ -1,13 +1,12 @@
 <template>
   <div :class="checked ? 'DriverList padd' : 'DriverList'">
-    <DriverTitle
-      @screen="startScreen"
-      @changeManager="changeManager"
-    />
     <van-sticky
-      :offset-top="90"
-      :style="{height: checked ? '72px' : '56px'}"
+      :offset-top="0"
     >
+      <DriverTitle
+        @screen="startScreen"
+        @changeManager="changeManager"
+      />
       <van-tabs
         v-model="active"
         sticky
