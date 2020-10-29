@@ -295,7 +295,8 @@ export default {
         })
       } else if ([3, 4].includes(this.form.lineState)) {
         arrs.push({
-          name: '激活线路'
+          name: '激活线路',
+          pUrl: ['/v2/line/lineInfo/activeStableLine', '/v2/line/lineInfo/activeTemporaryLine']
         })
       }
       this.actions = arrs
