@@ -284,7 +284,7 @@ export default {
     handleSearchChange(value) {
       let params = {
         keyword: value,
-        roleTypes: [1],
+        roleTypes: [1, 6, 7],
         uri: '/v2/waybill/queryH5GM'
       }
       this.getSpecifiedRoleList(params)
@@ -292,7 +292,7 @@ export default {
     // 打开模糊查询框
     async handleShowModal() {
       this.getSpecifiedRoleList({
-        roleTypes: [1],
+        roleTypes: [1, 6, 7],
         keyword: '',
         uri: '/v2/waybill/queryH5GM'
       })

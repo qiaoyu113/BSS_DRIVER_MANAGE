@@ -5,7 +5,7 @@
         :title="title"
         left-text="返回"
         left-arrow
-        @click-left="$router.go(-1)"
+        @click-left="cancelform"
       />
     </van-sticky>
     <div class="formBox">
@@ -488,6 +488,7 @@
         />
         <div class="btnGroup">
           <van-button
+            native-type="button"
             color="#2F448A"
             plain
             @click="cancelform"

@@ -37,7 +37,8 @@ export default [
     name: 'shareinterview',
     component: resolve => require(['@/views/driver/CreateDriver/ShareInterview'], resolve),
     meta: {
-      title: '填写共享面试表单'
+      title: '填写共享面试表单',
+      keepAlive: false
     }
   },
   {
@@ -45,7 +46,8 @@ export default [
     name: 'tailoredinterview',
     component: resolve => require(['@/views/driver/CreateDriver/TailoredInterview'], resolve),
     meta: {
-      title: '填写专车面试表单'
+      title: '填写专车面试表单',
+      keepAlive: false
     }
   },
   {
@@ -53,7 +55,8 @@ export default [
     name: 'editTailored',
     component: resolve => require(['@/views/driver/CreateDriver/TailoredInterview'], resolve),
     meta: {
-      title: '编辑专车面试表单'
+      title: '编辑专车面试表单',
+      keepAlive: false
     }
   },
   {
@@ -61,7 +64,8 @@ export default [
     name: 'editShare',
     component: resolve => require(['@/views/driver/CreateDriver/ShareInterview'], resolve),
     meta: {
-      title: '编辑共享面试表单'
+      title: '编辑共享面试表单',
+      keepAlive: false
     }
   },
   {

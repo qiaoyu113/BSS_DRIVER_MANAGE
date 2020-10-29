@@ -7,9 +7,9 @@
     >
       <div>
         <!-- 客户信息 -->
-        <van-collapse-item v-permission="['/v2/line/customer/findCustomerInfo']" title="客户信息" :name="0">
+        <van-collapse-item title="客户信息" :name="0">
           <!-- 使用 title 插槽来自定义标题 -->
-          <div @click="goCustomDetail(lineInfoVO.customerId)">
+          <div @click="goCustomDetail(lineInfoVO.customerId, '/v2/line/customer/findCustomerInfo')">
             <van-cell
               title="客户名称："
               :value="
@@ -51,10 +51,10 @@
               "
             ></van-cell>
             <div
+              v-permission="['/v2/line/customer/findCustomerInfo']"
               class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
-                v-permission="['/v2/line/customer/findCustomerInfo']"
                 class="details van-hairline--surround"
               >
                 详情
@@ -63,7 +63,7 @@
           </div>
         </van-collapse-item>
         <!-- 线路信息 -->
-        <van-collapse-item v-permission="['/v2/line/lineInfo/detail']" :name="1">
+        <van-collapse-item :name="1">
           <!-- 使用 title 插槽来自定义标题 -->
           <template #title>
             <span class="margin-right-xs">线路信息</span>
@@ -74,7 +74,7 @@
               {{ lineInfoVO.busiTypeName | DataIsNull }}
             </van-tag>
           </template>
-          <div @click="goLineDetail(lineInfoVO.lineId)">
+          <div @click="goLineDetail(lineInfoVO.lineId, '/v2/line/lineInfo/detail')">
             <van-cell
               title="上岗时间："
               :value="timeFormat(lineInfoVO.driverWorkTime,'YYYY-MM-DD')"
@@ -122,10 +122,10 @@
               "
             ></van-cell>
             <div
+              v-permission="['/v2/line/lineInfo/detail']"
               class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
-                v-permission="['/v2/line/lineInfo/detail']"
                 class="details van-hairline--surround"
               >
                 详情
@@ -134,8 +134,8 @@
           </div>
         </van-collapse-item>
         <!-- 司机信息 -->
-        <van-collapse-item v-permission="['/v2/driver/selectDriverDetail']" title="司机信息" :name="2">
-          <div @click="goDriverDetail(detail.driverId)">
+        <van-collapse-item title="司机信息" :name="2">
+          <div @click="goDriverDetail(detail.driverId, '/v2/driver/selectDriverDetail')">
             <van-cell
               title="司机信息："
               :value="
@@ -167,10 +167,10 @@
               "
             ></van-cell>
             <div
+              v-permission="['/v2/driver/selectDriverDetail']"
               class="bottom van-hairline--top flex flex align-center justify-center"
             >
               <div
-                v-permission="['/v2/driver/selectDriverDetail']"
                 class="details van-hairline--surround"
               >
                 详情

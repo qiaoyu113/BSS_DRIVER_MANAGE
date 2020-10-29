@@ -213,14 +213,13 @@ export default {
       })
       if (this.arrstr.length) {
         try {
-          let { data: res } = await noCarBatchByGM(ids)
+          let { data: res } = await noCarBatchByGM(ids, this.message)
           if (res.success) {
             this.show = false;
             Toast.success('运费上报成功');
             setTimeout(() => {
               this.$router.go(-1)
             }, delay);
-            this.$router.back(-1)
           } else {
             this.$toast.fail(res.errorMsg)
           }

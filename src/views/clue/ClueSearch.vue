@@ -287,11 +287,11 @@ export default {
       if (index > -1) {
         this.historyItems.splice(index, 1)
       }
-
-      if (this.historyItems.length >= 5) {
-        this.historyItems.shift()
-      }
       this.historyItems.unshift(keyword)
+      if (this.historyItems.length > 10) {
+        // this.historyItems.shift()
+        this.historyItems.splice(this.historyItems.length - 1, 1)
+      }
       localStorage.setItem('clue', JSON.stringify(this.historyItems))
     },
     // 获取从localStorage

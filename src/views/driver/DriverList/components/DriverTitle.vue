@@ -22,8 +22,8 @@
     </van-sticky>
     <van-popup v-model="showCreate" position="top">
       <div class="createBox">
-        <van-cell value="共享面试司机" clickable @click="goRouter('shareinterview')" />
-        <van-cell value="专车面试司机" clickable @click="goRouter('tailoredinterview')" />
+        <van-cell v-permission="['/v2/driver/share/interview']" value="共享面试司机" clickable @click="goRouter('shareinterview')" />
+        <van-cell v-permission="['/v2/driver/special/interview']" value="专车面试司机" clickable @click="goRouter('tailoredinterview')" />
       </div>
     </van-popup>
   </div>

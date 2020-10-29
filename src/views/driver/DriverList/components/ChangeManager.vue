@@ -156,6 +156,13 @@ export default {
         'roleTypes': [1],
         'uri': '/driverGmInfo/role'
       }
+      params.roleTypes = [1, 6, 7]
+      if (this.active === 0) { // 专车
+        params.roleTypes = [1, 6]
+      } else if (this.active === 1) {
+        // 共享
+        params.roleTypes = [1, 7]
+      }
       this.formData.workCity !== '' && (params.cityCode = this.formData.workCity)
       GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {

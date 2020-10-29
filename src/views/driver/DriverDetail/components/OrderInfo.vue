@@ -63,7 +63,9 @@
             class="detailBox"
             @click="goDothing(obj.orderId,obj.driverId)"
           >
-            <span class="orderText">{{ orderText.name }}</span>
+            <div v-if="Object.keys(orderText).length > 0">
+              <span v-permission="orderText.pUrl" class="orderText">{{ orderText.name }}</span>
+            </div>
           </div>
         </template>
       </van-field>
@@ -88,22 +90,25 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      orderText: {}
+    };
   },
-  computed: {
-    orderText() {
-      if (this.obj.status === 20) {
-        return { name: '审核', url: '', code: 1 };
-      } else if (this.obj.status === 30) {
-        return { name: '终止', code: 2 };
-      } else if (this.obj.status === 25) {
-        return { name: '重新提交', url: '', code: 3 };
-      } else {
-        return false
-      }
+  created() {
+    if (this.changePermission()) {
+      this.orderText = this.changePermission();
     }
   },
   methods: {
+    changePermission() {
+      if (this.obj.status === 20) {
+        return { name: '审核', url: '', code: 1, pUrl: ['/v2/order/auditOrderNoPass'] };
+      } else if (this.obj.status === 30) {
+        return { name: '终止', code: 2, pUrl: ['/v2/order/abort'] };
+      } else if (this.obj.status === 25) {
+        return { name: '重新提交', url: '', code: 3, pUrl: ['/v2/order/resubmit'] };
+      }
+    },
     goRouter() {
       this.$router.push({
         path: '/orderDetail',

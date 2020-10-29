@@ -12,29 +12,31 @@
       >
         <template #right>
           <div class="doBox">
-            <span
-              v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']"
-              class="orderBtn"
-              @click="showOrder = true"
-            >最新订单</span>
-            <van-icon
-              name="arrow-down"
-              size="12"
-            />
+            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']">
+              <span
+                class="orderBtn"
+                @click="showOrder = true"
+              >最新订单</span>
+              <van-icon
+                name="arrow-down"
+                size="12"
+              />
+            </div>
           </div>
           <div
             class="doBox"
             style="margin-left:6px"
           >
-            <span
-              v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']"
-              class="orderBtn"
-              @click="showDothing = true"
-            >操作</span>
-            <van-icon
-              name="arrow-down"
-              size="12"
-            />
+            <div v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']">
+              <span
+                class="orderBtn"
+                @click="showDothing = true"
+              >操作</span>
+              <van-icon
+                name="arrow-down"
+                size="12"
+              />
+            </div>
           </div>
         </template>
       </van-nav-bar>
@@ -279,7 +281,7 @@ export default {
       const resetOrder = {
         name: '重新提交',
         url: '/resetOrder',
-        pUrl: ['/v2/order/createOrUpdateOrder']
+        pUrl: ['/v2/order/resubmit']
       };
 
       const orderDetail = {
@@ -326,7 +328,7 @@ export default {
         url: '/editShare',
         pUrl: ['/v2/driver/edit/interview']
       };
-      const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
+      // const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
       const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
       if (
         this.detailInfo.status === 1 ||
@@ -342,7 +344,7 @@ export default {
         return arr;
       } else if (this.detailInfo.status === 3) {
         arr.push(tagView);
-        arr.push(signOut);
+        // arr.push(signOut);
         if (this.detailInfo.busiType === 0) {
           arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {

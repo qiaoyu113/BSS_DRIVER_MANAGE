@@ -39,9 +39,9 @@ export function wayBillAmountDetail(data) {
     data
   })
 }
-export function noCarBatchByGM(data) {
+export function noCarBatchByGM(data, parmas) {
   return request({
-    url: `${prefix}/v2/waybill/noCarBatchByGM`, // 加盟侧批量设置未出车
+    url: `${prefix}/v2/waybill/noCarBatchByGM?remark=` + parmas, // 加盟侧批量设置未出车
     method: 'post',
     data
   })
@@ -69,9 +69,9 @@ export function getLineInfoListSearch(data) {
     data
   })
 }
-export function noCarBatchBySale(data) {
+export function noCarBatchBySale(data, parmas) {
   return request({
-    url: `${prefix}/v2/waybill/noCarBatchBySale`, // 外线侧批量设置未出车
+    url: `${prefix}/v2/waybill/noCarBatchBySale?remark=` + parmas, // 外线侧批量设置未出车
     method: 'post',
     data
   })

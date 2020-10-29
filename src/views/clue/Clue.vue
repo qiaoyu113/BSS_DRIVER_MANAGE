@@ -451,8 +451,14 @@ export default {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
         'groupId': this.ruleForm.gmGroupId, // 加盟小组
-        'roleTypes': [1],
+        'roleTypes': [1, 6, 7],
         'uri': '/v2/clue/queryGmList'
+      }
+      if (this.ruleForm.busiType === 0) { // 专车
+        params.roleTypes = [1, 6]
+      } else if (this.ruleForm.busiType === 1) {
+        // 共享
+        params.roleTypes = [1, 7]
       }
       params = this.removeEmpty(params)
       GetSpecifiedRoleList(params)
@@ -565,7 +571,7 @@ export default {
         this.ruleForm.status !== '' && (params.status = Number(this.ruleForm.status))
         if (this.ruleForm.startDate && this.ruleForm.endDate) {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
-          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
         }
         let { data: res } = await getClueList(params)
         if (res.success) {
@@ -677,8 +683,9 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.formText.dateArr = `${startDate} - ${endDate}`;
-      this.ruleForm.startDate = start;
-      this.ruleForm.endDate = end;
+
+      this.ruleForm.startDate = new Date(start.setHours(0, 0, 0, 0))
+      this.ruleForm.endDate = new Date(end.setHours(23, 59, 59, 999))
     },
     closeManagerPop(val) {
       this.changeManagerStatus = val.status

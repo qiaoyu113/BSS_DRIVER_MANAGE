@@ -317,7 +317,13 @@ export default {
       let params = {}
       this.ruleForm.workCity !== '' && (params.cityCode = this.ruleForm.workCity)
       this.ruleForm.busiType !== '' && (params.productLine = this.ruleForm.busiType)
-      params.roleTypes = [1]
+      params.roleTypes = [1, 6, 7]
+      if (this.ruleForm.busiType === 0) { // 专车
+        params.roleTypes = [1, 6]
+      } else if (this.ruleForm.busiType === 1) {
+        // 共享
+        params.roleTypes = [1, 7]
+      }
       params.uri = '/driverGmInfo/role'
       GetSpecifiedRoleList(params).then(({ data }) => {
         if (data.success) {
@@ -525,8 +531,8 @@ export default {
       let startDate = parseTime(start, '{y}-{m}-{d}');
       let endDate = parseTime(end, '{y}-{m}-{d}');
       this.formText.dateArr = `${startDate} - ${endDate}`;
-      this.ruleForm.startDate = start;
-      this.ruleForm.endDate = end;
+      this.ruleForm.startDate = new Date(start).setHours(0, 0, 0);
+      this.ruleForm.endDate = new Date(end).setHours(23, 59, 59);
     },
     closeManagerPop(val) {
       this.changeManagerStatus = val.status

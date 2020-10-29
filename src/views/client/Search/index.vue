@@ -133,10 +133,12 @@ export default {
       if (index > -1) {
         this.historyItems.splice(index, 1)
       }
-      if (this.historyItems.length >= 5) {
-        this.historyItems.shift()
+      this.historyItems.unshift(keyword)
+      const len = this.historyItems.length
+      if (len > 5) {
+        // this.historyItems.shift()
+        this.historyItems.splice(len - 1)
       }
-      this.historyItems.push(keyword)
       localStorage.setItem('clent', JSON.stringify(this.historyItems))
     },
     // 获取从localStorage
