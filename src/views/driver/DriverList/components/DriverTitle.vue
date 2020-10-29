@@ -105,12 +105,7 @@ export default {
   padding: 5px 10px 5px 15px;
   box-sizing: border-box;
 }
-.DriverTitle >>> .van-nav-bar__right{
-  cursor: none;
-}
 .DriverTitle >>> .van-nav-bar__right:active{
-  background: #2f448a;
-  color: white;
   opacity: 1;
 }
 </style>
