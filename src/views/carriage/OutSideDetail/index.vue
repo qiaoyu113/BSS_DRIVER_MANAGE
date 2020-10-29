@@ -207,7 +207,7 @@ export default {
       })
       if (this.arrstr.length) {
         try {
-          let { data: res } = await noCarBatchBySale(ids)
+          let { data: res } = await noCarBatchBySale(ids, this.message)
           if (res.success) {
             this.show = false;
             Toast.success('上报成功', res.data);
