@@ -13,11 +13,12 @@
         label="线路名称"
         name="asyncValidatorLineName"
         placeholder="请输入"
-        maxlength="10"
         :rules="[
           { required: true, message: '请输入线路名称！' },
-          { validator: asyncValidatorLineName, message: '系统已存在相同名称线路' }
+          { validator: asyncValidatorLineName, message: '系统已存在相同名称线路' },
+          { validator: asyncValidatorLineNameLength, message: '线路名称上限10字' }
         ]"
+        @input="handleLineNameChange"
       />
       <template v-if="['copy','create'].includes(type)">
         <van-field
@@ -240,6 +241,8 @@ export default {
   },
   data() {
     return {
+      // 线路名称是否变动过
+      lineNameChange: false,
       // 是否有线路余额
       lineBalanceArr: [
         {
@@ -379,6 +382,20 @@ export default {
         let result = await this.handleLineNameBlur()
         resolve(result)
       });
+    },
+    // 校验线路名称的长度
+    asyncValidatorLineNameLength(val) {
+      if (this.form.lineName && !this.lineNameChange) { // 线路名称没有发生变化直接通过
+        return true
+      } else if (this.form.lineName.trim().length <= 10) { // 线路名称发生变化长度小于等于10
+        return true
+      } else {
+        return false
+      }
+    },
+    // 线路名称发生变化
+    handleLineNameChange() {
+      this.lineNameChange = true
     },
     // 校验线路名称是否重复
     async handleLineNameBlur() {

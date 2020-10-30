@@ -55,7 +55,7 @@ export default {
   watch: {
     isComputed: {
       handler(val) {
-        if (val) {
+        if (val && this.value) {
           this.getLabel()
         }
       },
