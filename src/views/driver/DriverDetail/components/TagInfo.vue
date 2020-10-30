@@ -9,9 +9,9 @@
           readonly
         />
         <van-field
-          label="是否为司急"
+          label="是否为紧急司机"
           colon
-          :value="obj.isUrgentName | DataIsNull"
+          :value="obj.isUrgentName"
           readonly
         />
         <van-field
@@ -26,21 +26,28 @@
       <div
         v-for="(item,index) in obj.labelRemarkList"
         :key="index"
-        class="remakeItem"
+        class="remakeItem  van-hairline--top"
       >
-        <div class="remakeTitle">
-          <span>备注：</span>
-          <div v-text="item.remark"></div>
-        </div>
         <van-field
-          label="创建人："
-          :value="`${item.createName}/${item.createPhone}`"
+          label="备注"
+          :value="item.remark"
           readonly
+          colon
+          type="textarea"
+          autosize
+          rows="1"
         />
         <van-field
-          label="创建时间："
+          label="创建人"
+          :value="`${item.createName}/${item.createPhone}`"
+          readonly
+          colon
+        />
+        <van-field
+          label="创建时间"
           :value="timeFormat(item.createDate,'YYYY-MM-DD')"
           readonly
+          colon
         />
       </div>
     </div>
@@ -80,22 +87,7 @@ export default {
     box-sizing: border-box;
   }
   .remakeItem {
-    .remakeTitle {
-      display: flex;
-      font-size: 14px;
-      color: #3c4353;
-      padding: 15px;
-      box-sizing: border-box;
-      border-top: 2px solid #f6f7f9;
-      span {
-        display: inline-block;
-        width: 50px;
-      }
-      div {
-        flex-wrap: wrap;
-        flex: 1;
-      }
-    }
+    // border-top: 1px solid #838a9d;
   }
 }
 </style>
