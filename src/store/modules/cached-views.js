@@ -15,8 +15,8 @@ export default {
     DEL_CACHED_VIEW(state, name) {
       for (let index = 0; index < state.cachedViews.length; index++) {
         const item = state.cachedViews[index];
-        if(item === name){
-          state.cachedViews.splice(i, 1)
+        if (item === name) {
+          state.cachedViews.splice(index, 1)
           break
         }
       }

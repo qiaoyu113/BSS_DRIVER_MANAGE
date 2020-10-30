@@ -200,7 +200,7 @@ export default {
         let parmas = {
           wayBillAmountIds: arr
         }
-        let { data: res } = await noCarBatchBySale(parmas)
+        let { data: res } = await noCarBatchBySale(parmas, this.message)
         if (res.success) {
           Toast.success('运费上报成功');
           this.$router.back(-1)

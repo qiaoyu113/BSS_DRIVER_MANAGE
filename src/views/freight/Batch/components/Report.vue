@@ -136,7 +136,7 @@ export default {
         let parmas = {
           wayBillAmountIds: arr
         }
-        let { data: res } = await noCarBatchByGM(parmas)
+        let { data: res } = await noCarBatchByGM(parmas, this.message)
         if (res.success) {
           res.data // 全部未出车
         } else {
