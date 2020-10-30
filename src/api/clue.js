@@ -44,3 +44,11 @@ export function clueEdit(data) {
     data
   })
 }
+// 获取加盟/渠道经理
+export function GetSpecifiedLower(data) {
+  return request({
+    url: `${prefix}/v2/clue/getSpecifiedLowerUserListByCondition`,
+    method: 'post',
+    data
+  })
+}

@@ -12,10 +12,9 @@
       >
         <template #right>
           <div class="doBox">
-            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']">
+            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']" class="checkStyle" @click="showOrder = true">
               <span
                 class="orderBtn"
-                @click="showOrder = true"
               >最新订单</span>
               <van-icon
                 name="arrow-down"
@@ -27,10 +26,9 @@
             class="doBox"
             style="margin-left:6px"
           >
-            <div v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']">
+            <div v-permission="['/v2/driver/insertLabel' ,'/v2/driver/edit/interview', '/v2/driver/signOut',' /v2/driver/signDeal']" class="checkStyle" @click="showDothing = true">
               <span
                 class="orderBtn"
-                @click="showDothing = true"
               >操作</span>
               <van-icon
                 name="arrow-down"
@@ -329,7 +327,7 @@ export default {
         pUrl: ['/v2/driver/edit/interview']
       };
       // const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
-      const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
+      // const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
       if (
         this.detailInfo.status === 1 ||
         this.detailInfo.status === 2 ||
@@ -353,7 +351,7 @@ export default {
         return arr;
       } else if (this.detailInfo.status === 5) {
         arr.push(tagView);
-        arr.push(signDeal);
+        // arr.push(signDeal);
         if (this.detailInfo.busiType === 0) {
           arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
@@ -404,11 +402,12 @@ export default {
     onSelectDothing(item) {
       this.showDothing = false;
       if (item.name === '标记退出') {
-        this.outSign(this.driverId);
+        // this.outSign(this.driverId);
+        return
       } else if (item.name === '标记成交') {
-        this.dealSign(this.driverId);
+        // this.dealSign(this.driverId);
+        return
       } else {
-        console.log('this.driverId', this.driverId);
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }
     },
@@ -561,6 +560,9 @@ export default {
 <style lang="less" scoped>
 @import "../DriverList/components/DriverItem.less";
 .DriverDetail {
+  .checkStyle:active{
+    opacity: .7;
+  }
   background-color: @body-bg;
   .doBox {
     display: flex;
@@ -572,6 +574,9 @@ export default {
     letter-spacing: 0;
     text-align: center;
     margin-right: 3px;
+  }
+  .checkStyle:active{
+    opacity: .7;
   }
   .detailTitle {
     .cell-title,
@@ -588,6 +593,12 @@ export default {
 }
 </style>
 <style scoped>
+.DriverDetail >>> .van-nav-bar__right:active{
+  opacity: 1;
+}
+.DriverDetail >>> .van-nav-bar__title{
+  z-index: 999;
+}
 .DriverDetail >>> .van-dropdown-menu__bar {
   background-color: rgb(47, 68, 138);
   height: 46px;

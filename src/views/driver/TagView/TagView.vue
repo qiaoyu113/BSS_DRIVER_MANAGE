@@ -13,11 +13,10 @@
       <van-field
         v-model="isUrgent"
         readonly
-        required
         name="isUrgent"
-        label="是否为司急"
-        placeholder="是否为司急"
-        :rules="[{required: true, message: '请填写是否为司急'}]"
+        label-width="100px"
+        label="是否为紧急司机"
+        placeholder="是否为紧急司机"
         @click="suggestShow = true"
       />
       <van-field
@@ -25,13 +24,11 @@
         rows="2"
         name="remark"
         autosize
-        required
         label="备注"
         type="textarea"
         maxlength="50"
         placeholder="最多可填50字"
         show-word-limit
-        :rules="[{ required: true, message: '备注不能为空'}]"
       />
       <div style="margin:100px 15px 0 15px;">
         <van-button color="#2F448A" block type="info" native-type="submit">
@@ -74,8 +71,10 @@ export default {
   },
   methods: {
     async onSubmit(values) {
-      let parmas = { ...this.formData }
-
+      let parmas = {}
+      parmas.driverId = this.formData.driverId
+      this.formData.isUrgent !== '' && (parmas.isUrgent = this.formData.isUrgent)
+      this.formData.remark !== '' && (parmas.remark = this.formData.remark)
       try {
         this.$loading(true)
         let { data: res } = await insertLabel(parmas);

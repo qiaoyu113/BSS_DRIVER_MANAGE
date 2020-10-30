@@ -3,7 +3,9 @@
     <van-popup
       v-model="managerStatus"
       round
+      closeable
       @click-overlay="colsedPop"
+      @closed="colsedPop"
     >
       <div class="managerBox">
         <div class="tabType">
