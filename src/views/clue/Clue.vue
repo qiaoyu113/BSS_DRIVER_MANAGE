@@ -219,8 +219,8 @@ import ClueTitle from './components/ClueTitle';
 import SelfPopup from '@/components/SelfPopup';
 import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
-import { getClueList, GetSpecifiedLower } from '@/api/clue.js'
-import { GetDictionaryList, getCurrentLowerOfficeCityData, GetGmGroup } from '@/api/common'
+import { getClueList } from '@/api/clue.js'
+import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList, GetGmGroup } from '@/api/common'
 export default {
   name: 'ClueList',
   components: {
@@ -427,11 +427,11 @@ export default {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
         'groupId': this.ruleForm.gmGroupId, // 加盟小组
-        'roleType': 2, // 1加盟 2渠道
+        'roleTypes': [4],
         'uri': '/v2/clue/queryGmList'
       }
       params = this.removeEmpty(params)
-      GetSpecifiedLower(params)
+      GetSpecifiedRoleList(params)
         .then(({ data }) => {
           if (data.success) {
             this.columns_scGmId = data.data.map(ele => {
@@ -451,11 +451,11 @@ export default {
         'cityCode': this.ruleForm.workCity, // 工作城市
         'productLine': this.ruleForm.busiType, // 业务线
         'groupId': this.ruleForm.gmGroupId, // 加盟小组
-        'roleType': 1, // 1加盟 2渠道
+        'roleTypes': [1],
         'uri': '/v2/clue/queryGmList'
       }
       params = this.removeEmpty(params)
-      GetSpecifiedLower(params)
+      GetSpecifiedRoleList(params)
         .then(({ data }) => {
           if (data.success) {
             this.columns_GmManager = data.data.map(ele => {
