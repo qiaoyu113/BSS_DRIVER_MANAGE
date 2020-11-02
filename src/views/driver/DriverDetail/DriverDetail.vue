@@ -181,6 +181,7 @@ import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
 import dayjs from 'dayjs';
 import { contractList, orderAbort, getOrderList } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
+import { addCach } from '@/utils/mixins.js'
 export default {
   name: 'DriverDetail',
   components: {
@@ -195,6 +196,7 @@ export default {
     OrderInfo,
     ContractInfoItem
   },
+  mixins: [addCach],
   data() {
     return {
       active: 0,
