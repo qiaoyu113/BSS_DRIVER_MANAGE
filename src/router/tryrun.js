@@ -4,8 +4,8 @@ export default [
     name: 'TryRun',
     component: resolve => require(['@/views/tryRun/TryRun'], resolve),
     meta: {
-      title: '试跑在跑'
-      // keepAlive: true
+      title: '试跑在跑',
+      keepAlive: true
     }
   },
   {

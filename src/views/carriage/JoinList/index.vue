@@ -35,7 +35,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <div class="list">
+    <div class="list freight-list">
       <!-- 下拉刷新  上拉加载 -->
       <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
@@ -172,6 +172,7 @@ import { parseTime } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
 export default {
+  name: 'Freight',
   components: {
     CardItem,
     SelfPopup,
@@ -179,6 +180,7 @@ export default {
   },
   data() {
     return {
+      scrollTop: 0,
       showSuggest: true,
       error: false,
       showPopup: false, // 打开查询抽屉
@@ -240,6 +242,17 @@ export default {
       cityList: [],
       checkedNum: 0
     }
+  },
+  // // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.freight-list').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.freight-list').scrollTop
+    next()
   },
   computed: {
   },

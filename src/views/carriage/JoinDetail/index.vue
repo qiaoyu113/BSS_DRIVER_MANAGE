@@ -101,7 +101,9 @@
 import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, noCarBatchByGM } from '@/api/freight'
 import { delay } from '@/utils'
 import { Toast } from 'vant';
+import { addCach } from '@/utils/mixins.js'
 export default {
+  mixins: [addCach],
   data() {
     return {
       show: false,

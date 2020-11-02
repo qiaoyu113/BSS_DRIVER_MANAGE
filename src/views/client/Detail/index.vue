@@ -39,10 +39,12 @@
 import ImagePreview from '../../line/Detail/components/ImagePreview'
 import { getClientDetail } from '@/api/client'
 import dayjs from 'dayjs'
+import { addCach } from '@/utils/mixins.js'
 export default {
   components: {
     ImagePreview
   },
+  mixins: [addCach],
   data() {
     return {
       activeNames: ['1'],
