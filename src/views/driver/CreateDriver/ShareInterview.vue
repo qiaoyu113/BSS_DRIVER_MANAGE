@@ -482,15 +482,6 @@ export default {
       return this.$route.meta.title;
     }
   },
-  watch: {
-    'formData.hasCar'(val) {
-      if (val === true) {
-        this.formData.intentDrivingCarType = '';
-      } else {
-        this.formData.currentCarType = '';
-      }
-    }
-  },
   mounted() {
     this.routeName = this.$route.path;
     this.driverId = this.$route.query.id;
