@@ -309,6 +309,10 @@ export default {
       GetDictionaryList(['Intentional_compartment', 'dropped_reason'])
         .then(({ data }) => {
           if (data.success) {
+            data.data.dropped_reason.push({
+              dictLabel: '数据迁移掉线',
+              dictValue: '6'
+            })
             this.carList = data.data.Intentional_compartment;
             this.whyList = data.data.dropped_reason;
           }
