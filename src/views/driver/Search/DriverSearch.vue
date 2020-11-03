@@ -15,7 +15,7 @@
         <van-search
           v-model="keyWord"
           show-action
-          placeholder="请输入搜索关键词"
+          placeholder="司机姓名/司机编号/司机手机号搜索"
           @search="onSearch"
           @clear="onCancel"
         >
