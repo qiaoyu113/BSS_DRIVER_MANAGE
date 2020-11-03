@@ -684,15 +684,6 @@ export default {
       return this.$route.meta.title;
     }
   },
-  watch: {
-    'formData.hasCar'(val) {
-      if (val === true) {
-        this.formData.intentDrivingCarType = '';
-      } else {
-        this.formData.currentCarType = '';
-      }
-    }
-  },
   created() {
     this.validatorNum = validatorNum;
     this.phonePattern = phoneRegExp;
