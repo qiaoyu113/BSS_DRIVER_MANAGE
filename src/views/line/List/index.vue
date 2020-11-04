@@ -58,7 +58,7 @@
       @submit="onQuery"
       @reset="onReset"
     >
-      <van-field
+      <!-- <van-field
         label-width="100"
         :value="pickerNames['busiType']"
         readonly
@@ -66,7 +66,7 @@
         label="线路类型"
         placeholder="请选择"
         @click="showPickerFn('busiType')"
-      />
+      /> -->
       <van-field
         label-width="100"
         :value="pickerNames['lineBalance']"

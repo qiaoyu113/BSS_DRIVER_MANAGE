@@ -68,6 +68,7 @@
       <van-collapse-item title="标签信息" name="6">
         <van-field label="线路紧急程度" label-width="120" readonly :value="form.lineUrgentName | DataIsNull" :border="false" colon />
         <van-field label="适配性" label-width="120" readonly :value="form.lineAdapterName | DataIsNull" :border="false" colon />
+        <van-field label="线路肥瘦标签" label-width="120" readonly :value="form.labelTypeName | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="现场信息" name="7">
         <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />

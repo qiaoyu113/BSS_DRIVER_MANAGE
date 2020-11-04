@@ -10,7 +10,7 @@
     />
     <van-popup v-model="showPicker" position="bottom">
       <van-area
-        :value="form[pickerKey].length > 1 ? form[pickerKey][2]+'' : ''"
+        :value="getSelectCode"
         :area-list="areaList"
         :columns-placeholder="['请选择', '请选择', '请选择']"
         @confirm="onConfirm"
@@ -65,6 +65,18 @@ export default {
       isEcho: true // 是否回显
     }
   },
+  computed: {
+    getSelectCode() {
+      if (this.form[this.pickerKey].length > 2) {
+        return this.form[this.pickerKey][2] + ''
+      } else if (this.form[this.pickerKey].length > 1) {
+        return this.form[this.pickerKey][1] + ''
+      } else if (this.form[this.pickerKey].length > 0) {
+        return this.form[this.pickerKey][0] + ''
+      }
+      return ''
+    }
+  },
   watch: {
     isComputed(val) {
       if (val && this.isEcho) {
@@ -94,7 +106,7 @@ export default {
     },
     // 点击确定
     onConfirm(obj) {
-      this.form[this.pickerKey] = obj.map((item) => item && item.code)
+      this.form[this.pickerKey] = obj.map((item) => item && item.code).filter(item => item)
       let label = obj.map((item) => item && item.name).filter(item => item);
       this.label = label.join('/')
       this.showPicker = false
@@ -122,6 +134,10 @@ export default {
           let codeObj = {}
           for (let i = 0; i < res.data.length; i++) {
             let item = res.data[i]
+            // 排除七只鸟的-99全区域
+            if (this.form[this.pickerKey] && this.form[this.pickerKey].length > 2 && +this.form[this.pickerKey][2] === -99) {
+              this.form[this.pickerKey].pop()
+            }
             codeObj[item.code] = item.name
           }
           return codeObj

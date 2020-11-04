@@ -78,6 +78,20 @@
           { required: true, message: '请选择是否需要搬运！' },
         ]"
       />
+      <selftPicker
+        picker-key="labelType"
+        :form="form"
+        :columns="labelTypeArr"
+        value="label"
+        :is-computed="form['labelType']!==''&&labelTypeArr.length > 0"
+        required
+        label-width="100"
+        label="线路肥瘦标签"
+        placeholder="请选择"
+        :rules="[
+          { required: true, message: '请选择线路肥瘦标签！' },
+        ]"
+      />
       <van-field
         v-model="form.dutyRemark"
         colon
@@ -139,7 +153,9 @@ export default {
           label: '否',
           value: 2
         }
-      ]
+      ],
+      // 线路肥瘦标签
+      labelTypeArr: []
     }
   },
   mounted() {
@@ -147,8 +163,19 @@ export default {
   },
   methods: {
     async init() {
-      let result = await this.getDictData('type_of_goods')
-      this.cargoTypeArr = result
+      try {
+        let requestArr = [
+          this.getDictData('type_of_goods'),
+          this.getDictData('line_label')
+        ]
+        let res = await Promise.all(requestArr)
+        if (res && res.length === requestArr.length) {
+          this.cargoTypeArr = res[0]
+          this.labelTypeArr = res[1]
+        }
+      } catch (err) {
+        console.log(`get dict fail:${err}`)
+      }
     },
     // 提交
     onSubmit(values) {
