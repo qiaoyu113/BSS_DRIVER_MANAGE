@@ -57,7 +57,7 @@
               <p v-if="optionsType" class="checked-box">
                 <!----sub.gmStatusCode !== 0 判断未确认是否使用的逻辑--->
                 <!-- <van-checkbox v-if="sub.gmStatusCode === 0" :disabled="disabledCheck(sub.departureDate, sub.gmStatusCode !== 0)" :name="sub.wayBillId" shape="square" /> -->
-                <van-checkbox v-if="sub.gmStatusCode === 0" :disabled="disabledCheck(sub.departureDate)" :name="sub.wayBillId" shape="square" />
+                <van-checkbox v-if="sub.gmStatusCode === 0" :name="sub.wayBillId" shape="square" @disabled="disabledCheck(sub.departureDate)" />
               </p>
               <CardItem :obj="sub" />
             </div>
@@ -567,9 +567,14 @@ export default {
       this.showPicker = true;
     },
     disabledCheck(time) {
-      let now = new Date().setHours(0, 0, 0, 0);
-      let ThreeDayAgo = now - 86400000 * 3 + 1;// 一天86400秒
-      return time - 1 < ThreeDayAgo
+      let permissionArr = localStorage.getItem('permission').split(',')
+      if (permissionArr.indexOf('/gmReported') > -1) {
+        return true
+      } else {
+        let now = new Date().setHours(0, 0, 0, 0);
+        let ThreeDayAgo = now - 86400000 * 3;// 一天86400秒
+        return time - 1 < ThreeDayAgo
+      }
     }
   }
 }

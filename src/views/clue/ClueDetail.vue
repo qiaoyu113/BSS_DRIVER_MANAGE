@@ -87,6 +87,9 @@
         <div v-if="active === 0">
           <FormInfo :obj="detailInfo" />
         </div>
+        <div v-else>
+          <van-empty image="error" description="暂无内容" />
+        </div>
       </van-tab>
     </van-tabs>
   </div>

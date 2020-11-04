@@ -473,21 +473,13 @@ export default {
       driverId: '',
       editForm: {},
       phone: '',
-      Changed: true
+      Changed: true,
+      isChangeCar: false
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
-    }
-  },
-  watch: {
-    'formData.hasCar'(val) {
-      if (val === true) {
-        this.formData.intentDrivingCarType = '';
-      } else {
-        this.formData.currentCarType = '';
-      }
     }
   },
   mounted() {
@@ -613,6 +605,7 @@ export default {
     copyData(value) {
       if (value !== '' && !this.Changed) {
         if (value === 'interview') {
+          return
           // 面试地址label回显 更换业务线必定没有面试地址的信息所以不用copy回显
           // this.area.interviewProvinceName = this.editForm.interviewProvinceName;
           // this.area.interviewCityName = this.editForm.interviewCityName;
@@ -641,6 +634,12 @@ export default {
             String(this.editForm.intentWorkCity),
             String(this.editForm.intentWorkCounty)
           ];
+        } else if (value === 'hasCar') {
+          if (!this.isChangeCar) {
+            this.formData[value] = this.editForm[value]
+            this.isChangeCar = true
+            return
+          }
         } else {
           this.formData[value] = this.editForm[value];
         }
