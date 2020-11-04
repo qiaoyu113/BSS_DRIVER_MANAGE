@@ -28,7 +28,7 @@
     </p>
     <div class="car">
       <van-tag type="primary" color="#EFF5FE" text-color="#649CEE">
-        {{ obj.busiTypeName | DataIsNull }}
+        {{ obj.labelTypeName | DataIsNull }}
       </van-tag>
       <template v-if="obj.inLine ===1">
         <van-tag type="primary" color="#EFF5FE" text-color="#649CEE" class="tag">
