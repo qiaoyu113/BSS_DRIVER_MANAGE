@@ -107,34 +107,55 @@
           v-if="active === 4"
           class="lineInfo"
         >
-          <div
-            v-for="(info,ind) in lineList"
-            :key="ind"
-          >
-            <LineInfoItem :obj="info" />
-          </div>
+          <template v-if="lineList.length > 0">
+            <div
+              v-for="(info,ind) in lineList"
+              :key="ind"
+            >
+              <LineInfoItem :obj="info" />
+            </div>
+          </template>
+          <template v-else>
+            <div>
+              <van-empty image="error" description="暂无内容" />
+            </div>
+          </template>
         </div>
         <div v-if="active === 3">
-          <div
-            v-for="(info,ind) in contractList"
-            :key="ind"
-          >
-            <ContractInfoItem
-              :obj="info"
-              @activeContract="activeContract"
-            />
-          </div>
+          <template v-if="contractList.length > 0">
+            <div
+              v-for="(info,ind) in contractList"
+              :key="ind"
+            >
+              <ContractInfoItem
+                :obj="info"
+                @activeContract="activeContract"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div>
+              <van-empty image="error" description="暂无内容" />
+            </div>
+          </template>
         </div>
         <div v-if="active === 2">
-          <div
-            v-for="(info,ind) in orderInfoList"
-            :key="ind"
-          >
-            <OrderInfo
-              :obj="info"
-              @orderStop="orderStop"
-            />
-          </div>
+          <template v-if="orderInfoList.length > 0">
+            <div
+              v-for="(info,ind) in orderInfoList"
+              :key="ind"
+            >
+              <OrderInfo
+                :obj="info"
+                @orderStop="orderStop"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div>
+              <van-empty image="error" description="暂无内容" />
+            </div>
+          </template>
         </div>
         <div v-if="active === 1">
           <TagInfo :obj="tagInfo" />
@@ -460,7 +481,7 @@ export default {
         this.$loading(true);
         let { data: res } = await selectLabel({ driverId: id });
         if (res.success) {
-          this.tagInfo = res.data;
+          this.tagInfo = res.data || {};
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -490,7 +511,7 @@ export default {
         this.$loading(true);
         let { data: res } = await getLingMessageByDriverId({ driverId: id });
         if (res.success) {
-          this.lineList = res.data;
+          this.lineList = res.data || [];
         } else {
           this.$toast.fail(res.errorMsg);
         }
