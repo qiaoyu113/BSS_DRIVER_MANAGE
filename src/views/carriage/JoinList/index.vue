@@ -90,7 +90,7 @@
         name="driver"
         label-width="6em"
         label="司机"
-        placeholder="请输入"
+        placeholder="请输入司机姓名/编号"
       />
       <van-field
         v-model="form.line"
@@ -98,7 +98,7 @@
         label-width="6em"
         name="line"
         label="线路"
-        placeholder="请输入"
+        placeholder="请输入线路名称/编号"
       />
       <van-field
         label-width="6em"
