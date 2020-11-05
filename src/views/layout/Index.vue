@@ -266,12 +266,12 @@ export default {
   .navBarTit {
     color: @white;
     .rWith {
-       width: 80px;
+       width: auto;
        white-space: nowrap;
     }
     .right-btn {
       position: relative;
-      padding-right: 8px;
+      padding-right: 5px;
       &.open {
         &::after {
           margin-top: -1px;

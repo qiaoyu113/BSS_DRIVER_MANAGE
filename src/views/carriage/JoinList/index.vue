@@ -90,7 +90,7 @@
         name="driver"
         label-width="6em"
         label="司机"
-        placeholder="请输入司机姓名/编号"
+        placeholder="请输入司机姓名/手机号"
       />
       <van-field
         v-model="form.line"
@@ -146,6 +146,7 @@
     <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
+      :placeholder="'请输入加盟经理姓名/手机号'"
       :options="options"
       :type="'gmId'"
       @keyWordValue="handleSearchChange"
