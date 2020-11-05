@@ -146,6 +146,7 @@
     <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
+      :placeholder="'请输入加盟经理姓名/手机号'"
       :options="options"
       :type="'gmId'"
       @keyWordValue="handleSearchChange"
