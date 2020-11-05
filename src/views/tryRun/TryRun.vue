@@ -84,7 +84,7 @@
         name="customer"
         label-width="7em"
         label="客户"
-        placeholder="请输入"
+        placeholder="请输入客户名称/编号"
       />
       <van-field
         v-model="form.project"
@@ -92,7 +92,7 @@
         label-width="7em"
         name="project"
         label="项目"
-        placeholder="请输入"
+        placeholder="请输入项目名称/编号"
       />
       <van-field
         v-model="form.line"
@@ -100,7 +100,7 @@
         name="line"
         label-width="7em"
         label="线路"
-        placeholder="请输入"
+        placeholder="请输入线路名称/编号"
       />
       <van-field
         readonly
@@ -120,7 +120,7 @@
         colon
         label-width="7em"
         label="司机"
-        placeholder="请输入"
+        placeholder="请输入司机姓名/编号"
       />
       <van-field
         readonly
