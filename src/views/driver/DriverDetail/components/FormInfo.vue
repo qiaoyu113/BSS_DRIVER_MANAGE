@@ -1,6 +1,6 @@
 <template>
   <div class="formInfo">
-    <van-form :show-error="false" label-width="150px">
+    <van-form :show-error="false" label-width="130px">
       <template v-for="type in obj.interviewInfoVOList">
         <div
           v-if="type.busiType === 1"
@@ -75,7 +75,7 @@
               readonly
             />
             <van-field
-              label="货物运输经验（月）"
+              label="货物运输经验(月)"
               :value="type.experience"
               readonly
               colon
@@ -141,13 +141,13 @@
               readonly
             />
             <van-field
-              label="从业时间（月）"
+              label="从业时间(月)"
               colon
               :value="type.workDuration"
               readonly
             />
             <van-field
-              label="零散活占比（%）"
+              label="零散活占比(%)"
               colon
               :value="type.scatteredJobRate"
               readonly
@@ -305,13 +305,13 @@
               colon
             />
             <van-field
-              label="实际货车驾龄（月）"
+              label="实际货车驾龄(月)"
               :value="type.drivingAge"
               colon
               readonly
             />
             <van-field
-              label="本城市居住时长（月）"
+              label="本城市居住时长(月)"
               :value="type.livingAge"
               readonly
               colon

@@ -13,317 +13,314 @@
       v-if="formData.driverInfoVO"
       class="detailInfo"
     >
-      <van-cell-group>
-        <van-cell
-          value="司机信息"
-          is-link
-          arrow-direction="down"
-        />
-        <van-field
-          label="司机姓名"
-          :value="`${formData.driverName}（${formData.driverId}）` | DataIsNull"
-          colon
-          required
-          readonly
-          :border="false"
-        />
-        <van-field
-          label="司机电话"
-          :value="formData.driverInfoVO.phone | DataIsNull"
-          required
-          colon
-          readonly
-          :border="false"
-        />
-        <van-field
-          label="工作城市"
-          :value="formData.driverInfoVO.workCityName | DataIsNull"
-          readonly
-          required
-          colon
-          :border="false"
-        />
-        <van-field
-          label="身份证号"
-          :value="formData.driverInfoVO.idNo | DataIsNull"
-          readonly
-          required
-          colon
-          :border="false"
-        />
-      </van-cell-group>
-      <van-cell-group>
-        <van-cell
-          value="商品信息"
-          is-link
-          arrow-direction="down"
-        />
-        <van-field
-          label="商品分类"
-          :value="formData.busiTypeName | DataIsNull"
-          required
-          readonly
-          colon
-          :border="false"
-        />
-        <van-field
-          label="合作模式"
-          :value="formData.cooperationModelName | DataIsNull"
-          required
-          readonly
-          colon
-          :border="false"
-        />
-        <van-field
-          label-width="100px"
-          label="合作期限（月）"
-          :value="formData.cooperationTime | DataIsNull"
-          readonly
-          required
-          colon
-          :border="false"
-        />
-        <!-- 专车才有该字段 -->
-        <van-field
-          v-if="formData.busiType === 0"
-          label-width="100px"
-          label="收入保障（元）"
-          :value="formData.incomeGuarantee | DataIsNull"
-          readonly
-          required
-          colon
-          :border="false"
-        />
-        <van-field
-          label-width="100px"
-          label="抽佣比例（%）"
-          :value="formData.rake | DataIsNull"
-          readonly
-          colon
-          :border="false"
-        />
-        <van-field
-          label-width="100px"
-          label="商品金额（元）"
-          :value="formData.goodsAmount | DataIsNull"
-          readonly
-          colon
-          required
-          :border="false"
-        />
-      </van-cell-group>
-      <van-cell-group>
-        <van-cell
-          value="商品附加信息"
-          is-link
-          arrow-direction="down"
-        />
-        <van-field
-          v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
-          label="年检有效期"
-          :value="formData.inspectionTime | DataIsNull"
-          required
-          colon
-          readonly
-          :border="false"
-        />
-        <van-field
-          v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
-          label="保险有效期"
-          :value="formData.insuranceTime | DataIsNull"
-          required
-          colon
-          readonly
-          :border="false"
-        />
-        <van-field
-          v-if="formData.cooperationModel === 2"
-          label="租聘公司"
-          :value="formData.supplier | DataIsNull"
-          readonly
-          colon
-          required
-          :border="false"
-        />
-        <van-field
-          v-if="formData.cooperationModel === 1"
-          label="购车公司"
-          :value="formData.supplier | DataIsNull"
-          readonly
-          colon
-          required
-          :border="false"
-        />
-        <van-field
-          label="合作车型"
-          :value="formData.cooperationCarName | DataIsNull"
-          readonly
-          colon
-          :border="false"
-        />
-        <van-field
-          v-if="formData.cooperationModel === 1"
-          label="车辆型号"
-          :value="formData.carModel | DataIsNull"
-          readonly
-          colon
-          required
-          :border="false"
-        />
-        <van-field
-          v-if="formData.cooperationModel !== 3"
-          label="车辆信息"
-          :value="formData.carMessage | DataIsNull"
-          readonly
-          required
-          colon
-          :border="false"
-        />
-        <van-field
-          v-if="formData.cooperationModel === 1"
-          label="无税车价"
-          :value="formData.carPrice | DataIsNull"
-          readonly
-          required
-          colon
-          :border="false"
-        />
-        <van-field
-          v-if="formData.cooperationModel !== 1"
-          label="车牌号"
-          :value="formData.plateNo | DataIsNull"
-          colon
-          readonly
-          required
-          :border="false"
-        />
-      </van-cell-group>
-      <van-cell-group>
-        <van-cell
-          title="支付记录"
-          :value="`总支付金额：${formData.havePayAmount}元`"
-        />
-        <template v-for="(payInfo,index) in formData.orderPayRecordInfoVOList">
-          <div :key="index" class="van-hairline--bottom">
-            <van-field
-              label-width="100px"
-              label="支付金额（元）"
-              colon
-              :value="moneyDeal(payInfo)"
-              readonly
-              :border="false"
-            />
-            <van-field
-              label="支付时间"
-              colon
-              :value="payInfo.payDate | DataIsNull"
-              readonly
-              :border="false"
-            />
-            <van-field
-              v-if="payInfo.useWithdrawable === 0"
-              label="支付方式"
-              :value="payInfo.payTypeName | DataIsNull"
-              readonly
-              colon
-              :border="false"
-            />
-            <van-field
-              v-if="payInfo.useWithdrawable === 0"
-              name="uploader"
-              label="支付图片"
-              colon
-              readonly
-              :border="false"
-              @click="lookPic(payInfo.payImageUrl)"
-            >
-              <template #input>
-                <van-image
-                  width="100"
-                  height="100"
-                  :src="payInfo.payImageUrl"
-                />
-              </template>
-            </van-field>
-            <van-field
-              v-if="payInfo.useWithdrawable === 0"
-              label="交易编号"
-              colon
-              :value="payInfo.transactionId | DataIsNull"
-              type="textarea"
-              rows="1"
-              autosize
-              readonly
-              :border="false"
-            />
-            <van-field
-              label="备注"
-              :value="payInfo.remarks | DataIsNull "
-              readonly
-              type="textarea"
-              rows="1"
-              autosize
-              colon
-              :border="false"
-            />
-          </div>
-        </template>
-      </van-cell-group>
-      <van-cell-group>
-        <van-cell
-          value="操作记录"
-          is-link
-          arrow-direction="down"
-        />
-        <van-field
-          label="订单状态"
-          :value="formData.statusName"
-          readonly
-          colon
-          label-align="left"
-          label-width="120px"
-          :border="false"
-        />
-        <van-field
-          label="订单生成时间"
-          colon
-          :value="timeFormat(formData.createDate,'YYYY-MM-DD')"
-          label-align="left"
-          readonly
-          label-width="120px"
-          :border="false"
-        />
-        <van-field
-          v-if="formData.passName"
-          label="订单审核通过时间"
-          label-width="130px"
-          colon
-          :value="timeFormat(formData.passTime,'YYYY-MM-DD')"
-          readonly
-          label-align="left"
-          :border="false"
-        />
-        <van-field
-          v-if="formData.notPassTime"
-          label="订单审核不通过时间"
-          colon
-          :value="timeFormat(formData.notPassTime,'YYYY-MM-DD')"
-          readonly
-          label-align="left"
-          label-width="140px"
-          :border="false"
-        />
-        <van-field
-          v-if="formData.status === 10"
-          label="订单取消时间"
-          colon
-          :value="timeFormat(formData.updateDate,'YYYY-MM-DD')"
-          readonly
-          label-align="left"
-          label-width="120px"
-          :border="false"
-        />
-      </van-cell-group>
+      <van-form label-width="100px">
+        <van-cell-group>
+          <van-cell
+            value="司机信息"
+            is-link
+            arrow-direction="down"
+          />
+          <van-field
+            label="司机姓名"
+            :value="`${formData.driverName}（${formData.driverId}）` | DataIsNull"
+            colon
+            required
+            readonly
+            :border="false"
+          />
+          <van-field
+            label="司机电话"
+            :value="formData.driverInfoVO.phone | DataIsNull"
+            required
+            colon
+            readonly
+            :border="false"
+          />
+          <van-field
+            label="工作城市"
+            :value="formData.driverInfoVO.workCityName | DataIsNull"
+            readonly
+            required
+            colon
+            :border="false"
+          />
+          <van-field
+            label="身份证号"
+            :value="formData.driverInfoVO.idNo | DataIsNull"
+            readonly
+            required
+            colon
+            :border="false"
+          />
+        </van-cell-group>
+        <van-cell-group>
+          <van-cell
+            value="商品信息"
+            is-link
+            arrow-direction="down"
+          />
+          <van-field
+            label="商品分类"
+            :value="formData.busiTypeName | DataIsNull"
+            required
+            readonly
+            colon
+            :border="false"
+          />
+          <van-field
+            label="合作模式"
+            :value="formData.cooperationModelName | DataIsNull"
+            required
+            readonly
+            colon
+            :border="false"
+          />
+          <van-field
+            label="合作期限（月）"
+            :value="formData.cooperationTime | DataIsNull"
+            readonly
+            required
+            colon
+            :border="false"
+          />
+          <!-- 专车才有该字段 -->
+          <van-field
+            v-if="formData.busiType === 0"
+            label="收入保障（元）"
+            :value="formData.incomeGuarantee | DataIsNull"
+            readonly
+            required
+            colon
+            :border="false"
+          />
+          <van-field
+            label="抽佣比例（%）"
+            :value="formData.rake | DataIsNull"
+            readonly
+            colon
+            :border="false"
+          />
+          <van-field
+            label="商品金额（元）"
+            :value="formData.goodsAmount | DataIsNull"
+            readonly
+            colon
+            required
+            :border="false"
+          />
+        </van-cell-group>
+        <van-cell-group>
+          <van-cell
+            value="商品附加信息"
+            is-link
+            arrow-direction="down"
+          />
+          <van-field
+            v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
+            label="年检有效期"
+            :value="formData.inspectionTime | DataIsNull"
+            required
+            colon
+            readonly
+            :border="false"
+          />
+          <van-field
+            v-if="Number(formData.busiType) === 0 && Number(formData.cooperationModel) === 3"
+            label="保险有效期"
+            :value="formData.insuranceTime | DataIsNull"
+            required
+            colon
+            readonly
+            :border="false"
+          />
+          <van-field
+            v-if="formData.cooperationModel === 2"
+            label="租聘公司"
+            :value="formData.supplier | DataIsNull"
+            readonly
+            colon
+            required
+            :border="false"
+          />
+          <van-field
+            v-if="formData.cooperationModel === 1"
+            label="购车公司"
+            :value="formData.supplier | DataIsNull"
+            readonly
+            colon
+            required
+            :border="false"
+          />
+          <van-field
+            label="合作车型"
+            :value="formData.cooperationCarName | DataIsNull"
+            readonly
+            colon
+            :border="false"
+          />
+          <van-field
+            v-if="formData.cooperationModel === 1"
+            label="车辆型号"
+            :value="formData.carModel | DataIsNull"
+            readonly
+            colon
+            required
+            :border="false"
+          />
+          <van-field
+            v-if="formData.cooperationModel !== 3"
+            label="车辆信息"
+            :value="formData.carMessage | DataIsNull"
+            readonly
+            required
+            colon
+            :border="false"
+          />
+          <van-field
+            v-if="formData.cooperationModel === 1"
+            label="无税车价"
+            :value="formData.carPrice | DataIsNull"
+            readonly
+            required
+            colon
+            :border="false"
+          />
+          <van-field
+            v-if="formData.cooperationModel !== 1"
+            label="车牌号"
+            :value="formData.plateNo | DataIsNull"
+            colon
+            readonly
+            required
+            :border="false"
+          />
+        </van-cell-group>
+        <van-cell-group>
+          <van-cell
+            title="支付记录"
+            :value="`总支付金额：${formData.havePayAmount}元`"
+          />
+          <template v-for="(payInfo,index) in formData.orderPayRecordInfoVOList">
+            <div :key="index" class="van-hairline--bottom">
+              <van-field
+                label="支付金额（元）"
+                colon
+                :value="moneyDeal(payInfo)"
+                readonly
+                :border="false"
+              />
+              <van-field
+                label="支付时间"
+                colon
+                :value="payInfo.payDate | DataIsNull"
+                readonly
+                :border="false"
+              />
+              <van-field
+                v-if="payInfo.useWithdrawable === 0"
+                label="支付方式"
+                :value="payInfo.payTypeName | DataIsNull"
+                readonly
+                colon
+                :border="false"
+              />
+              <van-field
+                v-if="payInfo.useWithdrawable === 0"
+                name="uploader"
+                label="支付图片"
+                colon
+                readonly
+                :border="false"
+                @click="lookPic(payInfo.payImageUrl)"
+              >
+                <template #input>
+                  <van-image
+                    width="100"
+                    height="100"
+                    :src="payInfo.payImageUrl"
+                  />
+                </template>
+              </van-field>
+              <van-field
+                v-if="payInfo.useWithdrawable === 0"
+                label="交易编号"
+                colon
+                :value="payInfo.transactionId | DataIsNull"
+                type="textarea"
+                rows="1"
+                autosize
+                readonly
+                :border="false"
+              />
+              <van-field
+                label="备注"
+                :value="payInfo.remarks | DataIsNull "
+                readonly
+                type="textarea"
+                rows="1"
+                autosize
+                colon
+                :border="false"
+              />
+            </div>
+          </template>
+        </van-cell-group>
+        <van-cell-group>
+          <van-cell
+            value="操作记录"
+            is-link
+            arrow-direction="down"
+          />
+          <van-field
+            label="订单状态"
+            :value="formData.statusName"
+            readonly
+            colon
+            label-align="left"
+            label-width="150px"
+            :border="false"
+          />
+          <van-field
+            label="订单生成时间"
+            colon
+            :value="timeFormat(formData.createDate,'YYYY-MM-DD')"
+            label-align="left"
+            readonly
+            label-width="150px"
+            :border="false"
+          />
+          <van-field
+            v-if="formData.passName"
+            label="订单审核通过时间"
+            label-width="150px"
+            colon
+            :value="timeFormat(formData.passTime,'YYYY-MM-DD')"
+            readonly
+            label-align="left"
+            :border="false"
+          />
+          <van-field
+            v-if="formData.notPassTime"
+            label="订单审核不通过时间"
+            colon
+            :value="timeFormat(formData.notPassTime,'YYYY-MM-DD')"
+            readonly
+            label-align="left"
+            label-width="150px"
+            :border="false"
+          />
+          <van-field
+            v-if="formData.status === 10"
+            label="订单取消时间"
+            colon
+            :value="timeFormat(formData.updateDate,'YYYY-MM-DD')"
+            readonly
+            label-align="left"
+            label-width="150px"
+            :border="false"
+          />
+        </van-cell-group>
+      </van-form>
     </div>
     <div
       v-if="routeName === '/orderAudit'"
