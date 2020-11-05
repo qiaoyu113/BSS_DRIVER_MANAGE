@@ -71,7 +71,8 @@ export default {
         goodsWeight: '', // 货物重量
         carry: '', // 是否需要搬运
         dutyRemark: '', // 其他上岗要求
-        lineId: ''
+        lineId: '',
+        labelType: '' // 线路肥瘦标签
       },
       lineInfo: {
         warehouseCity: '',
@@ -272,7 +273,8 @@ export default {
               goodsWeight: result.goodsWeight,
               carry: result.carry,
               dutyRemark: result.dutyRemark,
-              lineId: result.lineId
+              lineId: result.lineId,
+              labelType: result.labelType
             }
           }
 

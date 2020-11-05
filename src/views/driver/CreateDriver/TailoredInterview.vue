@@ -675,21 +675,13 @@ export default {
       routeName: '',
       editForm: '',
       phone: '',
-      Changed: true
+      Changed: true,
+      isChangeCar: false
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
-    }
-  },
-  watch: {
-    'formData.hasCar'(val) {
-      if (val === true) {
-        this.formData.intentDrivingCarType = '';
-      } else {
-        this.formData.currentCarType = '';
-      }
     }
   },
   created() {
@@ -712,7 +704,15 @@ export default {
     },
     copyData(value) {
       if (value !== '' && !this.Changed) {
-        this.formData[value] = this.editForm[value]
+        if (value === 'hasCar') {
+          if (!this.isChangeCar) {
+            this.formData[value] = this.editForm[value]
+            this.isChangeCar = true
+            return
+          }
+        } else {
+          this.formData[value] = this.editForm[value]
+        }
       }
     },
     copyArea(value) {
