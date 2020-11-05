@@ -120,7 +120,7 @@
         colon
         label-width="7em"
         label="司机"
-        placeholder="请输入司机姓名/编号"
+        placeholder="请输入司机姓名/手机号"
       />
       <van-field
         readonly
