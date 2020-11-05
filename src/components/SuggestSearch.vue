@@ -18,7 +18,6 @@
         <van-cell v-for="item in options" :key="item[props.value]" @click="handleItemClick(item)">
           {{ item[props.label] }}
         </van-cell>
-        123
       </div>
     </van-popup>
   </div>
