@@ -346,7 +346,7 @@ export default {
     // 选择司机
     async getDriver() {
       if (!validatorValue(this.driverValue)) {
-        this.$notify('请输入2-6位司机姓名或手机号');
+        this.$notify({ type: 'warning', message: '请输入2位非数字或6位数字及以上的司机姓名' });
         return
       }
       try {
