@@ -81,7 +81,7 @@
             ></van-cell>
             <van-cell
               title="到仓时间："
-              :value="lineInfoVO.deliveryStartDate | DataIsNull"
+              :value="getWorkTime"
             ></van-cell>
             <van-cell
               title="仓库位置："
@@ -279,6 +279,17 @@ export default {
     },
     runTestStatusRecordVOList() {
       return this.detail.runTestStatusRecordVOList;
+    },
+    getWorkTime() {
+      const timeList = (this.detail.lineInfoVO.lineDeliveryInfoFORMS || []).slice()
+      timeList.sort((a, b) => {
+        const aTimeList = a.workingTimeStart.split(':')
+        const bTimeList = b.workingTimeStart.split(':')
+        const aTime = Number(aTimeList[0]) * 60 + Number(aTimeList[1])
+        const bTime = Number(bTimeList[0]) * 60 + Number(bTimeList[1])
+        return aTime - bTime
+      })
+      return timeList[0] ? timeList[0].workingTimeStart : ''
     }
   },
   methods: {

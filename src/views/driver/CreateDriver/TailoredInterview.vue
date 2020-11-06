@@ -193,7 +193,7 @@
           label="原收入(去油)(元/月)"
           required
           colon
-          placeholder="请填写0-25000的数字'"
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '原收入应在0至25000元之间'}]"
           @focus="copyData('originIncomeAvg')"
         />
@@ -204,7 +204,7 @@
           name="期望收入(去油)(元/月)"
           label="期望收入(去油)(元/月)"
           required
-          placeholder="请填写0-25000的数字'"
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '期望收入应在0至25000元之间'}]"
           @focus="copyData('expIncomeAvg')"
         />

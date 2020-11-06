@@ -739,6 +739,9 @@ export default {
   background: @body-bg;
   background-color: @body-bg;
   position: relative;
+  .van-info{
+    transform: translate(-40%, 0);
+  }
   .top {
     margin-bottom: 5px;
     background-color: @body-bg;

@@ -111,3 +111,14 @@ export function validatorValue(value) {
   }
   return false
 }
+
+/**
+ * @param {Number}
+ * @returns {Boolean}
+ */
+export function validatorSuggest(value) {
+  if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/.test(value) || /^\d{6,}$/.test(value) || (isNaN(value) && /^[\u4E00-\u9FA5A-Za-z0-9]{2,6}$/.test(value))) {
+    return true
+  }
+  return false
+}

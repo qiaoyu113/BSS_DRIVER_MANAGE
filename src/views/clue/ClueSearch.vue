@@ -120,6 +120,7 @@ import ClueTitle from './components/ClueTitle';
 import CardItem from './components/ListItem';
 import changeManager from './components/ChangeManager'
 import { Notify, Dialog } from 'vant';
+import { validatorSuggest } from '@/utils/validate';
 export default {
   components: {
     CardItem,
@@ -161,6 +162,7 @@ export default {
     }
   },
   mounted() {
+    this.validatorSuggest = validatorSuggest
     let historyData = this.getHistory()
     if (historyData) {
       this.historyItems = JSON.parse(historyData)
@@ -197,10 +199,8 @@ export default {
      * 更换加盟经理
      */
     changeManager(val) {
-      // this.$nextTick(() => {
       this.checked = val.show;
       // })
-      console.log(this.checked, 'check');
     },
     /**
      * 取消选择加盟经理
@@ -242,11 +242,14 @@ export default {
     },
     // 搜索
     onSearch() {
+      if (!validatorSuggest(this.keyWord)) {
+        Notify({ type: 'warning', message: '请输入2位非数字或6位数字' });
+        return
+      }
+
       if (!this.keyWord) {
         return false;
       }
-      // if (this.keyWord === 'd') {
-      //   this.options = ['京东', '京东12121', '京东121212ddasddasd'];
       this.getLists(this.keyWord)
     },
     // 取消
