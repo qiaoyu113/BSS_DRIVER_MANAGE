@@ -321,6 +321,10 @@ export default {
       this.lineDetail = item;
       this.formDetails.line = `${item.lineName}`;
       this.showModal = false;
+      this.driverList = [];
+      this.form.driverId = '';
+      this.driverDetail = {};
+      this.formDetails.driver = '';
     },
     /**
      * 搜索线路
