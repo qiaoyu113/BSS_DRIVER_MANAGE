@@ -85,6 +85,9 @@
         label-width="7em"
         label="客户"
         placeholder="请输入客户名称/编号"
+        :rules="[
+          { validator: validatorValue, message: '请输入2-6位客户名称或编号' }
+        ]"
       />
       <van-field
         v-model="form.project"
@@ -121,6 +124,9 @@
         label-width="7em"
         label="司机"
         placeholder="请输入司机姓名/手机号"
+        :rules="[
+          { validator: validatorValue, message: '请输入2-6位姓名或手机号' }
+        ]"
       />
       <van-field
         readonly
@@ -185,6 +191,7 @@ import { GetRunTestInfoList } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
 import { parseTime } from '@/utils';
+import { validatorValue } from '@/utils/validate';
 export default {
   name: 'TryRun',
   components: {
@@ -302,6 +309,8 @@ export default {
   //   next()
   // },
   methods: {
+    // 正则验证
+    validatorValue,
     /**
      * 请求字典接口
      */
@@ -399,6 +408,10 @@ export default {
      * 提交查询
      */
     async onSubmit(value) {
+      // if (!validatorValue(value.driver)) {
+      //   this.$notify('1111');
+      //   return
+      // }
       this.page.current = 1
       let result = await this.getLists(true)
       this.lists = result.lists

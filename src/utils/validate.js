@@ -97,3 +97,17 @@ export function validatorNum(min, max) {
     return vad
   }
 }
+
+/**
+ * @param {Number}
+ * @returns {Boolean}
+ */
+export function validatorValue(value) {
+  if (value === '') {
+    return true
+  }
+  if (/^\d{6,}$/.test(value) || (isNaN(value) && /^[\u4E00-\u9FA5A-Za-z0-9]{2,6}$/.test(value))) {
+    return true
+  }
+  return false
+}
