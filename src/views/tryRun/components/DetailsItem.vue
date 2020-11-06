@@ -70,8 +70,8 @@
             <van-tag class="tag">
               {{ lineInfoVO.lineCategoryName | DataIsNull }}
             </van-tag>
-            <van-tag class="tag">
-              {{ lineInfoVO.busiTypeName | DataIsNull }}
+            <van-tag v-if="lineInfoVO.labelTypeName" class="tag">
+              {{ lineInfoVO.labelTypeName | DataIsNull }}
             </van-tag>
           </template>
           <div @click="goLineDetail(lineInfoVO.lineId, '/v2/line/lineInfo/detail')">
