@@ -89,7 +89,6 @@
         v-model="lineValue"
         show-action
         placeholder="请输入线路名称/编号"
-        @input="onSearch"
       >
         <template #action>
           <div @click="onSearch">
@@ -110,7 +109,7 @@
           >
             <div class="title flex align-center">
               <div class="title-tag flex align-center justify-center">
-                {{ item.busiTypeName }}
+                {{ item.labelTypeName }}
               </div>
               <h3 class="van-ellipsis">
                 {{ item.lineName }}（{{ item.lineId }}）
@@ -166,7 +165,6 @@
         v-model="driverValue"
         placeholder="请输入司机姓名/手机号"
         show-action
-        @input="onSearch"
       >
         <template #action>
           <div @click="onSearch">
@@ -219,8 +217,9 @@
 </template>
 
 <script>
-import { debounce, delay } from '@/utils/index';
+import { delay } from '@/utils/index';
 import { CreateLntentionRun, GetDriverList, GetLine } from '@/api/tryrun';
+import { validatorValue } from '@/utils/validate';
 export default {
   name: 'StepOne',
   data() {
@@ -256,6 +255,7 @@ export default {
     };
   },
   methods: {
+    validatorValue,
     /**
      * 点击选则提交类型
      */
@@ -307,7 +307,7 @@ export default {
     /**
      * input发生变化
      */
-    onSearch: debounce(function() {
+    onSearch() {
       if (this.showModal) {
         // 搜索线路
         this.getLineList();
@@ -315,7 +315,7 @@ export default {
         // 搜索司机
         this.getDriver();
       }
-    }, 500),
+    },
     onSelectLine(item) {
       this.form.lineId = item.lineId;
       this.lineDetail = item;
@@ -345,6 +345,10 @@ export default {
     },
     // 选择司机
     async getDriver() {
+      if (!validatorValue(this.driverValue)) {
+        this.$notify('请输入2-6位司机姓名或手机号');
+        return
+      }
       try {
         this.$loading(true);
         const postData = {
