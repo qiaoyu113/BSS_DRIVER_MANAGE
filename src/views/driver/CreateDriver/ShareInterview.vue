@@ -12,12 +12,11 @@
       <van-form
         :scroll-to-error="true"
         :show-error="false"
-        label-width="120px"
+        label-width="130"
         @submit="onSubmit"
         @failed="onFailed"
       >
         <self-area
-          label-width="100"
           picker-key="interview"
           :form="area"
           name="interview"
@@ -53,6 +52,7 @@
           clearable
           maxlength="10"
           required
+          colon
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机姓名' }]"
           @focus="copyData('name')"
@@ -63,6 +63,7 @@
           clearable
           label="司机手机号"
           type="tel"
+          colon
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'},{validator:phonePatternIshas, message: `该手机号暂不能使用`}]"
@@ -74,6 +75,7 @@
           label="年龄"
           maxlength="2"
           type="digit"
+          colon
           clearable
           required
           placeholder="请输入"
@@ -130,7 +132,6 @@
           @click.native="copyData('intentDrivingCarType')"
         />
         <self-area
-          label-width="100"
           picker-key="liveaddress"
           :form="area"
           :props="{provinceAreaName:'liveProvinceName',cityAreaName:'liveCityName',countyAreaName:'liveCountyName'}"
@@ -147,10 +148,11 @@
         <van-field
           v-model="formData.experience"
           v-only-number="{min: 0, max: 500, precision: 0}"
-          name="货物运输经验（月）"
+          name="货物运输经验(月)"
           clickable
-          label="货物运输经验（月）"
+          label="货物运输经验(月)"
           required
+          colon
           placeholder="请填写0-500的数字'"
           type="digit"
           maxlength="3"
@@ -206,7 +208,6 @@
         <selftPicker
           :props="keyValue"
           picker-key="heavyLifting"
-          label-width="150px"
           :form="formData"
           :columns="isOrNot"
           value="name"
@@ -264,7 +265,6 @@
           ]"
         />
         <self-area
-          label-width="100"
           picker-key="intentWork"
           :form="area"
           :props="{provinceAreaName:'intentWorkProvinceName',cityAreaName:'intentWorkCityName',countyAreaName:'intentWorkCountyName'}"
@@ -281,49 +281,51 @@
         <van-field
           v-model="formData.originIncomeAvg"
           v-only-number="{min: 0, max: 25000, precision: 0}"
-          label-width="160px"
-          name="原收入（去油）（元/月）"
-          label="原收入（去油）（元/月）"
+          name="原收入(去油)(元/月)"
+          label="原收入(去油)(元/月)"
           required
+          colon
           type="digit"
           maxlength="5"
-          placeholder="请填写0-25000的数字'"
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '原收入应在0至25000元之间'}]"
           @focus="copyData('originIncomeAvg')"
         />
         <van-field
           v-model="formData.expIncomeAvg"
           v-only-number="{min: 0, max: 25000, precision: 0}"
-          label-width="160px"
-          name="期望收入（去油）（元/月）"
-          label="期望收入（去油）（元/月）"
+          name="期望收入(去油)(元/月)"
+          label="期望收入(去油)(元/月)"
           required
+          colon
           maxlength="5"
           type="digit"
-          placeholder="请填写0-25000的数字'"
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '期望收入应在0至25000元之间'}]"
           @focus="copyData('expIncomeAvg')"
         />
         <van-field
           v-model="formData.workDuration"
           v-only-number="{min: 0, max: 500, precision: 0}"
-          name="从业时间（月）"
-          label="从业时间（月）"
+          name="从业时间(月)"
+          label="从业时间(月)"
           required
+          colon
           maxlength="3"
           type="digit"
-          placeholder="请填写0-500的数字'"
+          placeholder="请填写0-500的数字"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '从业时间应在0至500个月之间'}]"
         />
         <van-field
           v-model="formData.scatteredJobRate"
           v-only-number="{min: 0, max: 100, precision: 0}"
-          name="零散活占比（%）"
-          label="零散活占比（%）"
+          name="零散活占比(%)"
+          label="零散活占比(%)"
           required
+          colon
           maxlength="3"
           type="digit"
-          placeholder="请填写0-100的数字'"
+          placeholder="请填写0-100的数字"
           :rules="[{ required: true, message: '请填写0-100的数字' },{validator:validatorNum(0,100), message: '零散活占比应在100之间'}]"
         />
         <selftPicker
