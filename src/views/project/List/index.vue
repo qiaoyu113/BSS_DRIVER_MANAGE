@@ -312,8 +312,8 @@ export default {
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
         this.loading = false;
-        let hasMore = result.total > this.lists.length
-        if (!hasMore) {
+        // let hasMore = result.total > this.lists.length
+        if (!result.hasMore) {
           this.finished = true
         }
       }
@@ -456,7 +456,8 @@ export default {
           let newLists = res.data
           let result = {
             lists: newLists,
-            total: res.page.total
+            // total: res.page.total,
+            hasMore: res.data.length === this.page.size
           }
           this.tabArrs.forEach(item => {
             if (item.name === this.form.projectState) {
