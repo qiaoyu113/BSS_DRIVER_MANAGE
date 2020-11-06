@@ -91,6 +91,9 @@
         label-width="6em"
         label="司机"
         placeholder="请输入司机姓名/手机号"
+        :rules="[
+          { validator: validatorValue, message: '请输入2-6位司机名称或手机号' }
+        ]"
       />
       <van-field
         v-model="form.line"
@@ -172,6 +175,7 @@ import Suggest from '@/components/SuggestSearch.vue'
 import { parseTime } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
+import { validatorValue } from '@/utils/validate';
 export default {
   components: {
     CardItem,
@@ -265,6 +269,8 @@ export default {
     this.fetchData();
   },
   methods: {
+    // 正则验证
+    validatorValue,
     // 获取外线销售和上岗经理
     async getSpecifiedRoleList(params) {
       try {
