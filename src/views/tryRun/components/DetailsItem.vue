@@ -289,7 +289,7 @@ export default {
         const bTime = Number(bTimeList[0]) * 60 + Number(bTimeList[1])
         return aTime - bTime
       })
-      return timeList[0].workingTimeStart
+      return timeList[0] ? timeList[0].workingTimeStart : ''
     }
   },
   methods: {
