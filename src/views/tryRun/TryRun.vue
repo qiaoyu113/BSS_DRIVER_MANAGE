@@ -79,7 +79,7 @@
         @click="showPickerFn('city')"
       />
       <van-field
-        v-model="form.customer"
+        v-model.trim="form.customer"
         colon
         name="customer"
         label-width="7em"
@@ -118,7 +118,7 @@
         @click="showPickerFn('carType')"
       />
       <van-field
-        v-model="form.driver"
+        v-model.trim="form.driver"
         name="driver"
         colon
         label-width="7em"

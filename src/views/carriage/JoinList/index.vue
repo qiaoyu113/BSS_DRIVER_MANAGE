@@ -85,7 +85,7 @@
         @click="showPickerCity = true"
       />
       <van-field
-        v-model="form.driver"
+        v-model.trim="form.driver"
         colon
         name="driver"
         label-width="6em"
