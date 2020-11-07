@@ -154,7 +154,7 @@ import { getOpenCitys, GetSpecifiedRoleList } from '@/api/common'
 import { getLineInfoList } from '@/api/freight';
 import SelfPopup from '@/components/SelfPopup';
 import CardItem from './components/CardItem'
-import { parseTime } from '@/utils';
+import { parseTime, HandlePages } from '@/utils';
 import Suggest from '@/components/SuggestSearch'
 import dayjs from 'dayjs'
 import { validatorValue } from '@/utils/validate';
@@ -399,6 +399,7 @@ export default {
         params.limit = this.page.limit;
         let { data: res } = await getLineInfoList(params);
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data;
           if (!isInit) {

@@ -172,7 +172,7 @@ import { getOpenCitys, GetSpecifiedRoleList } from '@/api/common'
 import CardItem from '../components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
-import { parseTime } from '@/utils'
+import { parseTime, HandlePages } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
 import { validatorValue } from '@/utils/validate';
@@ -447,6 +447,7 @@ export default {
         params.limit = this.page.limit;
         let { data: res } = await getGmInfoList(params);
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data;
           if (!isInit) {

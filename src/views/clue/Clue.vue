@@ -213,7 +213,7 @@
   </div>
 </template>
 <script>
-import { parseTime } from '@/utils';
+import { parseTime, HandlePages } from '@/utils';
 import ListItem from './components/ListItem';
 import ClueTitle from './components/ClueTitle';
 import SelfPopup from '@/components/SelfPopup';
@@ -569,6 +569,7 @@ export default {
         }
         let { data: res } = await getClueList(params)
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data
           let result = {

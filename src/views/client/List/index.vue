@@ -122,6 +122,7 @@ import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { getClientList } from '@/api/client'
 import { getOpenCitys, getDictData } from '@/api/common'
+import { HandlePages } from '@/utils/index'
 export default {
   components: {
     CardItem,
@@ -380,6 +381,7 @@ export default {
         }
         let { data: res } = await getClientList(params)
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data
           let result = {

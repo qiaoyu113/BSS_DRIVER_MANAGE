@@ -27,7 +27,7 @@
       <van-field label="创建日期" label-width="100" readonly :value="form.createDate ?timeFormat(form.createDate,'YYYY-MM-DD HH:mm:ss') : '暂无数据'" :border="false" colon />
       <van-field label="所在区域" label-width="100" readonly :value="region | DataIsNull" :border="false" colon />
       <van-field label="详细地址" label-width="100" readonly autosize type="textarea" :value="form.address | DataIsNull" :border="false" colon />
-      <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.remark" colon />
+      <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.remark | DataIsNull" colon />
       <van-cell-group v-if="form.customerType ===1" title="营业执照" class="busiLicense">
         <ImagePreview :image-arrs="form.businessLicenseUrl" />
       </van-cell-group>
@@ -52,7 +52,17 @@ export default {
   },
   computed: {
     region() {
-      return this.form.areaProvinceName + '/' + this.form.areaCityName + '/' + this.form.areaCountyName
+      let str = ''
+      if (this.form.areaProvinceName) {
+        str = this.form.areaProvinceName
+      }
+      if (this.form.areaCityName) {
+        str += `/${this.form.areaCityName}`
+      }
+      if (this.form.areaCountyName) {
+        str += `/${this.form.areaCountyName}`
+      }
+      return str
     }
   },
   mounted() {

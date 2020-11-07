@@ -85,15 +85,7 @@
             ></van-cell>
             <van-cell
               title="仓库位置："
-              :value="
-                DataIsNull(lineCloudProjectVO.warehouseProvinceName)
-                  +
-                  DataIsNull(lineCloudProjectVO.warehouseCityName)
-                  +
-                  DataIsNull(lineCloudProjectVO.warehouseCountyName)
-                  +
-                  DataIsNull(lineCloudProjectVO.warehouseDistrict)
-              "
+              :value="warehouseAddress"
             ></van-cell>
             <van-cell
               title="配送车型："
@@ -101,15 +93,7 @@
             ></van-cell>
             <van-cell
               title="配送区域："
-              :value="
-                DataIsNull(lineInfoVO.provinceAreaName)
-                  +
-                  DataIsNull(lineInfoVO.cityAreaName)
-                  +
-                  DataIsNull(lineInfoVO.countyAreaName)
-                  +
-                  DataIsNull(lineInfoVO.districtArea)
-              "
+              :value="distributionArea"
             ></van-cell>
             <van-cell
               title="里程时间："
@@ -154,7 +138,7 @@
             ></van-cell>
             <van-cell
               title="现住址："
-              :value="driverBusiInfoVO.workCityName | DataIsNull"
+              :value="driverBusiInfoVO.address | DataIsNull"
             ></van-cell>
             <van-cell
               title="加盟经理："
@@ -268,6 +252,40 @@ export default {
     };
   },
   computed: {
+    // 仓库位置：
+    warehouseAddress() {
+      let str = ''
+      if (this.lineCloudProjectVO.warehouseProvinceName) {
+        str = this.lineCloudProjectVO.warehouseProvinceName
+      }
+      if (this.lineCloudProjectVO.warehouseCityName) {
+        str += this.lineCloudProjectVO.warehouseCityName
+      }
+      if (this.lineCloudProjectVO.warehouseCountyName) {
+        str += this.lineCloudProjectVO.warehouseCountyName
+      }
+      if (this.lineCloudProjectVO.warehouseDistrict) {
+        str += this.lineCloudProjectVO.warehouseDistrict
+      }
+      return str
+    },
+    // 配送区域
+    distributionArea() {
+      let str = ''
+      if (this.lineInfoVO.provinceAreaName) {
+        str = this.lineInfoVO.provinceAreaName
+      }
+      if (this.lineInfoVO.cityAreaName) {
+        str += this.lineInfoVO.cityAreaName
+      }
+      if (this.lineInfoVO.countyAreaName) {
+        str += this.lineInfoVO.countyAreaName
+      }
+      if (this.lineInfoVO.districtArea) {
+        str += this.lineInfoVO.districtArea
+      }
+      return str
+    },
     lineInfoVO() {
       return this.detail.lineInfoVO;
     },
