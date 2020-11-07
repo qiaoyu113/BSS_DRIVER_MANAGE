@@ -51,7 +51,7 @@
             <van-field
               label="是否有车"
               colon
-              :value="type.hasCar=== false ?'否':'是'"
+              :value="isBoolean(type.hasCar)"
               readonly
             />
             <van-field
@@ -82,7 +82,7 @@
             />
             <van-field
               label="当前是否无业"
-              :value="type.currentHasWork===false?'否':'是'"
+              :value="isBoolean(type.currentHasWork)"
               readonly
               colon
             />
@@ -101,7 +101,7 @@
             <van-field
               label="是否能承担较重搬运"
               colon
-              :value="type.heavyLifting ? '是' : '否'"
+              :value="isBoolean(type.heavyLifting)"
               readonly
             />
             <van-field
@@ -119,7 +119,7 @@
             <van-field
               label="是否本地工作车牌"
               colon
-              :value="type.isLocalPlate===false?'否':'是'"
+              :value="isBoolean(type.isLocalPlate)"
               readonly
             />
             <van-field
@@ -155,7 +155,7 @@
             <van-field
               label="是否新能源"
               colon
-              :value="type.isNewEnergy===false?'否':'是'"
+              :value="isBoolean(type.isNewEnergy)"
               readonly
             />
           </van-cell-group>
@@ -268,7 +268,7 @@
             />
             <van-field
               label="户籍类型"
-              :value="type.householdTypeName === 1 ? '城镇户口' : '农村户口'"
+              :value="isHouseholdTypeName(type.householdTypeName)"
               colon
               readonly
             />
@@ -300,7 +300,7 @@
             />
             <van-field
               label="当前是否无业"
-              :value="type.currentHasWork===false?'否':'是'"
+              :value="isBoolean(type.currentHasWork)"
               readonly
               colon
             />
@@ -324,7 +324,7 @@
             />
             <van-field
               label="是否有车"
-              :value="type.hasCar=== false ? '否' : '是'"
+              :value="isBoolean(type.hasCar)"
               readonly
               colon
             />
@@ -350,13 +350,13 @@
             />
             <van-field
               label="是否能承担较重搬运"
-              :value="type.heavyLiftingName===false?'否':'是'"
+              :value="isBoolean(type.heavyLiftingName)"
               readonly
               colon
             />
             <van-field
               label="是否提供个人征信"
-              :value="type.providePersonalCreditName===false?'否':'是'"
+              :value="isBoolean(type.providePersonalCredit)"
               colon
               readonly
             />
@@ -380,7 +380,7 @@
             />
             <van-field
               label="是否是高意向司机"
-              :value="type.isAdvancedIntention===false?'否':'是'"
+              :value="isBoolean(type.isAdvancedIntention)"
               colon
               readonly
             />
@@ -412,6 +412,28 @@ export default {
     return {};
   },
   methods: {
+    isBoolean(value) {
+      if ((typeof value) === 'boolean') {
+        if (value) {
+          return '是'
+        } else {
+          return '否'
+        }
+      } else {
+        return ''
+      }
+    },
+    isHouseholdTypeName(value) {
+      if ((typeof value) === 'number') {
+        if (Number(value) === 1) {
+          return '城镇户口'
+        } else {
+          return '农村户口'
+        }
+      } else {
+        return ''
+      }
+    },
     goRouter(id, type) {
       if (this.$permissionDetail('/v2/driver/getOperateTime')) {
         this.$router.push({ path: '/driverLog', query: { id: id, busiType: type }});
