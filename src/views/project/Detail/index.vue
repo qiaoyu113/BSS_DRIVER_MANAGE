@@ -31,7 +31,7 @@
         <van-field label="仓名称" label-width="100" readonly :value="form.warehouseName | DataIsNull" :border="false" colon />
         <van-field label="仓联系人" label-width="100" readonly :value="form.warehouseContactName | DataIsNull" :border="false" colon />
         <van-field label="仓联系电话" label-width="100" readonly :value="form.warehouseContactPhone | DataIsNull" :border="false" colon />
-        <van-field label="开放时间" label-width="100" readonly :value="`${form.warehouseOpen}-${form.warehouseClose}`" :border="false" colon />
+        <van-field label="开放时间" label-width="100" readonly :value="openTime" :border="false" colon />
         <van-field label="所在区域" label-width="100" autosize type="textarea" readonly :value="region | DataIsNull" :border="false" colon />
         <van-field label="详细地址" label-width="100" autosize type="textarea" readonly :value="form.warehouseDistrict | DataIsNull" :border="false" colon />
         <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.warehouseRemark | DataIsNull" :border="false" colon />
@@ -76,6 +76,16 @@ export default {
     }
   },
   computed: {
+    openTime() {
+      let str = ''
+      if (this.form.warehouseOpen) {
+        str = `${this.form.warehouseOpen}`
+      }
+      if (this.form.warehouseClose) {
+        str += `-${this.form.warehouseClose}`
+      }
+      return str
+    },
     auditStateName() {
       if (this.form.auditState === 1) {
         return '待审核'
