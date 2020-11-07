@@ -8,6 +8,7 @@
     <form action="/">
       <van-search
         v-model="keyWord"
+        v-model.trim="keyWord"
         show-action
         placeholder="请输入司机名称/手机号"
         @search="onSearcha"
