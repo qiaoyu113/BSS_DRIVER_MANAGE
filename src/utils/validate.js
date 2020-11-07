@@ -106,7 +106,7 @@ export function validatorValue(value) {
   if (value === '') {
     return true
   }
-  if (/^\d{6,}$/.test(value) || (isNaN(value) && /^[\u4E00-\u9FA5A-Za-z0-9]{2,6}$/.test(value))) {
+  if (/^\d{6,}$/.test(value) || (isNaN(value) && /^[\u4E00-\u9FA5A-Za-z0-9]{2,}$/.test(value))) {
     return true
   }
   return false
