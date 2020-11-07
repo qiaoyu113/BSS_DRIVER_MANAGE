@@ -123,7 +123,17 @@ export default {
       return ''
     },
     region() {
-      return this.form.provinceAreaName + '/' + this.form.cityAreaName + '/' + this.form.countyAreaName
+      let str = ''
+      if (this.form.provinceAreaName) {
+        str = this.form.provinceAreaName
+      }
+      if (this.form.cityAreaName) {
+        str += `/${this.form.cityAreaName}`
+      }
+      if (this.form.countyAreaName) {
+        str += `/${this.form.countyAreaName}`
+      }
+      return str
     },
     // 配送时间
     deliveryWeekCycle() {

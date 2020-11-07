@@ -87,7 +87,17 @@ export default {
       return '暂无数据'
     },
     region() {
-      return this.form.warehouseProvinceName + '/' + this.form.warehouseCityName + '/' + this.form.warehouseCountyName
+      let str = ''
+      if (this.form.warehouseProvinceName) {
+        str = this.form.warehouseProvinceName
+      }
+      if (this.form.warehouseCityName) {
+        str += `/${this.form.warehouseCityName}`
+      }
+      if (this.form.warehouseCountyName) {
+        str += `/${this.form.warehouseCountyName}`
+      }
+      return str
     }
   },
   mounted() {
