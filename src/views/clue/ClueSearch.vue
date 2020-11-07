@@ -243,7 +243,7 @@ export default {
     // 搜索
     onSearch() {
       if (!validatorValue(this.keyWord)) {
-        Notify({ type: 'warning', message: '请输入2位非数字或6位数字' });
+        Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
         return
       }
 
