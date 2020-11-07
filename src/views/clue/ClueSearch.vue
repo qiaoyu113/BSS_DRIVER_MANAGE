@@ -120,7 +120,7 @@ import ClueTitle from './components/ClueTitle';
 import CardItem from './components/ListItem';
 import changeManager from './components/ChangeManager'
 import { Notify, Dialog } from 'vant';
-import { validatorSuggest } from '@/utils/validate';
+import { validatorValue } from '@/utils/validate';
 export default {
   components: {
     CardItem,
@@ -162,7 +162,7 @@ export default {
     }
   },
   mounted() {
-    this.validatorSuggest = validatorSuggest
+    this.validatorValue = validatorValue
     let historyData = this.getHistory()
     if (historyData) {
       this.historyItems = JSON.parse(historyData)
@@ -242,7 +242,7 @@ export default {
     },
     // 搜索
     onSearch() {
-      if (!validatorSuggest(this.keyWord)) {
+      if (!validatorValue(this.keyWord)) {
         Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
         return
       }
