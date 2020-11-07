@@ -106,7 +106,7 @@ export function validatorValue(value) {
   if (value === '') {
     return true
   }
-  if (/^\d{6,}$/.test(value) || (isNaN(value) && /^[\u4E00-\u9FA5A-Za-z0-9]{2,6}$/.test(value))) {
+  if (/^\d{6,}$/.test(value) || (isNaN(value) && /^[\u4E00-\u9FA5A-Za-z0-9]{2,}$/.test(value))) {
     return true
   }
   return false
@@ -117,8 +117,19 @@ export function validatorValue(value) {
  * @returns {Boolean}
  */
 export function validatorSuggest(value) {
-  if (/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,}$/.test(value) || /^\d{6,}$/.test(value) || (isNaN(value) && /^[\u4E00-\u9FA5A-Za-z0-9]{2,6}$/.test(value))) {
-    return true
+  value = value.trim()
+  var reg = new RegExp('[\\u4E00-\\u9FFF]+', 'g');
+  if (reg.test(value)) {
+    if (String(value).length >= 2) {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    if (String(value).length >= 6) {
+      return true
+    } else {
+      return false
+    }
   }
-  return false
 }

@@ -13,7 +13,7 @@
     >
       <form action="/">
         <van-search
-          v-model="keyWord"
+          v-model.trim="keyWord"
           show-action
           placeholder="司机姓名/司机编号/司机手机号搜索"
           @search="onSearch"
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { validatorSuggest } from '@/utils/validate';
+import { validatorValue } from '@/utils/validate';
 import { getDriverList } from '@/api/driver.js'
 import DriverTitle from '../DriverList/components/DriverTitle';
 import CardItem from '../DriverList/components/ListItem';
@@ -163,7 +163,7 @@ export default {
     }
   },
   mounted() {
-    this.validatorSuggest = validatorSuggest
+    this.validatorValue = validatorValue
     let historyData = this.getHistory()
     if (historyData) {
       this.historyItems = JSON.parse(historyData)
@@ -243,8 +243,8 @@ export default {
     },
     // 搜索
     onSearch() {
-      if (!validatorSuggest(this.keyWord)) {
-        Notify({ type: 'warning', message: '请输入2位非数字或6位数字' });
+      if (!validatorValue(this.keyWord)) {
+        Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
         return
       }
 

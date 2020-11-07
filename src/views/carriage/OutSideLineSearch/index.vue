@@ -8,6 +8,7 @@
     <form action="/">
       <van-search
         v-model="keyWord"
+        v-model.trim="keyWord"
         show-action
         placeholder="请输入司机名称/手机号"
         @search="onSearcha"
@@ -58,6 +59,8 @@
 import CardItem from '../OutSideFreightList/components/Cardltem'
 import { debounce } from '@/utils/index'
 import { getProjectWayBillList } from '@/api/freight'
+import { validatorSuggest } from '@/utils/validate';
+import { Notify } from 'vant';
 export default {
   components: {
     CardItem
@@ -79,6 +82,7 @@ export default {
     }
   },
   mounted() {
+    this.validatorSuggest = validatorSuggest
     let historyData = this.getHistory()
     if (historyData) {
       this.historyItems = JSON.parse(historyData)
@@ -100,6 +104,10 @@ export default {
       this.getGmInfoListByKeyWorld(this.keyWord)
     }, 200),
     onSearcha() {
+      if (!validatorSuggest(this.keyWord)) {
+        Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
+        return
+      }
       if (!this.keyWord) {
         this.lists = []
         return false
@@ -144,8 +152,11 @@ export default {
         this.$loading(false)
         if (res.success) {
           // if (res.data && res.data.length > 0) {
-          this.setHistory(this.keyWord)
+          // this.setHistory(this.keyWord)
           // }
+          if (keyword) {
+            this.setHistory(keyword)
+          }
           this.lists = res.data
         } else {
           this.$toast.fail(res.errorMsg)
