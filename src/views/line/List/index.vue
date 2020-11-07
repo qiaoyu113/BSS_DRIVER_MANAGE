@@ -573,6 +573,7 @@ export default {
         }
         let { data: res } = await getLineList(params)
         if (res.success) {
+          !res.data && (res.data = [])
           let newLists = res.data
           let result = {
             lists: newLists,
