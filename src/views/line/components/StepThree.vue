@@ -78,6 +78,22 @@
           { required: true, message: '请选择是否需要搬运！' },
         ]"
       />
+      <van-field
+        v-model="form.dutyRemark"
+        colon
+        label-width="100"
+        rows="2"
+        autosize
+        label="其他上岗要求"
+        placeholder="请输入..."
+        type="textarea"
+        maxlength="300"
+        show-word-limit
+        class="textarea"
+      />
+      <h4 class="title van-hairline--bottom">
+        标签信息
+      </h4>
       <selftPicker
         picker-key="labelType"
         :form="form"
@@ -91,19 +107,6 @@
         :rules="[
           { required: true, message: '请选择线路肥瘦标签！' },
         ]"
-      />
-      <van-field
-        v-model="form.dutyRemark"
-        colon
-        label-width="100"
-        rows="2"
-        autosize
-        label="其他上岗要求"
-        placeholder="请输入..."
-        type="textarea"
-        maxlength="300"
-        show-word-limit
-        class="textarea"
       />
       <div class="btn">
         <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-two')">

@@ -388,8 +388,8 @@ export default {
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
         this.loading = false;
-        let hasMore = result.total > this.lists.length
-        if (!hasMore) {
+        // let hasMore = result.total > this.lists.length
+        if (!result.hasMore) {
           this.finished = true
         }
       }
@@ -435,10 +435,12 @@ export default {
         }
         let { data: res } = await getDriverList(params)
         if (res.success) {
+          !res.data && (res.data = [])
           let newLists = res.data
           let result = {
             lists: newLists,
-            total: res.page.total
+            hasMore: res.data.length === this.page.size
+            // total: res.page.total
           }
           this.tabType.forEach(item => {
             if (item.code === this.ruleForm.status) {

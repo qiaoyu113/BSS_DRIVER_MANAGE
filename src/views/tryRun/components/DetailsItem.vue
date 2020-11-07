@@ -70,8 +70,8 @@
             <van-tag class="tag">
               {{ lineInfoVO.lineCategoryName | DataIsNull }}
             </van-tag>
-            <van-tag class="tag">
-              {{ lineInfoVO.busiTypeName | DataIsNull }}
+            <van-tag v-if="lineInfoVO.labelTypeName" class="tag">
+              {{ lineInfoVO.labelTypeName | DataIsNull }}
             </van-tag>
           </template>
           <div @click="goLineDetail(lineInfoVO.lineId, '/v2/line/lineInfo/detail')">
@@ -81,7 +81,7 @@
             ></van-cell>
             <van-cell
               title="到仓时间："
-              :value="lineInfoVO.deliveryStartDate | DataIsNull"
+              :value="getWorkTime"
             ></van-cell>
             <van-cell
               title="仓库位置："
@@ -279,6 +279,17 @@ export default {
     },
     runTestStatusRecordVOList() {
       return this.detail.runTestStatusRecordVOList;
+    },
+    getWorkTime() {
+      const timeList = (this.detail.lineInfoVO.lineDeliveryInfoFORMS || []).slice()
+      timeList.sort((a, b) => {
+        const aTimeList = a.workingTimeStart.split(':')
+        const bTimeList = b.workingTimeStart.split(':')
+        const aTime = Number(aTimeList[0]) * 60 + Number(aTimeList[1])
+        const bTime = Number(bTimeList[0]) * 60 + Number(bTimeList[1])
+        return aTime - bTime
+      })
+      return timeList[0] ? timeList[0].workingTimeStart : ''
     }
   },
   methods: {
