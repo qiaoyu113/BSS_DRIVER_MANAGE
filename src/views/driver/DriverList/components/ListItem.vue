@@ -21,7 +21,7 @@
         <van-cell
           title-class="cell-title"
           value-class="cell-value"
-          :value="`${item.busiTypeName}/${item.workCityName}/${item.carTypeName}`"
+          :value="removeEmpty([item.busiTypeName,item.workCityName,item.carTypeName])"
         />
         <van-cell
           title-class="cell-title"
@@ -37,7 +37,7 @@
         />
       </div>
       <div v-permission="['/v2/driver/selectDriverDetail']" class="detailBtn">
-        <van-button round plain size="small" class="routeBtn" @click="goRouter">
+        <van-button round plain size="small" class="routeBtn" @click.stop="goRouter">
           详情
         </van-button>
       </div>
@@ -84,9 +84,11 @@ export default {
     }
   },
   mounted() {
-    console.log(this.obj)
   },
   methods: {
+    removeEmpty(arr) {
+      return (arr.filter(item => item) || []).join('/')
+    },
     checkChange() {
       if (this.checked) {
         this.$emit('changeCheck', { change: !this.check, item: this.item.driverId })

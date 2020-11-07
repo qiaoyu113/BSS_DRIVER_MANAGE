@@ -32,7 +32,7 @@
             <van-field
               label="面试地址"
               colon
-              :value="`${type.interviewProvinceName}${type.interviewCityName}${type.interviewCountyName}`"
+              :value="`${type.interviewProvinceName || ''}${type.interviewCityName || ''}${type.interviewCountyName || ''}`"
               readonly
             />
 
@@ -71,7 +71,7 @@
             <van-field
               label="现居住地址"
               colon
-              :value="`${type.liveProvinceName}${type.liveCityName}${type.liveCountyName}`"
+              :value="`${type.liveProvinceName || ''}${type.liveCityName || ''}${type.liveCountyName || ''}`"
               readonly
             />
             <van-field
@@ -226,7 +226,7 @@
             />
             <van-field
               label="现居住地址"
-              :value="`${type.liveProvinceName}${type.liveCityName}${type.liveCountyName}`"
+              :value="`${type.liveProvinceName || ''}${type.liveCityName || ''}${type.liveCountyName || ''}`"
               readonly
               colon
             />
@@ -274,7 +274,7 @@
             />
             <van-field
               label="户籍地址"
-              :value="`${type.householdProvinceName}${type.householdCityName}${type.householdCountyName}`"
+              :value="`${type.householdProvinceName || ''}${type.householdCityName || ''}${type.householdCountyName || ''}`"
               readonly
               colon
             />
