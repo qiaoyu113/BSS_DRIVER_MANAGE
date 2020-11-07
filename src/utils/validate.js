@@ -102,7 +102,7 @@ export function validatorNum(min, max) {
  * @param {Number}
  * @returns {Boolean}
  */
-export function validatorValue(value) {
+export function validatorValue1(value) {
   if (value === '') {
     return true
   }
@@ -116,7 +116,10 @@ export function validatorValue(value) {
  * @param {Number}
  * @returns {Boolean}
  */
-export function validatorSuggest(value) {
+export function validatorValue(value) {
+  if (value === '') {
+    return true
+  }
   value = value.trim()
   var reg = new RegExp('[\\u4E00-\\u9FFF]+', 'g');
   if (reg.test(value)) {
