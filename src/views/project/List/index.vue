@@ -143,6 +143,7 @@ import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getProjectList } from '@/api/project'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
+import { HandlePages } from '@/utils/index'
 export default {
   name: 'ProjectList',
   components: {
@@ -453,6 +454,7 @@ export default {
         }
         let { data: res } = await getProjectList(params)
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data
           let result = {

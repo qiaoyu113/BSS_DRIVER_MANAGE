@@ -201,6 +201,7 @@ import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getLineList } from '@/api/line'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
+import { HandlePages } from '@/utils/index'
 export default {
   components: {
     CardItem,
@@ -573,6 +574,7 @@ export default {
         }
         let { data: res } = await getLineList(params)
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data
           let result = {
