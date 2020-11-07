@@ -405,7 +405,8 @@ export default {
           }
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            // hasMore: res.page.total > newLists.length
+            hasMore: res.data.length === this.page.limit
           }
           this.tabArrs.forEach((item) => {
             if (item.name === this.form.wayBillGMSaleStatus) {
