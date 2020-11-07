@@ -322,7 +322,7 @@ export default {
       changeManagerStatus: false,
       page: {
         current: 0,
-        size: 10
+        size: 20
       }
     };
   },
@@ -573,8 +573,8 @@ export default {
           let newLists = res.data
           let result = {
             lists: newLists,
-            total: res.page.total,
-            hasMore: res.data.length === this.page.limit
+            // total: res.page.total,
+            hasMore: res.data.length === this.page.size
           }
           this.tabType.forEach(item => {
             if (String(item.code) === this.ruleForm.status) {
