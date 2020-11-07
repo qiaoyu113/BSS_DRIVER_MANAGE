@@ -380,8 +380,8 @@ export default {
         }
         let { data: res } = await getClientList(params)
         if (res.success) {
+          !res.data && (res.data = [])
           let newLists = res.data
-
           let result = {
             lists: newLists,
             // total: res.page.total
