@@ -86,7 +86,7 @@
         label="客户"
         placeholder="请输入客户名称/编号"
         :rules="[
-          { validator: validatorValue, message: '请输入2-6位客户名称或编号' }
+          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
         ]"
       />
       <van-field
@@ -125,7 +125,7 @@
         label="司机"
         placeholder="请输入司机姓名/手机号"
         :rules="[
-          { validator: validatorValue, message: '请输入2-6位姓名或手机号' }
+          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
         ]"
       />
       <van-field
