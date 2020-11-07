@@ -162,7 +162,7 @@
       class="popup-container"
     >
       <van-search
-        v-model="driverValue"
+        v-model.trim="driverValue"
         placeholder="请输入司机姓名/手机号"
         show-action
       >
