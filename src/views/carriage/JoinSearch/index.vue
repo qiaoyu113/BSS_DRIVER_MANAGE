@@ -105,6 +105,10 @@ export default {
       this.getGmInfoListByKeyWorld(this.keyWord)
     }, 200),
     onSearcha() {
+      if (!validatorSuggest(this.keyWord)) {
+        Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
+        return
+      }
       if (!this.keyWord) {
         this.lists = []
         return false
