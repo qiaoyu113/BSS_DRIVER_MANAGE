@@ -190,7 +190,7 @@ import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import { GetRunTestInfoList } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
-import { parseTime } from '@/utils';
+import { parseTime, HandlePages } from '@/utils';
 import { validatorValue } from '@/utils/validate';
 export default {
   name: 'TryRun',
@@ -505,6 +505,7 @@ export default {
         params.limit = this.page.limit;
         let { data: res } = await GetRunTestInfoList(params);
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data;
           if (!isInit) {

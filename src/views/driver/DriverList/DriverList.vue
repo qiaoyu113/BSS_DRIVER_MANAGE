@@ -183,7 +183,7 @@
   </div>
 </template>
 <script>
-import { parseTime } from '@/utils';
+import { parseTime, HandlePages } from '@/utils';
 import ListItem from './components/ListItem';
 import DriverTitle from './components/DriverTitle';
 import SelfPopup from '@/components/SelfPopup';
@@ -435,6 +435,7 @@ export default {
         }
         let { data: res } = await getDriverList(params)
         if (res.success) {
+          HandlePages(res.page)
           !res.data && (res.data = [])
           let newLists = res.data
           let result = {
