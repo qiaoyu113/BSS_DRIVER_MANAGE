@@ -151,8 +151,11 @@ export default {
         this.$loading(false)
         if (res.success) {
           // if (res.data && res.data.length > 0) {
-          this.setHistory(this.keyWord)
+          // this.setHistory(this.keyWord)
           // }
+          if (keyword) {
+            this.setHistory(keyword)
+          }
           this.lists = res.data
         } else {
           this.$toast.fail(res.errorMsg)

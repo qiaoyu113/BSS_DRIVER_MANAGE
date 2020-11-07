@@ -147,8 +147,11 @@ export default {
         let { data: res } = await getGmInfoListByKeyWord(params)
         this.$loading(false)
         if (res.success) {
-          if (res.data && res.data.length > 0) {
-            this.setHistory(this.keyWord)
+          // if (res.data && res.data.length > 0) {
+          //   this.setHistory(this.keyWord)
+          // }
+          if (keyword) {
+            this.setHistory(keyword)
           }
           this.lists = res.data
         } else {
