@@ -13,7 +13,7 @@
     >
       <form action="/">
         <van-search
-          v-model="keyWord"
+          v-model.trim="keyWord"
           show-action
           placeholder="请输入搜索关键词"
           @search="onSearch"
