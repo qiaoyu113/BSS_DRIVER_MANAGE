@@ -48,7 +48,7 @@
         />
       </div>
       <div class="detailBtn">
-        <van-button round plain size="small" class="routeBtn" @click="goRouter">
+        <van-button round plain size="small" class="routeBtn" @click.stop="goRouter">
           详情
         </van-button>
       </div>
