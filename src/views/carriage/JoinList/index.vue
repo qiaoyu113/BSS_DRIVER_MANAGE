@@ -92,7 +92,7 @@
         label="司机"
         placeholder="请输入司机姓名/手机号"
         :rules="[
-          { validator: validatorValue, message: '请输入2-6位司机名称或手机号' }
+          { validator: validatorValue, message: '请输入至少2-6位司机名称或手机号' }
         ]"
       />
       <van-field
