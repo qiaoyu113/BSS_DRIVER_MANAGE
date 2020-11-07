@@ -303,6 +303,7 @@ export default {
         params.limit = this.page.limit;
         let { data: res } = await getProjectWayBillList(params);
         if (res.success) {
+          !res.data && (res.data = [])
           let newLists = res.data;
           if (!isInit) {
             newLists = this.lists.concat(newLists);

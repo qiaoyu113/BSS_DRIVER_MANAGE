@@ -435,6 +435,7 @@ export default {
         }
         let { data: res } = await getDriverList(params)
         if (res.success) {
+          !res.data && (res.data = [])
           let newLists = res.data
           let result = {
             lists: newLists,
