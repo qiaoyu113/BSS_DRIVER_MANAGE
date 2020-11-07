@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { validatorSuggest } from '@/utils/validate';
+import { validatorValue } from '@/utils/validate';
 import { getDriverList } from '@/api/driver.js'
 import DriverTitle from '../DriverList/components/DriverTitle';
 import CardItem from '../DriverList/components/ListItem';
@@ -163,7 +163,7 @@ export default {
     }
   },
   mounted() {
-    this.validatorSuggest = validatorSuggest
+    this.validatorValue = validatorValue
     let historyData = this.getHistory()
     if (historyData) {
       this.historyItems = JSON.parse(historyData)
@@ -243,7 +243,7 @@ export default {
     },
     // 搜索
     onSearch() {
-      if (!validatorSuggest(this.keyWord)) {
+      if (!validatorValue(this.keyWord)) {
         Notify({ type: 'warning', message: '请输入2位非数字或6位数字' });
         return
       }
