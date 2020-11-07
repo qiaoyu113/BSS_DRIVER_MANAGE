@@ -350,7 +350,7 @@ export default {
     // 选择司机
     async getDriver() {
       if (!validatorValue(this.driverValue)) {
-        this.$notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
+        this.$notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字及以上的司机姓名' });
         return
       }
       try {
