@@ -101,7 +101,7 @@ export default {
     removeEmpty(arr) {
       return (arr.filter(item => item) || []).join('/')
     },
-    setLabel(val) {
+    setLabel(val = '') {
       if (val.includes('加盟')) {
         return val.substr(2)
       }
