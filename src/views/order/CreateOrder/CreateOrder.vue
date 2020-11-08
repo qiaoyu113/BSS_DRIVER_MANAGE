@@ -92,7 +92,7 @@
             <van-field
               v-if="formData.busiType === 0"
               v-model="formData.incomeGuarantee"
-              v-only-number="{min: 0, max:1000000, precision: 2}"
+              v-only-number="{min: 0, max:999999.99, precision: 2}"
               colon
               clickable
               label="收入保障（元）"
@@ -115,9 +115,10 @@
               :rules="[{ required: true, message: '请填写抽佣比例' },
                        {validator:checkPercent, message: '请填写正确的数字'}]"
             />
+
             <van-field
               v-model="formData.goodsAmount"
-              v-only-number="{min: 0, max: 1000000, precision: 2}"
+              v-only-number="{min: 0, max: 999999.99, precision: 2}"
               colon
               clickable
               label="商品金额（元）"
