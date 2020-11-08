@@ -350,7 +350,7 @@
             />
             <van-field
               label="是否能承担较重搬运"
-              :value="isBoolean(type.heavyLiftingName)"
+              :value="isBoolean(type.heavyLifting)"
               readonly
               colon
             />
