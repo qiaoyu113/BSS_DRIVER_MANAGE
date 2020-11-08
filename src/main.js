@@ -11,7 +11,7 @@ import '@/icons' // icon
 import '@/style/reset.less' // 常用样式
 import '@/style/common.scss'
 import 'vant/lib/index.less';// 全局引入Vant 样式
-import defaultSettings from '@/settings'
+// import defaultSettings from '@/settings'
 import * as filters from '@/filters'
 import global_ from 'components/Global'
 import { Toast } from 'vant'
@@ -68,11 +68,11 @@ Vue.use(Vant)
 
 Vue.component('svg-icon', SvgIcon)
 
-if (process.env.NODE_ENV === 'development' && defaultSettings.vconsole) {
-  const VConsole = require('vconsole')
-  // eslint-disable-next-line
-  const my_console = new VConsole()
-}
+// if (process.env.NODE_ENV === 'development' && defaultSettings.vconsole) {
+//   const VConsole = require('vconsole')
+//   // eslint-disable-next-line
+//   const my_console = new VConsole()
+// }
 // var vConsole = new VConsole(option)
 // register global utility filters.
 Object.keys(filters).forEach(key => {
