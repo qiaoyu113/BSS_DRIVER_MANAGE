@@ -333,6 +333,7 @@ export function checkRouteIsNull(val) {
     return false
   } else {
     return true
+  }
 }
 
 export function HandlePages(page) {
