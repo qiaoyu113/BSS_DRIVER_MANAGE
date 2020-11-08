@@ -721,8 +721,8 @@ export default {
       params.intentWorkCity = this.area.intentWork[1];
       params.intentWorkCounty = this.area.intentWork[2];
       // 面试地址
-      params.interviewCity = this.area.interview[2];
-      params.interviewCounty = this.area.interview[1];
+      params.interviewCity = this.area.interview[1];
+      params.interviewCounty = this.area.interview[2];
       params.interviewProvince = this.area.interview[0];
       params.driverId = this.driverId;
       if (this.formData.hasCar === true) {
@@ -751,8 +751,8 @@ export default {
       params.intentWorkCity = this.area.intentWork[1];
       params.intentWorkCounty = this.area.intentWork[2];
       // 面试地址
-      params.interviewCity = this.area.interview[2];
-      params.interviewCounty = this.area.interview[1];
+      params.interviewCity = this.area.interview[1];
+      params.interviewCounty = this.area.interview[2];
       params.interviewProvince = this.area.interview[0];
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';
@@ -793,11 +793,9 @@ export default {
         message: '确定要取消吗，取消后表单内容将会清空并返回'
       })
         .then(() => {
-          // on confirm
           this.$router.go(-1);
         })
         .catch(() => {
-          // on cancel
         });
     }
   }
