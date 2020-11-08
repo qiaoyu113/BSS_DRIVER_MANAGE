@@ -365,6 +365,7 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
+        this.error = false
         let params = {
           page: this.page.current,
           limit: this.page.size
