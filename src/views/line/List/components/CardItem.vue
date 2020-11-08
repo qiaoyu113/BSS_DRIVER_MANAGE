@@ -78,12 +78,14 @@ export default {
      */
     handleDetailClick() {
       if (!this.$permissionDetail('/v2/line/lineInfo/detail')) return
-      this.$router.push({
-        path: '/lineDetail',
-        query: {
-          lineId: this.obj.lineId
-        }
-      })
+      if (this.$checkRouteIsNull(this.obj.lineId)) {
+        this.$router.push({
+          path: '/lineDetail',
+          query: {
+            lineId: this.obj.lineId
+          }
+        })
+      }
     }
   }
 }

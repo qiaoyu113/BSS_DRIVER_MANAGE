@@ -67,7 +67,9 @@ export default {
     handleDetailClick(id) {
       let disable = this.permission('/v2/waybill/shippingDetailBySale')
       if (disable) {
-        this.getGmInfoList(id)
+        if (this.$checkRouteIsNull(id)) {
+          this.getGmInfoList(id)
+        }
       } else {
         this.$toast.fail('暂无详情权限')
       }

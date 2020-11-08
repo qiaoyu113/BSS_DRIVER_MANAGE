@@ -95,7 +95,9 @@ export default {
         this.check = !this.check
       } else {
         if (this.$permissionDetail('/v2/driver/selectDriverDetail')) {
-          this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+          if (this.$checkRouteIsNull(this.item.driverId)) {
+            this.$router.push({ path: '/driverdetail', query: { id: this.item.driverId }})
+          }
         }
       }
     },

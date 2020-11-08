@@ -299,6 +299,7 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
+        this.error = false
         const params = this.delForm(this.listQuery);
         params.page = this.page.current;
         params.limit = this.page.limit;
@@ -331,6 +332,7 @@ export default {
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
+        console.log('xxxx:', err)
         this.page.current--;
         this.loading = false;
         this.error = true;
