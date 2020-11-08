@@ -442,6 +442,7 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
+        this.error = false
         const params = this.delForm(this.form);
         params.page = this.page.current;
         params.limit = this.page.limit;
