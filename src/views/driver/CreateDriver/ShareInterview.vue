@@ -793,11 +793,9 @@ export default {
         message: '确定要取消吗，取消后表单内容将会清空并返回'
       })
         .then(() => {
-          // on confirm
           this.$router.go(-1);
         })
         .catch(() => {
-          // on cancel
         });
     }
   }
