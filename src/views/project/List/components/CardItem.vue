@@ -65,12 +65,14 @@ export default {
      */
     handleDetailClick() {
       if (!this.$permissionDetail('/v2/line/project/v2/line/project/info')) return
-      this.$router.push({
-        path: '/projectDetail',
-        query: {
-          projectId: this.obj.projectId
-        }
-      })
+      if (this.$checkRouteIsNull(this.obj.projectId)) {
+        this.$router.push({
+          path: '/projectDetail',
+          query: {
+            projectId: this.obj.projectId
+          }
+        })
+      }
     }
   }
 }

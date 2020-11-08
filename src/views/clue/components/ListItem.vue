@@ -112,11 +112,15 @@ export default {
         this.$emit('changeCheck', { change: !this.check, item: this.item.clueId })
         this.check = !this.check
       } else {
-        this.$router.push({ path: '/cluedetail', query: { id: this.item.clueId }})
+        if (this.$checkRouteIsNull(this.item.clueId)) {
+          this.$router.push({ path: '/cluedetail', query: { id: this.item.clueId }})
+        }
       }
     },
     goRouter() {
-      this.$router.push({ path: '/cluedetail', query: { id: this.item.clueId }})
+      if (this.$checkRouteIsNull(this.item.clueId)) {
+        this.$router.push({ path: '/cluedetail', query: { id: this.item.clueId }})
+      }
     }
   }
 };
