@@ -29,27 +29,29 @@
           :key="index"
           class="remakeItem  van-hairline--top"
         >
-          <van-field
-            label="备注"
-            :value="item.remark"
-            readonly
-            colon
-            type="textarea"
-            autosize
-            rows="1"
-          />
-          <van-field
-            label="创建人"
-            :value="`${item.createName}/${item.createPhone}`"
-            readonly
-            colon
-          />
-          <van-field
-            label="创建时间"
-            :value="timeFormat(item.createDate,'YYYY-MM-DD')"
-            readonly
-            colon
-          />
+          <van-form label-width="150px">
+            <van-field
+              label="备注"
+              :value="item.remark"
+              readonly
+              colon
+              type="textarea"
+              autosize
+              rows="1"
+            />
+            <van-field
+              label="创建人"
+              :value="`${item.createName}/${item.createPhone}`"
+              readonly
+              colon
+            />
+            <van-field
+              label="创建时间"
+              :value="timeFormat(item.createDate,'YYYY-MM-DD')"
+              readonly
+              colon
+            />
+          </van-form>
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@
     <div class="formBox">
       <van-form
         :show-error="false"
-        label-width="120px"
+        label-width="130"
         @submit="onSubmit"
       >
         <van-field
@@ -21,6 +21,7 @@
           clearable
           maxlength="10"
           required
+          colon
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机姓名' }]"
           @focus="copyData('name')"
@@ -74,6 +75,7 @@
           name="whereKnow"
           label="您是从哪里了解到我们的加盟方式"
           required
+          colon
           maxlength="30"
           placeholder="请输入"
           show-word-limit
@@ -85,12 +87,14 @@
           label="重代理姓名"
           placeholder="请输入"
           maxlength="10"
+          colon
         />
         <van-field
           v-model="formData.phone"
           name="phonePatternIshas"
           label="司机手机号"
           type="tel"
+          colon
           clearable
           required
           placeholder="请输入"
@@ -100,6 +104,7 @@
         <van-field
           v-model.number="formData.age"
           name="age"
+          colon
           label="年龄"
           required
           maxlength="2"
@@ -110,7 +115,6 @@
           @focus="copyData('age')"
         />
         <self-area
-          label-width="100"
           picker-key="liveaddress"
           :form="area"
           :props="{provinceAreaName:'liveProvinceName',cityAreaName:'liveCityName',countyAreaName:'liveCountyName'}"
@@ -125,7 +129,6 @@
           @click.native="copyArea('liveaddress')"
         />
         <self-area
-          label-width="100"
           picker-key="intentWork"
           :form="area"
           :is-computed="area.intentWork.length > 2"
@@ -186,22 +189,22 @@
         <van-field
           v-model="formData.originIncomeAvg"
           v-only-number="{min: 0, max: 25000, precision: 0}"
-          label-width="160px"
           name="原收入(去油)(元/月)"
           label="原收入(去油)(元/月)"
           required
-          placeholder="请填写0-25000的数字'"
+          colon
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '原收入应在0至25000元之间'}]"
           @focus="copyData('originIncomeAvg')"
         />
         <van-field
           v-model="formData.expIncomeAvg"
           v-only-number="{min: 0, max: 25000, precision: 0}"
-          label-width="160px"
+          colon
           name="期望收入(去油)(元/月)"
           label="期望收入(去油)(元/月)"
           required
-          placeholder="请填写0-25000的数字'"
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '期望收入应在0至25000元之间'}]"
           @focus="copyData('expIncomeAvg')"
         />
@@ -220,7 +223,6 @@
           ]"
         />
         <self-area
-          label-width="100"
           picker-key="householdAddress"
           :form="area"
           :is-computed="area.householdAddress.length > 2"
@@ -238,6 +240,7 @@
           name="householdDistrict"
           label="户籍详细地址"
           maxlength="50"
+          colon
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写详细地址' }]"
@@ -263,6 +266,7 @@
           name="货物运输经验（月）"
           label="货物运输经验（月）"
           required
+          colon
           type="digit"
           maxlength="3"
           placeholder="请填写0-500的数字'"
@@ -291,6 +295,7 @@
           label="实际货车驾龄（月）"
           required
           type="digit"
+          colon
           maxlength="3"
           placeholder="请填写0-500的数字'"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '请填写0-500的数字'}]"
@@ -298,7 +303,7 @@
         <van-field
           v-model="formData.livingAge"
           v-only-number="{min: 0, max: 730, precision: 0}"
-          label-width="130px"
+          colon
           name="本城市居住时长（月）"
           label="本城市居住时长（月）"
           required
@@ -476,6 +481,7 @@
           v-model="formData.remarks"
           rows="2"
           autosize
+          colon
           label="备注（其他个性化要求，如没有填写无）"
           type="textarea"
           maxlength="100"
@@ -511,11 +517,16 @@ import { Dialog } from 'vant';
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { validatorNum } from '@/utils/validate';
 import { phoneRegExp } from '@/utils/index';
-import { specialInterview, getInterview, unqPhone, editInterview } from '@/api/driver.js';
+import {
+  specialInterview,
+  getInterview,
+  unqPhone,
+  editInterview
+} from '@/api/driver.js';
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import SelftPicker from '@/components/SelfPicker';
 import SelfArea from '@/components/SelfArea';
-import { delay } from '@/utils/index.js'
+import { delay } from '@/utils/index.js';
 export default {
   name: 'TailoredInterview',
   components: {
@@ -695,23 +706,28 @@ export default {
   },
   methods: {
     validatorAddress(val) {
-      let arr = val.split('/')
-      if (arr[2] === '' || arr[1] === '' || arr.length === 2 || arr.length === 1) {
-        return false
+      let arr = val.split('/');
+      if (
+        arr[2] === '' ||
+        arr[1] === '' ||
+        arr.length === 2 ||
+        arr.length === 1
+      ) {
+        return false;
       } else {
-        return true
+        return true;
       }
     },
     copyData(value) {
       if (value !== '' && !this.Changed) {
         if (value === 'hasCar') {
           if (!this.isChangeCar) {
-            this.formData[value] = this.editForm[value]
-            this.isChangeCar = true
-            return
+            this.formData[value] = this.editForm[value];
+            this.isChangeCar = true;
+            return;
           }
         } else {
-          this.formData[value] = this.editForm[value]
+          this.formData[value] = this.editForm[value];
         }
       }
     },
@@ -752,45 +768,44 @@ export default {
     phonePatternIshas(val) {
       // Toast.loading('验证中...');
       return new Promise((resolve) => {
-        if (this.routeName === '/editTailored' && this.editForm.isChange !== null) {
+        if (
+          this.routeName === '/editTailored' &&
+          this.editForm.isChange !== null
+        ) {
           if (this.phone === val) {
             resolve(true);
           } else {
-            unqPhone({ phone: val }).then(
-              ({ data }) => {
-                if (data.success) {
-                  if (data.data.flag) {
-                    resolve(true);
-                    this.errMsg = ''
-                  } else {
-                    this.errMsg = data.data.msg
-                    Toast.fail(this.errMsg);
-                    resolve(false);
-                  }
-                } else {
-                  this.$toast.fail(data);
-                  resolve(false);
-                }
-              }
-            )
-          }
-        } else {
-          unqPhone({ phone: val }).then(
-            ({ data }) => {
+            unqPhone({ phone: val }).then(({ data }) => {
               if (data.success) {
                 if (data.data.flag) {
                   resolve(true);
-                  this.errMsg = ''
+                  this.errMsg = '';
                 } else {
+                  this.errMsg = data.data.msg;
+                  Toast.fail(this.errMsg);
                   resolve(false);
-                  this.errMsg = data.data.msg
                 }
               } else {
                 this.$toast.fail(data);
                 resolve(false);
               }
+            });
+          }
+        } else {
+          unqPhone({ phone: val }).then(({ data }) => {
+            if (data.success) {
+              if (data.data.flag) {
+                resolve(true);
+                this.errMsg = '';
+              } else {
+                resolve(false);
+                this.errMsg = data.data.msg;
+              }
+            } else {
+              this.$toast.fail(data);
+              resolve(false);
             }
-          )
+          });
         }
       });
     },
@@ -913,12 +928,15 @@ export default {
               };
             });
           }
-        }).catch((err) => { console.log(err); });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       getOpenCitys()
         .then(({ data }) => {
           if (data.success) {
-            this.columns_workCity = data.data.map(ele => {
-              return { dictLabel: ele.name, dictValue: Number(ele.code) }
+            this.columns_workCity = data.data.map((ele) => {
+              return { dictLabel: ele.name, dictValue: Number(ele.code) };
             });
           }
         })
@@ -926,7 +944,9 @@ export default {
           console.log(err);
         });
       if (this.routeName === '/editTailored') {
-        setTimeout(() => { this.getDetail(this.driverId); }, 1000)
+        setTimeout(() => {
+          this.getDetail(this.driverId);
+        }, 1000);
       }
     },
     async getDetail(id) {
@@ -937,16 +957,16 @@ export default {
         this.$loading(true);
         let { data: res } = await getInterview(params);
         if (res.success) {
-          this.phone = res.data.phone
-          this.areaShow(res)
+          this.phone = res.data.phone;
+          this.areaShow(res);
           if (res.data.isChange !== null) {
-            this.Changed = false
+            this.Changed = false;
             this.editForm = {
               ...this.formData,
               ...res.data
-            }
+            };
           } else {
-            this.Changed = true
+            this.Changed = true;
             this.formData = {
               ...this.formData,
               ...res.data
@@ -963,7 +983,7 @@ export default {
     },
     areaShow(res) {
       if (res.data.isChange !== null) {
-        return
+        return;
       }
       let areaData = res.data;
       // 现居住地址label回显
@@ -1005,7 +1025,7 @@ export default {
       params.householdProvince = this.area.householdAddress[0]; // 户籍地址
       params.householdCity = this.area.householdAddress[1];
       params.householdCounty = this.area.householdAddress[2];
-      params.driverId = this.driverId
+      params.driverId = this.driverId;
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';
       } else {
@@ -1017,7 +1037,7 @@ export default {
         setTimeout(() => {
           this.$loading(false);
           this.$router.go(-1);
-        }, delay)
+        }, delay);
       } else {
         this.$loading(false);
         this.$toast.fail(res.errorMsg);
@@ -1045,7 +1065,7 @@ export default {
         setTimeout(() => {
           this.$loading(false);
           this.$router.go(-1);
-        }, delay)
+        }, delay);
       } else {
         this.$loading(false);
         this.$toast.fail(res.errorMsg);
@@ -1055,9 +1075,9 @@ export default {
       try {
         this.$loading(true);
         if (this.routeName === '/editTailored') {
-          this.editTailored()
+          this.editTailored();
         } else {
-          this.buildTailore()
+          this.buildTailore();
         }
       } catch (err) {
         console.log(`fail:${err}`);
@@ -1080,9 +1100,9 @@ export default {
     // 校验子女数
     validatorChildNum(val) {
       if (val !== '') {
-        return true
+        return true;
       }
-      return false
+      return false;
     }
   }
 };

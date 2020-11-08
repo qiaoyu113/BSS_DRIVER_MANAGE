@@ -333,5 +333,10 @@ export function checkRouteIsNull(val) {
     return false
   } else {
     return true
+}
+
+export function HandlePages(page) {
+  if (!page || page.total === null || page.total === undefined) {
+    throw new Error('返回总条数有问题')
   }
 }
