@@ -60,12 +60,14 @@ export default {
      */
     handleDetailClick() {
       if (!this.$permissionDetail('/v2/line/customer/findCustomerInfo')) return
-      this.$router.push({
-        path: '/clientDetail',
-        query: {
-          customerId: this.obj.customerId
-        }
-      })
+      if (this.$checkRouteIsNull(this.obj.customerId)) {
+        this.$router.push({
+          path: '/clientDetail',
+          query: {
+            customerId: this.obj.customerId
+          }
+        })
+      }
     },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
