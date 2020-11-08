@@ -12,7 +12,7 @@
       <van-field v-if="form.customerType ===1" label="公司主体" label-width="100" readonly :value="form.customerCompanyMain | DataIsNull" :border="false" colon />
       <van-field label="客户编号" label-width="100" readonly :value="form.customerId | DataIsNull" :border="false" colon />
       <van-field label="创建人" label-width="100" readonly :value="form.createName | DataIsNull" :border="false" colon />
-      <van-field label="审核状态" label-width="100" readonly :value="form.reviewStateName | DataIsNull" :border="false" colon />
+      <van-field v-if="false" label="审核状态" label-width="100" readonly :value="form.reviewStateName | DataIsNull" :border="false" colon />
       <van-field label="客户状态" label-width="100" readonly :value="form.customerStateName | DataIsNull" :border="false" colon />
       <van-field label="客户渠道" label-width="100" readonly :value="form.customerChannelsName | DataIsNull" :border="false" colon />
       <van-field label="客户分类" label-width="100" readonly :value="form.classificationName | DataIsNull" :border="false" colon />
