@@ -59,7 +59,17 @@ export default {
   },
   computed: {
     line() {
-      return `${this.obj.lineCategoryName}/${this.obj.lineBalanceName}/${this.obj.lineTypeName}`
+      let str = ''
+      if (this.obj.lineCategoryName) {
+        str = this.obj.lineCategoryName
+      }
+      if (this.obj.lineBalanceName) {
+        str += `/${this.obj.lineBalanceName}`
+      }
+      if (this.obj.lineTypeName) {
+        str += `${this.obj.lineTypeName}`
+      }
+      return str
     }
   },
   methods: {

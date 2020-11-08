@@ -85,12 +85,15 @@
         @click="showPickerCity = true"
       />
       <van-field
-        v-model="form.driver"
+        v-model.trim="form.driver"
         colon
         name="driver"
         label-width="6em"
         label="司机"
-        placeholder="请输入司机姓名/编号"
+        placeholder="请输入司机姓名/手机号"
+        :rules="[
+          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
+        ]"
       />
       <van-field
         v-model="form.line"
@@ -169,9 +172,10 @@ import { getOpenCitys, GetSpecifiedRoleList } from '@/api/common'
 import CardItem from '../components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
-import { parseTime } from '@/utils'
+import { parseTime, HandlePages } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
+import { validatorValue } from '@/utils/validate';
 export default {
   components: {
     CardItem,
@@ -265,6 +269,8 @@ export default {
     this.fetchData();
   },
   methods: {
+    // 正则验证
+    validatorValue,
     // 获取外线销售和上岗经理
     async getSpecifiedRoleList(params) {
       try {
@@ -441,13 +447,16 @@ export default {
         params.limit = this.page.limit;
         let { data: res } = await getGmInfoList(params);
         if (res.success) {
+          HandlePages(res.page)
+          !res.data && (res.data = [])
           let newLists = res.data;
           if (!isInit) {
             newLists = this.lists.concat(newLists);
           }
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            // hasMore: res.page.total > newLists.length
+            hasMore: res.data.length === this.page.limit
           }
           this.tabArrs.forEach((item) => {
             if (item.name === this.form.wayBillGMSaleStatus) {

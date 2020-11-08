@@ -78,7 +78,7 @@
               label="加盟经理"
               clearable
               placeholder="请选择"
-              :rules="[{ required: true, message: '请填写加盟经理' }]"
+              :rules="[{ required: true, message: '请选择加盟经理' }]"
               @click="showPickerFn('gmId')"
             />
           </div>

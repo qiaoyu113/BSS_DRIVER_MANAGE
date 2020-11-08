@@ -56,8 +56,10 @@
         :is-computed="form['waitDirveValidity']!==''"
         :form="form"
         required
+        name="waitDirveValidityValidator"
         :rules="[
           { required: true, message: '请选择上架截止日期！' },
+          { validator:waitDirveValidityValidator,message: '上架截止日期应该大于当前时间！' }
         ]"
         label="上架截止日期"
         placeholder="点击选择日期"
@@ -307,6 +309,20 @@ export default {
     this.init()
   },
   methods: {
+    // 校验上架截止日期
+    waitDirveValidityValidator(val) {
+      if (['active', 'copy'].includes(this.type)) {
+        let toDayDate = new Date()
+        toDayDate.setHours(0, 0, 0)
+        if (new Date(this.form.waitDirveValidity).getTime() < toDayDate) {
+          return false
+        } else {
+          return true
+        }
+      } else {
+        return true
+      }
+    },
     async init() {
       let result = await this.getDictDataByKeyword('Intentional_compartment')
       this.options = result

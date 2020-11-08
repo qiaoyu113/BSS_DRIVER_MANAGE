@@ -92,22 +92,38 @@ export default {
     warehouse() {
       const { lineInfoEs } = this.item;
       if (!lineInfoEs) return ''
-      return (
-        lineInfoEs.warehouseProvinceName +
-        lineInfoEs.warehouseCityName +
-        lineInfoEs.warehouseCountyName +
-        lineInfoEs.warehouseDistrict
-      );
+      let str = ''
+      if (lineInfoEs.warehouseProvinceName) {
+        str = lineInfoEs.warehouseProvinceName
+      }
+      if (lineInfoEs.warehouseCityName) {
+        str += lineInfoEs.warehouseCityName
+      }
+      if (lineInfoEs.warehouseCountyName) {
+        str += lineInfoEs.warehouseCountyName
+      }
+      if (lineInfoEs.warehouseDistrict) {
+        str += lineInfoEs.warehouseDistrict
+      }
+      return str
     },
     distribution() {
       const { lineInfoEs } = this.item;
       if (!lineInfoEs) return ''
-      return (
-        lineInfoEs.provinceAreaName +
-        lineInfoEs.cityAreaName +
-        lineInfoEs.countyAreaName +
-        lineInfoEs.districtArea
-      );
+      let str = ''
+      if (lineInfoEs.provinceAreaName) {
+        str = lineInfoEs.provinceAreaName
+      }
+      if (lineInfoEs.cityAreaName) {
+        str += lineInfoEs.cityAreaName
+      }
+      if (lineInfoEs.countyAreaName) {
+        str += lineInfoEs.countyAreaName
+      }
+      if (lineInfoEs.districtArea) {
+        str += lineInfoEs.districtArea
+      }
+      return str
     }
   },
   methods: {
