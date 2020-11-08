@@ -21,7 +21,7 @@
         <van-field label="所属城市" label-width="100" readonly :value="form.cityName | DataIsNull" :border="false" colon />
         <van-field label="联系人" label-width="100" readonly :value="form.bussinessName | DataIsNull" :border="false" colon />
         <van-field label="联系电话" label-width="100" readonly :value="form.bussinessPhone | DataIsNull" :border="false" colon />
-        <van-field label="配送经验" label-width="100" readonly :value="form.isDelivery ===1 ? '有需求':'无需求' " :border="false" colon />
+        <van-field label="配送经验" label-width="100" readonly :value="form.isDelivery ===1 ? '有需求': form.isDelivery ===2 ? '无需求' :'暂无数据' " :border="false" colon />
         <van-field label="收货点类型" label-width="100" readonly :value="form.receivingPointName | DataIsNull" :border="false" colon />
         <van-field label="总线路数" label-width="100" readonly :value="form.lineNum | DataIsNull" :border="false" colon />
         <van-field label="在跑线路数" label-width="100" readonly :value="form.runLineNum | DataIsNull" :border="false" colon />
