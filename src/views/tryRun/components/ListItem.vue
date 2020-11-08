@@ -130,12 +130,14 @@ export default {
     // 跳转详情
     onDetails(id) {
       if (this.$permissionDetail('/v2/runtest/runDetial')) {
-        this.$router.push({
-          path: '/try-detail',
-          query: {
-            id
-          }
-        })
+        if (this.$checkRouteIsNull(id)) {
+          this.$router.push({
+            path: '/try-detail',
+            query: {
+              id
+            }
+          })
+        }
       }
     }
   }

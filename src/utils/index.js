@@ -326,6 +326,15 @@ export function permissionDetail(url = '') {
   }
 }
 
+// 判断跳转页面参数是否为null
+export function checkRouteIsNull(val) {
+  if (val === null) {
+    this.$fail('该数据为null,无法识别')
+    return false
+  } else {
+    return true
+}
+
 export function HandlePages(page) {
   if (!page || page.total === null || page.total === undefined) {
     throw new Error('返回总条数有问题')
