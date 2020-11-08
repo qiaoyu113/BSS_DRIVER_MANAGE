@@ -136,6 +136,8 @@ export default {
         })
           .then(() => {
             this.$router.go(-1)
+          }).catch((err) => {
+            return err
           })
       } else {
         this.$router.go(-1)
