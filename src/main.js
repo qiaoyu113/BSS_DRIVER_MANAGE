@@ -20,7 +20,7 @@ import { Lazyload } from 'vant';
 import { permissionDetail, checkRouteIsNull } from '@/utils'
 Vue.prototype.$permissionDetail = permissionDetail
 Vue.prototype.$checkRouteIsNull = checkRouteIsNull
-
+import '@vant/touch-emulator';
 Vue.use(Lazyload);
 
 Vue.prototype.$toast = Toast
