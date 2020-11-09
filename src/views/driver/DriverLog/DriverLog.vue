@@ -687,9 +687,9 @@ export default {
     isHouseholdTypeName(value) {
       if ((typeof value) === 'number') {
         if (Number(value) === 1) {
-          return '城镇户口'
-        } else {
           return '农村户口'
+        } else {
+          return '城镇户口'
         }
       } else {
         return ''

@@ -90,7 +90,7 @@
           colon
         />
         <van-field
-          v-model="formData.phone"
+          v-model.trim="formData.phone"
           name="phonePatternIshas"
           label="司机手机号"
           type="tel"
