@@ -136,24 +136,3 @@ export function validatorValue(value) {
     }
   }
 }
-
-export function validatorSuggest(value) {
-  if (value === '') {
-    return true
-  }
-  value = value.trim()
-  var reg = new RegExp('[\\u4E00-\\u9FFF]+', 'g');
-  if (reg.test(value)) {
-    if (String(value).length >= 2) {
-      return true
-    } else {
-      return false
-    }
-  } else {
-    if (String(value).length >= 6) {
-      return true
-    } else {
-      return false
-    }
-  }
-}

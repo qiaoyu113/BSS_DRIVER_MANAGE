@@ -7,7 +7,6 @@
     <!-- 搜索 -->
     <form action="/">
       <van-search
-        v-model="keyWord"
         v-model.trim="keyWord"
         show-action
         placeholder="请输入司机名称/手机号"
@@ -59,7 +58,7 @@
 import CardItem from '../components/Cardltem.vue'
 import { debounce } from '@/utils/index'
 import { getGmInfoListByKeyWord } from '@/api/freight'
-import { validatorSuggest } from '@/utils/validate';
+import { validatorValue } from '@/utils/validate';
 import { Notify } from 'vant';
 export default {
   components: {
@@ -81,7 +80,7 @@ export default {
     }
   },
   mounted() {
-    this.validatorSuggest = validatorSuggest
+    this.validatorValue = validatorValue
     let historyData = this.getHistory()
     if (historyData) {
       this.historyItems = JSON.parse(historyData)
@@ -95,7 +94,7 @@ export default {
     },
     // 搜索
     onSearch: debounce(function() {
-      if (!validatorSuggest(this.keyWord)) {
+      if (!validatorValue(this.keyWord)) {
         Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
         return
       }
@@ -106,7 +105,7 @@ export default {
       this.getGmInfoListByKeyWorld(this.keyWord)
     }, 200),
     onSearcha() {
-      if (!validatorSuggest(this.keyWord)) {
+      if (!validatorValue(this.keyWord)) {
         Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
         return
       }

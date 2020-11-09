@@ -7,7 +7,7 @@
     <!-- 搜索 -->
     <form action="/">
       <van-search
-        v-model="keyWord"
+        v-model.trim="keyWord"
         show-action
         placeholder="搜索项目名称/编号"
         @search="onSearcha"
