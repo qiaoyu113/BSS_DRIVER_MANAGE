@@ -58,7 +58,7 @@
           @focus="copyData('name')"
         />
         <van-field
-          v-model="formData.phone"
+          v-model.trim="formData.phone"
           name="phone"
           clearable
           label="司机手机号"
