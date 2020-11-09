@@ -8,7 +8,7 @@
           </div>
         </template>
       </van-nav-bar>
-      <van-search v-if="title === '线索管理'" disabled show-action placeholder="线索姓名/线索编号/线索手机号" @click="searchClick">
+      <van-search v-if="title === '线索管理'" readonly show-action placeholder="线索姓名/线索编号/线索手机号" @click="searchClick">
         <template #action>
           <div class="search" @click.stop="screenOut ">
             <span>筛选</span>
