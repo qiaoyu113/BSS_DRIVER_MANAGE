@@ -359,7 +359,7 @@ export default {
           // busiType: this.lineDetail.busiType,
           workCity: this.lineDetail.city,
           key: this.driverValue,
-          status: 3
+          statuss: [3, 4]
         }
         if (this.lineDetail.busiType !== 1 && this.lineDetail.busiType !== 9) {
           postData.busiType = this.lineDetail.busiType
