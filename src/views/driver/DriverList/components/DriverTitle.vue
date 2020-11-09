@@ -11,7 +11,7 @@
           </div>
         </template>
       </van-nav-bar>
-      <van-search v-if="title === '司机管理'" v-permission="['/v2/driver/getDriverList']" disabled show-action placeholder="司机姓名/司机编号/司机手机号搜索" @click="searchClick">
+      <van-search v-if="title === '司机管理'" v-permission="['/v2/driver/getDriverList']" readonly show-action placeholder="司机姓名/司机编号/司机手机号搜索" @click="searchClick">
         <template #action>
           <div class="search" @click.stop="screenOut ">
             <span>筛选</span>
