@@ -273,7 +273,7 @@
 
             <van-field
               v-show="formData.cooperationModel !== 1"
-              v-model="formData.plateNo"
+              v-model.trim="formData.plateNo"
               clickable
               label="车牌号"
               required
