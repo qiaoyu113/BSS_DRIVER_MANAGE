@@ -104,7 +104,7 @@
             />
             <van-field
               v-model="formData.rake"
-              v-only-number="{min: 0, max: 100, precision: 0}"
+              v-only-number="{min: 0, max: 100, precision: 1}"
               colon
               clickable
               label="抽佣比例（%）"
@@ -112,8 +112,7 @@
               placeholder="请填写0-100的数字"
               type="number"
               maxlength="5"
-              :rules="[{ required: true, message: '请填写抽佣比例' },
-                       {validator:checkPercent, message: '请填写正确的数字'}]"
+              :rules="[{ required: true, message: '请填写抽佣比例' }]"
             />
 
             <van-field
