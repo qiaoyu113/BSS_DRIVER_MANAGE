@@ -67,7 +67,7 @@ export default {
         str += `/${this.obj.lineBalanceName}`
       }
       if (this.obj.lineTypeName) {
-        str += `${this.obj.lineTypeName}`
+        str += `/${this.obj.lineTypeName}`
       }
       return str
     }
