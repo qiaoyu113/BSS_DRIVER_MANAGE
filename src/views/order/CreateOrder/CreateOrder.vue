@@ -117,7 +117,7 @@
 
             <van-field
               v-model="formData.goodsAmount"
-              v-only-number="{min: 0, max: 999999.99, precision: 2}"
+              v-only-number="{min: 0.01, max: 999999.99, precision: 2}"
               colon
               clickable
               label="商品金额（元）"
