@@ -273,7 +273,7 @@
 
             <van-field
               v-show="formData.cooperationModel !== 1"
-              v-model="formData.plateNo"
+              v-model.trim="formData.plateNo"
               clickable
               label="车牌号"
               required
@@ -282,7 +282,7 @@
               name="plateNo"
               placeholder="请填写车牌号"
               :rules="[
-                { required: formData.cooperationModel !== 1 && formStatus === 2, message: '请填写车牌号' },{pattern:formData.cooperationModel !== 1 && formStatus === 2 ? carNoRegExp : '', message: '请填写正确的车牌号'}
+                { required: formData.cooperationModel !== 1 && formStatus === 2, message: '请填写车牌号' },{pattern:formData.cooperationModel !== 1 && formStatus === 2 ? carNoRegExpBest : '', message: '请填写正确的车牌号'}
               ]"
             />
           </van-cell-group>
@@ -386,7 +386,7 @@
 import dayjs from 'dayjs';
 import { parseTime } from '@/utils';
 import { Notify, Dialog } from 'vant';
-import { IdPattern, carNoRegExp } from '@/utils/index';
+import { IdPattern, carNoRegExpBest } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import PayItem from './components/PayItem';
 import SelftPicker from '@/components/SelfPicker';
@@ -571,7 +571,7 @@ export default {
   },
   created() {
     this.IdPattern = IdPattern;
-    this.carNoRegExp = carNoRegExp;
+    this.carNoRegExpBest = carNoRegExpBest;
     this.validatorNum = validatorNum;
   },
   mounted() {
