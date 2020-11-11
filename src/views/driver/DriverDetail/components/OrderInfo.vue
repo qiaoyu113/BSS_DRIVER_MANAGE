@@ -179,7 +179,7 @@ export default {
       let { data: res } = await orderAbort(params);
       if (res.success) {
         Notify({ type: 'success', message: '订单终止成功' });
-        await this.$emit('orderStop')
+        this.$emit('orderStop')
       } else {
         Notify({ type: 'warning', message: res.errorMsg });
       }
