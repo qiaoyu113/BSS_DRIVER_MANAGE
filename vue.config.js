@@ -1,4 +1,5 @@
 const path = require('path')
+const Timestamp = new Date().getTime();
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
@@ -102,6 +103,10 @@ module.exports = {
         'filters': resolve('src/filters'), // 过滤器
         'directives': resolve('src/directives') // 指令
       }
+    },
+    output: { // 输出重构  打包编译后的 文件名称  【模块名称.时间戳】
+      filename: `[name].${Timestamp}.js`,
+      chunkFilename: `[name].${Timestamp}.js`
     }
   },
   chainWebpack(config) {
