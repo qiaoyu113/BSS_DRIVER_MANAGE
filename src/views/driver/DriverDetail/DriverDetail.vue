@@ -202,6 +202,7 @@ import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
 import dayjs from 'dayjs';
 import { contractList, orderAbort, getOrderList } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
+import { Dialog } from 'vant';
 export default {
   name: 'DriverDetail',
   components: {
@@ -415,7 +416,12 @@ export default {
           goodsAmount: this.detailInfo.goodsAmount,
           operateFlag: 'abort'
         };
-        this.stopOrder(params);
+        Dialog.confirm({
+          title: '是否终止该订单?',
+          message: '终止订单后，司机签署合同将会作废'
+        }).then(() => {
+          this.stopOrder(params);
+        })
       } else {
         this.$router.push({ path: item.url, query: { id: this.driverId }});
       }

@@ -1,4 +1,5 @@
 const path = require('path')
+const Timestamp = new Date().getTime();
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
@@ -13,7 +14,7 @@ const cdn = {
     'https://cdn.bootcss.com/vue/2.6.11/vue.min.js',
     'https://cdn.bootcss.com/vue-router/3.0.3/vue-router.min.js',
     'https://cdn.bootcss.com/vuex/3.1.0/vuex.min.js',
-    'https://res.wx.qq.com/open/js/jweixin-1.2.0.js',
+    'https://res.wx.qq.com/open/js/jweixin-1.6.0.js',
     'https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js',
     'https://cdn.bootcss.com/js-cookie/2.2.1/js.cookie.min.js'
   ]
@@ -102,6 +103,10 @@ module.exports = {
         'filters': resolve('src/filters'), // 过滤器
         'directives': resolve('src/directives') // 指令
       }
+    },
+    output: { // 输出重构  打包编译后的 文件名称  【模块名称.时间戳】
+      filename: `[name].${Timestamp}.js`,
+      chunkFilename: `[name].${Timestamp}.js`
     }
   },
   chainWebpack(config) {

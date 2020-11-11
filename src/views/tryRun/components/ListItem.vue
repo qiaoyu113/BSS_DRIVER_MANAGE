@@ -13,6 +13,9 @@
       <van-tag plain round type="primary" class="tag-item">
         {{ item.statusName }}
       </van-tag>
+      <van-tag v-if="item.droppedTime && (item.status === 300 || item.status === 200 || item.status === 500)" plain round type="warning" class="tag-item2">
+        待掉线
+      </van-tag>
     </div>
     <van-cell
       title-class="cell-title"
@@ -181,6 +184,19 @@ export default {
     font-size: @font-size-xs-1;
     border-radius: 12px;
     line-height: normal;
+    & + .tag-item {
+      margin-left: 10px;
+    }
+  }
+  .tag-item2 {
+    padding: 0 8px;
+    height: 20px;
+    border-color: rgb(240, 77, 77);
+    color:  rgb(240, 77, 77);
+    font-size: @font-size-xs-1;
+    border-radius: 12px;
+    line-height: normal;
+    margin-left: 8px;
     & + .tag-item {
       margin-left: 10px;
     }
