@@ -81,7 +81,7 @@
 <script>
 import dayjs from 'dayjs';
 import { orderAbort } from '@/api/order.js';
-import { Notify } from 'vant';
+import { Notify, Dialog } from 'vant';
 export default {
   props: {
     obj: {
@@ -93,6 +93,24 @@ export default {
     return {
       orderText: {}
     };
+  },
+  watch: {
+    obj: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (newVal.status) {
+          if (newVal.status === 20) {
+            this.orderText = { name: '审核', url: '', code: 1, pUrl: ['/v2/order/auditOrderNoPass'] };
+          } else if (newVal.status === 30) {
+            this.orderText = { name: '终止', code: 2, pUrl: ['/v2/order/abort'] };
+          } else if (newVal.status === 25) {
+            this.orderText = { name: '重新提交', url: '', code: 3, pUrl: ['/v2/order/resubmit'] };
+          } else {
+            this.orderText = {}
+          }
+        }
+      }
+    }
   },
   created() {
     if (this.changePermission()) {
@@ -125,7 +143,12 @@ export default {
             });
             break;
           case 2:
-            this.stopOrder();
+            Dialog.confirm({
+              title: '是否终止该订单?',
+              message: '终止订单后，司机签署合同将会作废'
+            }).then(() => {
+              this.stopOrder();
+            })
             break;
           case 3:
             this.$router.push({
@@ -156,7 +179,7 @@ export default {
       let { data: res } = await orderAbort(params);
       if (res.success) {
         Notify({ type: 'success', message: '订单终止成功' });
-        this.$emit('orderStop')
+        await this.$emit('orderStop')
       } else {
         Notify({ type: 'warning', message: res.errorMsg });
       }
