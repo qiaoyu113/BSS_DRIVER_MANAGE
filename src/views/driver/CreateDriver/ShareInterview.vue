@@ -66,7 +66,7 @@
           colon
           required
           placeholder="请输入"
-          :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'},{validator:phonePatternIshas, message: `该手机号暂不能使用`}]"
+          :rules="[{ required: true, message: '请输入司机手机号！' },{pattern:phonePattern, message: '手机号码格式错误，请重新输入！'},{validator:phonePatternIshas, message: `该手机号已占用！`}]"
           @focus="copyData('phone')"
         />
         <van-field
