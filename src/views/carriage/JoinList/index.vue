@@ -35,7 +35,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <div class="list">
+    <div class="list freight-list">
       <!-- 下拉刷新  上拉加载 -->
       <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
@@ -176,7 +176,9 @@ import { parseTime, HandlePages } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
 import { validatorValue } from '@/utils/validate';
+import { EventBus } from '@/utils/event-bus.js';
 export default {
+  name: 'Freight',
   components: {
     CardItem,
     SelfPopup,
@@ -243,8 +245,21 @@ export default {
       options: [],
       type: '',
       cityList: [],
-      checkedNum: 0
+      checkedNum: 0,
+      scrollTop: 0
     }
+  },
+  // // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      console.log(vm.scrollTop)
+      document.querySelector('.freight-list').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.freight-list').scrollTop
+    next()
   },
   computed: {
   },
@@ -267,6 +282,13 @@ export default {
   },
   mounted() {
     this.fetchData();
+  },
+  activated() {
+    EventBus.$on('update', (msg) => {
+      console.log(123)
+      // this.lists = [];
+      // this.onLoad(true)
+    });
   },
   methods: {
     // 正则验证

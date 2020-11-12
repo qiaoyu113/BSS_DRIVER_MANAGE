@@ -1,11 +1,11 @@
 export default [
   {
     path: '/freight',
-    name: 'freight',
+    name: 'Freight',
     component: resolve => require(['@/views/carriage/JoinList'], resolve),
     meta: {
       title: '运费管理',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {
