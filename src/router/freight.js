@@ -10,7 +10,7 @@ export default [
   },
   {
     path: '/joindetail',
-    name: 'joindetail',
+    name: 'Joindetail',
     // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
     component: resolve => require(['@/views/carriage/JoinDetail'], resolve),
     meta: {

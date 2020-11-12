@@ -42,6 +42,7 @@ export default {
         this.$store.dispatch('cached-views/delAllViews')
         return false
       }
+      console.log(!to.meta.isCach)
       if (name) {
         this.$store.dispatch('cached-views/addView', this.$route)
       }

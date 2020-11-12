@@ -252,7 +252,6 @@ export default {
   // // 回来后还原
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      console.log(vm.scrollTop)
       document.querySelector('.freight-list').scrollTop = vm.scrollTop
     })
   },
@@ -285,9 +284,11 @@ export default {
   },
   activated() {
     EventBus.$on('update', (msg) => {
-      console.log(123)
-      // this.lists = [];
-      // this.onLoad(true)
+      console.log(msg)
+      if (msg) {
+        this.lists = [];
+        this.onLoad(true)
+      }
     });
   },
   methods: {
@@ -567,6 +568,7 @@ export default {
     async onSubmit(value) {
       this.showPopup = false
       this.page.current = 1
+      this.lists = []
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()

@@ -41,7 +41,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <div class="list">
+    <div class="list trylist">
       <!-- 下拉刷新  上拉加载 -->
       <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
@@ -297,17 +297,19 @@ export default {
     // 请求字典
     this.fetchData();
   },
-  // // 回来后还原
-  // beforeRouteEnter(to, from, next) {
-  //   next(vm => {
-  //     document.querySelector('.list').scrollTop = vm.scrollTop
-  //   })
-  // },
-  // // 离开前保存高度
-  // beforeRouteLeave(to, from, next) {
-  //   this.scrollTop = document.querySelector('.list').scrollTop
-  //   next()
-  // },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      console.log(vm.scrollTop)
+      document.querySelector('.trylist').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.trylist').scrollTop
+    console.log(this.scrollTop)
+    next()
+  },
   methods: {
     // 正则验证
     validatorValue,

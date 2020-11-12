@@ -104,6 +104,7 @@ import { Toast } from 'vant';
 import { addCach } from '@/utils/mixins.js'
 import { EventBus } from '@/utils/event-bus.js';
 export default {
+  name: 'Joindetail',
   mixins: [addCach],
   data() {
     return {
@@ -123,7 +124,6 @@ export default {
      * 线路详情
      */
     onClickLeft() {
-      EventBus.$emit('update', '1')
       this.$router.go(-1)
     },
     footer_confirm() {
@@ -146,6 +146,7 @@ export default {
         if (res.success) {
           this.$loading(false)
           Toast.success('上报成功');
+          EventBus.$emit('update', '1')
           this.show = false;
           this.$router.back(-1);
         } else {
@@ -219,6 +220,7 @@ export default {
           let { data: res } = await noCarBatchByGM(ids, this.message)
           if (res.success) {
             this.show = false;
+            EventBus.$emit('update', '1')
             Toast.success('运费上报成功');
             setTimeout(() => {
               this.$router.go(-1)
