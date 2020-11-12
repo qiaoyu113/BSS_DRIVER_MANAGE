@@ -85,12 +85,15 @@
         @click="showPickerCity = true"
       />
       <van-field
-        v-model="form.driver"
+        v-model.trim="form.driver"
         colon
         name="driver"
         label-width="6em"
         label="司机"
-        placeholder="请输入"
+        placeholder="请输入司机姓名/手机号"
+        :rules="[
+          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
+        ]"
       />
       <van-field
         v-model="form.line"
@@ -98,7 +101,7 @@
         label-width="6em"
         name="line"
         label="线路"
-        placeholder="请输入"
+        placeholder="请输入线路名称/编号"
       />
       <van-field
         label-width="6em"
@@ -146,6 +149,7 @@
     <!-- 模糊搜索组件 -->
     <Suggest
       v-model="showModal"
+      :placeholder="'请输入加盟经理姓名/手机号'"
       :options="options"
       :type="'gmId'"
       @keyWordValue="handleSearchChange"
@@ -168,9 +172,11 @@ import { getOpenCitys, GetSpecifiedRoleList } from '@/api/common'
 import CardItem from '../components/Cardltem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
-import { parseTime } from '@/utils'
+import { parseTime, HandlePages } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
+import { validatorValue } from '@/utils/validate';
+import { EventBus } from '@/utils/event-bus.js';
 export default {
   name: 'Freight',
   components: {
@@ -276,7 +282,15 @@ export default {
   mounted() {
     this.fetchData();
   },
+  activated() {
+    EventBus.$on('update', (msg) => {
+      // this.lists = [];
+      this.onLoad(true)
+    });
+  },
   methods: {
+    // 正则验证
+    validatorValue,
     // 获取外线销售和上岗经理
     async getSpecifiedRoleList(params) {
       try {
@@ -448,18 +462,22 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
+        this.error = false
         const params = this.delForm(this.form);
         params.page = this.page.current;
         params.limit = this.page.limit;
         let { data: res } = await getGmInfoList(params);
         if (res.success) {
+          HandlePages(res.page)
+          !res.data && (res.data = [])
           let newLists = res.data;
           if (!isInit) {
             newLists = this.lists.concat(newLists);
           }
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            // hasMore: res.page.total > newLists.length
+            hasMore: res.data.length === this.page.limit
           }
           this.tabArrs.forEach((item) => {
             if (item.name === this.form.wayBillGMSaleStatus) {

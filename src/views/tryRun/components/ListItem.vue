@@ -13,6 +13,9 @@
       <van-tag plain round type="primary" class="tag-item">
         {{ item.statusName }}
       </van-tag>
+      <van-tag v-if="item.droppedTime && (item.status === 300 || item.status === 200 || item.status === 500)" plain round type="warning" class="tag-item2">
+        待掉线
+      </van-tag>
     </div>
     <van-cell
       title-class="cell-title"
@@ -92,34 +95,52 @@ export default {
     warehouse() {
       const { lineInfoEs } = this.item;
       if (!lineInfoEs) return ''
-      return (
-        lineInfoEs.warehouseProvinceName +
-        lineInfoEs.warehouseCityName +
-        lineInfoEs.warehouseCountyName +
-        lineInfoEs.warehouseDistrict
-      );
+      let str = ''
+      if (lineInfoEs.warehouseProvinceName) {
+        str = lineInfoEs.warehouseProvinceName
+      }
+      if (lineInfoEs.warehouseCityName) {
+        str += lineInfoEs.warehouseCityName
+      }
+      if (lineInfoEs.warehouseCountyName) {
+        str += lineInfoEs.warehouseCountyName
+      }
+      if (lineInfoEs.warehouseDistrict) {
+        str += lineInfoEs.warehouseDistrict
+      }
+      return str
     },
     distribution() {
       const { lineInfoEs } = this.item;
       if (!lineInfoEs) return ''
-      return (
-        lineInfoEs.provinceAreaName +
-        lineInfoEs.cityAreaName +
-        lineInfoEs.countyAreaName +
-        lineInfoEs.districtArea
-      );
+      let str = ''
+      if (lineInfoEs.provinceAreaName) {
+        str = lineInfoEs.provinceAreaName
+      }
+      if (lineInfoEs.cityAreaName) {
+        str += lineInfoEs.cityAreaName
+      }
+      if (lineInfoEs.countyAreaName) {
+        str += lineInfoEs.countyAreaName
+      }
+      if (lineInfoEs.districtArea) {
+        str += lineInfoEs.districtArea
+      }
+      return str
     }
   },
   methods: {
     // 跳转详情
     onDetails(id) {
       if (this.$permissionDetail('/v2/runtest/runDetial')) {
-        this.$router.push({
-          path: '/try-detail',
-          query: {
-            id
-          }
-        })
+        if (this.$checkRouteIsNull(id)) {
+          this.$router.push({
+            path: '/try-detail',
+            query: {
+              id
+            }
+          })
+        }
       }
     }
   }
@@ -163,6 +184,19 @@ export default {
     font-size: @font-size-xs-1;
     border-radius: 12px;
     line-height: normal;
+    & + .tag-item {
+      margin-left: 10px;
+    }
+  }
+  .tag-item2 {
+    padding: 0 8px;
+    height: 20px;
+    border-color: rgb(240, 77, 77);
+    color:  rgb(240, 77, 77);
+    font-size: @font-size-xs-1;
+    border-radius: 12px;
+    line-height: normal;
+    margin-left: 8px;
     & + .tag-item {
       margin-left: 10px;
     }

@@ -10,9 +10,11 @@
         :min-date="minDate"
         :is-computed="form['driverWorkTime']!==''"
         :form="form"
+        name="driverWorkTimeValidator"
         required
         :rules="[
           { required: true, message: '请选择司机上岗时间！' },
+          { validator:driverWorkTimeValidator,message: '司机上岗时间应该大于上架截止日期！' }
         ]"
         label="司机上岗时间"
         placeholder="点击选择日期"
@@ -353,6 +355,20 @@ export default {
     this.generaTimelist()
   },
   methods: {
+    // 校验上架截止日期
+    driverWorkTimeValidator(val) {
+      if (['active', 'copy'].includes(this.type)) {
+        let waitDirveValidityDate = new Date(this.minDate)
+        waitDirveValidityDate.setHours(0, 0, 0)
+        if (new Date(this.form.driverWorkTime).getTime() < waitDirveValidityDate) {
+          return false
+        } else {
+          return true
+        }
+      } else {
+        return true
+      }
+    },
     init() {
       this.isStable = +this.$route.query.isStable === 1
       if (this.isStable) {

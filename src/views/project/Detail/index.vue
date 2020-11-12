@@ -21,7 +21,7 @@
         <van-field label="所属城市" label-width="100" readonly :value="form.cityName | DataIsNull" :border="false" colon />
         <van-field label="联系人" label-width="100" readonly :value="form.bussinessName | DataIsNull" :border="false" colon />
         <van-field label="联系电话" label-width="100" readonly :value="form.bussinessPhone | DataIsNull" :border="false" colon />
-        <van-field label="配送经验" label-width="100" readonly :value="form.isDelivery ===1 ? '有需求':'无需求' " :border="false" colon />
+        <van-field label="配送经验" label-width="100" readonly :value="form.isDelivery ===1 ? '有需求': form.isDelivery ===2 ? '无需求' :'暂无数据' " :border="false" colon />
         <van-field label="收货点类型" label-width="100" readonly :value="form.receivingPointName | DataIsNull" :border="false" colon />
         <van-field label="总线路数" label-width="100" readonly :value="form.lineNum | DataIsNull" :border="false" colon />
         <van-field label="在跑线路数" label-width="100" readonly :value="form.runLineNum | DataIsNull" :border="false" colon />
@@ -31,7 +31,7 @@
         <van-field label="仓名称" label-width="100" readonly :value="form.warehouseName | DataIsNull" :border="false" colon />
         <van-field label="仓联系人" label-width="100" readonly :value="form.warehouseContactName | DataIsNull" :border="false" colon />
         <van-field label="仓联系电话" label-width="100" readonly :value="form.warehouseContactPhone | DataIsNull" :border="false" colon />
-        <van-field label="开放时间" label-width="100" readonly :value="`${form.warehouseOpen}-${form.warehouseClose}`" :border="false" colon />
+        <van-field label="开放时间" label-width="100" readonly :value="openTime" :border="false" colon />
         <van-field label="所在区域" label-width="100" autosize type="textarea" readonly :value="region | DataIsNull" :border="false" colon />
         <van-field label="详细地址" label-width="100" autosize type="textarea" readonly :value="form.warehouseDistrict | DataIsNull" :border="false" colon />
         <van-field label="备注" label-width="100" readonly autosize type="textarea" :value="form.warehouseRemark | DataIsNull" :border="false" colon />
@@ -77,6 +77,16 @@ export default {
     }
   },
   computed: {
+    openTime() {
+      let str = ''
+      if (this.form.warehouseOpen) {
+        str = `${this.form.warehouseOpen}`
+      }
+      if (this.form.warehouseClose) {
+        str += `-${this.form.warehouseClose}`
+      }
+      return str
+    },
     auditStateName() {
       if (this.form.auditState === 1) {
         return '待审核'
@@ -88,7 +98,17 @@ export default {
       return '暂无数据'
     },
     region() {
-      return this.form.warehouseProvinceName + '/' + this.form.warehouseCityName + '/' + this.form.warehouseCountyName
+      let str = ''
+      if (this.form.warehouseProvinceName) {
+        str = this.form.warehouseProvinceName
+      }
+      if (this.form.warehouseCityName) {
+        str += `/${this.form.warehouseCityName}`
+      }
+      if (this.form.warehouseCountyName) {
+        str += `/${this.form.warehouseCountyName}`
+      }
+      return str
     }
   },
   mounted() {

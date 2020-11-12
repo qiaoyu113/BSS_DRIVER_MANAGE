@@ -102,6 +102,7 @@ import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, noCa
 import { delay } from '@/utils'
 import { Toast } from 'vant';
 import { addCach } from '@/utils/mixins.js'
+import { EventBus } from '@/utils/event-bus.js';
 export default {
   mixins: [addCach],
   data() {
@@ -112,7 +113,6 @@ export default {
       value: '', // 上报金额
       message: '', // 备注
       arrstr: []
-
     }
   },
   mounted() {
@@ -123,6 +123,7 @@ export default {
      * 线路详情
      */
     onClickLeft() {
+      EventBus.$emit('update', '1')
       this.$router.go(-1)
     },
     footer_confirm() {

@@ -12,12 +12,11 @@
       <van-form
         :scroll-to-error="true"
         :show-error="false"
-        label-width="120px"
+        label-width="130"
         @submit="onSubmit"
         @failed="onFailed"
       >
         <self-area
-          label-width="100"
           picker-key="interview"
           :form="area"
           name="interview"
@@ -53,16 +52,18 @@
           clearable
           maxlength="10"
           required
+          colon
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机姓名' }]"
           @focus="copyData('name')"
         />
         <van-field
-          v-model="formData.phone"
+          v-model.trim="formData.phone"
           name="phone"
           clearable
           label="司机手机号"
           type="tel"
+          colon
           required
           placeholder="请输入"
           :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'},{validator:phonePatternIshas, message: `该手机号暂不能使用`}]"
@@ -74,6 +75,7 @@
           label="年龄"
           maxlength="2"
           type="digit"
+          colon
           clearable
           required
           placeholder="请输入"
@@ -130,7 +132,6 @@
           @click.native="copyData('intentDrivingCarType')"
         />
         <self-area
-          label-width="100"
           picker-key="liveaddress"
           :form="area"
           :props="{provinceAreaName:'liveProvinceName',cityAreaName:'liveCityName',countyAreaName:'liveCountyName'}"
@@ -147,10 +148,11 @@
         <van-field
           v-model="formData.experience"
           v-only-number="{min: 0, max: 500, precision: 0}"
-          name="货物运输经验（月）"
+          name="货物运输经验(月)"
           clickable
-          label="货物运输经验（月）"
+          label="货物运输经验(月)"
           required
+          colon
           placeholder="请填写0-500的数字'"
           type="digit"
           maxlength="3"
@@ -206,7 +208,6 @@
         <selftPicker
           :props="keyValue"
           picker-key="heavyLifting"
-          label-width="150px"
           :form="formData"
           :columns="isOrNot"
           value="name"
@@ -264,7 +265,6 @@
           ]"
         />
         <self-area
-          label-width="100"
           picker-key="intentWork"
           :form="area"
           :props="{provinceAreaName:'intentWorkProvinceName',cityAreaName:'intentWorkCityName',countyAreaName:'intentWorkCountyName'}"
@@ -281,49 +281,51 @@
         <van-field
           v-model="formData.originIncomeAvg"
           v-only-number="{min: 0, max: 25000, precision: 0}"
-          label-width="160px"
-          name="原收入（去油）（元/月）"
-          label="原收入（去油）（元/月）"
+          name="原收入(去油)(元/月)"
+          label="原收入(去油)(元/月)"
           required
+          colon
           type="digit"
           maxlength="5"
-          placeholder="请填写0-25000的数字'"
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '原收入应在0至25000元之间'}]"
           @focus="copyData('originIncomeAvg')"
         />
         <van-field
           v-model="formData.expIncomeAvg"
           v-only-number="{min: 0, max: 25000, precision: 0}"
-          label-width="160px"
-          name="期望收入（去油）（元/月）"
-          label="期望收入（去油）（元/月）"
+          name="期望收入(去油)(元/月)"
+          label="期望收入(去油)(元/月)"
           required
+          colon
           maxlength="5"
           type="digit"
-          placeholder="请填写0-25000的数字'"
+          placeholder="请填写0-25000的数字"
           :rules="[{ required: true, message: '请填写0-25000的数字' },{validator:validatorNum(0,25000), message: '期望收入应在0至25000元之间'}]"
           @focus="copyData('expIncomeAvg')"
         />
         <van-field
           v-model="formData.workDuration"
           v-only-number="{min: 0, max: 500, precision: 0}"
-          name="从业时间（月）"
-          label="从业时间（月）"
+          name="从业时间(月)"
+          label="从业时间(月)"
           required
+          colon
           maxlength="3"
           type="digit"
-          placeholder="请填写0-500的数字'"
+          placeholder="请填写0-500的数字"
           :rules="[{ required: true, message: '请填写0-500的数字' },{validator:validatorNum(0,500), message: '从业时间应在0至500个月之间'}]"
         />
         <van-field
           v-model="formData.scatteredJobRate"
           v-only-number="{min: 0, max: 100, precision: 0}"
-          name="零散活占比（%）"
-          label="零散活占比（%）"
+          name="零散活占比(%)"
+          label="零散活占比(%)"
           required
+          colon
           maxlength="3"
           type="digit"
-          placeholder="请填写0-100的数字'"
+          placeholder="请填写0-100的数字"
           :rules="[{ required: true, message: '请填写0-100的数字' },{validator:validatorNum(0,100), message: '零散活占比应在100之间'}]"
         />
         <selftPicker
@@ -473,21 +475,13 @@ export default {
       driverId: '',
       editForm: {},
       phone: '',
-      Changed: true
+      Changed: true,
+      isChangeCar: false
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
-    }
-  },
-  watch: {
-    'formData.hasCar'(val) {
-      if (val === true) {
-        this.formData.intentDrivingCarType = '';
-      } else {
-        this.formData.currentCarType = '';
-      }
     }
   },
   mounted() {
@@ -613,6 +607,7 @@ export default {
     copyData(value) {
       if (value !== '' && !this.Changed) {
         if (value === 'interview') {
+          return
           // 面试地址label回显 更换业务线必定没有面试地址的信息所以不用copy回显
           // this.area.interviewProvinceName = this.editForm.interviewProvinceName;
           // this.area.interviewCityName = this.editForm.interviewCityName;
@@ -641,6 +636,12 @@ export default {
             String(this.editForm.intentWorkCity),
             String(this.editForm.intentWorkCounty)
           ];
+        } else if (value === 'hasCar') {
+          if (!this.isChangeCar) {
+            this.formData[value] = this.editForm[value]
+            this.isChangeCar = true
+            return
+          }
         } else {
           this.formData[value] = this.editForm[value];
         }
@@ -720,8 +721,8 @@ export default {
       params.intentWorkCity = this.area.intentWork[1];
       params.intentWorkCounty = this.area.intentWork[2];
       // 面试地址
-      params.interviewCity = this.area.interview[2];
-      params.interviewCounty = this.area.interview[1];
+      params.interviewCity = this.area.interview[1];
+      params.interviewCounty = this.area.interview[2];
       params.interviewProvince = this.area.interview[0];
       params.driverId = this.driverId;
       if (this.formData.hasCar === true) {
@@ -750,8 +751,8 @@ export default {
       params.intentWorkCity = this.area.intentWork[1];
       params.intentWorkCounty = this.area.intentWork[2];
       // 面试地址
-      params.interviewCity = this.area.interview[2];
-      params.interviewCounty = this.area.interview[1];
+      params.interviewCity = this.area.interview[1];
+      params.interviewCounty = this.area.interview[2];
       params.interviewProvince = this.area.interview[0];
       if (this.formData.hasCar === true) {
         params.intentDrivingCarType = '';
@@ -792,11 +793,9 @@ export default {
         message: '确定要取消吗，取消后表单内容将会清空并返回'
       })
         .then(() => {
-          // on confirm
           this.$router.go(-1);
         })
         .catch(() => {
-          // on cancel
         });
     }
   }

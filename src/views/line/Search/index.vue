@@ -7,7 +7,7 @@
     <!-- 搜索 -->
     <form action="/">
       <van-search
-        v-model="keyWord"
+        v-model.trim="keyWord"
         show-action
         placeholder="请输入搜索关键词"
         maxlength="30"
@@ -106,6 +106,9 @@ export default {
     // 搜索
     async getLists(keyword = '') {
       try {
+        if (!keyword) {
+          return false
+        }
         let params = {
           page: 1,
           pageNumber: 9999

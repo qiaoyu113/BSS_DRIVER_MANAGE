@@ -28,7 +28,7 @@
     </p>
     <div class="car">
       <van-tag type="primary" color="#EFF5FE" text-color="#649CEE">
-        {{ obj.busiTypeName | DataIsNull }}
+        {{ obj.labelTypeName | DataIsNull }}
       </van-tag>
       <template v-if="obj.inLine ===1">
         <van-tag type="primary" color="#EFF5FE" text-color="#649CEE" class="tag">
@@ -59,7 +59,17 @@ export default {
   },
   computed: {
     line() {
-      return `${this.obj.lineCategoryName}/${this.obj.lineBalanceName}/${this.obj.lineTypeName}`
+      let str = ''
+      if (this.obj.lineCategoryName) {
+        str = this.obj.lineCategoryName
+      }
+      if (this.obj.lineBalanceName) {
+        str += `/${this.obj.lineBalanceName}`
+      }
+      if (this.obj.lineTypeName) {
+        str += `/${this.obj.lineTypeName}`
+      }
+      return str
     }
   },
   methods: {
@@ -68,12 +78,14 @@ export default {
      */
     handleDetailClick() {
       if (!this.$permissionDetail('/v2/line/lineInfo/detail')) return
-      this.$router.push({
-        path: '/lineDetail',
-        query: {
-          lineId: this.obj.lineId
-        }
-      })
+      if (this.$checkRouteIsNull(this.obj.lineId)) {
+        this.$router.push({
+          path: '/lineDetail',
+          query: {
+            lineId: this.obj.lineId
+          }
+        })
+      }
     }
   }
 }

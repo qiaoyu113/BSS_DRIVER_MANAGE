@@ -13,9 +13,9 @@
     >
       <form action="/">
         <van-search
-          v-model="keyWord"
+          v-model.trim="keyWord"
           show-action
-          placeholder="请输入搜索关键词"
+          placeholder="司机姓名/司机编号/司机手机号搜索"
           @search="onSearch"
           @clear="onCancel"
         >
@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import { validatorValue } from '@/utils/validate';
 import { getDriverList } from '@/api/driver.js'
 import DriverTitle from '../DriverList/components/DriverTitle';
 import CardItem from '../DriverList/components/ListItem';
@@ -162,6 +163,7 @@ export default {
     }
   },
   mounted() {
+    this.validatorValue = validatorValue
     let historyData = this.getHistory()
     if (historyData) {
       this.historyItems = JSON.parse(historyData)
@@ -199,10 +201,7 @@ export default {
      * 更换加盟经理
      */
     changeManager(val) {
-      // this.$nextTick(() => {
       this.checked = val.show;
-      // })
-      console.log(this.checked, 'check');
     },
     /**
      * 取消选择加盟经理
@@ -244,13 +243,14 @@ export default {
     },
     // 搜索
     onSearch() {
+      if (!validatorValue(this.keyWord)) {
+        Notify({ type: 'warning', message: '请输入6位及以上数字或2位及以上非纯数字' });
+        return
+      }
+
       if (!this.keyWord) {
         return false;
       }
-
-      console.log(this.keyWord);
-      // if (this.keyWord === 'd') {
-      //   this.options = ['京东', '京东12121', '京东121212ddasddasd'];
       this.getLists(this.keyWord)
     },
     // 取消

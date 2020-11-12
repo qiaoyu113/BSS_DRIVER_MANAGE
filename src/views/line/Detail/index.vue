@@ -13,7 +13,7 @@
         <van-field label="项目名称" label-width="120" readonly :value="form.projectName | DataIsNull" :border="false" colon />
         <van-field label="项目编号" label-width="120" readonly :value="form.projectId | DataIsNull" :border="false" colon />
         <van-field label="线路分类" label-width="120" readonly :value="form.lineCategory ===1 ? '稳定线路':'临时线路'" :border="false" colon />
-        <van-field label="线路类型" label-width="120" readonly :value="form.busiTypeName | DataIsNull" :border="false" colon />
+        <!-- <van-field label="线路类型" label-width="120" readonly :value="form.busiTypeName | DataIsNull" :border="false" colon /> -->
         <van-field label="是否是城配线" label-width="120" readonly :value="form.lineTypeName | DataIsNull" :border="false" colon />
         <van-field label="是否有线路余额" label-width="120" readonly :value="form.lineBalance ===1 ? '有线路余额': '无线路余额'" :border="false" colon />
         <van-field label="线路状态" label-width="120" readonly :value="form.lineStateName | DataIsNull" :border="false" colon />
@@ -68,6 +68,7 @@
       <van-collapse-item title="标签信息" name="6">
         <van-field label="线路紧急程度" label-width="120" readonly :value="form.lineUrgentName | DataIsNull" :border="false" colon />
         <van-field label="适配性" label-width="120" readonly :value="form.lineAdapterName | DataIsNull" :border="false" colon />
+        <van-field label="线路肥瘦标签" label-width="120" readonly :value="form.labelTypeName | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="现场信息" name="7">
         <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />
@@ -124,7 +125,17 @@ export default {
       return ''
     },
     region() {
-      return this.form.provinceAreaName + '/' + this.form.cityAreaName + '/' + this.form.countyAreaName
+      let str = ''
+      if (this.form.provinceAreaName) {
+        str = this.form.provinceAreaName
+      }
+      if (this.form.cityAreaName) {
+        str += `/${this.form.cityAreaName}`
+      }
+      if (this.form.countyAreaName) {
+        str += `/${this.form.countyAreaName}`
+      }
+      return str
     },
     // 配送时间
     deliveryWeekCycle() {

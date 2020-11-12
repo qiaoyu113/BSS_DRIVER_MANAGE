@@ -3,7 +3,7 @@
     <van-nav-bar :title="title">
       <template #right>
         <div v-if="showHeader" class="navBarTit" @click="show = true">
-          <div :class="{open: show, 'right-btn': true}">
+          <div :class="{open: show, 'right-btn': true}" class="rWith">
             {{ actions[activeIndex]['name'] }}
           </div>
         </div>
@@ -35,7 +35,7 @@
               </div>
             </van-grid-item>
           </template>
-          <wxCode v-if="+activeIndex === 1" />
+          <wxCode v-if="+activeIndex === 3" />
         </van-grid>
       </div>
       <van-action-sheet
@@ -72,12 +72,17 @@ export default {
         {
           name: '司机云',
           value: 1,
-          pUrl: ['/v2/driver/getDriverList', '/v2/clue/getClueList']
+          pUrl: ['/v2/driver/getDriverList']
         },
         {
           name: '试跑在跑',
           value: 2,
           pUrl: ['/v2/runtest/getRunTestInfoList', '/v2/waybill/getGmInfoList', '/v2/waybill/getLineInfoList']
+        },
+        {
+          name: '司机线索管理',
+          value: 3,
+          pUrl: ['/v2/clue/getClueList']
         }
         // {
         //   name: '运费管理',
@@ -133,16 +138,6 @@ export default {
         // 司机云
         [
           {
-            title: '线索管理',
-            url: '/clue',
-            icon: require('../../assets/Home/icon_11.png'),
-            pUrl: '/v2/clue/getClueList',
-            style: {
-              width: '1.0133rem',
-              height: '1.0133rem'
-            }
-          },
-          {
             title: '司机管理',
             url: '/driverlist',
             icon: require('../../assets/Home/icon_5.png'),
@@ -193,6 +188,18 @@ export default {
               width: '1.1733rem',
               height: '0.9467rem',
               marginTop: '0.1rem'
+            }
+          }
+        ],
+        [
+          {
+            title: '线索管理',
+            url: '/clue',
+            icon: require('../../assets/Home/icon_11.png'),
+            pUrl: '/v2/clue/getClueList',
+            style: {
+              width: '1.0133rem',
+              height: '1.0133rem'
             }
           }
         ]
@@ -258,9 +265,13 @@ export default {
 .index {
   .navBarTit {
     color: @white;
+    .rWith {
+       width: auto;
+       white-space: nowrap;
+    }
     .right-btn {
       position: relative;
-      padding-right: 8px;
+      padding-right: 5px;
       &.open {
         &::after {
           margin-top: -1px;

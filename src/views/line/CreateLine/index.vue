@@ -93,6 +93,7 @@ export default {
         volume: '', // 货物体积
         goodsWeight: '', // 货物重量
         carry: '', // 是否需要搬运
+        labelType: '', // 线路肥瘦标签
         dutyRemark: '' // 其他上岗要求
       },
       showModal: false,
@@ -135,6 +136,8 @@ export default {
         })
           .then(() => {
             this.$router.go(-1)
+          }).catch((err) => {
+            return err
           })
       } else {
         this.$router.go(-1)

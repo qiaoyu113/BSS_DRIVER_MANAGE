@@ -7,7 +7,7 @@
     <!-- 搜索 -->
     <form action="/">
       <van-search
-        v-model="keyWord"
+        v-model.trim="keyWord"
         show-action
         placeholder="请输入搜索关键词"
         maxlength="30"
@@ -15,7 +15,9 @@
         @clear="onCancel"
       >
         <template #action>
-          <div @click="handleSearch(keyWord)">
+          <div
+            @click="handleSearch(keyWord)"
+          >
             搜索
           </div>
         </template>
@@ -106,6 +108,9 @@ export default {
     // 搜索
     async handleSearch(keyword = '') {
       try {
+        if (!keyword) {
+          return false
+        }
         let params = {}
         keyword && (params.key = keyword)
         this.$loading(true)

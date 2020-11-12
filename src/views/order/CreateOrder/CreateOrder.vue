@@ -92,7 +92,7 @@
             <van-field
               v-if="formData.busiType === 0"
               v-model="formData.incomeGuarantee"
-              v-only-number="{min: 0, max:1000000, precision: 2}"
+              v-only-number="{min: 0, max:999999.99, precision: 2}"
               colon
               clickable
               label="收入保障（元）"
@@ -104,7 +104,7 @@
             />
             <van-field
               v-model="formData.rake"
-              v-only-number="{min: 0, max: 100, precision: 0}"
+              v-only-number="{min: 0, max: 100, precision: 1}"
               colon
               clickable
               label="抽佣比例（%）"
@@ -112,12 +112,12 @@
               placeholder="请填写0-100的数字"
               type="number"
               maxlength="5"
-              :rules="[{ required: true, message: '请填写抽佣比例' },
-                       {validator:checkPercent, message: '请填写正确的数字'}]"
+              :rules="[{ required: true, message: '请填写抽佣比例' }]"
             />
+
             <van-field
               v-model="formData.goodsAmount"
-              v-only-number="{min: 0, max: 1000000, precision: 2}"
+              v-only-number="{min: 0.01, max: 999999.99, precision: 2}"
               colon
               clickable
               label="商品金额（元）"
@@ -272,7 +272,7 @@
 
             <van-field
               v-show="formData.cooperationModel !== 1"
-              v-model="formData.plateNo"
+              v-model.trim="formData.plateNo"
               clickable
               label="车牌号"
               required
@@ -281,7 +281,7 @@
               name="plateNo"
               placeholder="请填写车牌号"
               :rules="[
-                { required: formData.cooperationModel !== 1 && formStatus === 2, message: '请填写车牌号' },{pattern:formData.cooperationModel !== 1 && formStatus === 2 ? carNoRegExp : '', message: '请填写正确的车牌号'}
+                { required: formData.cooperationModel !== 1 && formStatus === 2, message: '请填写车牌号' },{pattern:formData.cooperationModel !== 1 && formStatus === 2 ? carNoRegExpBest : '', message: '请填写正确的车牌号'}
               ]"
             />
           </van-cell-group>
@@ -385,7 +385,7 @@
 import dayjs from 'dayjs';
 import { parseTime } from '@/utils';
 import { Notify, Dialog } from 'vant';
-import { IdPattern, carNoRegExp } from '@/utils/index';
+import { IdPattern, carNoRegExpBest } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
 import PayItem from './components/PayItem';
 import SelftPicker from '@/components/SelfPicker';
@@ -570,7 +570,7 @@ export default {
   },
   created() {
     this.IdPattern = IdPattern;
-    this.carNoRegExp = carNoRegExp;
+    this.carNoRegExpBest = carNoRegExpBest;
     this.validatorNum = validatorNum;
   },
   mounted() {

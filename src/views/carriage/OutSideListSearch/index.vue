@@ -7,7 +7,7 @@
     <!-- 搜索 -->
     <form action="/">
       <van-search
-        v-model="keyWord"
+        v-model.trim="keyWord"
         show-action
         placeholder="搜索项目名称/编号"
         @search="onSearcha"
@@ -140,8 +140,11 @@ export default {
         let { data: res } = await getLineInfoListSearch(params)
         this.$loading(false)
         if (res.success) {
-          if (res.data && res.data.length > 0) {
-            this.setHistory(this.keyWord)
+          // if (res.data && res.data.length > 0) {
+          // this.setHistory(this.keyWord)
+          // }
+          if (keyword) {
+            this.setHistory(keyword)
           }
           this.lists = res.data
         } else {

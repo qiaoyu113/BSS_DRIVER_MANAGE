@@ -58,7 +58,7 @@
       @submit="onQuery"
       @reset="onReset"
     >
-      <van-field
+      <!-- <van-field
         label-width="100"
         :value="pickerNames['busiType']"
         readonly
@@ -66,7 +66,7 @@
         label="线路类型"
         placeholder="请选择"
         @click="showPickerFn('busiType')"
-      />
+      /> -->
       <van-field
         label-width="100"
         :value="pickerNames['lineBalance']"
@@ -201,6 +201,7 @@ import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getLineList } from '@/api/line'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
+import { HandlePages } from '@/utils/index'
 export default {
   name: 'LineList',
   components: {
@@ -332,16 +333,22 @@ export default {
     }
   },
   // 回来后还原
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      document.querySelector('.lineListContainer').scrollTop = vm.scrollTop
-    })
-  },
-  // 离开前保存高度
-  beforeRouteLeave(to, from, next) {
-    this.scrollTop = document.querySelector('.lineListContainer').scrollTop
-    next()
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   if (from.path === '/lineDetail') {
+  //     to.meta.keepAlive = true
+  //     next(vm => {
+  //       document.querySelector('.lineListContainer').scrollTop = vm.scrollTop
+  //     })
+  //   } else {
+  //     to.meta.keepAlive = false
+  //     next()
+  //   }
+  // },
+  // // 离开前保存高度
+  // beforeRouteLeave(to, from, next) {
+  //   this.scrollTop = document.querySelector('.lineListContainer').scrollTop
+  //   next()
+  // },
   computed: {
     minDate() {
       if (this.form.r) {
@@ -388,8 +395,8 @@ export default {
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
         this.loading = false;
-        let hasMore = result.total > this.lists.length
-        if (!hasMore) {
+        // let hasMore = result.total > this.lists.length
+        if (!result.hasMore) {
           this.finished = true
         }
       }
@@ -546,6 +553,7 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
+        this.error = false
         let params = {
           page: this.page.current,
           limit: this.page.size
@@ -568,11 +576,15 @@ export default {
         }
         let { data: res } = await getLineList(params)
         if (res.success) {
+          HandlePages(res.page)
+          !res.data && (res.data = [])
           let newLists = res.data
           let result = {
             lists: newLists,
-            total: res.page.total
+            // total: res.page.total,
+            hasMore: res.data.length === this.page.size
           }
+
           this.tabArrs.forEach(item => {
             if (item.name === this.form.lineState) {
               item.num = res.page.total

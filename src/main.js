@@ -17,9 +17,10 @@ import global_ from 'components/Global'
 import { Toast } from 'vant'
 import * as directives from '@/directives'
 import { Lazyload } from 'vant';
-import { permissionDetail } from '@/utils'
+import { permissionDetail, checkRouteIsNull } from '@/utils'
 Vue.prototype.$permissionDetail = permissionDetail
-
+Vue.prototype.$checkRouteIsNull = checkRouteIsNull
+import '@vant/touch-emulator';
 Vue.use(Lazyload);
 
 Vue.prototype.$toast = Toast

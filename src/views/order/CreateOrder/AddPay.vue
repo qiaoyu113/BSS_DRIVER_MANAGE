@@ -180,7 +180,7 @@ export default {
         useWithdrawable: 0,
         orderId: '',
         transactionId: '',
-        payDate: '',
+        payDate: new Date(),
         payType: '',
         payTypeName: '',
         money: '',

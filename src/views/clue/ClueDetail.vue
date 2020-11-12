@@ -87,6 +87,9 @@
         <div v-if="active === 0">
           <FormInfo :obj="detailInfo" />
         </div>
+        <div v-else>
+          <van-empty image="error" description="暂无内容" />
+        </div>
       </van-tab>
     </van-tabs>
   </div>
@@ -156,13 +159,13 @@ export default {
     changeTab(name, title) {
       let id = this.clueId;
       if (name === 1) {
-        console.log(1)
+        // console.log(1)
       } else if (name === 0) {
         this.getDetail(id);
       } else if (name === 2) {
-        console.log(1)
+        // console.log(1)
       } else {
-        console.log(1)
+        // console.log(1)
       }
     },
     async getDetail(id) {

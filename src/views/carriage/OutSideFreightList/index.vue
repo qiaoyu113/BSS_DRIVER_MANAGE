@@ -91,6 +91,7 @@
 <script>
 import CardItem from './components/Cardltem'
 import { wayBillAmountDetail, getProjectWayBillList } from '@/api/freight'
+import { HandlePages } from '@/utils/index'
 export default {
   name: 'Outsidefreightlist',
   components: {
@@ -311,18 +312,21 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
+        this.error = false
         const params = this.delForm(this.listQuery);
         params.page = this.page.current;
         params.limit = this.page.limit;
         let { data: res } = await getProjectWayBillList(params);
         if (res.success) {
+          !res.data && (res.data = [])
+          HandlePages(res.page)
           let newLists = res.data;
           if (!isInit) {
             newLists = this.lists.concat(newLists);
           }
           let result = {
             lists: newLists,
-            hasMore: res.page.total > newLists.length
+            hasMore: res.data.length === this.page.limit
           }
           this.tabArrs.forEach((item) => {
             if (item.name === this.listQuery.reportState) {
@@ -341,6 +345,7 @@ export default {
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
+        console.log('xxxx:', err)
         this.page.current--;
         this.loading = false;
         this.error = true;

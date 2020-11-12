@@ -213,7 +213,7 @@
   </div>
 </template>
 <script>
-import { parseTime } from '@/utils';
+import { parseTime, HandlePages } from '@/utils';
 import ListItem from './components/ListItem';
 import ClueTitle from './components/ClueTitle';
 import SelfPopup from '@/components/SelfPopup';
@@ -322,7 +322,7 @@ export default {
       changeManagerStatus: false,
       page: {
         current: 0,
-        size: 10
+        size: 20
       }
     };
   },
@@ -517,8 +517,8 @@ export default {
       } else { // 上拉加载更多
         this.lists.push(...result.lists)
         this.loading = false;
-        let hasMore = result.total > this.lists.length
-        if (!hasMore) {
+        // let hasMore = result.total > this.lists.length
+        if (!result.hasMore) {
           this.finished = true
         }
       }
@@ -548,6 +548,7 @@ export default {
     // 获取列表
     async getLists(isInit) {
       try {
+        this.error = false
         let params = {
           page: this.page.current,
           limit: this.page.size
@@ -569,10 +570,13 @@ export default {
         }
         let { data: res } = await getClueList(params)
         if (res.success) {
+          HandlePages(res.page)
+          !res.data && (res.data = [])
           let newLists = res.data
           let result = {
             lists: newLists,
-            total: res.page.total
+            // total: res.page.total,
+            hasMore: res.data.length === this.page.size
           }
           this.tabType.forEach(item => {
             if (String(item.code) === this.ruleForm.status) {
@@ -739,6 +743,9 @@ export default {
   background: @body-bg;
   background-color: @body-bg;
   position: relative;
+  .van-info{
+    transform: translate(-40%, 0);
+  }
   .top {
     margin-bottom: 5px;
     background-color: @body-bg;

@@ -85,10 +85,10 @@
             <span>是否有车</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.hasCar === true ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.hasCar) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar !== undefined">{{ newDetail.hasCar === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.hasCar !== undefined">{{ isBoolean(newDetail.hasCar) }}</span>
           </van-grid-item>
 
           <template v-if="showCurrentCarTypeStatus">
@@ -139,10 +139,10 @@
             <span>当前是否无业</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.currentHasWork) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.currentHasWork !== undefined">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+            <span v-if="newDetail.currentHasWork !== undefined">{{ isBoolean(newDetail.currentHasWork) }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -169,10 +169,10 @@
             <span>是否能承重较重搬运</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.heavyLifting) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.heavyLifting !== undefined">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.heavyLifting !== undefined">{{ isBoolean(newDetail.heavyLifting) }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -199,10 +199,10 @@
             <span>是否工作地车牌</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.isLocalPlate ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.isLocalPlate) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isLocalPlate !== undefined">{{ newDetail.isLocalPlate ? '是' : '否' }}</span>
+            <span v-if="newDetail.isLocalPlate !== undefined">{{ isBoolean(newDetail.isLocalPlate) }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -259,10 +259,10 @@
             <span>是否新能源</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.isNewEnergy === true ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.isNewEnergy) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isNewEnergy !== undefined">{{ newDetail.isNewEnergy === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.isNewEnergy !== undefined">{{ isBoolean(newDetail.isNewEnergy) }}</span>
           </van-grid-item>
         </van-grid>
       </div>
@@ -434,10 +434,10 @@
             <span>户籍类型</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.householdType === 1 ? '农村户口' : '城镇户口' }}</span>
+            <span>{{ isHouseholdTypeName(detail.householdType) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.householdType">{{ newDetail.householdType === 1 ? '农村户口' : '城镇户口' }}</span>
+            <span v-if="newDetail.householdType">{{ isHouseholdTypeName(newDetail.householdType) }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -464,10 +464,10 @@
             <span>当前是否无业</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.currentHasWork ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.currentHasWork) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.currentHasWork !== undefined">{{ newDetail.currentHasWork ? '是' : '否' }}</span>
+            <span v-if="newDetail.currentHasWork !== undefined">{{ isBoolean(newDetail.currentHasWork) }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -504,10 +504,10 @@
             <span>是否有车</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.hasCar ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.hasCar) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar !== undefined">{{ newDetail.hasCar ? '是' : '否' }}</span>
+            <span v-if="newDetail.hasCar !== undefined">{{ isBoolean(newDetail.hasCar) }}</span>
           </van-grid-item>
 
           <template v-if="currentCarTypeStatus">
@@ -548,20 +548,21 @@
             <span>是否能承担较重搬运</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.heavyLifting === true ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.heavyLifting) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.heavyLifting !== undefined">{{ newDetail.heavyLifting === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.heavyLifting !== undefined">{{ isBoolean(newDetail.heavyLifting) }}</span>
           </van-grid-item>
 
           <van-grid-item>
             <span>能否提供个人征信</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.providePersonalCredit === true ? '是' : '否' }}</span>
+            =
+            <span>{{ isBoolean(detail.providePersonalCredit) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.providePersonalCredit !== undefined">{{ newDetail.providePersonalCredit === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.providePersonalCredit !== undefined">{{ isBoolean(newDetail.providePersonalCredit) }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -598,10 +599,10 @@
             <span>是否高意向司机</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.isAdvancedIntention === true ? '是' : '否' }}</span>
+            <span>{{ isBoolean(detail.isAdvancedIntention) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isAdvancedIntention !== undefined">{{ newDetail.isAdvancedIntention === true ? '是' : '否' }}</span>
+            <span v-if="newDetail.isAdvancedIntention !== undefined">{{ isBoolean(newDetail.isAdvancedIntention) }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -672,6 +673,28 @@ export default {
     this.getTimeList(params);
   },
   methods: {
+    isBoolean(value) {
+      if ((typeof value) === 'boolean') {
+        if (value) {
+          return '是'
+        } else {
+          return '否'
+        }
+      } else {
+        return ''
+      }
+    },
+    isHouseholdTypeName(value) {
+      if ((typeof value) === 'number') {
+        if (Number(value) === 1) {
+          return '农村户口'
+        } else {
+          return '城镇户口'
+        }
+      } else {
+        return ''
+      }
+    },
     intentDrivingCarTypeStatus() {
       if (this.detail.intentDrivingCarType === 0 && this.newDetail.intentDrivingCarType === 0) {
         return false

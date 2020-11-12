@@ -10,7 +10,7 @@
       <van-search
         v-model="keyWord"
         show-action
-        placeholder="请输入搜索关键词"
+        :placeholder="placeholder ? placeholder : '请输入搜索关键词'"
         @cancel="onCancel"
         @input="onSearch"
       ></van-search>
@@ -42,6 +42,10 @@ export default {
         value: 'value',
         label: 'label'
       })
+    },
+    placeholder: {
+      type: String,
+      default: ''
     }
   },
   data() {
