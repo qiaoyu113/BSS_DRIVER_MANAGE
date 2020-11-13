@@ -102,6 +102,7 @@ export default {
     },
     // 打开picker
     showPickerFn() {
+      this.$emit('changelabel', this.pickerKey)
       this.showPicker = true
     },
     // 点击确定
