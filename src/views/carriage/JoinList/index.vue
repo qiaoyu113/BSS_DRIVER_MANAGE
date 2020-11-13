@@ -176,7 +176,6 @@ import { parseTime, HandlePages } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
 import { validatorValue } from '@/utils/validate';
-import { EventBus } from '@/utils/event-bus.js';
 export default {
   name: 'Freight',
   components: {
@@ -283,10 +282,12 @@ export default {
     this.fetchData();
   },
   activated() {
-    EventBus.$on('update', (msg) => {
-      console.log(msg)
+    this.$bus.$on('update', (msg) => {
       if (msg) {
         this.lists = [];
+        this.scrollTop = 0;
+        this.optionsType = false;
+        this.checkResult = [];
         this.onLoad(true)
       }
     });

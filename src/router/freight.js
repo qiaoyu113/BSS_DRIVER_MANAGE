@@ -20,7 +20,7 @@ export default [
   },
   {
     path: '/outsidereport',
-    name: 'outsidereport',
+    name: 'Outsidereport',
     component: resolve => require(['@/views/carriage/OutSideReport'], resolve),
     meta: {
       title: '外线批量上报运费',
@@ -29,7 +29,7 @@ export default [
   },
   {
     path: '/joinreport',
-    name: 'joinreport',
+    name: 'JoinReport',
     component: resolve => require(['@/views/carriage/JoinReport'], resolve),
     meta: {
       title: '加盟批量上报运费',
@@ -38,7 +38,7 @@ export default [
   },
   {
     path: '/outsidefreight',
-    name: 'outsidefreight',
+    name: 'Outsidefreight',
     component: resolve => require(['@/views/carriage/OutSideList'], resolve),
     meta: {
       title: '外线运费上报',
@@ -47,7 +47,7 @@ export default [
   },
   {
     path: '/outsidefreightlist',
-    name: 'outsidefreightlist',
+    name: 'Outsidefreightlist',
     component: resolve => require(['@/views/carriage/OutSideFreightList'], resolve),
     meta: {
       title: '外线运费上报',
@@ -56,7 +56,7 @@ export default [
   },
   {
     path: '/outsidedetail',
-    name: 'outsidedetail',
+    name: 'Outsidedetail',
     component: resolve => require(['@/views/carriage/OutSideDetail'], resolve),
     meta: {
       title: '外线运费详情',
@@ -65,7 +65,7 @@ export default [
   },
   {
     path: '/joinsearch',
-    name: 'joinsearch',
+    name: 'Joinsearch',
     component: resolve => require(['@/views/carriage/JoinSearch'], resolve),
     meta: {
       title: '加盟运费',
@@ -74,7 +74,7 @@ export default [
   },
   {
     path: '/outsidesearch',
-    name: 'outsidesearch',
+    name: 'Outsidesearch',
     component: resolve => require(['@/views/carriage/OutSideListSearch'], resolve),
     meta: {
       title: '外线运费上报',
@@ -83,7 +83,7 @@ export default [
   },
   {
     path: '/outsidelinesearch',
-    name: 'outsidelinesearch',
+    name: 'Outsidelinesearch',
     component: resolve => require(['@/views/carriage/OutSideLineSearch'], resolve),
     meta: {
       title: '项目名称',

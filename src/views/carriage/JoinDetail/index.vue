@@ -102,7 +102,6 @@ import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, noCa
 import { delay } from '@/utils'
 import { Toast } from 'vant';
 import { addCach } from '@/utils/mixins.js'
-import { EventBus } from '@/utils/event-bus.js';
 export default {
   name: 'Joindetail',
   mixins: [addCach],
@@ -146,7 +145,7 @@ export default {
         if (res.success) {
           this.$loading(false)
           Toast.success('上报成功');
-          EventBus.$emit('update', '1')
+          this.$bus.$emit('update', '1')
           this.show = false;
           this.$router.back(-1);
         } else {
@@ -169,6 +168,7 @@ export default {
         let { data: res } = await reportMoneyBatchBySale(parmas, this.message) // 线外加盟运费
         if (res.success) {
           Toast.success('上报成功', res.data);
+          this.$bus.$emit('update', '1')
           setTimeout(() => {
             this.$router.go(-1)
           }, delay);
@@ -220,7 +220,7 @@ export default {
           let { data: res } = await noCarBatchByGM(ids, this.message)
           if (res.success) {
             this.show = false;
-            EventBus.$emit('update', '1')
+            this.$bus.$emit('update', '1')
             Toast.success('运费上报成功');
             setTimeout(() => {
               this.$router.go(-1)

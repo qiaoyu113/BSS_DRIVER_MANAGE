@@ -7,11 +7,12 @@ export const addCach = {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.originComponent = from
+      if (from.meta.keepAlive) { vm.originComponent = from }
     })
   },
   beforeRouteLeave(to, from, next) {
-    if (this.originComponent.name === to.name && this.cachedViews.includes(to.name)) {
+    // if (this.originComponent.name === to.name && this.cachedViews.includes(to.name)) {
+    if (this.cachedViews.includes(to.name)) {
       to.meta.isCach = true
     } else {
       if (this.originComponent && this.originComponent.meta) {

@@ -293,6 +293,15 @@ export default {
       return this.$route.meta.title;
     }
   },
+  activated() {
+    this.$bus.$on('update', (msg) => {
+      if (msg) {
+        this.lists = [];
+        this.scrollTop = 0;
+        this.onLoad(true)
+      }
+    });
+  },
   mounted() {
     // 请求字典
     this.fetchData();
@@ -300,14 +309,12 @@ export default {
   // 回来后还原
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      console.log(vm.scrollTop)
       document.querySelector('.trylist').scrollTop = vm.scrollTop
     })
   },
   // 离开前保存高度
   beforeRouteLeave(to, from, next) {
     this.scrollTop = document.querySelector('.trylist').scrollTop
-    console.log(this.scrollTop)
     next()
   },
   methods: {
