@@ -305,8 +305,8 @@ export default {
         })
         if (res.success) {
           this.$toast.success('创建试跑成功');
-          this.$bus.$emit('update', '1')
           setTimeout(() => {
+            this.$bus.$emit('update', '1')
             this.$router.go(-1);
             // this.$router.push('/try-run')
           }, delay);

@@ -145,9 +145,11 @@ export default {
         if (res.success) {
           this.$loading(false)
           Toast.success('上报成功');
-          this.$bus.$emit('update', '1')
           this.show = false;
-          this.$router.back(-1);
+          setTimeout(() => {
+            this.$bus.$emit('update', '1')
+            this.$router.go(-1)
+          }, delay);
         } else {
           this.error = true;
           this.$loading(false)
@@ -168,8 +170,8 @@ export default {
         let { data: res } = await reportMoneyBatchBySale(parmas, this.message) // 线外加盟运费
         if (res.success) {
           Toast.success('上报成功', res.data);
-          this.$bus.$emit('update', '1')
           setTimeout(() => {
+            this.$bus.$emit('update', '1')
             this.$router.go(-1)
           }, delay);
         } else {
@@ -220,9 +222,9 @@ export default {
           let { data: res } = await noCarBatchByGM(ids, this.message)
           if (res.success) {
             this.show = false;
-            this.$bus.$emit('update', '1')
             Toast.success('运费上报成功');
             setTimeout(() => {
+              this.$bus.$emit('update', '1')
               this.$router.go(-1)
             }, delay);
           } else {

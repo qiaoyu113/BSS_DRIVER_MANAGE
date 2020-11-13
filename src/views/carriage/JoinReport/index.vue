@@ -175,8 +175,8 @@ export default {
         let { data: res } = await reportMoneyBatchByGM(parmas, this.message)
         if (res.success) {
           Toast.success('运费上报成功'); // 全部批量上报
-          this.$bus.$emit('update', '1')
           setTimeout(() => {
+            this.$bus.$emit('update', '1')
             this.$router.back(-1)
           }, delay);
         } else {
@@ -206,8 +206,8 @@ export default {
         let { data: res } = await noCarBatchByGM(arr, this.message)
         if (res.success) {
           Toast.success('运费上报成功');
-          this.$bus.$emit('update', '1')
           setTimeout(() => {
+            this.$bus.$emit('update', '1')
             this.$router.back(-1)
           }, delay);
         } else {
