@@ -89,6 +89,7 @@ export default {
     },
     // 打开picker
     showPickerFn() {
+      this.$emit('changelabel', this.pickerKey)
       this.showPicker = true
       if (this.isFirst) { // 第一次回显
         setTimeout(() => {
@@ -102,7 +103,7 @@ export default {
       this.label = obj[this.props.label]
       this.form[this.pickerKey] = obj[this.props.value]
       this.index = index
-      this.showPicker = false
+      this.showPicker = false;
     }
   }
 }
