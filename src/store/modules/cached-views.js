@@ -37,7 +37,6 @@ export default {
   },
   getters: {
     cachedViews(state) {
-      console.log(state);
       return state.cachedViews
     },
     visitedViews(state) {

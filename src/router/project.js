@@ -5,7 +5,7 @@ export default [
     component: resolve => require(['@/views/project/List'], resolve),
     meta: {
       title: '项目管理',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {
