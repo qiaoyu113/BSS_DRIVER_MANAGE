@@ -42,5 +42,16 @@ export default [
       // auth: true,
       // keepAlive: true
     }
+  },
+  {
+    path: '/resetPwd',
+    name: 'ResetPwd',
+    // component: () => import(/* webpackChunkName: "login" */ 'views/user/Login.vue'),
+    component: resolve => require(['@/views/user/ResetPwd'], resolve),
+    meta: {
+      title: '修改密码'
+      // auth: true,
+      // keepAlive: true
+    }
   }
 ]

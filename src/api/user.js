@@ -135,13 +135,22 @@ export function getMediaIdOfActivationQrCode(data) {
   })
 }
 // -------------------------szjw 2.1-----------------------
-
+// http://szjw-domain-base.m1.yunniao.cn/v2/base/user/updateUserPwd
 // let prefix = '/mock/25'
 let prefix = '/auth'
 // 账号登录
 export function loginByAccount(data) {
   return request({
     url: `${prefix}/v1/auth/bss/getToken`,
+    method: 'post',
+    data
+  })
+}
+
+// 修改密码
+export function updateUserPwd(data) {
+  return request({
+    url: '/base/v2/base/user/updateUserPwd',
     method: 'post',
     data
   })
