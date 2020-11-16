@@ -313,7 +313,7 @@ export default {
 <style lang='less' scoped>
 .driverSearch {
   .list {
-    padding: 5px 15px 0 15px;
+    // padding: 5px 15px 0 15px;
     box-sizing: border-box;
   }
   .bottomBtn {
