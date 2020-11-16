@@ -1,5 +1,5 @@
 <template>
-  <div class="CardItemcontainer" @click="handleDetailClick(obj)">
+  <div class="CardItemcontainerOut" @click="handleDetailClick(obj)">
     <h4 class="title ellipsis">
       {{ obj.projectName }}
     </h4>
@@ -114,7 +114,7 @@ export default {
 </script>
 
 <style lang='scss'>
-.CardItemcontainer {
+.CardItemcontainerOut {
   padding: 5px 15px 0px;
   background: #fff;
   width: 100%;
@@ -229,7 +229,7 @@ export default {
 </style>
 
 <style scoped>
-  .CardItemcontainer >>> .van-button--default  {
+  .CardItemcontainerOut >>> .van-button--default  {
     color:#838A9D;
     background: #fff;
     width: 70px;
