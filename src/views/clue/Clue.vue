@@ -773,14 +773,14 @@ export default {
     background-color: @body-bg;
   }
   .list {
-    margin-top: 5px;
-    padding: 0 15px;
+    // margin-top: 5px;
+    // padding: 0 15px;
     box-sizing: border-box;
     flex: 1;
     overflow: auto;
   }
   .items {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 }
 .padd {

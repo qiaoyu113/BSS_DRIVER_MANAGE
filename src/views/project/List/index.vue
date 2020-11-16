@@ -487,6 +487,7 @@ export default {
 
 <style lang='scss' scoped>
 .projectListContainer {
+  background:#f9f9f9;
   .headerRight {
     display: flex;
     flex-direction: row;
@@ -509,7 +510,7 @@ export default {
   }
   .lineHeight {
     background: #F9F9F9;
-    height:10px;
+    height:5px;
     width:100%;
   }
 }
