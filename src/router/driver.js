@@ -9,7 +9,7 @@ export default [
   },
   {
     path: '/driverlist',
-    name: 'driverlist',
+    name: 'DriverList',
     component: resolve => require(['@/views/driver/DriverList/DriverList'], resolve),
     meta: {
       title: '司机管理',

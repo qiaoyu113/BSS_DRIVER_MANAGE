@@ -145,7 +145,7 @@ import { getProjectList } from '@/api/project'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
 import { HandlePages } from '@/utils/index'
 export default {
-  name: 'ProjectList',
+  name: 'Project',
   components: {
     CardItem,
     SelfPopup,
@@ -232,22 +232,16 @@ export default {
     }
   },
   // 回来后还原
-  // beforeRouteEnter(to, from, next) {
-  //   if (from.path === '/projectDetail') {
-  //     to.meta.keepAlive = true
-  //     next(vm => {
-  //       document.querySelector('.projectListContainer').scrollTop = vm.scrollTop
-  //     })
-  //   } else {
-  //     to.meta.keepAlive = false
-  //     next()
-  //   }
-  // },
-  // // 离开前保存高度
-  // beforeRouteLeave(to, from, next) {
-  //   this.scrollTop = document.querySelector('.projectListContainer').scrollTop
-  //   next()
-  // },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.projectListContainer').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.projectListContainer').scrollTop
+    next()
+  },
   computed: {
     minDate() {
       if (this.form.r) {

@@ -202,6 +202,7 @@ import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
 import dayjs from 'dayjs';
 import { contractList, orderAbort, getOrderList } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
+import { addCach } from '@/utils/mixins.js'
 import { Dialog } from 'vant';
 export default {
   name: 'DriverDetail',
@@ -217,6 +218,7 @@ export default {
     OrderInfo,
     ContractInfoItem
   },
+  mixins: [addCach],
   data() {
     return {
       active: 0,
