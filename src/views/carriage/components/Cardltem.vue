@@ -125,11 +125,11 @@ export default {
     float: right;
   }
   .textBox{
-    padding: 10px;
+    padding: 10px 0;
   }
   .text {
     font-size: 13px;
-    padding: 0 10px;
+    // padding: 0 10px;
     box-sizing: border-box;
     color: #3C4353;
     margin: 0;

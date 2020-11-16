@@ -35,7 +35,7 @@
         error-text="请求失败，点击重新加载"
         @load="onLoad"
       >
-        <div v-for="sub in lists" :key="sub.id">
+        <div v-for="sub in lists" :key="sub.id" class="clientList">
           <CardItem :obj="sub" />
           <div class="lineHeight"></div>
         </div>
@@ -432,6 +432,7 @@ export default {
 
 <style lang='scss' scoped>
 .customerListContainer {
+  background:#f9f9f9;
   .headerRight {
     display: flex;
     flex-direction: row;
@@ -454,7 +455,7 @@ export default {
   }
   .lineHeight {
     background: #F9F9F9;
-    height:10px;
+    height:5px;
     width:100%;
   }
 }
