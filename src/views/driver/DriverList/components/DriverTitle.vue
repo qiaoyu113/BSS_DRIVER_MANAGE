@@ -102,7 +102,7 @@ export default {
 </style>
 <style scoped>
 .van-search{
-  padding: 5px 10px 5px 15px;
+  /* padding: 5px 10px 5px 15px; */
   box-sizing: border-box;
 }
 .DriverTitle >>> .van-nav-bar__right:active{

@@ -53,7 +53,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('workCity')"
+          @changelabel="changeLabel"
         />
         <selftPicker
           :props="keyValue"
@@ -68,7 +68,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('sourceChannel')"
+          @changelabel="changeLabel"
         />
         <van-field
           v-model="formData.whereKnow"
@@ -98,7 +98,7 @@
           clearable
           required
           placeholder="请输入"
-          :rules="[{ required: true, message: '请填写司机手机号' },{pattern:phonePattern, message: '请输入正确的手机号'},{validator:phonePatternIshas, message: '该手机号暂不能使用'}]"
+          :rules="[{ required: true, message: '请输入司机手机号！' },{pattern:phonePattern, message: '手机号码格式错误，请重新输入！'},{validator:phonePatternIshas, message: '该手机号已占用！'}]"
           @focus="copyData('phone')"
         />
         <van-field
@@ -126,7 +126,7 @@
             { required: true, message: '请选择' },
             { validator:validatorAddress, message: '请选择完整现居住地址' }
           ]"
-          @click.native="copyArea('liveaddress')"
+          @changelabel="changeLabel"
         />
         <self-area
           picker-key="intentWork"
@@ -140,7 +140,7 @@
             { required: true, message: '请选择' },
             { validator:validatorAddress, message: '请选择完整工作区域' }
           ]"
-          @click.native="copyArea('intentWork')"
+          @changelabel="changeLabel"
         />
         <selftPicker
           :props="keyValue"
@@ -169,7 +169,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('intentCargoType')"
+          @changelabel="changeLabel"
         />
         <selftPicker
           :props="keyValue"
@@ -184,7 +184,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('intentWorkDuration')"
+          @changelabel="changeLabel"
         />
         <van-field
           v-model="formData.originIncomeAvg"
@@ -286,7 +286,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('currentHasWork')"
+          @changelabel="changeLabel"
         />
         <van-field
           v-model="formData.drivingAge"
@@ -325,7 +325,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('drivingLicenceType')"
+          @changelabel="changeLabel"
         />
         <selftPicker
           :props="keyValue"
@@ -340,7 +340,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('hasCar')"
+          @changelabel="changeLabel"
         />
 
         <selftPicker
@@ -357,7 +357,7 @@
           :rules="[
             { required: formData.hasCar, message: '请选择' },
           ]"
-          @click.native="copyData('currentCarType')"
+          @changelabel="changeLabel"
         />
 
         <selftPicker
@@ -374,7 +374,7 @@
           :rules="[
             { required: !formData.hasCar, message: '请选择' },
           ]"
-          @click.native="copyData('intentDrivingCarType')"
+          @changelabel="changeLabel"
         />
         <selftPicker
           :props="keyValue"
@@ -403,7 +403,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('heavyLifting')"
+          @changelabel="changeLabel"
         />
         <selftPicker
           :props="keyValue"
@@ -418,7 +418,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('providePersonalCredit')"
+          @changelabel="changeLabel"
         />
         <selftPicker
           :props="keyValue"
@@ -475,7 +475,7 @@
           :rules="[
             { required: true, message: '请选择' },
           ]"
-          @click.native="copyData('isAdvancedIntention')"
+          @changelabel="changeLabel"
         />
         <van-field
           v-model="formData.remarks"
@@ -705,6 +705,13 @@ export default {
     this.fetchData();
   },
   methods: {
+    changeLabel(val) {
+      if (val === 'householdAddress' || val === ' liveaddress' || val === 'intentWork') {
+        this.copyArea(val)
+      } else {
+        this.copyData(val)
+      }
+    },
     validatorAddress(val) {
       let arr = val.split('/');
       if (

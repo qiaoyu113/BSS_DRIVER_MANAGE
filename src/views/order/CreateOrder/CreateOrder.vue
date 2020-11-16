@@ -265,8 +265,8 @@
                   required
                   readonly
                   colon
-                  :rules="[{ required: formData.supplier && formData.cooperationModel === 1 && formStatus === 2, message: '请选择' }]"
                 />
+                <!-- :rules="[{ required: formData.supplier && formData.cooperationModel === 1 && formStatus === 2, message: '请选择' }]" -->
               </div>
             </template>
 

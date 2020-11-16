@@ -4,8 +4,8 @@ export default [
     name: 'TryRun',
     component: resolve => require(['@/views/tryRun/TryRun'], resolve),
     meta: {
-      title: '试跑在跑'
-      // keepAlive: true
+      title: '试跑在跑',
+      keepAlive: true
     }
   },
   {
@@ -13,7 +13,8 @@ export default [
     name: 'TryRunSearch',
     component: resolve => require(['@/views/tryRun/Search'], resolve),
     meta: {
-      title: '试跑在跑'
+      title: '试跑在跑',
+      keepAlive: false
     }
   },
   {
@@ -21,7 +22,8 @@ export default [
     name: 'TryRunList',
     component: resolve => require(['@/views/tryRun/TryRunList'], resolve),
     meta: {
-      title: '试跑在跑'
+      title: '试跑在跑',
+      keepAlive: false
     }
   },
   {
@@ -29,7 +31,8 @@ export default [
     name: 'CreateRun',
     component: resolve => require(['@/views/tryRun/CreateRun'], resolve),
     meta: {
-      title: '创建试跑'
+      title: '创建试跑',
+      keepAlive: false
     }
   },
   {
@@ -37,7 +40,8 @@ export default [
     name: 'ToTryRun',
     component: resolve => require(['@/views/tryRun/ToTryRun'], resolve),
     meta: {
-      title: '转试跑'
+      title: '转试跑',
+      keepAlive: false
     }
   },
   {
@@ -45,7 +49,8 @@ export default [
     name: 'OffTry',
     component: resolve => require(['@/views/tryRun/OffTry'], resolve),
     meta: {
-      title: '转掉线'
+      title: '转掉线',
+      keepAlive: false
     }
   },
   {
@@ -53,7 +58,8 @@ export default [
     name: 'TryRunDetail',
     component: resolve => require(['@/views/tryRun/TryRunDetail'], resolve),
     meta: {
-      title: '详情页'
+      title: '详情页',
+      keepAlive: false
     }
   }
 ]

@@ -275,7 +275,7 @@ export default {
         current: 0,
         size: 10
       },
-      scrollTop: ''
+      scrollTop: 0
     };
   },
   computed: {
@@ -294,6 +294,17 @@ export default {
         }
       }
     }
+  },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.list').parentNode.scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.list').parentNode.scrollTop
+    next()
   },
   watch: {
     active(val) {
@@ -610,12 +621,12 @@ export default {
     background-color: @body-bg;
   }
   .list {
-    margin-top: 5px;
-    padding: 0 15px;
+    // margin-bottom: 10px;
+    // padding: 0 15px;
     box-sizing: border-box;
   }
   .items {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 }
 .padd {
