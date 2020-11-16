@@ -176,7 +176,6 @@ import { parseTime, HandlePages } from '@/utils'
 import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
 import { validatorValue } from '@/utils/validate';
-import { EventBus } from '@/utils/event-bus.js';
 export default {
   name: 'Freight',
   components: {
@@ -246,8 +245,7 @@ export default {
       options: [],
       type: '',
       cityList: [],
-      checkedNum: 0,
-      scrollTop: 0
+      checkedNum: 0
     }
   },
   // // 回来后还原

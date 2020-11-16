@@ -123,7 +123,6 @@ export default {
      * 线路详情
      */
     onClickLeft() {
-      EventBus.$emit('update', '1')
       this.$router.go(-1)
     },
     footer_confirm() {
