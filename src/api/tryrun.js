@@ -84,7 +84,8 @@ export function GetDetails(params) {
 // 线路查询
 export function GetLine(data) {
   return request({
-    url: `${prefix}/line_center/v2/line/lineInfo/fuzzyCheck`,
+    // url: `${prefix}/line_center/v2/line/lineInfo/fuzzyCheck`,
+    url: `${prefix}/line_center/v2/line/lineInfo/runTestFuzzyCheck`,
     // url: '/mock/32/v2/line/lineInfo/fuzzyCheck',
     method: 'post',
     data
