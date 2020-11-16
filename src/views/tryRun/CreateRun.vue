@@ -47,12 +47,14 @@
 <script>
 import StepOne from './components/StepOne';
 import StepTwo from './components/StepTwo';
+import { addCach } from '@/utils/mixins.js'
 export default {
   name: 'CreateRun',
   components: {
     StepOne,
     StepTwo
   },
+  mixins: [addCach],
   computed: {
     title() {
       return this.$route.meta.title;

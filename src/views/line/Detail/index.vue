@@ -95,6 +95,7 @@ import VideoPreview from './components/VideoPreview'
 import { Dialog, ActionSheet } from 'vant';
 import dayjs from 'dayjs'
 import { getLineDetail, undercarriage, judgeMeetConditions } from '@/api/line'
+import { addCach } from '@/utils/mixins.js'
 export default {
   components: {
     ImagePreview,
@@ -102,6 +103,7 @@ export default {
     [Dialog.Component.name]: Dialog.Component,
     [ActionSheet.Component]: ActionSheet.Component
   },
+  mixins: [addCach],
   data() {
     return {
       activeNames: ['1'],

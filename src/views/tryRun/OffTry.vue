@@ -95,8 +95,10 @@
 import { parseTime } from '@/utils'
 import { GetDictionaryList } from '@/api/common'
 import { SwitchTryRun } from '@/api/tryrun'
+import { addCach } from '@/utils/mixins.js'
 export default {
   name: 'OffTry',
+  mixins: [addCach],
   data() {
     return {
       form: {
@@ -202,6 +204,7 @@ export default {
               // 去激活线路页面
               const lineId = this.lineId;
               const isStable = this.isStable;
+              this.$bus.$emit('update', '1')
               this.$router.push({
                 path: '/activeLine',
                 query: {
@@ -211,6 +214,7 @@ export default {
               })
             })
             .catch(() => {
+              this.$bus.$emit('update', '1')
               // 关闭弹窗
               this.onClickLeft()
             });

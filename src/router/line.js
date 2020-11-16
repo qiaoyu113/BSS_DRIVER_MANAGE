@@ -1,11 +1,11 @@
 export default [
   {
     path: '/line',
-    name: 'line',
+    name: 'LineList',
     component: resolve => require(['@/views/line/List'], resolve),
     meta: {
       title: '线路管理',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {

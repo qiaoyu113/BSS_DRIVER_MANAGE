@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <transition :name="transitionName">
-      <!-- <keep-alive :include="cachedViews"> -->
-      <keep-alive>
+      <keep-alive :include="cachedViews">
+        <!-- <keep-alive> -->
         <router-view v-if="$route.meta.keepAlive" class="router"></router-view>
       </keep-alive>
     </transition>
@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-// import { mapState } from 'vuex';
+import { mapState } from 'vuex';
 import defaultSetting from './settings'
 export default {
   name: 'App',
@@ -25,9 +25,9 @@ export default {
     }
   },
   computed: {
-    // ...mapState({
-    //   cachedViews: (state) => state['cached-views'].cachedViews
-    // }),
+    ...mapState({
+      cachedViews: (state) => state['cached-views'].cachedViews
+    }),
     transitionName() {
       if (defaultSetting.needPageTrans) {
         return this.$store.state.direction
@@ -35,19 +35,24 @@ export default {
       return ''
     }
   },
-  // watch: {
-  //   $route() {
-  //     const { name } = this.$route
-  //     if (name === 'index') {
-  //       this.$store.dispatch('cached-views/delAllViews')
-  //     }
-  //     if (name) {
-  //       this.$store.dispatch('cached-views/addView', this.$route)
-  //     }
-  //   }
-  // },
+  watch: {
+    $route(to, from) {
+      const { name } = this.$route
+      if (name === 'index') {
+        this.$store.dispatch('cached-views/delAllViews')
+        return false
+      }
+      if (name) {
+        this.$store.dispatch('cached-views/addView', this.$route)
+      }
+      if (from.name !== 'index' && to.meta.keepAlive && !to.meta.isCach) {
+        this.$store.dispatch('cached-views/delView', this.$route)
+        to.meta.isCach = false
+      }
+    }
+  },
   mounted() {
-    if (window.location.host !== 'firmiana-wechat.yunniao.cn') {
+    if (window.location.host !== 'szjw-bss-h5.yunniao.cn') {
       this.version = this.GLOBAL.version
     }
   },

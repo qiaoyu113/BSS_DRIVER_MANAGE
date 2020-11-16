@@ -203,6 +203,7 @@ import { getLineList } from '@/api/line'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
 import { HandlePages } from '@/utils/index'
 export default {
+  name: 'LineList',
   components: {
     CardItem,
     SelfPopup,
