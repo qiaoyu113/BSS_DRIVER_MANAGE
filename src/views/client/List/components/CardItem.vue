@@ -38,7 +38,7 @@
       </div>
     </div>
     <div v-permission="['/v2/line/customer/findCustomerInfo']" class="detail van-hairline--top">
-      <van-button type="default" round hairline>
+      <van-button round plain size="small" class="routeBtn" type="default">
         详情
       </van-button>
     </div>
@@ -94,7 +94,7 @@ export default {
   }
   .text {
     margin-top:0px;
-    margin-bottom:8px;
+    margin-bottom:3px;
     font-size: 13px;
     color: #3C4353;
   }
@@ -104,6 +104,7 @@ export default {
     flex-direction: column;
     .time {
       margin: 0px;
+      margin-top: 3px;
       font-size: 11px;
       color: #838A9D;
       line-height: 20px;
@@ -122,6 +123,19 @@ export default {
     padding: 7px 0px;
     text-align: center;
     border-top-color:#D8D8D8;
+    .routeBtn{
+      width: 70px;
+      height: 22px;
+      padding: 2px 0;
+      line-height: normal;
+      color: #838a9d;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 12px;
+      &::after {
+        border-radius: 20px;
+      }
+    }
   }
 }
 

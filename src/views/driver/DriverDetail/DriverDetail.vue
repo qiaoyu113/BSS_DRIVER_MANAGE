@@ -614,6 +614,7 @@ export default {
     }
     .itemInfo {
       border: none;
+      padding: 0 0 8px 0;
     }
     .itemBox {
       margin-bottom: 0;
@@ -653,6 +654,7 @@ export default {
   margin: 0;
   border: none;
   font-size: 13px;
+  line-height: normal;
 }
 .detailTab >>> .van-cell::after {
   border: none;

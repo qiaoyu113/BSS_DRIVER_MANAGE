@@ -4,7 +4,7 @@
       {{ obj.lineName }} ({{ obj.lineId }})
     </h4>
     <div class="status">
-      <van-tag type="primary" plain round color="#FFFFFF" text-color="#FFA000" class="tag">
+      <van-tag type="primary" plain round color="#FFFFFF" text-color="#FFA000" class="tag2">
         {{ obj.lineStateName | DataIsNull }}
       </van-tag>
     </div>
@@ -42,7 +42,7 @@
       </template>
     </div>
     <div v-permission="['/v2/line/lineInfo/detail']" class="detail van-hairline--top">
-      <van-button type="default" round hairline>
+      <van-button round plain size="small" class="routeBtn" type="default">
         详情
       </van-button>
     </div>
@@ -111,17 +111,44 @@ export default {
   }
   .text {
     margin-top:0px;
-    margin-bottom:8px;
+    margin-bottom:3px;
     font-size: 13px;
     color: #3C4353;
   }
   .car {
-    margin-bottom: 12.5px;
+    margin-bottom: 10px;
+    margin-top:8px;
+  }
+  .tag2 {
+    height: 20px;
+    padding: 0 11px;
+    font-size: 12px;
+    line-height: normal;
+    border: 1px solid #ffa000;
+    &::before {
+      display: none;
+    }
+    & + .tag {
+      margin-left: 10px;
+    }
   }
   .detail {
     padding: 7px 0px;
     text-align: center;
     border-top-color:#D8D8D8;
+    .routeBtn{
+      width: 70px;
+      height: 22px;
+      padding: 2px 0;
+      line-height: normal;
+      color: #838a9d;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 12px;
+      &::after {
+        border-radius: 20px;
+      }
+    }
   }
 }
 
