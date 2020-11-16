@@ -5,7 +5,7 @@ export default [
     component: resolve => require(['@/views/client/List'], resolve),
     meta: {
       title: '客户管理',
-      keepAlive: true
+      keepAlive: false
     }
   },
   {
