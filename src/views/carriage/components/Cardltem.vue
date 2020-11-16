@@ -1,5 +1,5 @@
 <template>
-  <div class="CardItemcontainer" @click="handleDetailClick(obj.wayBillId)">
+  <div class="CardItemcontainerJoin" @click="handleDetailClick(obj.wayBillId)">
     <h4 class="title ellipsis">
       {{ obj.departureDate |formatDate }} /{{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style lang='scss'>
-.CardItemcontainer {
+.CardItemcontainerJoin {
   padding: 5px 15px 0px;
   background: #fff;
   width: 100%;
@@ -220,7 +220,7 @@ export default {
 </style>
 
 <style scoped>
-  .CardItemcontainer >>> .van-button--default  {
+  .CardItemcontainerOut >>> .van-button--default  {
     color:#838A9D;
     background: #fff;
     width: 70px;
