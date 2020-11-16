@@ -47,7 +47,7 @@
           :value="item.createDate | parseTime"
         />
       </div>
-      <div class="detailBtn">
+      <div class="detailBtn van-hairline--top">
         <van-button round plain size="small" class="routeBtn" @click.stop="goRouter">
           详情
         </van-button>
@@ -138,11 +138,21 @@ export default {
     margin-right: 10px;
   }
   .detailBtn{
+    // margin: 0 15px;
+    height: 32px;
     text-align: center;
     .routeBtn{
-      margin: 5px 0;
       width: 70px;
-      height: 25px;
+      height: 22px;
+      padding: 2px 0;
+      line-height: normal;
+      color: #838a9d;
+      border-radius: 10px;
+      text-align: center;
+      font-size: @font-size-sm;
+      &::after {
+        border-radius: 20px;
+      }
     }
   }
 }

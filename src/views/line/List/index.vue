@@ -667,7 +667,7 @@ export default {
 
 <style scoped>
   .ListContainer >>> .van-tab__text {
-    font-size: 12px;
+    font-size: 13px;
     color: #3C4353;
   }
 </style>
