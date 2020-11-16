@@ -81,11 +81,17 @@ export default {
 
 <style lang='scss' scoped>
 .CardItemcontainer {
+  margin-top:5px;
   padding: 0px 15px;
+  box-sizing: border-box;
+  background: #fff;
   .title {
-    margin: 10px 0px;
+    margin: 0;
+    padding:10px 0;
+    box-sizing: border-box;
     font-size: 14px;
     color: #3C4353;
+    font-weight: bold;
   }
   .text {
     margin-top:0px;
