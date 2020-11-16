@@ -42,7 +42,7 @@ export default [
     component: resolve => require(['@/views/carriage/OutSideList'], resolve),
     meta: {
       title: '外线运费上报',
-      keepAlive: true
+      keepAlive: false
     }
   },
   {
@@ -51,7 +51,7 @@ export default [
     component: resolve => require(['@/views/carriage/OutSideFreightList'], resolve),
     meta: {
       title: '外线运费上报',
-      keepAlive: true
+      keepAlive: false
     }
   },
   {
