@@ -127,7 +127,7 @@ export default {
         oldMsg: '请输入原密码',
         newMsg: '请输入新密码',
         regMsg: '再次确认新密码',
-        notSpecification: '新密码不符合规则',
+        notSpecification: '新密码必须为8-16位的数字+大写字母+小写字母',
         notEqual: '确认新密码与新密码不一致'
       },
       showPWd: false
@@ -146,7 +146,15 @@ export default {
   },
   methods: {
     onClickLeft() {
-      if (this.$route.params.isLogin) return
+      if (this.$route.params.isLogin) {
+        this.$store.commit('user/SETRESETPWD', false)
+        localStorage.clear();
+        this.$router.replace({
+          name: 'login'
+        })
+      }
+      // if (this.$route.params.isLogin) return
+
       this.$router.replace({ path: '/mycenter' })
     },
     async resetPwd() {
@@ -180,7 +188,7 @@ export default {
     validateReg(str = '') {
       // const str = ''
       const notAZ = /([A-Z])([a-z])/
-      const regPWd = /^.*(?=.{8,16})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/
+      const regPWd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z0-9]{8,16}$/
       var s = str.substring(0, 2)
       if (notAZ.test(s)) {
         s = s.toUpperCase()
@@ -211,6 +219,9 @@ export default {
         this.$once('hook:beforeDestroy', () => {
           window.clearTimeout(timeR)
         }, 1500)
+        if (!data) {
+          this.$fail('密码修改失败，请稍后重试')
+        }
       } catch (error) {
         return error
       } finally {
