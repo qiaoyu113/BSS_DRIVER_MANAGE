@@ -59,6 +59,18 @@
           maxlength="150"
           placeholder="司机可见/请输入不超过150字"
         />
+        <self-calendar
+          label="配送日期"
+          placeholder="请选择配送日期区间"
+          :max-date="maxDate1"
+          :min-date="minDate1"
+          clickable
+          is-link
+          required
+          picker-key="time"
+          :rules="[{required: true, message: '请选择配送日期区间'}]"
+          :form="form"
+        />
       </van-cell-group>
       <div class="btn-container">
         <van-button
@@ -108,8 +120,12 @@ import { parseTime, phoneRegExp, delay } from '@/utils'
 import { GetPersonInfo, TryRun, FollowCar, GetLineDetail, ToTryRun, GetDetails } from '@/api/tryrun';
 import { driverDetail } from '@/api/driver'
 import dayjs from 'dayjs'
+import SelfCalendar from './SelfCalendar'
 export default {
   name: 'StepTwo',
+  components: {
+    SelfCalendar
+  },
   props: {
     to: {
       type: String,
@@ -123,12 +139,15 @@ export default {
       showActionSheet: false,
       minDate: new Date(+new Date() - 86400000 * 365 * 10),
       maxDate: new Date(+new Date() + 86400000 * 365 * 10),
+      minDate1: new Date(+new Date() - 86400000 * 20), // 配送时间开始日期
+      maxDate1: new Date(),
       options: [],
       form: {
         receptionist: '', // 到仓接待人
         receptionistPhone: '', // 到仓接待人手机号
         arrivalTime: '', // 到仓时间
-        preJobAdvice: ''// 岗前叮嘱
+        preJobAdvice: '', // 岗前叮嘱
+        time: []// 配送时间
       },
       operateFlag: '', // 操作标识  跟车 followCar   试跑tryRun   转试跑switchTryRun   转掉线switchDropped
       formStr: {
@@ -284,10 +303,16 @@ export default {
      * 点击提交
      */
     async onSubmit() {
+      return false
+      // eslint-disable-next-line no-unreachable
+      let deliveryStartDate = new Date(this.form.time[0]).setHours(0, 0, 0)
+      let deliveryEndDate = new Date(this.form.time[1]).setHours(23, 59, 59)
       let sub = {
         followCar: FollowCar,
         tryRun: TryRun,
-        switchTryRun: ToTryRun
+        switchTryRun: ToTryRun,
+        deliveryStartDate,
+        deliveryEndDate
       }
       const SubmintForm = sub[this.operateFlag];
       try {
@@ -308,13 +333,15 @@ export default {
           setTimeout(() => {
             this.$bus.$emit('update', '1')
             this.$router.go(-1);
-            // this.$router.push('/try-run')
           }, delay);
+        // eslint-disable-next-line no-unreachable
         } else {
           this.$toast.fail(res.errorMsg)
         }
+      // eslint-disable-next-line no-unreachable
       } catch (err) {
         console.log(`${err}`)
+      // eslint-disable-next-line no-unreachable
       } finally {
         this.$loading(false)
       }

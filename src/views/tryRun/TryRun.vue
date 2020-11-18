@@ -8,6 +8,9 @@
         @click-left="onClickLeft"
       >
         <template #right>
+          <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit mR5" @click="onCreateHistoryRun">
+            创建历史试跑
+          </div>
           <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit" @click="onCreateRun">
             创建试跑
           </div>
@@ -331,6 +334,10 @@ export default {
               dictLabel: '数据迁移掉线',
               dictValue: '6'
             })
+            data.data.dropped_reason.push({
+              dictLabel: '创建历史试跑',
+              dictValue: '7'
+            })
             this.carList = data.data.Intentional_compartment;
             this.whyList = data.data.dropped_reason;
           }
@@ -498,6 +505,12 @@ export default {
     onCreateRun() {
       this.$router.push('/create-run');
     },
+    /**
+     * 创建历史试跑
+     */
+    onCreateHistoryRun() {
+      this.$router.push('/create-history-run');
+    },
     // 状态切换
     async handleTabChange(tab) {
       this.lists = [];
@@ -570,6 +583,9 @@ export default {
   .navBarTit {
     color: @white;
   }
+  .mR5 {
+    margin-right: 5px;
+  }
   .search {
     position: relative;
     padding-right: 20px;
@@ -600,5 +616,11 @@ export default {
       height: 74px;
     }
   }
+}
+</style>
+
+<style scoped>
+.TryRun >>> .van-nav-bar__right {
+  padding-right:5px;
 }
 </style>

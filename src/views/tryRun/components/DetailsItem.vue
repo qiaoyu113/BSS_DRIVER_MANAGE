@@ -168,7 +168,7 @@
           :title="item.recordFlag"
           :name="item.id + '-' + index"
         >
-          <template v-if="item.recordFlag === '试跑意向记录'">
+          <template v-if="item.recordFlag === '试跑记录'">
             <!-- 试跑意向记录 -->
             <van-cell
               title="操作人："
@@ -179,7 +179,22 @@
               :value="item.createDate | DataIsNull"
             ></van-cell>
           </template>
-          <template v-else-if="item.recordFlag.includes('掉线记录')">
+          <template v-if="item.recordFlag === '创建历史试跑'">
+            <!-- 创建历史试跑 -->
+            <van-cell
+              title="创建人"
+              :value="item.dealIdMessage | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="创建时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="配送时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+          </template>
+          <template v-else-if="item.recordFlag.includes('系统掉线记录')">
             <!-- 掉线 -->
             <van-cell
               title="操作人："

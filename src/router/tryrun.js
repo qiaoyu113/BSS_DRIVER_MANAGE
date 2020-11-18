@@ -36,6 +36,15 @@ export default [
     }
   },
   {
+    path: '/create-history-run',
+    name: 'CreateHistoryRun',
+    component: resolve => require(['@/views/tryRun/CreateHistoryRun'], resolve),
+    meta: {
+      title: '创建历史试跑',
+      keepAlive: false
+    }
+  },
+  {
     path: '/to-try',
     name: 'ToTryRun',
     component: resolve => require(['@/views/tryRun/ToTryRun'], resolve),

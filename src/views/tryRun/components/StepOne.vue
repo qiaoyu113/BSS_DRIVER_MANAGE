@@ -248,8 +248,8 @@ export default {
       driverList: [],
       driverDetail: {},
       actions: [
-        { name: '提交', value: '1' },
-        { name: '提交并创建试跑', value: '2' }
+        { name: '提交', value: '1' }
+        // { name: '提交并创建试跑', value: '2' }
       ],
       actionVal: ''
     };
@@ -261,7 +261,7 @@ export default {
      */
     onSelect(item) {
       this.actionVal = item.value;
-      this.$refs.submitForm.submit();
+      // this.$refs.submitForm.submit();
     },
     /**
      * 点击提交
