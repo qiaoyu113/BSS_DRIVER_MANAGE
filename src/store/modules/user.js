@@ -8,13 +8,15 @@ const LOGIN = 'LOGIN'// 获取用户信息
 const SetUserData = 'SetUserData'// 获取用户信息
 const LOGOUT = 'LOGOUT'// 退出登录、清除用户数据
 const USER_DATA = 'userDate'// 用户数据
+const SETRESETPWD = 'SETRESETPWD'
 
 export default {
   namespaced: true,
   state: {
     token: getToken() || '',
     user: JSON.parse(localStorage.getItem(USER_DATA) || null),
-    loginStatus: localStorage.getItem('LoginStatusKey') || 0
+    loginStatus: localStorage.getItem('LoginStatusKey') || 0,
+    resetPassword: false
   },
   mutations: {
     [LOGIN](state, data) {
@@ -35,6 +37,10 @@ export default {
       removeToken()
       localStorage.removeItem(USER_DATA)
       resetRouter()
+    },
+    [SETRESETPWD](state, status) {
+      console.log(state.resetPassword)
+      state.resetPassword = status
     }
 
   },
@@ -52,6 +58,7 @@ export default {
 
           res = response
         }
+        console.log(res)
         if (res.success) {
           if (!res.data.token) {
             data.$loading(false)
@@ -59,13 +66,16 @@ export default {
           }
           state.commit(LOGIN, res.data)
           state.commit(SetUserData, res.data)
-
-          setTimeout(() => {
-            const redirect = data.$route.query.redirect || '/'
-            data.$router.replace({
-              path: redirect
-            })
-          }, 20)
+          state.commit(SETRESETPWD, res.data.isWeakPwd)
+          // return
+          if (!res.data.isWeakPwd) {
+            setTimeout(() => {
+              const redirect = data.$route.query.redirect || '/'
+              data.$router.replace({
+                path: redirect
+              })
+            }, 20)
+          }
         } else {
           data.$loading(false)
           data.$fail(res.errorMsg)
@@ -100,6 +110,9 @@ export default {
     },
     user(state) {
       return state.user
+    },
+    getReset(state) {
+      return state.resetPassword
     }
   }
 }
