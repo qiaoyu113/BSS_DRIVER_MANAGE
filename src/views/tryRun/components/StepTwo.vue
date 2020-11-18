@@ -59,18 +59,47 @@
           maxlength="150"
           placeholder="司机可见/请输入不超过150字"
         />
-        <self-calendar
-          label="配送日期"
-          placeholder="请选择配送日期区间"
-          :max-date="maxDate1"
-          :min-date="minDate1"
-          clickable
-          is-link
-          required
-          picker-key="time"
-          :rules="[{required: true, message: '请选择配送日期区间'}]"
-          :form="form"
-        />
+
+        <van-cell-group class="border-none">
+          <van-field
+            readonly
+            required
+            name="lineId"
+            label="配送时间"
+          >
+            <template #input>
+              <van-row>
+                <van-col span="11">
+                  <self-calendar
+                    placeholder="配送开始日期"
+                    :max-date="startMaxDate"
+                    :min-date="startMinDate"
+                    clickable
+                    picker-key="deliveryStartDate"
+                    :form="form"
+                    :rules="[{required: true, message: '请选择配送开始日期'}]"
+                  />
+                </van-col>
+                <van-col span="2">
+                  <div class="delimiter">
+                    -
+                  </div>
+                </van-col>
+                <van-col span="11">
+                  <self-calendar
+                    placeholder="配送结束日期"
+                    :max-date="endMaxDate"
+                    :min-date="endMinDate"
+                    clickable
+                    picker-key="deliveryEndDate"
+                    :form="form"
+                    :rules="[{required: true, message: '请选择配送结束日期'}]"
+                  />
+                </van-col>
+              </van-row>
+            </template>
+          </van-field>
+        </van-cell-group>
       </van-cell-group>
       <div class="btn-container">
         <van-button
@@ -139,15 +168,14 @@ export default {
       showActionSheet: false,
       minDate: new Date(+new Date() - 86400000 * 365 * 10),
       maxDate: new Date(+new Date() + 86400000 * 365 * 10),
-      minDate1: new Date(+new Date() - 86400000 * 20), // 配送时间开始日期
-      maxDate1: new Date(),
       options: [],
       form: {
         receptionist: '', // 到仓接待人
         receptionistPhone: '', // 到仓接待人手机号
         arrivalTime: '', // 到仓时间
         preJobAdvice: '', // 岗前叮嘱
-        time: []// 配送时间
+        deliveryStartDate: '', // 配送开始时间
+        deliveryEndDate: ''// 配送结束时间
       },
       operateFlag: '', // 操作标识  跟车 followCar   试跑tryRun   转试跑switchTryRun   转掉线switchDropped
       formStr: {
@@ -159,7 +187,23 @@ export default {
         { name: '确认跟车', value: 'followCar' },
         { name: '确认试跑', value: 'tryRun' }
       ],
-      actionVal: ''
+      actionVal: '',
+      endMaxDate: new Date(),
+      startMinDate: new Date(+new Date() - 86400000 * 20)
+    }
+  },
+  computed: {
+    startMaxDate() {
+      if (this.form.deliveryEndDate) {
+        return new Date(this.form.deliveryEndDate)
+      }
+      return this.endMaxDate
+    },
+    endMinDate() {
+      if (this.form.deliveryStartDate) {
+        return new Date(this.form.deliveryStartDate)
+      }
+      return this.endMaxDate
     }
   },
   created() {
@@ -305,19 +349,21 @@ export default {
     async onSubmit() {
       return false
       // eslint-disable-next-line no-unreachable
-      let deliveryStartDate = new Date(this.form.time[0]).setHours(0, 0, 0)
-      let deliveryEndDate = new Date(this.form.time[1]).setHours(23, 59, 59)
+      let deliveryStartDate = new Date(this.form.deliveryStartDate).setHours(0, 0, 0)
+      let deliveryEndDate = ''
+      if (this.form.deliveryEndDate) {
+        deliveryEndDate = new Date(this.form.deliveryEndDate).setHours(23, 59, 59)
+      }
+
       let sub = {
         followCar: FollowCar,
         tryRun: TryRun,
-        switchTryRun: ToTryRun,
-        deliveryStartDate,
-        deliveryEndDate
+        switchTryRun: ToTryRun
       }
       const SubmintForm = sub[this.operateFlag];
       try {
         this.$loading(true);
-        let { data: res } = await SubmintForm({
+        let params = {
           lineId: this.lineId,
           driverId: this.driverId,
           runTestId: this.runTestId,
@@ -326,8 +372,12 @@ export default {
           lineMessage: `${this.lineDetail.lineName}/${this.lineDetail.lineId}`,
           runTestStatusRecordFORM: {
             ...this.form
-          }
-        })
+          },
+          deliveryStartDate
+        }
+        deliveryEndDate && (params.deliveryEndDate = deliveryEndDate)
+
+        let { data: res } = await SubmintForm(params)
         if (res.success) {
           this.$toast.success('创建试跑成功');
           setTimeout(() => {

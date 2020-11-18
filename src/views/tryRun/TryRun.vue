@@ -212,7 +212,7 @@ export default {
           name: ''
         },
         {
-          title: '待试跑',
+          title: '试跑意向',
           total: 0,
           name: 100
         },

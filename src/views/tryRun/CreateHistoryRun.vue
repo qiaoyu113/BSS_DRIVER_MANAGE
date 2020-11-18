@@ -38,19 +38,45 @@
             @click="showModalDriver = true"
           />
         </van-cell-group>
-        <van-cell-group>
-          <self-calendar
-            label="配送日期"
-            placeholder="请选择配送日期区间"
-            :max-date="maxDate"
-            :min-date="minDate"
-            clickable
-            is-link
+        <van-cell-group class="border-none">
+          <van-field
+            readonly
             required
-            picker-key="time"
-            :rules="[{required: true, message: '请选择配送日期区间'}]"
-            :form="form"
-          />
+            name="lineId"
+            label="配送时间"
+          >
+            <template #input>
+              <van-row>
+                <van-col span="11">
+                  <self-calendar
+                    placeholder="配送开始日期"
+                    :max-date="startMaxDate"
+                    :min-date="startMinDate"
+                    clickable
+                    picker-key="startTime"
+                    :form="form"
+                    :rules="[{required: true, message: '请选择配送开始日期'}]"
+                  />
+                </van-col>
+                <van-col span="2">
+                  <div class="delimiter">
+                    -
+                  </div>
+                </van-col>
+                <van-col span="11">
+                  <self-calendar
+                    placeholder="配送结束日期"
+                    :max-date="endMaxDate"
+                    :min-date="endMinDate"
+                    clickable
+                    picker-key="endTime"
+                    :form="form"
+                    :rules="[{required: true, message: '请选择配送结束日期'}]"
+                  />
+                </van-col>
+              </van-row>
+            </template>
+          </van-field>
         </van-cell-group>
         <div class="btn-container">
           <van-row>
@@ -63,7 +89,7 @@
                 取消
               </van-button>
             </van-col>
-            <van-col span="12" offset="1">
+            <van-col span="11" offset="2">
               <van-button
                 block
                 type="primary"
@@ -234,7 +260,9 @@ export default {
       form: {
         operateFlag: 'creatIntentionRun', // 创建试跑意向
         lineId: '',
-        driverId: ''
+        driverId: '',
+        startTime: '',
+        endTime: ''
       },
       formDetails: {
         driver: '',
@@ -251,9 +279,23 @@ export default {
       driverList: [],
       driverDetail: {},
       actionVal: '',
-      maxDate: new Date(),
-      minDate: new Date('2018-3-1')
+      endMaxDate: new Date(),
+      startMinDate: new Date('2018-3-1')
     };
+  },
+  computed: {
+    startMaxDate() {
+      if (this.form.endTime) {
+        return new Date(this.form.endTime)
+      }
+      return this.endMaxDate
+    },
+    endMinDate() {
+      if (this.form.startTime) {
+        return new Date(this.form.startTime)
+      }
+      return this.endMaxDate
+    }
   },
   methods: {
     // 取消
@@ -262,8 +304,7 @@ export default {
     },
     // 确认试跑
     handleSubmitClick() {
-      return false
-      // this.$refs.submitForm.submit();
+      this.$refs.submitForm.submit();
     },
     /**
      *返回按钮
@@ -278,6 +319,8 @@ export default {
      */
     async onSubmit() {
       try {
+        return false
+        // eslint-disable-next-line no-unreachable
         this.$loading(true);
         let { data: res } = await CreateLntentionRun({
           driverMessage: `${this.driverDetail.name}/${this.driverDetail.phone}`,
@@ -289,9 +332,11 @@ export default {
           setTimeout(() => {
             this.$router.go(-1);
           }, delay);
+        // eslint-disable-next-line no-unreachable
         } else {
           this.$toast.fail(res.errorMsg)
         }
+      // eslint-disable-next-line no-unreachable
       } catch (err) {
         console.log(`${err}`)
       } finally {
@@ -389,6 +434,10 @@ export default {
 
 <style lang="less" scoped>
 .StepOne {
+  .delimiter {
+    line-height: 24px;
+    height:24px;
+  }
   // height: 100%;
   .btn-container {
     position: absolute;

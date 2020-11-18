@@ -1,18 +1,27 @@
 <template>
-  <div class="selfCalendarContainer" :class="border ? 'van-hairline--bottom':''">
+  <div class="selfCalendarContainer">
     <van-field
-      :value="label"
+      :value="form[pickerKey]"
       readonly
       colon
       clickable
       v-bind="$attrs"
       @click="showPickerFn"
-    />
-    <van-calendar v-model="showPicker" :min-date="minDate" :max-date="maxDate" :default-date="form[pickerKey]" type="range" :allow-same-day="true" @confirm="onConfirm" />
+    >
+    </van-field>
+    <van-popup v-model="showPicker" position="bottom">
+      <van-datetime-picker
+        type="date"
+        :min-date="minDate"
+        :max-date="maxDate"
+        @confirm="onConfirm"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
+import { parseTime } from '@/utils/index'
 export default {
   props: {
     form: {
@@ -25,10 +34,6 @@ export default {
       default: '',
       required: true
     },
-    border: {
-      type: Boolean,
-      default: true
-    },
     minDate: {
       type: Date,
       default: () => new Date()
@@ -40,8 +45,7 @@ export default {
   },
   data() {
     return {
-      showPicker: false,
-      label: ''
+      showPicker: false
     }
   },
   methods: {
@@ -49,18 +53,24 @@ export default {
     showPickerFn() {
       this.showPicker = true
     },
-    // 点击确定
     onConfirm(obj) {
-      let startName = `${obj[0].getFullYear()}/${obj[0].getMonth() + 1}/${obj[0].getDate()}`;
-      obj[0] = new Date(obj[0].setHours(0, 0, 0))
-      obj[1] = new Date(obj[1].setHours(23, 59, 59))
-      let endName = `${obj[1].getFullYear()}/${obj[1].getMonth() + 1}/${obj[1].getDate()}`;
-      this.label = `${startName}-${endName}`
-      this.form[this.pickerKey] = obj
+      this.form[this.pickerKey] = `${parseTime(obj, '{y}/{m}/{d}')}`
       this.showPicker = false
     }
   }
 }
 
 </script>
+<style scoped>
+  .selfCalendarContainer >>> .van-hairline--bottom::after {
+    border-bottom:none;
+  }
+  .selfCalendarContainer >>> .van-field {
+    padding: 0px;
+  }
+  .selfCalendarContainer >>> .van-cell::after {
+    border-bottom:none;
+  }
+
+</style>
 
