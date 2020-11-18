@@ -93,7 +93,6 @@
                     clickable
                     picker-key="deliveryEndDate"
                     :form="form"
-                    :rules="[{required: true, message: '请选择配送结束日期'}]"
                   />
                 </van-col>
               </van-row>
@@ -373,9 +372,9 @@ export default {
           runTestStatusRecordFORM: {
             ...this.form
           },
-          deliveryStartDate
+          deliveryStartDate,
+          deliveryEndDate: deliveryEndDate || null
         }
-        deliveryEndDate && (params.deliveryEndDate = deliveryEndDate)
 
         let { data: res } = await SubmintForm(params)
         if (res.success) {
