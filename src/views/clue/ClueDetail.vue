@@ -244,6 +244,7 @@ export default {
   margin: 0;
   border: none;
   font-size: 13px;
+  line-height: normal;
 }
 .detailTab >>> .van-cell::after {
   border: none;

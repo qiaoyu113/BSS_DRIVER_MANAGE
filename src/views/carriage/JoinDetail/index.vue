@@ -101,7 +101,10 @@
 import { reportMoneyBatchByGM, reportMoneyBatchBySale, wayBillAmountDetail, noCarBatchByGM } from '@/api/freight'
 import { delay } from '@/utils'
 import { Toast } from 'vant';
+import { addCach } from '@/utils/mixins.js'
 export default {
+  name: 'Joindetail',
+  mixins: [addCach],
   data() {
     return {
       show: false,
@@ -110,7 +113,6 @@ export default {
       value: '', // 上报金额
       message: '', // 备注
       arrstr: []
-
     }
   },
   mounted() {
@@ -144,7 +146,10 @@ export default {
           this.$loading(false)
           Toast.success('上报成功');
           this.show = false;
-          this.$router.back(-1);
+          setTimeout(() => {
+            this.$bus.$emit('update', '1')
+            this.$router.go(-1)
+          }, delay);
         } else {
           this.error = true;
           this.$loading(false)
@@ -166,6 +171,7 @@ export default {
         if (res.success) {
           Toast.success('上报成功', res.data);
           setTimeout(() => {
+            this.$bus.$emit('update', '1')
             this.$router.go(-1)
           }, delay);
         } else {
@@ -218,6 +224,7 @@ export default {
             this.show = false;
             Toast.success('运费上报成功');
             setTimeout(() => {
+              this.$bus.$emit('update', '1')
               this.$router.go(-1)
             }, delay);
           } else {

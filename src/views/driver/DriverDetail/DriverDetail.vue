@@ -202,6 +202,7 @@ import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
 import dayjs from 'dayjs';
 import { contractList, orderAbort, getOrderList } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
+import { addCach } from '@/utils/mixins.js'
 import { Dialog } from 'vant';
 export default {
   name: 'DriverDetail',
@@ -217,6 +218,7 @@ export default {
     OrderInfo,
     ContractInfoItem
   },
+  mixins: [addCach],
   data() {
     return {
       active: 0,
@@ -612,6 +614,7 @@ export default {
     }
     .itemInfo {
       border: none;
+      padding: 0 0 8px 0;
     }
     .itemBox {
       margin-bottom: 0;
@@ -651,6 +654,7 @@ export default {
   margin: 0;
   border: none;
   font-size: 13px;
+  line-height: normal;
 }
 .detailTab >>> .van-cell::after {
   border: none;

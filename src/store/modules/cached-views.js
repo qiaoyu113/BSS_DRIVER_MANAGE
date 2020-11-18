@@ -12,11 +12,10 @@ export default {
         state.cachedViews.push(view.name)
       }
     },
-    DEL_CACHED_VIEW(state, name) {
-      for (let index = 0; index < state.cachedViews.length; index++) {
-        const item = state.cachedViews[index];
-        if (item === name) {
-          state.cachedViews.splice(index, 1)
+    DEL_CACHED_VIEW(state, view) {
+      for (const [i, v] of state.cachedViews.entries()) {
+        if (v === view.name) {
+          state.cachedViews.splice(i, 1)
           break
         }
       }
@@ -38,7 +37,6 @@ export default {
   },
   getters: {
     cachedViews(state) {
-      console.log(state);
       return state.cachedViews
     },
     visitedViews(state) {

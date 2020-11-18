@@ -72,6 +72,13 @@
       </van-button>
       <!-- <span class="loginWay" @click="handleChangeLoginWay">{{ loginWay === 'account' ? '使用手机登陆' :'使用账号登陆' }}</span> -->
     </van-form>
+    <van-popup class="login-pop" :close-on-click-overlay="false" round :value="isShowPop">
+      <p>提示</p>
+      <p>您的登录密码过于简单，具有安全隐患，需要重新设置登录密码</p>
+      <van-button type="info" class="resetPwd" block @click="resetPwd">
+        确定
+      </van-button>
+    </van-popup>
   </div>
 </template>
 <script>
@@ -99,6 +106,11 @@ export default {
       count: 60 // 倒计时的秒数
     };
   },
+  computed: {
+    isShowPop() {
+      return this.$store.getters['user/getReset']
+    }
+  },
   mounted() {
     this.phonePattern = phoneRegExp
   },
@@ -111,6 +123,7 @@ export default {
      */
     async onSubmit() {
       this.$store.dispatch('user/login', this)
+      console.log(this.$store.state.user.resetPassword)
     },
     /**
      * 切换登录方式
@@ -183,6 +196,15 @@ export default {
       //   return true
       // }
       // return false
+    },
+    // 强制跳转
+    resetPwd() {
+      this.$router.push({
+        name: 'ResetPwd',
+        params: {
+          isLogin: true
+        }
+      })
     }
   }
 };
@@ -233,7 +255,29 @@ export default {
       vertical-align: middle;
     }
   }
+  .login-pop{
+    width: 70%;
+    height: 30%;
+    padding: 10px 8px;
+    display: flex;
+    flex-wrap:wrap ;
+    align-items: center;
+    justify-content: center;
+    & p:first-child {
+      font-size: 18px;
+      font-weight: 700;
 
+    }
+    p{
+      text-align: center;
+      color:#333;
+      font-size:15px;
+      margin: 0;
+    }
+    .resetPwd{
+      width: 60%;
+    }
+  }
 }
 </style>
 

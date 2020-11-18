@@ -310,7 +310,7 @@ export default {
 <style lang='less' scoped>
 .ClueSearch {
   .list {
-    padding: 5px 15px 0 15px;
+    // padding: 5px 15px 0 15px;
     box-sizing: border-box;
   }
   .bottomBtn {
@@ -375,9 +375,9 @@ export default {
 </style>
 
 <style scoped>
-.ClueSearch >>> .van-hairline--top::after {
-  border-color: #649cee;
-}
+/* .ClueSearch >>> .van-hairline--top::after { */
+  /* border-color: #649cee; */
+/* } */
 .ClueSearch >>> .van-search__content {
   display: flex;
   flex-direction: column-reverse;

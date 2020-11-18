@@ -77,7 +77,10 @@ import { noCarBatchByGM, reportMoneyBatchByGM, wayBillAmountDetail } from '@/api
 import { delay } from '@/utils'
 import { Toast } from 'vant';
 import { Dialog } from 'vant';
+import { addCach } from '@/utils/mixins.js'
 export default {
+  name: 'JoinReport',
+  mixins: [addCach],
   data() {
     return {
       checked: false,
@@ -173,6 +176,7 @@ export default {
         if (res.success) {
           Toast.success('运费上报成功'); // 全部批量上报
           setTimeout(() => {
+            this.$bus.$emit('update', '1')
             this.$router.back(-1)
           }, delay);
         } else {
@@ -203,6 +207,7 @@ export default {
         if (res.success) {
           Toast.success('运费上报成功');
           setTimeout(() => {
+            this.$bus.$emit('update', '1')
             this.$router.back(-1)
           }, delay);
         } else {

@@ -1,5 +1,5 @@
 <template>
-  <div class="CardItemcontainer" @click="handleDetailClick(obj.wayBillId)">
+  <div class="CardItemcontainerJoin" @click="handleDetailClick(obj.wayBillId)">
     <h4 class="title ellipsis">
       {{ obj.departureDate |formatDate }} /{{ obj.driverName }}/{{ obj.driverPhone }}
     </h4>
@@ -27,9 +27,9 @@
     </div>
     <div
       v-permission="['/v2/waybill/shippingDetailByGM']"
-      class="detail"
+      class="detail van-hairline--top"
     >
-      <van-button type="default" plain round color="#AEB1BD">
+      <van-button round plain size="small" class="routeBtn" type="default">
         详情
       </van-button>
     </div>
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style lang='scss'>
-.CardItemcontainer {
+.CardItemcontainerJoin {
   padding: 5px 15px 0px;
   background: #fff;
   width: 100%;
@@ -125,11 +125,11 @@ export default {
     float: right;
   }
   .textBox{
-    padding: 10px;
+    padding: 10px 0;
   }
   .text {
     font-size: 13px;
-    padding: 0 10px;
+    // padding: 0 10px;
     box-sizing: border-box;
     color: #3C4353;
     margin: 0;
@@ -145,7 +145,7 @@ export default {
   .text2 {
     height: 25px;
     font-size: 13px;
-    padding: 0;
+    padding: 0 10px;
     box-sizing: border-box;
     color: #3C4353;
     margin: 0 -10px;
@@ -190,9 +190,21 @@ export default {
     }
   }
   .detail {
-    padding: 10px 0px;
+    padding: 5px 0px;
     text-align: center;
-    border-top: 1px solid #D8D8D8;
+    .routeBtn{
+      width: 70px;
+      height: 22px;
+      padding: 2px 0;
+      line-height: normal;
+      color: #838a9d;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 12px;
+      &::after {
+        border-radius: 20px;
+      }
+    }
   }
 }
 .dai{
@@ -208,7 +220,7 @@ export default {
 </style>
 
 <style scoped>
-  .CardItemcontainer >>> .van-button--default  {
+  .CardItemcontainerOut >>> .van-button--default  {
     color:#838A9D;
     background: #fff;
     width: 70px;

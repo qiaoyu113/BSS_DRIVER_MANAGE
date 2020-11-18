@@ -203,6 +203,7 @@ import { getLineList } from '@/api/line'
 import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
 import { HandlePages } from '@/utils/index'
 export default {
+  name: 'LineList',
   components: {
     CardItem,
     SelfPopup,
@@ -634,7 +635,7 @@ export default {
 
 <style lang='scss' scoped>
 .lineListContainer {
-
+  background:#f9f9f9;
   .headerRight {
     display: flex;
     flex-direction: row;
@@ -657,7 +658,7 @@ export default {
   }
   .lineHeight {
     background: #F9F9F9;
-    height:10px;
+    height:5px;
     width:100%;
   }
 }
@@ -666,7 +667,7 @@ export default {
 
 <style scoped>
   .ListContainer >>> .van-tab__text {
-    font-size: 12px;
+    font-size: 13px;
     color: #3C4353;
   }
 </style>

@@ -19,7 +19,7 @@ export function getDriverList(data) {
 /**
  * 新建共享面试表单
  */
-export function shareInterview(data) {
+export function shareInterview(data) { // y
   return request({
     url: `${prefix}/v2/driver/share/interview`,
     method: 'post',
@@ -30,7 +30,7 @@ export function shareInterview(data) {
  *
  *
  */
-export function getInterview(data) {
+export function getInterview(data) { // y
   return request({
     url: `${prefix}/v2/driver/interview`,
     method: 'get',

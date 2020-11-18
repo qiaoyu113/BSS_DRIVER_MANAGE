@@ -66,8 +66,9 @@
 
 <script>
 import { getProjectDetail } from '@/api/project'
+import { addCach } from '@/utils/mixins.js'
 export default {
-
+  mixins: [addCach],
   data() {
     return {
       activeNames: ['1'],

@@ -388,17 +388,17 @@ export default {
   },
   mounted() {
   },
-  // // 回来后还原
-  // beforeRouteEnter(to, from, next) {
-  //   next(vm => {
-  //     document.querySelector('.list').scrollTop = vm.scrollTop
-  //   })
-  // },
-  // // 离开前保存高度
-  // beforeRouteLeave(to, from, next) {
-  //   this.scrollTop = document.querySelector('.list').scrollTop
-  //   next()
-  // },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.list').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.list').scrollTop
+    next()
+  },
   methods: {
     // 联动请求加盟小组
     getGmGroupId() {
@@ -773,14 +773,14 @@ export default {
     background-color: @body-bg;
   }
   .list {
-    margin-top: 5px;
-    padding: 0 15px;
+    // margin-top: 5px;
+    // padding: 0 15px;
     box-sizing: border-box;
     flex: 1;
     overflow: auto;
   }
   .items {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 }
 .padd {

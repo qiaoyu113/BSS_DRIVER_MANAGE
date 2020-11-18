@@ -22,6 +22,7 @@ Vue.prototype.$permissionDetail = permissionDetail
 Vue.prototype.$checkRouteIsNull = checkRouteIsNull
 import '@vant/touch-emulator';
 Vue.use(Lazyload);
+const EventBus = new Vue()
 
 Vue.prototype.$toast = Toast
 let loading = null
@@ -84,8 +85,17 @@ Vue.config.productionTip = false
 
 Vue.prototype.GLOBAL = global_
 
+Object.defineProperties(Vue.prototype, {
+  $bus: {
+    get: function() {
+      return EventBus
+    }
+  }
+})
+
 new Vue({
   router,
   store,
+  EventBus,
   render: h => h(App)
 }).$mount('#app')

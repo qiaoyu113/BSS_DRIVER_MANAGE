@@ -7,7 +7,7 @@
           :key="type.busiTypeName"
           class="busiTypeBox"
         >
-          <van-cell title="共享面试表">
+          <van-cell class="cell_title" title="共享面试表">
             <template #right-icon>
               <span
                 v-permission="['/v2/driver/getOperateTime']"
@@ -467,4 +467,11 @@ export default {
 .van-form .busiTypeBox:last-child {
     margin-bottom: 0px;
   }
+</style>
+
+<style scoped>
+.cell_title >>> .van-cell__title span{
+  font-size: 14px;
+  line-height: normal;
+}
 </style>

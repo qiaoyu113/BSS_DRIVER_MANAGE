@@ -35,7 +35,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <div class="list">
+    <div class="list freight-list">
       <!-- 下拉刷新  上拉加载 -->
       <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
@@ -177,6 +177,7 @@ import { getGmInfoList, wayBillAmountDetail } from '@/api/freight'
 import dayjs from 'dayjs'
 import { validatorValue } from '@/utils/validate';
 export default {
+  name: 'Freight',
   components: {
     CardItem,
     SelfPopup,
@@ -184,6 +185,7 @@ export default {
   },
   data() {
     return {
+      scrollTop: 0,
       showSuggest: true,
       error: false,
       showPopup: false, // 打开查询抽屉
@@ -246,6 +248,17 @@ export default {
       checkedNum: 0
     }
   },
+  // // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.freight-list').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.freight-list').scrollTop
+    next()
+  },
   computed: {
   },
   watch: {
@@ -267,6 +280,17 @@ export default {
   },
   mounted() {
     this.fetchData();
+  },
+  activated() {
+    this.$bus.$on('update', (msg) => {
+      if (msg) {
+        this.lists = [];
+        this.scrollTop = 0;
+        this.optionsType = false;
+        this.checkResult = [];
+        this.onLoad(true)
+      }
+    });
   },
   methods: {
     // 正则验证
@@ -545,6 +569,7 @@ export default {
     async onSubmit(value) {
       this.showPopup = false
       this.page.current = 1
+      this.lists = []
       let result = await this.getLists(true)
       this.lists = result.lists
       this.isModeData()
