@@ -344,7 +344,7 @@
         />
 
         <selftPicker
-          v-show="formData.hasCar === true"
+          v-if="formData.hasCar === true"
           :props="keyValue"
           picker-key="currentCarType"
           :form="formData"
@@ -361,7 +361,7 @@
         />
 
         <selftPicker
-          v-show="formData.hasCar === false"
+          v-if="formData.hasCar === false"
           :props="keyValue"
           picker-key="intentDrivingCarType"
           :form="formData"
