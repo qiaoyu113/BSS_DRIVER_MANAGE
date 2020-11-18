@@ -294,7 +294,7 @@ export default {
       if (this.form.startTime) {
         return new Date(this.form.startTime)
       }
-      return this.endMaxDate
+      return this.startMinDate
     }
   },
   methods: {

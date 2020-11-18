@@ -203,7 +203,7 @@ export default {
       if (this.form.deliveryStartDate) {
         return new Date(this.form.deliveryStartDate)
       }
-      return this.endMaxDate
+      return this.startMinDate
     }
   },
   created() {
