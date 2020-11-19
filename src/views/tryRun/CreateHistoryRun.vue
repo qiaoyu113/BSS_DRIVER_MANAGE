@@ -53,7 +53,7 @@
                     :max-date="startMaxDate"
                     :min-date="startMinDate"
                     clickable
-                    picker-key="startTime"
+                    picker-key="deliveryStartDate"
                     :form="form"
                     :rules="[{required: true, message: '请选择配送开始日期'}]"
                   />
@@ -69,7 +69,7 @@
                     :max-date="endMaxDate"
                     :min-date="endMinDate"
                     clickable
-                    picker-key="endTime"
+                    picker-key="deliveryEndDate"
                     :form="form"
                     :rules="[{required: true, message: '请选择配送结束日期'}]"
                   />
@@ -244,7 +244,7 @@
 
 <script>
 import { delay } from '@/utils/index';
-import { CreateLntentionRun, GetDriverList, GetLine } from '@/api/tryrun';
+import { CreateHistoryLntentionRun, GetDriverList, GetLineByCreateHistoryTryRun } from '@/api/tryrun';
 import { validatorValue } from '@/utils/validate';
 import SelfCalendar from './components/SelfCalendar'
 export default {
@@ -258,11 +258,10 @@ export default {
       showModalDriver: false,
       list: [],
       form: {
-        operateFlag: 'creatIntentionRun', // 创建试跑意向
         lineId: '',
         driverId: '',
-        startTime: '',
-        endTime: ''
+        deliveryStartDate: '',
+        deliveryEndDate: ''
       },
       formDetails: {
         driver: '',
@@ -277,7 +276,6 @@ export default {
       driverValue: '',
       driverRadio: '',
       driverList: [],
-      driverDetail: {},
       actionVal: '',
       endMaxDate: new Date(),
       startMinDate: new Date('2018-3-1')
@@ -285,14 +283,14 @@ export default {
   },
   computed: {
     startMaxDate() {
-      if (this.form.endTime) {
-        return new Date(this.form.endTime)
+      if (this.form.deliveryEndDate) {
+        return new Date(this.form.deliveryEndDate)
       }
       return this.endMaxDate
     },
     endMinDate() {
-      if (this.form.startTime) {
-        return new Date(this.form.startTime)
+      if (this.form.deliveryStartDate) {
+        return new Date(this.form.deliveryStartDate)
       }
       return this.startMinDate
     }
@@ -319,24 +317,24 @@ export default {
      */
     async onSubmit() {
       try {
-        return false
-        // eslint-disable-next-line no-unreachable
         this.$loading(true);
-        let { data: res } = await CreateLntentionRun({
-          driverMessage: `${this.driverDetail.name}/${this.driverDetail.phone}`,
-          lineMessage: `${this.lineDetail.lineName}/${this.lineDetail.lineId}`,
-          ...this.form
-        })
+        let deliveryStartDate = new Date(this.form.deliveryStartDate).setHours(0, 0, 0)
+        let deliveryEndDate = new Date(this.form.deliveryEndDate).setHours(23, 59, 59)
+        let params = {
+          driverId: this.form.driverId,
+          lineId: this.form.lineId,
+          deliveryStartDate,
+          deliveryEndDate
+        }
+        let { data: res } = await CreateHistoryLntentionRun(params)
         if (res.success) {
           this.$toast.success('创建历史试跑成功！');
           setTimeout(() => {
             this.$router.go(-1);
           }, delay);
-        // eslint-disable-next-line no-unreachable
         } else {
           this.$toast.fail(res.errorMsg)
         }
-      // eslint-disable-next-line no-unreachable
       } catch (err) {
         console.log(`${err}`)
       } finally {
@@ -362,7 +360,6 @@ export default {
       this.showModal = false;
       this.driverList = [];
       this.form.driverId = '';
-      this.driverDetail = {};
       this.formDetails.driver = '';
     },
     /**
@@ -371,7 +368,7 @@ export default {
     async getLineList() {
       try {
         this.$loading(true);
-        let { data: res } = await GetLine({
+        let { data: res } = await GetLineByCreateHistoryTryRun({
           key: this.lineValue,
           select: true
         });
@@ -397,14 +394,14 @@ export default {
         const postData = {
           workCity: this.lineDetail.city,
           key: this.driverValue,
-          statuss: [3, 4]
+          statuss: [3, 4, 5]
         }
         if (this.lineDetail.busiType !== 1 && this.lineDetail.busiType !== 9) {
           postData.busiType = this.lineDetail.busiType
         }
         let { data: res } = await GetDriverList(postData);
         if (res.success) {
-          this.driverList = res.data;
+          this.driverList = res.data || [];
         } else {
           this.$toast.fail(res.errorMsg);
         }
@@ -417,16 +414,8 @@ export default {
     // 选中司机
     onSelectDriver(item) {
       this.form.driverId = item.driverId;
-      this.driverDetail = item;
       this.formDetails.driver = `${item.name}/${item.phone}`;
       this.showModalDriver = false;
-    },
-    // 线路详情页面
-    goLineDetail(lineId) {
-      this.$router.push({
-        path: '/lineDetail',
-        query: { lineId }
-      })
     }
   }
 };

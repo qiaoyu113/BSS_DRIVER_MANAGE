@@ -8,7 +8,7 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit mR5" @click="onCreateHistoryRun">
+          <div v-permission="['/v2/runtest//makeUpHistoryData']" class="navBarTit mR5" @click="onCreateHistoryRun">
             创建历史试跑
           </div>
           <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit" @click="onCreateRun">
@@ -37,7 +37,7 @@
         >
           <template #title>
             {{ item.title }}
-            <div v-if="item.name === form.status" class="van-info">
+            <div v-if="item.total" class="van-info">
               {{ item.total }}
             </div>
           </template>

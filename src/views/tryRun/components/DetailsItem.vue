@@ -168,7 +168,7 @@
           :title="item.recordFlag"
           :name="item.id + '-' + index"
         >
-          <template v-if="item.recordFlag === '试跑记录'">
+          <template v-if="item.recordFlag === '试跑意向记录'">
             <!-- 试跑意向记录 -->
             <van-cell
               title="操作人："
@@ -179,7 +179,7 @@
               :value="item.createDate | DataIsNull"
             ></van-cell>
           </template>
-          <template v-if="item.recordFlag === '创建历史试跑'">
+          <template v-else-if="item.recordFlag === '创建历史试跑'">
             <!-- 创建历史试跑 -->
             <van-cell
               title="创建人"
@@ -191,10 +191,10 @@
             ></van-cell>
             <van-cell
               title="配送时间："
-              :value="item.createDate | DataIsNull"
+              :value="deliveryDate | DataIsNull"
             ></van-cell>
           </template>
-          <template v-else-if="item.recordFlag.includes('系统掉线记录')">
+          <template v-else-if="item.recordFlag.includes('稳定在跑掉线记录')">
             <!-- 掉线 -->
             <van-cell
               title="操作人："
@@ -241,6 +241,10 @@
               title="岗前叮嘱："
               :value="item.preJobAdvice | DataIsNull"
             ></van-cell>
+            <van-cell
+              title="配送时间："
+              :value="deliveryDate | DataIsNull"
+            ></van-cell>
           </template>
         </van-collapse-item>
       </div>
@@ -250,6 +254,7 @@
 
 <script>
 import dayjs from 'dayjs'
+import { parseTime } from '@/utils'
 export default {
   name: 'DetailsItem',
   props: {
@@ -267,6 +272,18 @@ export default {
     };
   },
   computed: {
+    // 配送时间
+    deliveryDate() {
+      let str = ''
+      if (this.detail.deliveryStartDate) {
+        str = `${parseTime(this.detail.deliveryStartDate, '{y}-{m}-{d}')}`
+      }
+      if (this.detail.deliveryEndDate) {
+        str += ` - ${parseTime(this.detail.deliveryEndDate, '{y}-{m}-{d}')}`
+      }
+      console.log(str)
+      return str
+    },
     // 仓库位置：
     warehouseAddress() {
       let str = ''

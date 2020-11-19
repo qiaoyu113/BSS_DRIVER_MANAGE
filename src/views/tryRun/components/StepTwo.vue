@@ -346,8 +346,6 @@ export default {
      * 点击提交
      */
     async onSubmit() {
-      return false
-      // eslint-disable-next-line no-unreachable
       let deliveryStartDate = new Date(this.form.deliveryStartDate).setHours(0, 0, 0)
       let deliveryEndDate = ''
       if (this.form.deliveryEndDate) {
@@ -383,14 +381,11 @@ export default {
             this.$bus.$emit('update', '1')
             this.$router.go(-1);
           }, delay);
-        // eslint-disable-next-line no-unreachable
         } else {
           this.$toast.fail(res.errorMsg)
         }
-      // eslint-disable-next-line no-unreachable
       } catch (err) {
         console.log(`${err}`)
-      // eslint-disable-next-line no-unreachable
       } finally {
         this.$loading(false)
       }

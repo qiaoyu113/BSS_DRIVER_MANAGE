@@ -261,24 +261,24 @@ export default {
      */
     onSelect(item) {
       this.actionVal = item.value;
-      // this.$refs.submitForm.submit();
+      this.$refs.submitForm.submit();
     },
     /**
      * 点击提交
      */
     async onSubmit() {
-      if (this.actionVal !== '1') {
-        // 进入创建试跑
-        this.$router.replace({
-          path: '/create-run',
-          query: {
-            step: '1',
-            lineId: this.form.lineId,
-            driverId: this.form.driverId
-          }
-        })
-        return;
-      }
+      // if (this.actionVal !== '1') {
+      //   // 进入创建试跑
+      //   this.$router.replace({
+      //     path: '/create-run',
+      //     query: {
+      //       step: '1',
+      //       lineId: this.form.lineId,
+      //       driverId: this.form.driverId
+      //     }
+      //   })
+      //   return;
+      // }
       try {
         this.$loading(true);
         let { data: res } = await CreateLntentionRun({
@@ -359,7 +359,7 @@ export default {
           // busiType: this.lineDetail.busiType,
           workCity: this.lineDetail.city,
           key: this.driverValue,
-          statuss: [3, 4]
+          statuss: [3, 4, 5]
         }
         if (this.lineDetail.busiType !== 1 && this.lineDetail.busiType !== 9) {
           postData.busiType = this.lineDetail.busiType
