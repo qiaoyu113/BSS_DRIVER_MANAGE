@@ -159,7 +159,7 @@
           1、开始时间可以选择T-20
         </p>
         <p class="tipTxt">
-          2、结束时间可以不选择,不选择根据线路周期生成
+          2、结束时间可以不选择,不选择根据线路周期生成出车单
         </p>
         <p class="tipTxt">
           3、结束时间必须是今天以及以前
@@ -381,7 +381,7 @@ export default {
      */
     async onSubmit() {
       let deliveryStartDate = new Date(this.form.deliveryStartDate).setHours(0, 0, 0)
-      let deliveryEndDate = ''
+      let deliveryEndDate = null
       if (this.form.deliveryEndDate) {
         deliveryEndDate = new Date(this.form.deliveryEndDate).setHours(23, 59, 59)
       }
@@ -402,10 +402,14 @@ export default {
           driverMessage: `${this.driverDetail.name}/${this.driverDetail.phone}`,
           lineMessage: `${this.lineDetail.lineName}/${this.lineDetail.lineId}`,
           runTestStatusRecordFORM: {
-            ...this.form
+            ...this.form,
+            ...{
+              deliveryStartDate,
+              deliveryEndDate
+            }
           },
           deliveryStartDate,
-          deliveryEndDate: deliveryEndDate || null
+          deliveryEndDate: deliveryEndDate
         }
 
         let { data: res } = await SubmintForm(params)
