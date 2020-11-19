@@ -65,8 +65,16 @@
             readonly
             required
             name="lineId"
-            label="配送时间"
+            label="配送时间："
           >
+            <template #label>
+              配送时间：<van-icon
+                name="question"
+                @click="() => {
+                  showTip = true
+                }"
+              />
+            </template>
             <template #input>
               <van-row>
                 <van-col span="11">
@@ -74,6 +82,7 @@
                     placeholder="配送开始日期"
                     :max-date="startMaxDate"
                     :min-date="startMinDate"
+                    :default="form['deliveryStartDate']"
                     clickable
                     picker-key="deliveryStartDate"
                     :form="form"
@@ -90,6 +99,7 @@
                     placeholder="配送结束日期"
                     :max-date="endMaxDate"
                     :min-date="endMinDate"
+                    :default="form['deliveryEndDate']"
                     clickable
                     picker-key="deliveryEndDate"
                     :form="form"
@@ -140,6 +150,25 @@
         @confirm="onConfirmPicker"
       />
     </van-popup>
+    <van-dialog v-model="showTip" confirm-button-text="知道了">
+      <div class="tipBox">
+        <h4 class="tipTxt">
+          说明:
+        </h4>
+        <p class="tipTxt">
+          1、开始时间可以选择T-20
+        </p>
+        <p class="tipTxt">
+          2、结束时间可以不选择,不选择根据线路周期生成
+        </p>
+        <p class="tipTxt">
+          3、结束时间必须是今天以及以前
+        </p>
+        <p class="tipTxt">
+          4、开始时间小于等于结束时间
+        </p>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -149,10 +178,12 @@ import { GetPersonInfo, TryRun, FollowCar, GetLineDetail, ToTryRun, GetDetails }
 import { driverDetail } from '@/api/driver'
 import dayjs from 'dayjs'
 import SelfCalendar from './SelfCalendar'
+import { Dialog } from 'vant'
 export default {
   name: 'StepTwo',
   components: {
-    SelfCalendar
+    SelfCalendar,
+    [Dialog.Component.name]: Dialog.Component
   },
   props: {
     to: {
@@ -162,6 +193,7 @@ export default {
   },
   data() {
     return {
+      showTip: false,
       showModal: false,
       showPicker: false,
       showActionSheet: false,
@@ -188,7 +220,7 @@ export default {
       ],
       actionVal: '',
       endMaxDate: new Date(),
-      startMinDate: new Date(+new Date() - 86400000 * 20)
+      startMinDate: new Date(+new Date() - 86400000 * 19)
     }
   },
   computed: {
@@ -325,6 +357,8 @@ export default {
           this.formStr.arrivalTime = parseTime(dayjs(item.arrivalTime).$d, '{y}-{m}-{d} {h}:{i}');
           this.form.arrivalTime = +dayjs(item.arrivalTime).$d;
           this.form.preJobAdvice = item.preJobAdvice;
+          this.form.deliveryStartDate = parseTime(res.data.deliveryStartDate, '{y}-{m}-{d}')
+          this.form.deliveryEndDate = parseTime(res.data.deliveryEndDate, '{y}-{m}-{d}')
         } else {
           this.$toast.fail(res.errorMsg)
         }
@@ -394,6 +428,10 @@ export default {
       this.formStr.arrivalTime = parseTime(value, '{y}-{m}-{d} {h}:{i}');
       this.form.arrivalTime = +new Date(value)
       this.showPicker = false;
+    },
+    // 打开提示
+    handleOpenTipClick() {
+
     }
   }
 }
@@ -411,6 +449,14 @@ export default {
   .van-cell-group{
     &::after{
       border-top: none;
+    }
+  }
+  .tipBox {
+    padding: 10px;
+    .tipTxt {
+      margin: 0px;
+      font-size:12px;
+      color:#333;
     }
   }
 }

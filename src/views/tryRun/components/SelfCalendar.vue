@@ -11,10 +11,12 @@
     </van-field>
     <van-popup v-model="showPicker" position="bottom">
       <van-datetime-picker
+        v-model="date"
         type="date"
         :min-date="minDate"
         :max-date="maxDate"
         @confirm="onConfirm"
+        @cancel="onCancel"
       />
     </van-popup>
   </div>
@@ -41,11 +43,23 @@ export default {
     maxDate: {
       type: Date,
       default: () => new Date()
+    },
+    default: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      showPicker: false
+      showPicker: false,
+      date: new Date()
+    }
+  },
+  watch: {
+    default(val) {
+      if (val) {
+        this.date = new Date(val)
+      }
     }
   },
   methods: {
@@ -55,6 +69,9 @@ export default {
     },
     onConfirm(obj) {
       this.form[this.pickerKey] = `${parseTime(obj, '{y}/{m}/{d}')}`
+      this.showPicker = false
+    },
+    onCancel() {
       this.showPicker = false
     }
   }
