@@ -50,7 +50,7 @@ export default {
       show: false,
       actions: [],
       arrList: {
-        100: '待试跑',
+        100: '试跑意向',
         200: '已试跑',
         300: '已跟车',
         400: '跟车掉线',
