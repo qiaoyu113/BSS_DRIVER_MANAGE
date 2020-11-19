@@ -8,7 +8,7 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div v-permission="['/v2/runtest//makeUpHistoryData']" class="navBarTit mR5" @click="onCreateHistoryRun">
+          <div v-permission="['/v2/runtest/makeUpHistoryData']" class="navBarTit mR5" @click="onCreateHistoryRun">
             创建历史试跑
           </div>
           <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit" @click="onCreateRun">
