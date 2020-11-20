@@ -78,6 +78,9 @@
             </template>
           </van-field>
         </van-cell-group>
+        <p class="dateTip">
+          配送日期:选择小于等于当天的日期,目的产生期间的出车单
+        </p>
         <div class="btn-container">
           <van-row>
             <van-col span="11">
@@ -186,16 +189,13 @@
             <img src="@/assets/search.png">
             <div class="text">
               <h4 class="tip">
-                提示:未找到相关数据
+                提示:未找到相关线路
               </h4>
               <p class="tip">
-                1、线路必须在线路列表存在，且状态是：已上架
+                1、线路必须在线路列表存在，且状态是：已上架、已开跑、已开跑下架、未开跑下架
               </p>
               <p class="tip">
                 2、线路必须存在，且线路有余额
-              </p>
-              <p class="tip">
-                3、如果线路已开跑/开跑下架，需要补历史的出车单，在试跑在跑列表，右上角操作：创建历史试跑
               </p>
             </div>
           </div>
@@ -636,6 +636,12 @@ export default {
     margin:0px;
     font-size:14px;
     color:#666;
+  }
+  .dateTip {
+    margin: 0px;
+    color: #999;
+    font-size: 12px;
+    padding: 0px 16px;
   }
 }
 </style>
