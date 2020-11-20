@@ -415,7 +415,13 @@ export default {
 
         let { data: res } = await SubmintForm(params)
         if (res.success) {
-          this.$toast.success('创建试跑成功');
+          let message = ''
+          if (this.operateFlag === 'tryRun') {
+            message = '确认试跑状态成功'
+          } else if (this.operateFlag === 'followCar') {
+            message = '确认跟车状态成功'
+          }
+          this.$toast.success(message);
           setTimeout(() => {
             this.$bus.$emit('update', '1')
             this.$router.go(-1);
