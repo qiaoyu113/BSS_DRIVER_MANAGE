@@ -232,6 +232,25 @@
               :value="item.otherReason | DataIsNull"
             ></van-cell>
           </template>
+          <template v-else-if="item.recordFlag.includes('稳定在跑掉线记录')">
+            <!-- 掉线 -->
+            <van-cell
+              title="操作人："
+              :value="item.dealIdMessage | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="操作时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="掉线原因："
+              :value="item.droppedReasonName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="其他原因："
+              :value="item.otherReason | DataIsNull"
+            ></van-cell>
+          </template>
           <template v-else>
             <!-- 上岗记录 & 跟车记录 -->
             <van-cell
