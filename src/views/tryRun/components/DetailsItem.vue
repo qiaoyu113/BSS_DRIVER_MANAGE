@@ -191,10 +191,29 @@
             ></van-cell>
             <van-cell
               title="配送时间："
-              :value="deliveryDate | DataIsNull"
+              :value="deliveryDate(item) | DataIsNull"
             ></van-cell>
           </template>
-          <template v-else-if="item.recordFlag.includes('稳定在跑掉线记录')">
+          <template v-else-if="item.recordFlag.includes('系统掉线记录')">
+            <!-- 掉线 -->
+            <van-cell
+              title="操作人："
+              :value="item.dealIdMessage | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="操作时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="掉线原因："
+              :value="item.droppedReasonName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="其他原因："
+              value="无"
+            ></van-cell>
+          </template>
+          <template v-else-if="item.recordFlag.includes('试跑掉线记录')">
             <!-- 掉线 -->
             <van-cell
               title="操作人："
@@ -243,7 +262,7 @@
             ></van-cell>
             <van-cell
               title="配送时间："
-              :value="deliveryDate | DataIsNull"
+              :value="deliveryDate(item) | DataIsNull"
             ></van-cell>
           </template>
         </van-collapse-item>
@@ -272,18 +291,6 @@ export default {
     };
   },
   computed: {
-    // 配送时间
-    deliveryDate() {
-      let str = ''
-      if (this.detail.deliveryStartDate) {
-        str = `${parseTime(this.detail.deliveryStartDate, '{y}-{m}-{d}')}`
-      }
-      if (this.detail.deliveryEndDate) {
-        str += ` - ${parseTime(this.detail.deliveryEndDate, '{y}-{m}-{d}')}`
-      }
-      console.log(str)
-      return str
-    },
     // 仓库位置：
     warehouseAddress() {
       let str = ''
@@ -343,6 +350,17 @@ export default {
     }
   },
   methods: {
+    // 配送时间
+    deliveryDate(item) {
+      let str = ''
+      if (item.deliveryStartDate) {
+        str = `${parseTime(item.deliveryStartDate, '{y}-{m}-{d}')}`
+      }
+      if (item.deliveryEndDate) {
+        str += ` - ${parseTime(item.deliveryEndDate, '{y}-{m}-{d}')}`
+      }
+      return str
+    },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
       return dayjs(date).format(format)
