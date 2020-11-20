@@ -420,6 +420,8 @@ export default {
             message = '确认试跑状态成功'
           } else if (this.operateFlag === 'followCar') {
             message = '确认跟车状态成功'
+          } else if (this.operateFlag === 'switchTryRun') {
+            message = '确认试跑状态成功'
           }
           this.$toast.success(message);
           setTimeout(() => {
