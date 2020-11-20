@@ -480,7 +480,7 @@ export default {
       try {
         this.$loading(true);
         const postData = {
-          workCity: this.lineDetail.city,
+          // workCity: this.lineDetail.city,
           key: this.driverValue,
           statuss: [3, 4, 5],
           page: this.driverPage.page,

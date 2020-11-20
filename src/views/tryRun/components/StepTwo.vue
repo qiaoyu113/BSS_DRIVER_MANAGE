@@ -60,56 +60,57 @@
           placeholder="司机可见/请输入不超过150字"
         />
 
-        <van-cell-group class="border-none">
-          <van-field
-            readonly
-            required
-            name="lineId"
-            label="配送时间："
-          >
-            <template #label>
-              配送时间：<van-icon
-                name="question"
-                @click="() => {
-                  showTip = true
-                }"
-              />
-            </template>
-            <template #input>
-              <van-row>
-                <van-col span="11">
-                  <self-calendar
-                    placeholder="配送开始日期"
-                    :max-date="startMaxDate"
-                    :min-date="startMinDate"
-                    :default="form['deliveryStartDate']"
-                    clickable
-                    picker-key="deliveryStartDate"
-                    :form="form"
-                    :rules="[{required: true, message: '请选择配送开始日期'}]"
-                  />
-                </van-col>
-                <van-col span="2">
-                  <div class="delimiter">
-                    -
-                  </div>
-                </van-col>
-                <van-col span="11">
-                  <self-calendar
-                    placeholder="配送结束日期"
-                    :max-date="endMaxDate"
-                    :min-date="endMinDate"
-                    :default="form['deliveryEndDate']"
-                    clickable
-                    picker-key="deliveryEndDate"
-                    :form="form"
-                  />
-                </van-col>
-              </van-row>
-            </template>
-          </van-field>
-        </van-cell-group>
+        <van-field
+          readonly
+          required
+          name="lineId"
+          label="配送时间："
+        >
+          <template #label>
+            配送时间：<van-icon
+              name="question"
+              @click="() => {
+                showTip = true
+              }"
+            />
+          </template>
+          <template #input>
+            <van-row>
+              <van-col span="11">
+                <self-calendar
+                  placeholder="配送开始日期"
+                  :max-date="startMaxDate"
+                  :min-date="startMinDate"
+                  :default="form['deliveryStartDate']"
+                  clickable
+                  picker-key="deliveryStartDate"
+                  :form="form"
+                  :rules="[{required: true, message: '请选择配送开始日期'}]"
+                />
+              </van-col>
+              <van-col span="2">
+                <div class="delimiter">
+                  -
+                </div>
+              </van-col>
+              <van-col span="11">
+                <self-calendar
+                  placeholder="配送结束日期"
+                  :max-date="endMaxDate"
+                  :min-date="endMinDate"
+                  :default="form['deliveryEndDate']"
+                  clickable
+                  picker-key="deliveryEndDate"
+                  :form="form"
+                />
+              </van-col>
+            </van-row>
+          </template>
+        </van-field>
       </van-cell-group>
+      <p class="dateTip">
+        不选择结束时间，出车单根据线路配送规则生成
+      </p>
       <div class="btn-container">
         <van-button
           block
@@ -458,6 +459,12 @@ export default {
       font-size:12px;
       color:#333;
     }
+  }
+  .dateTip {
+    margin: 0px;
+    color: #999;
+    font-size: 12px;
+    padding: 0px 16px;
   }
 }
 </style>
