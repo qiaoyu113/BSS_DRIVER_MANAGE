@@ -486,13 +486,12 @@ export default {
     },
     onSelect(item) {
       let activeIndex = item.value;
+      this.showOp = false
       //  创建历史试跑
       if (activeIndex === 1) {
         this.$router.push('/create-history-run');
-        this.showOp = false
       } else if (activeIndex === 2) { // 创建试跑
         this.$router.push('/create-run');
-        this.showOp = false
       }
     },
     /**

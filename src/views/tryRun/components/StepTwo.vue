@@ -432,10 +432,6 @@ export default {
       this.formStr.arrivalTime = parseTime(value, '{y}-{m}-{d} {h}:{i}');
       this.form.arrivalTime = +new Date(value)
       this.showPicker = false;
-    },
-    // 打开提示
-    handleOpenTipClick() {
-
     }
   }
 }
