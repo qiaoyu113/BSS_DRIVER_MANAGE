@@ -444,8 +444,8 @@ export default {
           limit: this.linePage.limit
         });
         if (res.success) {
-          this.lineLoadingMore = false
           if (this.linePage.page === 1) {
+            this.lineFinished = false
             let len = this.lineList.length
             if (len > 0) {
               this.lineList.splice(0, len)
@@ -455,6 +455,10 @@ export default {
             }, 20)
           } else {
             this.lineList = this.lineList.concat(res.data || []);
+          }
+          this.lineLoadingMore = false
+          if (res.data.length !== this.linePage.limit) {
+            this.lineFinished = true
           }
         } else {
           this.lineLoadingMore = true
@@ -488,6 +492,7 @@ export default {
         let { data: res } = await GetDriverList(postData);
         if (res.success) {
           if (this.driverPage.page === 1) {
+            this.driverFinished = false
             let len = this.driverList.length
             if (len > 0) {
               this.driverList.splice(0, len)
