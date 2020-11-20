@@ -1,12 +1,7 @@
 <template>
   <div :class="checked ? 'DriverList padd' : 'DriverList'">
-    <van-sticky
-      :offset-top="0"
-    >
-      <DriverTitle
-        @screen="startScreen"
-        @changeManager="changeManager"
-      />
+    <van-sticky :offset-top="0">
+      <DriverTitle @screen="startScreen" @changeManager="changeManager" />
       <van-tabs
         v-model="active"
         sticky
@@ -15,21 +10,16 @@
         line-height="2"
         @change="handleTabChange"
       >
-        <van-tab
-          v-for="(item,index) in tabType"
-          :key="index"
-        >
+        <van-tab v-for="(item, index) in tabType" :key="index">
           <template #title>
-            {{ item.type }}<div class="van-info">
+            {{ item.type }}
+            <div class="van-info">
               {{ item.num }}
             </div>
           </template>
         </van-tab>
       </van-tabs>
-      <div
-        v-if="checked"
-        class="checkAll"
-      >
+      <div v-if="checked" class="checkAll">
         <van-checkbox
           v-model="checkall"
           class="checked"
@@ -42,10 +32,7 @@
     </van-sticky>
 
     <div class="list">
-      <van-pull-refresh
-        v-model="refreshing"
-        @refresh="onLoad(true)"
-      >
+      <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
           v-model="loading"
           :finished="finished"
@@ -141,11 +128,7 @@
     />
 
     <!-- picker -->
-    <van-popup
-      v-model="showPicker"
-      round
-      position="bottom"
-    >
+    <van-popup v-model="showPicker" round position="bottom">
       <van-picker
         show-toolbar
         value-key="name"
@@ -156,17 +139,18 @@
     </van-popup>
 
     <!-- 选择加盟经理弹窗 -->
-    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" @changeOver="changeOver" />
+    <changeManager
+      :status="changeManagerStatus"
+      @closePop="closeManagerPop"
+      @changeOver="changeOver"
+    />
 
-    <div
-      v-if="checked"
-      class="bottomBtn"
-    >
+    <div v-if="checked" class="bottomBtn">
       <van-button
         color="#2F448A"
         plain
         native-type="button"
-        style="width:38%"
+        style="width: 38%"
         @click="cancelManager"
       >
         取消
@@ -174,7 +158,7 @@
       <van-button
         native-type="button"
         type="primary"
-        style="width:61%"
+        style="width: 61%"
         @click="confirmManager"
       >
         选择加盟经理
@@ -275,7 +259,8 @@ export default {
         current: 0,
         size: 10
       },
-      scrollTop: 0
+      scrollTop: 0,
+      allTotal: 0
     };
   },
   computed: {
@@ -462,6 +447,7 @@ export default {
               item.num = ''
             }
           })
+          this.allTotal = res.page.total
           return result
         } else {
           this.loading = false;
@@ -502,7 +488,14 @@ export default {
      * 更换加盟经理
      */
     changeManager(val) {
-      this.checked = val.show;
+      if (val.value === 0) {
+        this.checked = val.show;
+      } else if (val.value === 1) {
+        this.exportDrive()
+      }
+    },
+    exportDrive() {
+      this.$router.replace({ name: 'driverExport', params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, active: this.active }})
     },
     /**
      * picker 选择

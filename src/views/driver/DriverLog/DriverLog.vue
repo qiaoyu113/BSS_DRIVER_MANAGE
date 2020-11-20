@@ -255,7 +255,7 @@
             <span>{{ newDetail.scatteredJobRate }}</span>
           </van-grid-item>
 
-          <van-grid-item>
+          <van-grid-item v-if="showCurrentCarTypeStatus">
             <span>是否新能源</span>
           </van-grid-item>
           <van-grid-item>

@@ -153,6 +153,7 @@
               readonly
             />
             <van-field
+              v-if="type.hasCar === true"
               label="是否新能源"
               colon
               :value="isBoolean(type.isNewEnergy)"

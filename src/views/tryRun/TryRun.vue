@@ -8,7 +8,14 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit" @click="onCreateRun">
+          <div class="checkStyle navBarTit" style="margin-right:10px" @click="onTryRunExport">
+            导出
+          </div>
+          <div
+            v-permission="['/v2/runtest/creatIntentionRun']"
+            class="navBarTit checkStyle"
+            @click="onCreateRun"
+          >
             创建试跑
           </div>
         </template>
@@ -52,11 +59,7 @@
           error-text="请求失败，点击重新加载"
           @load="onLoad"
         >
-          <ListItem
-            v-for="(item, index) in lists"
-            :key="index"
-            :item="item"
-          />
+          <ListItem v-for="(item, index) in lists" :key="index" :item="item" />
         </van-list>
       </van-pull-refresh>
     </div>
@@ -86,7 +89,10 @@
         label="客户"
         placeholder="请输入客户名称/编号"
         :rules="[
-          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
+          {
+            validator: validatorValue,
+            message: '请输入6位及以上数字或2位及以上非纯数字'
+          }
         ]"
       />
       <van-field
@@ -125,7 +131,10 @@
         label="司机"
         placeholder="请输入司机姓名/手机号"
         :rules="[
-          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
+          {
+            validator: validatorValue,
+            message: '请输入6位及以上数字或2位及以上非纯数字'
+          }
         ]"
       />
       <van-field
@@ -182,6 +191,21 @@
         @confirm="onConfirmPickerCity"
       />
     </van-popup>
+    <van-dialog
+      v-if="isShowExport"
+      v-model="isShowExport"
+      class="export-dialog"
+      show-cancel-button
+    >
+      <p>
+        您已经选择<span class="blue">{{ allTotal }}</span>条数据
+      </p>
+      <p>
+        提示:请在三足金乌web端
+        <a :href="passURL" class="blue">szjw-bss-web.yunniao.cn</a>
+        右上角下载工具中下载！
+      </p>
+    </van-dialog>
   </div>
 </template>
 
@@ -285,12 +309,21 @@ export default {
       columns: [],
       carList: [], // 配送车型
       whyList: [], // 掉线原因
-      cityList: [] // 掉线原因
+      cityList: [], // 掉线原因
+      isShowExport: false,
+      allTotal: 0
+
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    passURL() {
+      if (!process.env.NODE_ENV === 'development') {
+        return 'https://szjw-bss-web.m1.yunniao.cn/'
+      }
+      return window.location.origin.replace('h5', 'web')
     }
   },
   activated() {
@@ -533,6 +566,7 @@ export default {
               item.total = 0;
             }
           });
+          this.allTotal = res.page.total
           return result;
         } else {
           this.page.current--;
@@ -550,6 +584,10 @@ export default {
         this.finished = true;
         console.log(`get list fail:${err}`);
       }
+    },
+    onTryRunExport() {
+      this.isShowExport = !this.isShowExport
+      console.log('123123')
     }
   }
 };
@@ -600,5 +638,26 @@ export default {
       height: 74px;
     }
   }
+  .export-dialog {
+    font-size: 16px;
+    padding: 25px 30px 0 30px;
+    width: 70%;
+  }
+}
+.blue {
+  color: #6e9ee8;
+}
+.checkStyle:active {
+  opacity: 0.7 !important;
+}
+</style>
+<style lang="less" scoped>
+/deep/.van-dialog__footer {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/deep/ .van-nav-bar__right:active {
+  opacity: 1;
 }
 </style>
