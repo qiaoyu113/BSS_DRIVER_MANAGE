@@ -333,7 +333,7 @@ export default {
       driverList: [],
       actionVal: '',
       endMaxDate: new Date(),
-      startMinDate: new Date('2020-3-1'),
+      startMinDate: new Date('2020-9-1'),
       driverLoadingMore: false,
       driverFinished: false,
       driverError: false,

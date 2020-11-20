@@ -64,19 +64,14 @@
           type="primary"
           native-type="button"
           class="sub-btn"
-          @click="showActionSheet = true"
+          @click="() => {
+            $refs.submitForm.submit();
+          }"
         >
-          更多操作
+          提交
         </van-button>
       </div>
     </van-form>
-    <van-action-sheet
-      v-model="showActionSheet"
-      :actions="actions"
-      cancel-text="取消"
-      close-on-click-action
-      @select="onSelect"
-    />
     <!-- Suggest -->
     <van-popup
       v-model="showModal"
@@ -281,7 +276,6 @@ export default {
     return {
       showModal: false,
       showModalDriver: false,
-      showActionSheet: false,
       list: [],
       form: {
         operateFlag: 'creatIntentionRun', // 创建试跑意向
@@ -302,10 +296,6 @@ export default {
       driverRadio: '',
       driverList: [],
       driverDetail: {},
-      actions: [
-        { name: '提交', value: '1' }
-        // { name: '提交并创建试跑', value: '2' }
-      ],
       actionVal: '',
       driverLoadingMore: false,
       driverFinished: false,
@@ -325,13 +315,6 @@ export default {
   },
   methods: {
     validatorValue,
-    /**
-     * 点击选则提交类型
-     */
-    onSelect(item) {
-      this.actionVal = item.value;
-      this.$refs.submitForm.submit();
-    },
     /**
      * 点击提交
      */
@@ -358,11 +341,7 @@ export default {
         if (res.success) {
           this.$toast.success('创建试跑意向成功！');
           setTimeout(() => {
-            if (this.actionVal === '1') { // 1提交 2提交并创建试跑
-            // 返回试跑列表
-              // this.$router.replace('/try-run')
-              this.$router.go(-1);
-            }
+            this.$router.go(-1);
           }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
