@@ -160,7 +160,18 @@
         <div v-else class="noData">
           <img src="@/assets/search.png">
           <div class="text">
-            抱歉,未找到相关数据!
+            <h4 class="tip">
+              提示:未找到相关数据
+            </h4>
+            <p class="tip">
+              1、线路必须在线路列表存在，且状态是：已上架
+            </p>
+            <p class="tip">
+              2、线路必须存在，且线路有余额
+            </p>
+            <p class="tip">
+              3、如果线路已开跑/开跑下架，需要补历史的出车单，在试跑在跑列表，右上角操作：创建历史试跑
+            </p>
           </div>
         </div>
       </div>
@@ -238,7 +249,15 @@
         <div v-else class="noData">
           <img src="@/assets/search.png">
           <div class="text">
-            抱歉,未找到相关数据!
+            <h4 class="tip">
+              提示:未找到相关数据
+            </h4>
+            <p class="tip">
+              1、司机必须在司机列表存在，且状态是：已成交、已上岗、已终止服务
+            </p>
+            <p class="tip">
+              2、司机的业务线（共享/专车），需要和线路的肥瘦标签匹配（共享不能上肥线）
+            </p>
           </div>
         </div>
       </div>
@@ -581,6 +600,11 @@ export default {
         height: 74px;
       }
     }
+  }
+  .tip {
+    margin:0px;
+    font-size:14px;
+    color:#666;
   }
 }
 </style>

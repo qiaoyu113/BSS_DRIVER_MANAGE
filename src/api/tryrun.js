@@ -106,7 +106,8 @@ export function CreateHistoryLntentionRun(data) {
   return request({
     url: `${prefix}/waybill/v2/runtest//makeUpHistoryData`,
     method: 'post',
-    data
+    data,
+    timeout: 16000
   })
 }
 
