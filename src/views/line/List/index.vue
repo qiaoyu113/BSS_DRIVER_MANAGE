@@ -96,6 +96,15 @@
       />
       <van-field
         label-width="100"
+        :value="pickerNames['isHot']"
+        readonly
+        clickable
+        label="是否为爆款"
+        placeholder="请选择"
+        @click="showPickerFn('isHot')"
+      />
+      <van-field
+        label-width="100"
         :value="pickerNames['dutyManagerId']"
         readonly
         clickable
@@ -263,6 +272,7 @@ export default {
         lineType: '',
         waitDirveValidity: '',
         driverWorkTime: '',
+        isHot: '',
         date: []
       },
       busiTypeArr: [
@@ -303,6 +313,16 @@ export default {
         {
           label: '支线',
           value: 2
+        }
+      ],
+      hotArr: [
+        {
+          label: '是',
+          value: 1
+        },
+        {
+          label: '否',
+          value: 0
         }
       ],
       showModal: false,
@@ -518,6 +538,8 @@ export default {
         this.columns.push(...this.lineCategoryArr);
       } else if (key === 'lineType') {
         this.columns.push(...this.lineTypeArr);
+      } else if (key === 'isHot') {
+        this.columns.push(...this.hotArr)
       }
       this.showPicker = true;
     },
@@ -558,6 +580,7 @@ export default {
           page: this.page.current,
           limit: this.page.size
         }
+        this.form.isHot !== '' && (params.isHot = this.form.isHot)
         this.form.lineState && (params.lineState = this.form.lineState)
         this.form.busiType !== '' && (params.busiType = this.form.busiType)
         this.form.lineBalance && (params.lineBalance = this.form.lineBalance)
