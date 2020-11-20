@@ -141,7 +141,7 @@ export default {
       switch (status) {
         case 100:
           this.actions = [
-            { name: '创建试跑', index: 0, disabled: this.permission('/v2/runtest/creatIntentionRun') }
+            { name: '确认试跑状态', index: 0, disabled: this.permission('/v2/runtest/creatIntentionRun') }
           ]
           break;
         case 300:

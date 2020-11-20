@@ -8,11 +8,8 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div v-permission="['/v2/runtest/makeUpHistoryData']" class="navBarTit mR5" @click="onCreateHistoryRun">
-            创建历史试跑
-          </div>
-          <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit" @click="onCreateRun">
-            创建试跑
+          <div :class="{open: showOp, 'right-btn': true}" class="rWith navBarTit" @click="showOp=true">
+            操作
           </div>
         </template>
       </van-nav-bar>
@@ -185,6 +182,14 @@
         @confirm="onConfirmPickerCity"
       />
     </van-popup>
+
+    <van-action-sheet
+      v-model="showOp"
+      :actions="actionsOp | isPermission"
+      cancel-text="取消"
+      close-on-click-action
+      @select="onSelect"
+    />
   </div>
 </template>
 
@@ -203,6 +208,7 @@ export default {
   },
   data() {
     return {
+      showOp: false,
       scrollTop: 0,
       showSuggest: true,
       tabArrs: [
@@ -245,6 +251,18 @@ export default {
           title: '稳定掉线',
           total: 0,
           name: 700
+        }
+      ],
+      actionsOp: [
+        {
+          name: '创建历史试跑',
+          value: 1,
+          pUrl: ['/v2/runtest/makeUpHistoryData']
+        },
+        {
+          name: '创建试跑意向',
+          value: 2,
+          pUrl: ['/v2/runtest/creatIntentionRun']
         }
       ],
       // lists
@@ -466,6 +484,17 @@ export default {
       this.form[this.pickerKey] = value.code;
       this.showPickerCity = false;
     },
+    onSelect(item) {
+      let activeIndex = item.value;
+      //  创建历史试跑
+      if (activeIndex === 1) {
+        this.$router.push('/create-history-run');
+        this.showOp = false
+      } else if (activeIndex === 2) { // 创建试跑
+        this.$router.push('/create-run');
+        this.showOp = false
+      }
+    },
     /**
      * 显示picker
      */
@@ -499,18 +528,7 @@ export default {
     onClickLeft() {
       this.$router.go(-1);
     },
-    /**
-     * 创建试跑
-     */
-    onCreateRun() {
-      this.$router.push('/create-run');
-    },
-    /**
-     * 创建历史试跑
-     */
-    onCreateHistoryRun() {
-      this.$router.push('/create-history-run');
-    },
+
     // 状态切换
     async handleTabChange(tab) {
       this.lists = [];
@@ -572,6 +590,31 @@ export default {
   display: flex;
   flex-direction: column;
   background: @body-bg;
+  .rWith {
+    width: auto;
+    white-space: nowrap;
+  }
+  .right-btn {
+      position: relative;
+      padding-right: 5px;
+      &.open {
+        &::after {
+          margin-top: -1px;
+          transform: rotate(135deg);
+        }
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -4px;
+        margin-top: -5px;
+        border: 3px solid;
+        border-color: transparent transparent @white @white;
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
+    }
   .top {
     margin-bottom: 5px;
     background-color: @body-bg;
@@ -619,8 +662,3 @@ export default {
 }
 </style>
 
-<style scoped>
-.TryRun >>> .van-nav-bar__right {
-  padding-right:5px;
-}
-</style>

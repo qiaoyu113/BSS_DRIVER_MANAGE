@@ -33,7 +33,7 @@
             2
           </div>
           <div class="tit">
-            创建试跑
+            确认试跑状态
           </div>
         </div>
       </div>

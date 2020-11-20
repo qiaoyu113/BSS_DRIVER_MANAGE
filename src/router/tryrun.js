@@ -31,7 +31,7 @@ export default [
     name: 'CreateRun',
     component: resolve => require(['@/views/tryRun/CreateRun'], resolve),
     meta: {
-      title: '创建试跑',
+      title: '确认试跑状态',
       keepAlive: false
     }
   },
