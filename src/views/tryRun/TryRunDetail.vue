@@ -88,7 +88,8 @@ export default {
       let query = {
         lineId: this.detail.lineId,
         driverId: this.detail.driverId,
-        runTestId: this.detail.runTestId
+        runTestId: this.detail.runTestId,
+        status: this.detail.status
       };
       const list = this.detail.runTestStatusRecordVOList
       switch (index) {
