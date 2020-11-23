@@ -50,7 +50,7 @@ export default {
       show: false,
       actions: [],
       arrList: {
-        100: '待试跑',
+        100: '试跑意向',
         200: '已试跑',
         300: '已跟车',
         400: '跟车掉线',
@@ -141,7 +141,7 @@ export default {
       switch (status) {
         case 100:
           this.actions = [
-            { name: '创建试跑', index: 0, disabled: this.permission('/v2/runtest/creatIntentionRun') }
+            { name: '确认试跑状态', index: 0, disabled: this.permission('/v2/runtest/creatIntentionRun') }
           ]
           break;
         case 300:

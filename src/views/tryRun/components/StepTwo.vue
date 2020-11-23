@@ -59,7 +59,58 @@
           maxlength="150"
           placeholder="司机可见/请输入不超过150字"
         />
+
+        <van-field
+          readonly
+          required
+          name="lineId"
+          label="配送时间："
+        >
+          <template #label>
+            配送时间：<van-icon
+              name="question"
+              @click="() => {
+                showTip = true
+              }"
+            />
+          </template>
+          <template #input>
+            <van-row>
+              <van-col span="11">
+                <self-calendar
+                  placeholder="配送开始日期"
+                  :max-date="startMaxDate"
+                  :min-date="startMinDate"
+                  :default="form['deliveryStartDate']"
+                  clickable
+                  picker-key="deliveryStartDate"
+                  :form="form"
+                  :rules="[{required: true, message: '请选择配送开始日期'}]"
+                />
+              </van-col>
+              <van-col span="2">
+                <div class="delimiter">
+                  -
+                </div>
+              </van-col>
+              <van-col span="11">
+                <self-calendar
+                  placeholder="配送结束日期"
+                  :max-date="endMaxDate"
+                  :min-date="endMinDate"
+                  :default="form['deliveryEndDate']"
+                  clickable
+                  picker-key="deliveryEndDate"
+                  :form="form"
+                />
+              </van-col>
+            </van-row>
+          </template>
+        </van-field>
       </van-cell-group>
+      <p class="dateTip">
+        不选择结束时间，出车单根据线路配送规则生成
+      </p>
       <div class="btn-container">
         <van-button
           block
@@ -100,6 +151,25 @@
         @confirm="onConfirmPicker"
       />
     </van-popup>
+    <van-dialog v-model="showTip" confirm-button-text="知道了">
+      <div class="tipBox">
+        <h4 class="tipTxt">
+          说明:
+        </h4>
+        <p class="tipTxt">
+          1、开始时间可以选择T-20
+        </p>
+        <p class="tipTxt">
+          2、结束时间可以不选择,不选择根据线路周期生成出车单
+        </p>
+        <p class="tipTxt">
+          3、结束时间必须是今天以及以前
+        </p>
+        <p class="tipTxt">
+          4、开始时间小于等于结束时间
+        </p>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -108,8 +178,14 @@ import { parseTime, phoneRegExp, delay } from '@/utils'
 import { GetPersonInfo, TryRun, FollowCar, GetLineDetail, ToTryRun, GetDetails } from '@/api/tryrun';
 import { driverDetail } from '@/api/driver'
 import dayjs from 'dayjs'
+import SelfCalendar from './SelfCalendar'
+import { Dialog } from 'vant'
 export default {
   name: 'StepTwo',
+  components: {
+    SelfCalendar,
+    [Dialog.Component.name]: Dialog.Component
+  },
   props: {
     to: {
       type: String,
@@ -118,6 +194,7 @@ export default {
   },
   data() {
     return {
+      showTip: false,
       showModal: false,
       showPicker: false,
       showActionSheet: false,
@@ -128,7 +205,9 @@ export default {
         receptionist: '', // 到仓接待人
         receptionistPhone: '', // 到仓接待人手机号
         arrivalTime: '', // 到仓时间
-        preJobAdvice: ''// 岗前叮嘱
+        preJobAdvice: '', // 岗前叮嘱
+        deliveryStartDate: '', // 配送开始时间
+        deliveryEndDate: ''// 配送结束时间
       },
       operateFlag: '', // 操作标识  跟车 followCar   试跑tryRun   转试跑switchTryRun   转掉线switchDropped
       formStr: {
@@ -140,7 +219,23 @@ export default {
         { name: '确认跟车', value: 'followCar' },
         { name: '确认试跑', value: 'tryRun' }
       ],
-      actionVal: ''
+      actionVal: '',
+      endMaxDate: new Date(),
+      startMinDate: new Date(+new Date() - 86400000 * 19)
+    }
+  },
+  computed: {
+    startMaxDate() {
+      if (this.form.deliveryEndDate) {
+        return new Date(this.form.deliveryEndDate)
+      }
+      return this.endMaxDate
+    },
+    endMinDate() {
+      if (this.form.deliveryStartDate) {
+        return new Date(this.form.deliveryStartDate)
+      }
+      return this.startMinDate
     }
   },
   created() {
@@ -263,6 +358,8 @@ export default {
           this.formStr.arrivalTime = parseTime(dayjs(item.arrivalTime).$d, '{y}-{m}-{d} {h}:{i}');
           this.form.arrivalTime = +dayjs(item.arrivalTime).$d;
           this.form.preJobAdvice = item.preJobAdvice;
+          this.form.deliveryStartDate = parseTime(res.data.deliveryStartDate, '{y}-{m}-{d}')
+          this.form.deliveryEndDate = parseTime(res.data.deliveryEndDate, '{y}-{m}-{d}')
         } else {
           this.$toast.fail(res.errorMsg)
         }
@@ -284,6 +381,12 @@ export default {
      * 点击提交
      */
     async onSubmit() {
+      let deliveryStartDate = new Date(this.form.deliveryStartDate).setHours(0, 0, 0)
+      let deliveryEndDate = null
+      if (this.form.deliveryEndDate) {
+        deliveryEndDate = new Date(this.form.deliveryEndDate).setHours(23, 59, 59)
+      }
+
       let sub = {
         followCar: FollowCar,
         tryRun: TryRun,
@@ -292,7 +395,7 @@ export default {
       const SubmintForm = sub[this.operateFlag];
       try {
         this.$loading(true);
-        let { data: res } = await SubmintForm({
+        let params = {
           lineId: this.lineId,
           driverId: this.driverId,
           runTestId: this.runTestId,
@@ -300,15 +403,30 @@ export default {
           driverMessage: `${this.driverDetail.name}/${this.driverDetail.phone}`,
           lineMessage: `${this.lineDetail.lineName}/${this.lineDetail.lineId}`,
           runTestStatusRecordFORM: {
-            ...this.form
-          }
-        })
+            ...this.form,
+            ...{
+              deliveryStartDate,
+              deliveryEndDate
+            }
+          },
+          deliveryStartDate,
+          deliveryEndDate: deliveryEndDate
+        }
+
+        let { data: res } = await SubmintForm(params)
         if (res.success) {
-          this.$toast.success('创建试跑成功');
+          let message = ''
+          if (this.operateFlag === 'tryRun') {
+            message = '确认试跑状态成功'
+          } else if (this.operateFlag === 'followCar') {
+            message = '确认跟车状态成功'
+          } else if (this.operateFlag === 'switchTryRun') {
+            message = '确认试跑状态成功'
+          }
+          this.$toast.success(message);
           setTimeout(() => {
             this.$bus.$emit('update', '1')
             this.$router.go(-1);
-            // this.$router.push('/try-run')
           }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
@@ -341,6 +459,20 @@ export default {
     &::after{
       border-top: none;
     }
+  }
+  .tipBox {
+    padding: 10px;
+    .tipTxt {
+      margin: 0px;
+      font-size:12px;
+      color:#333;
+    }
+  }
+  .dateTip {
+    margin: 0px;
+    color: #999;
+    font-size: 12px;
+    padding: 0px 16px;
   }
 }
 </style>

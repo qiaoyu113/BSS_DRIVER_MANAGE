@@ -195,29 +195,31 @@ export default {
           }
         })
         if (res.success) {
-          this.$dialog.confirm({
-            title: '提示',
-            message: '已成功操作试跑掉线，该线路是否需要激活？',
-            confirmButtonText: '去激活线路'
-          })
-            .then(() => {
-              // 去激活线路页面
-              const lineId = this.lineId;
-              const isStable = this.isStable;
-              this.$bus.$emit('update', '1')
-              this.$router.push({
-                path: '/activeLine',
-                query: {
-                  lineId,
-                  isStable
-                }
-              })
-            })
-            .catch(() => {
-              this.$bus.$emit('update', '1')
-              // 关闭弹窗
-              this.onClickLeft()
-            });
+          this.$bus.$emit('update', '1')
+          this.onClickLeft()
+          // this.$dialog.confirm({
+          //   title: '提示',
+          //   message: '已成功操作试跑掉线，该线路是否需要激活？',
+          //   confirmButtonText: '去激活线路'
+          // })
+          //   .then(() => {
+          //     // 去激活线路页面
+          //     const lineId = this.lineId;
+          //     const isStable = this.isStable;
+          //     this.$bus.$emit('update', '1')
+          //     this.$router.push({
+          //       path: '/activeLine',
+          //       query: {
+          //         lineId,
+          //         isStable
+          //       }
+          //     })
+          //   })
+          //   .catch(() => {
+          //     this.$bus.$emit('update', '1')
+          //     // 关闭弹窗
+          //     this.onClickLeft()
+          //   });
         } else {
           this.$toast.fail(res.errorMsg)
         }
