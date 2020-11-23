@@ -208,7 +208,7 @@ export default {
         preJobAdvice: '', // 岗前叮嘱
         deliveryStartDate: '', // 配送开始时间
         deliveryEndDate: '', // 配送结束时间
-        beforeState: ''
+        status: ''
       },
       operateFlag: '', // 操作标识  跟车 followCar   试跑tryRun   转试跑switchTryRun   转掉线switchDropped
       formStr: {
@@ -246,7 +246,7 @@ export default {
     this.lineId = this.$route.query.lineId;
     this.driverId = this.$route.query.driverId;
     this.runTestId = this.$route.query.runTestId;
-    this.form.beforeState = this.$route.query.status
+    this.form.status = this.$route.query.status
     if (this.to) {
       this.actions = [
         { name: '确认试跑', value: 'switchTryRun' }
@@ -362,7 +362,7 @@ export default {
           this.form.preJobAdvice = item.preJobAdvice;
           this.form.deliveryStartDate = parseTime(res.data.deliveryStartDate, '{y}-{m}-{d}')
           this.form.deliveryEndDate = parseTime(res.data.deliveryEndDate, '{y}-{m}-{d}')
-          this.form.beforeState = res.data.status
+          this.form.status = res.data.status
         } else {
           this.$toast.fail(res.errorMsg)
         }
@@ -428,7 +428,7 @@ export default {
           }
           this.$toast.success(message);
           setTimeout(() => {
-            this.$bus.$emit('update', '1')
+            // this.$bus.$emit('update', '1')
             this.$router.go(-1);
           }, delay);
         } else {
