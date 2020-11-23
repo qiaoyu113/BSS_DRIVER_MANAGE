@@ -211,7 +211,7 @@ export default {
             isHot: result.isHot,
             sellPoint: result.sellPoint
           }
-          this.checkedList = result.sellPoint.split(',').map(item => +item)
+          this.checkedList = result.sellPoint.split(',').filter(item => item).map(item => +item)
           this.checkedStrList = this.sellPointColumns.filter(item => this.checkedList.includes(item.value))
         } else {
           this.$fail(res.errorMsg)
