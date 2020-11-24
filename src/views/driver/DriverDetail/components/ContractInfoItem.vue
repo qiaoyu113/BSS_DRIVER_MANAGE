@@ -26,7 +26,7 @@
           title-class="cell-title"
           value-class="cell-value"
           title="生成时间："
-          :value="timeFormat(obj.createDate,'YYYY-MM-DD')"
+          :value="timeFormat(obj.createDate,'YYYY-MM-DD HH:mm:ss')"
         />
         <!-- 1=未签署，2=已签约，3=已失效，4=已作废 -->
         <van-cell
@@ -34,14 +34,14 @@
           title-class="cell-title"
           value-class="cell-value"
           title="完成时间："
-          :value="timeFormat(obj.signTime,'YYYY-MM-DD')"
+          :value="timeFormat(obj.signTime,'YYYY-MM-DD HH:mm:ss')"
         />
         <van-cell
           v-if="obj.status === 3"
           title-class="cell-title"
           value-class="cell-value"
           title="过期时间："
-          :value="timeFormat(obj.signTime,'YYYY-MM-DD')"
+          :value="timeFormat(obj.signTime,'YYYY-MM-DD HH:mm:ss')"
         >
           <template #right-icon>
             <span v-permission="['/v2/contract/activeContract']" class="active" @click="active(obj.contractId)">激活</span>
@@ -52,7 +52,7 @@
           title-class="cell-title"
           value-class="cell-value"
           title="作废时间："
-          :value="timeFormat(obj.signTime,'YYYY-MM-DD')"
+          :value="timeFormat(obj.signTime,'YYYY-MM-DD HH:mm:ss')"
         >
         </van-cell>
       </div>

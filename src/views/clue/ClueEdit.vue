@@ -80,7 +80,7 @@
           >
             取消
           </van-button>
-          <van-button type="primary" native-type="submit">
+          <van-button v-preventreclick type="primary" native-type="submit">
             确定
           </van-button>
         </div>

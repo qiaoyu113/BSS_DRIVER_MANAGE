@@ -136,6 +136,7 @@ export default {
   }
   .checked{
     margin-right: 10px;
+    margin-left: 15px;
   }
   .detailBtn{
     // margin: 0 15px;

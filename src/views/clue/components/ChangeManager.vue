@@ -93,6 +93,7 @@
               重置
             </van-button>
             <van-button
+              v-preventreclick
               type="primary"
               size="small"
               native-type="submit"

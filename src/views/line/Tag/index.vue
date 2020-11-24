@@ -37,7 +37,7 @@
           { required: true, message: '请选择' },
         ]"
       />
-      <van-button type="primary" block class="btn">
+      <van-button v-preventreclick type="primary" block class="btn">
         提交
       </van-button>
     </van-form>

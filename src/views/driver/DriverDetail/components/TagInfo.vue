@@ -47,7 +47,7 @@
             />
             <van-field
               label="创建时间"
-              :value="timeFormat(item.createDate,'YYYY-MM-DD')"
+              :value="timeFormat(item.createDate,'YYYY-MM-DD HH:mm:ss')"
               readonly
               colon
             />

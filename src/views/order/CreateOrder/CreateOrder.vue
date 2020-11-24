@@ -347,6 +347,7 @@
 
             <van-button
               v-if="formStatus === 3"
+              v-preventreclick
               :style="{width: ( formStatus === 3 && routeName === '/resetOrder' ) ? '100%' : '48%' }"
               type="primary"
               native-type="button"
@@ -880,7 +881,7 @@ export default {
           Notify({ type: 'success', message: '订单录入成功' });
           this.$router.push({
             path: '/driverdetail',
-            query: { id: this.driverId }
+            query: { id: this.driverId, canShow: true }
           });
           this.$loading(false);
         } else {

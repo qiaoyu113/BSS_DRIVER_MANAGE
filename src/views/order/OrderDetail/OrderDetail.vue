@@ -277,24 +277,24 @@
             readonly
             colon
             label-align="left"
-            label-width="150px"
+            label-width="130px"
             :border="false"
           />
           <van-field
             label="订单生成时间"
             colon
-            :value="timeFormat(formData.createDate,'YYYY-MM-DD')"
+            :value="timeFormat(formData.createDate,'YYYY-MM-DD HH:mm:ss')+ `  (${formData.createName})`"
             label-align="left"
             readonly
-            label-width="150px"
+            label-width="130px"
             :border="false"
           />
           <van-field
             v-if="formData.passName"
             label="订单审核通过时间"
-            label-width="150px"
+            label-width="130px"
             colon
-            :value="timeFormat(formData.passTime,'YYYY-MM-DD')"
+            :value="timeFormat(formData.passTime,'YYYY-MM-DD HH:mm:ss')+ `  (${formData.passName})`"
             readonly
             label-align="left"
             :border="false"
@@ -303,22 +303,22 @@
             v-if="formData.notPassTime"
             label="订单审核不通过时间"
             colon
-            :value="timeFormat(formData.notPassTime,'YYYY-MM-DD')"
+            :value="timeFormat(formData.notPassTime,'YYYY-MM-DD HH:mm:ss')+ `  (${formData.notPassName})`"
             readonly
             label-align="left"
-            label-width="150px"
+            label-width="130px"
             :border="false"
           />
-          <van-field
+          <!-- <van-field
             v-if="formData.status === 10"
             label="订单取消时间"
             colon
-            :value="timeFormat(formData.updateDate,'YYYY-MM-DD')"
+            :value="timeFormat(formData.updateDate,'YYYY-MM-DD HH:mm:ss')+ `  (${formData.createName})` "
             readonly
             label-align="left"
-            label-width="150px"
+            label-width="130px"
             :border="false"
-          />
+          /> -->
         </van-cell-group>
       </van-form>
     </div>

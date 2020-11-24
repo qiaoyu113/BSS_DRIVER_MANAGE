@@ -118,6 +118,7 @@
           取消
         </van-button>
         <van-button
+          v-preventreclick
           type="primary"
           native-type="submit"
         >
