@@ -283,9 +283,10 @@
           <van-field
             label="订单生成时间"
             colon
-            :value="timeFormat(formData.createDate,'YYYY-MM-DD HH:mm:ss')+ `  (${formData.createName})`"
+            :value="timeFormat(formData.createDate,'YYYY-MM-DD HH:mm:ss')+ `\n(${formData.createName})`"
             label-align="left"
             readonly
+            type="textarea"
             label-width="130px"
             :border="false"
           />
@@ -294,7 +295,8 @@
             label="订单审核通过时间"
             label-width="130px"
             colon
-            :value="timeFormat(formData.passTime,'YYYY-MM-DD HH:mm:ss')+ `  (${formData.passName})`"
+            type="textarea"
+            :value="timeFormat(formData.passTime,'YYYY-MM-DD HH:mm:ss')+ `\n(${formData.passName})`"
             readonly
             label-align="left"
             :border="false"
@@ -303,7 +305,8 @@
             v-if="formData.notPassTime"
             label="订单审核不通过时间"
             colon
-            :value="timeFormat(formData.notPassTime,'YYYY-MM-DD HH:mm:ss')+ `  (${formData.notPassName})`"
+            type="textarea"
+            :value="timeFormat(formData.notPassTime,'YYYY-MM-DD HH:mm:ss')+ `\n(${formData.notPassName})`"
             readonly
             label-align="left"
             label-width="130px"
@@ -386,7 +389,12 @@ export default {
      *返回按钮
      */
     onClickLeft() {
-      this.$router.go(-1);
+      this.$router.push({
+        path: '/driverdetail',
+        query: {
+          id: this.driverId
+        }
+      })
     },
     lookPic(pic) {
       ImagePreview([pic]);
@@ -412,7 +420,7 @@ export default {
             Notify({ type: 'success', message: '审核通过' });
           }
           setTimeout(() => {
-            this.$router.go(-1);
+            this.onClickLeft()
           }, 1000);
         } else {
           this.$toast.fail(res.errorMsg);

@@ -285,6 +285,12 @@ export default {
       this.showDio = true
     }
   },
+  beforeRouteLeave(to, from, next) {
+    if (from.query.canShow) {
+      delete from.query.canShow
+    }
+    next()
+  },
   methods: {
     interviewConfirm() {
       const busiType = this.computedBusi().busiType
