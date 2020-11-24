@@ -141,6 +141,7 @@ export default {
 
       delete params.area
       delete params.workingTime
+      params.shipperOffer = +params.shipperOffer
       if (this.isStable) {
         this.editStableLine(params)
       } else {
