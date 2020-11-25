@@ -48,12 +48,12 @@
         colon
         readonly
         clickable
-        :required="!!form.isHot"
+        :required="false"
         label="线路亮点"
         placeholder="请选择"
         autosize
         type="textarea"
-        :rules="[{ required: !!form.isHot, message: '请选择'}]"
+        :rules="[{ required: false, message: '请选择'}]"
         @click="showModal = true"
       >
       </van-field>
