@@ -15,8 +15,11 @@
           <van-icon name="arrow-down" />
         </div>
       </div>
-      <p v-if="newDetail.createName" class="tableName" v-text="` 操作人：${newDetail.createName}（${newDetail.createPhone}）`">
-      </p>
+      <p
+        v-if="newDetail.createName"
+        class="tableName"
+        v-text="` 操作人：${newDetail.createName}（${newDetail.createPhone}）`"
+      ></p>
 
       <!--共享-->
       <div v-if="busiType === 1" class="tableBox">
@@ -35,10 +38,20 @@
             <span>面试地址</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.interviewProvinceName + detail.interviewCityName + detail.interviewCountyName + detail.interviewDistrict }}</span>
+            <span>{{
+              detail.interviewProvinceName +
+                detail.interviewCityName +
+                detail.interviewCountyName +
+                detail.interviewDistrict
+            }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.interviewProvinceName">{{ newDetail.interviewProvinceName + newDetail.interviewCityName + newDetail.interviewCountyName + newDetail.interviewDistrict }}</span>
+            <span v-if="newDetail.interviewProvinceName">{{
+              newDetail.interviewProvinceName +
+                newDetail.interviewCityName +
+                newDetail.interviewCountyName +
+                newDetail.interviewDistrict
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -88,7 +101,9 @@
             <span>{{ isBoolean(detail.hasCar) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar !== undefined">{{ isBoolean(newDetail.hasCar) }}</span>
+            <span v-if="newDetail.hasCar !== undefined">{{
+              isBoolean(newDetail.hasCar)
+            }}</span>
           </van-grid-item>
 
           <template v-if="showCurrentCarTypeStatus">
@@ -119,10 +134,20 @@
             <span>现居住地址</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.liveProvinceName + detail.liveCityName + detail.liveCountyName + detail.liveDistrict }}</span>
+            <span>{{
+              detail.liveProvinceName +
+                detail.liveCityName +
+                detail.liveCountyName +
+                detail.liveDistrict
+            }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.liveProvinceName">{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
+            <span v-if="newDetail.liveProvinceName">{{
+              newDetail.liveProvinceName +
+                newDetail.liveCityName +
+                newDetail.liveCountyName +
+                newDetail.liveDistrict
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -142,7 +167,9 @@
             <span>{{ isBoolean(detail.currentHasWork) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.currentHasWork !== undefined">{{ isBoolean(newDetail.currentHasWork) }}</span>
+            <span v-if="newDetail.currentHasWork !== undefined">{{
+              isBoolean(newDetail.currentHasWork)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -159,10 +186,10 @@
             <span>意向工作时间段</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.intentWorkDurationName }}</span>
+            <span>{{ detail.intentWorkDuration | operatingHours }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.intentWorkDurationName }}</span>
+            <span>{{ newDetail.intentWorkDuration | operatingHours }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -172,7 +199,9 @@
             <span>{{ isBoolean(detail.heavyLifting) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.heavyLifting !== undefined">{{ isBoolean(newDetail.heavyLifting) }}</span>
+            <span v-if="newDetail.heavyLifting !== undefined">{{
+              isBoolean(newDetail.heavyLifting)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -202,17 +231,29 @@
             <span>{{ isBoolean(detail.isLocalPlate) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isLocalPlate !== undefined">{{ isBoolean(newDetail.isLocalPlate) }}</span>
+            <span v-if="newDetail.isLocalPlate !== undefined">{{
+              isBoolean(newDetail.isLocalPlate)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
             <span>高意向工作区域</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.intentWorkProvinceName + detail.intentWorkCityName + detail.intentWorkCountyName + detail.intentWorkDistrict }}</span>
+            <span>{{
+              detail.intentWorkProvinceName +
+                detail.intentWorkCityName +
+                detail.intentWorkCountyName +
+                detail.intentWorkDistrict
+            }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.intentWorkProvinceName">{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
+            <span v-if="newDetail.intentWorkProvinceName">{{
+              newDetail.intentWorkProvinceName +
+                newDetail.intentWorkCityName +
+                newDetail.intentWorkCountyName +
+                newDetail.intentWorkDistrict
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -254,16 +295,19 @@
           <van-grid-item>
             <span>{{ newDetail.scatteredJobRate }}</span>
           </van-grid-item>
-
-          <van-grid-item v-if="showCurrentCarTypeStatus">
-            <span>是否新能源</span>
-          </van-grid-item>
-          <van-grid-item>
-            <span>{{ isBoolean(detail.isNewEnergy) }}</span>
-          </van-grid-item>
-          <van-grid-item>
-            <span v-if="newDetail.isNewEnergy !== undefined">{{ isBoolean(newDetail.isNewEnergy) }}</span>
-          </van-grid-item>
+          <template v-if="showCurrentCarTypeStatus">
+            <van-grid-item>
+              <span>是否新能源</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span>{{ isBoolean(detail.isNewEnergy) }}</span>
+            </van-grid-item>
+            <van-grid-item>
+              <span v-if="newDetail.isNewEnergy !== undefined">{{
+                isBoolean(newDetail.isNewEnergy)
+              }}</span>
+            </van-grid-item>
+          </template>
         </van-grid>
       </div>
 
@@ -364,20 +408,40 @@
             <span>现居住地址</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.liveProvinceName + detail.liveCityName + detail.liveCountyName + detail.liveDistrict }}</span>
+            <span>{{
+              detail.liveProvinceName +
+                detail.liveCityName +
+                detail.liveCountyName +
+                detail.liveDistrict
+            }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.liveProvinceName">{{ newDetail.liveProvinceName + newDetail.liveCityName + newDetail.liveCountyName + newDetail.liveDistrict }}</span>
+            <span v-if="newDetail.liveProvinceName">{{
+              newDetail.liveProvinceName +
+                newDetail.liveCityName +
+                newDetail.liveCountyName +
+                newDetail.liveDistrict
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
             <span>意向工作区域</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.intentWorkProvinceName + detail.intentWorkCityName + detail.intentWorkCountyName + detail.intentWorkDistrict }}</span>
+            <span>{{
+              detail.intentWorkProvinceName +
+                detail.intentWorkCityName +
+                detail.intentWorkCountyName +
+                detail.intentWorkDistrict
+            }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.intentWorkProvinceName">{{ newDetail.intentWorkProvinceName + newDetail.intentWorkCityName + newDetail.intentWorkCountyName + newDetail.intentWorkDistrict }}</span>
+            <span v-if="newDetail.intentWorkProvinceName">{{
+              newDetail.intentWorkProvinceName +
+                newDetail.intentWorkCityName +
+                newDetail.intentWorkCountyName +
+                newDetail.intentWorkDistrict
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -404,10 +468,10 @@
             <span>意向工作时间段</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ detail.intentWorkDurationName }}</span>
+            <span>{{ detail.intentWorkDuration | operatingHours }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span>{{ newDetail.intentWorkDurationName }}</span>
+            <span>{{ newDetail.intentWorkDuration | operatingHours }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -437,7 +501,9 @@
             <span>{{ isHouseholdTypeName(detail.householdType) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.householdType">{{ isHouseholdTypeName(newDetail.householdType) }}</span>
+            <span v-if="newDetail.householdType">{{
+              isHouseholdTypeName(newDetail.householdType)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -467,7 +533,9 @@
             <span>{{ isBoolean(detail.currentHasWork) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.currentHasWork !== undefined">{{ isBoolean(newDetail.currentHasWork) }}</span>
+            <span v-if="newDetail.currentHasWork !== undefined">{{
+              isBoolean(newDetail.currentHasWork)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -507,7 +575,9 @@
             <span>{{ isBoolean(detail.hasCar) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.hasCar !== undefined">{{ isBoolean(newDetail.hasCar) }}</span>
+            <span v-if="newDetail.hasCar !== undefined">{{
+              isBoolean(newDetail.hasCar)
+            }}</span>
           </van-grid-item>
 
           <template v-if="currentCarTypeStatus">
@@ -551,7 +621,9 @@
             <span>{{ isBoolean(detail.heavyLifting) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.heavyLifting !== undefined">{{ isBoolean(newDetail.heavyLifting) }}</span>
+            <span v-if="newDetail.heavyLifting !== undefined">{{
+              isBoolean(newDetail.heavyLifting)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -562,7 +634,9 @@
             <span>{{ isBoolean(detail.providePersonalCredit) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.providePersonalCredit !== undefined">{{ isBoolean(newDetail.providePersonalCredit) }}</span>
+            <span v-if="newDetail.providePersonalCredit !== undefined">{{
+              isBoolean(newDetail.providePersonalCredit)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -602,7 +676,9 @@
             <span>{{ isBoolean(detail.isAdvancedIntention) }}</span>
           </van-grid-item>
           <van-grid-item>
-            <span v-if="newDetail.isAdvancedIntention !== undefined">{{ isBoolean(newDetail.isAdvancedIntention) }}</span>
+            <span v-if="newDetail.isAdvancedIntention !== undefined">{{
+              isBoolean(newDetail.isAdvancedIntention)
+            }}</span>
           </van-grid-item>
 
           <van-grid-item>
@@ -618,11 +694,7 @@
       </div>
     </div>
 
-    <van-popup
-      v-model="showDate"
-      round
-      position="bottom"
-    >
+    <van-popup v-model="showDate" round position="bottom">
       <van-picker
         show-toolbar
         :columns="timeList"
@@ -636,6 +708,26 @@
 <script>
 import { getOperateTime, historyList, driverDetail } from '@/api/driver.js';
 export default {
+  filters: {
+    operatingHours(str = '') {
+      console.log(str, '------')
+      if (str === null) { return '' }
+      str = String(str).split(',')
+      let workHours = []
+      str.forEach(item => {
+        if (item === '1') {
+          workHours.push('上午')
+        } else if (item === '2') {
+          workHours.push('下午')
+        } else if (item === '3') {
+          workHours.push('晚上')
+        } else if (item === '4') {
+          workHours.push('上午', '下午', '晚上')
+        }
+      })
+      return workHours.join(',')
+    }
+  },
   data() {
     return {
       showTime: '',
@@ -724,6 +816,7 @@ export default {
           this.detail = res.data.interviewInfoVOList.find(ele => {
             return ele.busiType === this.busiType
           })
+          console.log(res)
         } else {
           this.$toast.fail(res);
         }

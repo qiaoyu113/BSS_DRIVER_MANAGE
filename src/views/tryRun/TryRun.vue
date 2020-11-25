@@ -8,7 +8,12 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div class="checkStyle navBarTit" style="margin-right:10px" @click="onTryRunExport">
+          <div
+            v-permission="['/v2/runtest/export']"
+            class="checkStyle navBarTit"
+            style="margin-right: 10px"
+            @click="onTryRunExport"
+          >
             导出
           </div>
           <div
@@ -196,6 +201,7 @@
       v-model="isShowExport"
       class="export-dialog"
       show-cancel-button
+      @confirm="tryRunExportSure"
     >
       <p>
         您已经选择<span class="blue">{{ allTotal }}</span>条数据
@@ -211,7 +217,7 @@
 
 <script>
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
-import { GetRunTestInfoList } from '@/api/tryrun';
+import { GetRunTestInfoList, tryRunExport } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
 import { parseTime, HandlePages } from '@/utils';
@@ -585,9 +591,48 @@ export default {
         console.log(`get list fail:${err}`);
       }
     },
+    // 点击导出
     onTryRunExport() {
-      this.isShowExport = !this.isShowExport
-      console.log('123123')
+      let isNull = false
+      for (const key in this.form) {
+        if (this.form.hasOwnProperty(key)) {
+          if (this.form[key] || this.form[key] === 0) {
+            isNull = true
+            break
+          }
+        }
+      }
+      if (this.allTotal === 0) {
+        this.$toast({
+          message: '没有可以导出的数据',
+          position: 'bottom'
+        })
+        return
+      }
+      if (!isNull) {
+        this.showPopup = true
+        setTimeout(() => {
+          this.$toast.fail('请选择筛选条件')
+        })
+      } else {
+        this.isShowExport = !this.isShowExport
+      }
+    },
+    // 试跑导出
+    async tryRunExportSure() {
+      try {
+        this.$loading(true)
+        const { data } = await tryRunExport(this.form)
+        if (data.success) {
+          this.$toast.success('导出成功')
+        } else {
+          this.$toast.fail('导出失败')
+        }
+      } catch (error) {
+        return error
+      } finally {
+        this.$loading(false)
+      }
     }
   }
 };

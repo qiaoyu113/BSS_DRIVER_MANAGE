@@ -175,6 +175,7 @@ import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
 import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { isPermission } from '@/filters';
 export default {
   name: 'DriverList',
   components: {
@@ -495,7 +496,29 @@ export default {
       }
     },
     exportDrive() {
-      this.$router.replace({ name: 'driverExport', params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, active: this.active }})
+      const menu = this.filterPermission() || []
+      if (menu.length === 0) {
+        this.$toast.fail('当前无导出权限!')
+        return
+      }
+      this.$router.replace({
+        name: 'driverExport',
+        params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, active: this.active, menu }
+      })
+    },
+    // 筛选数据权限
+    filterPermission() {
+      // 定义导出菜单权限
+      const value = [{
+        name: '司机信息',
+        value: '1',
+        pUrl: ['/v2/driver/export']
+      }, {
+        name: '订单信息',
+        value: '2',
+        pUrl: ['/v2/order/driver/export']
+      }]
+      return isPermission(value)
     },
     /**
      * picker 选择

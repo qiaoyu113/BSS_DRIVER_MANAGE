@@ -94,7 +94,7 @@ export default {
     return {
       showCreate: false,
       showActionSheet: false,
-      actions: [{ name: '新建加盟经理', value: 0 }, { name: '导出', value: 1 }]
+      actions: [{ name: '更换加盟经理', value: 0 }, { name: '导出', value: 1 }]
     };
   },
   computed: {

@@ -100,3 +100,14 @@ export function GetLineDetail(params) {
     params
   })
 }
+
+//
+
+export function tryRunExport(data) {
+  return request({
+    url: '/waybill_center/v2/runtest/export',
+    // url: '/mock/32/v2/line/lineInfo/detail',
+    method: 'post',
+    data
+  })
+}

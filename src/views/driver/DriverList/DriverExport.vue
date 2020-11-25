@@ -7,7 +7,12 @@
       @click-left="onClickLeft"
     />
     <div class="driver-export-center" @click="selectExprot">
-      <div v-for="(item,inx) in exportList" :key="inx" :data-value="item.value" :class="item.value==active?'active':''">
+      <div
+        v-for="(item, inx) in exportList"
+        :key="inx"
+        :data-value="item.value"
+        :class="item.value == active ? 'active' : ''"
+      >
         {{ item.name }}
       </div>
     </div>
@@ -23,7 +28,7 @@
       </p>
     </div>
     <div class="export-btn">
-      <van-button type="info" @click="diriveExport">
+      <van-button type="info" :class="disableCss" @click="diriveExport">
         导出
       </van-button>
     </div>
@@ -31,19 +36,18 @@
 </template>
 
 <script>
+import { driverExport } from '@/api/driver';
+import { orderExport } from '@/api/order';
 export default {
   name: 'DriverExport',
   data() {
     return {
-      active: 1,
-      exportList: [{
-        name: '司机信息',
-        value: 1
-      }, {
-        name: '订单信息',
-        value: 2
-      }],
-      allTotal: this.$route.params.allTotal || 0
+      active: this.$route.params.menu[0].value || 1,
+      isSuccessdriver: false,
+      isSuccessOrder: false,
+      exportList: this.$route.params.menu,
+      allTotal: this.$route.params.allTotal || 0,
+      queryInfo: this.$route.params.rlueFrom
     }
   },
   computed: {
@@ -52,7 +56,18 @@ export default {
         return 'https://szjw-bss-web.m1.yunniao.cn/'
       }
       return window.location.origin.replace('h5', 'web')
+    },
+    disableCss() {
+      if (this.active === '1' && this.isSuccessdriver) {
+        return 'van-button--disabled'
+      } else if (this.active === '2' && this.isSuccessOrder) {
+        return 'van-button--disabled'
+      }
+      return ''
     }
+  },
+  created() {
+    this.isRouteRefresh()
   },
   methods: {
     onClickLeft() {
@@ -62,7 +77,59 @@ export default {
       if (!e.target.dataset.value) return
       this.active = e.target.dataset.value
     },
+    isRouteRefresh() {
+      if (typeof this.$route.params.allTotal === 'undefined') { this.onClickLeft() }
+    },
     diriveExport() {
+      if (this.active === '1' && this.isSuccessdriver || this.active === '2' && this.isSuccessOrder) {
+        this.$toast.fail('当前下载任务已存在!')
+      }
+      if (this.isOneClick) return
+      if (this.active === '1' && !this.isSuccessdriver) {
+        this.driverExportSure()
+      } else if (this.active === '2' && !this.isSuccessOrder) {
+        this.orderExportSure()
+      }
+    },
+    async driverExportSure() {
+      this.isOneClick = true
+      try {
+        this.$loading(true)
+        const { data } = await driverExport(this.queryInfo)
+        if (data.success) {
+          this.$toast.success('导出成功')
+          this.isSuccessdriver = true
+        } else {
+          this.$toast.fail('导出失败')
+          this.isSuccessdriver = false
+        }
+      } catch (error) {
+        this.isSuccessdriver = false
+        return error
+      } finally {
+        this.isOneClick = false
+        this.$loading(false)
+      }
+    },
+    async orderExportSure() {
+      try {
+        this.isOneClick = true
+        this.$loading(true)
+
+        const { data } = await orderExport(this.queryInfo)
+        if (data.success) {
+          this.$toast.success('导出成功')
+          this.isSuccessOrder = true
+        } else {
+          this.$toast.fail('导出失败')
+          this.isSuccessOrder = false
+        }
+      } catch (error) {
+        this.isSuccessOrder = false
+      } finally {
+        this.isOneClick = false
+        this.$loading(false)
+      }
     }
   }
 
