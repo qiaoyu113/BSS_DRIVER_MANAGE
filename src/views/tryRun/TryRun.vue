@@ -8,14 +8,14 @@
         @click-left="onClickLeft"
       >
         <template #right>
-            <div
-                    v-permission="['/v2/runtest/export']"
-                    class="checkStyle navBarTit"
-                    style="margin-right: 10px"
-                    @click="onTryRunExport"
-            >
-                导出
-            </div>
+          <div
+            v-permission="['/v2/runtest/export']"
+            class="checkStyle navBarTit"
+            style="margin-right: 10px"
+            @click="onTryRunExport"
+          >
+            导出
+          </div>
           <div :class="{open: showOp, 'right-btn': true}" class="rWith navBarTit" @click="showOp=true">
             操作
           </div>
