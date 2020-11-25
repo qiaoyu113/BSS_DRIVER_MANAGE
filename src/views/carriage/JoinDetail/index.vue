@@ -84,10 +84,10 @@
             <van-button native-type="button" @click="show = false">
               取消
             </van-button>
-            <van-button native-type="button" @click="opNoCarBatchByGM">
+            <van-button v-preventreclick native-type="button" @click="opNoCarBatchByGM">
               未出车
             </van-button>
-            <van-button native-type="submit">
+            <van-button v-preventreclick native-type="submit">
               确认
             </van-button>
           </p>

@@ -16,7 +16,7 @@
     </van-field>
     <van-field
       label="支付时间"
-      :value="timeFormat(obj.payDate,'YYYY-MM-DD')"
+      :value="timeFormat(obj.payDate,'YYYY-MM-DD HH:mm:ss')"
       colon
       readonly
       :border="false"

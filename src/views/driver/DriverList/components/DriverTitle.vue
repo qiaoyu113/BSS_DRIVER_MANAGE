@@ -1,7 +1,7 @@
 <template>
   <div class="DriverTitle">
     <van-sticky :offset-top="0">
-      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-1)">
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="goIndex">
         <template v-if="showChange" #right>
           <div v-permission="['/v2/driver/share/interview','/v2/driver/special/interview']" class="checkStyle" style="margin-right : 10px; color: #fff;font-size: 12px;" @click="showCreate = true">
             新建
@@ -53,6 +53,9 @@ export default {
   },
   mounted() {},
   methods: {
+    goIndex() {
+      this.$router.push('/')
+    },
     screenOut() {
       this.$emit('screen', { show: true })
     },

@@ -31,7 +31,13 @@
         show-word-limit
       />
       <div style="margin:100px 15px 0 15px;">
-        <van-button color="#2F448A" block type="info" native-type="submit">
+        <van-button
+          v-preventreclick
+          native-type="submit"
+          color="#2F448A"
+          block
+          type="info"
+        >
           提交
         </van-button>
       </div>

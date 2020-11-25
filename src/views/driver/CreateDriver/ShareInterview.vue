@@ -99,7 +99,7 @@
         />
 
         <selftPicker
-          v-show="formData.hasCar === true"
+          v-if="formData.hasCar === true"
           :props="keyValue"
           picker-key="currentCarType"
           :form="formData"
@@ -116,7 +116,7 @@
         />
 
         <selftPicker
-          v-show="formData.hasCar === false"
+          v-if="formData.hasCar === false"
           :props="keyValue"
           picker-key="intentDrivingCarType"
           :form="formData"
@@ -352,6 +352,7 @@
             取消
           </van-button>
           <van-button
+            v-preventreclick
             type="primary"
             native-type="submit"
           >
@@ -495,7 +496,6 @@ export default {
   },
   methods: {
     changeLabel(val) {
-      console.log(val)
       this.copyData(val)
     },
     validatorAddress(val) {

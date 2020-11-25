@@ -39,7 +39,6 @@
         readonly
         :value="showForm.payDate"
         placeholder="请填写"
-        type="number"
         :rules="[{ required: true, message: '请填写' }]"
         @click="showTime = true"
       />
@@ -118,6 +117,7 @@
           取消
         </van-button>
         <van-button
+          v-preventreclick
           type="primary"
           native-type="submit"
         >
@@ -132,7 +132,7 @@
     >
       <van-datetime-picker
         v-model="form.payDate"
-        type="date"
+        type="datetime"
         title="选择年月日"
         @confirm="onConfirm"
         @cancel="showTime = false"
@@ -245,7 +245,7 @@ export default {
       Toast('图片大小不能超过 5M');
     },
     onConfirm(time) {
-      let timeText = dayjs(time).format('YYYY/MM/DD');
+      let timeText = dayjs(time).format('YYYY/MM/DD HH:mm:ss');
       // let timeCode = new Date(time).getTime();
       // console.log('timeCode', timeCode, time)
       this.showForm.payDate = timeText;

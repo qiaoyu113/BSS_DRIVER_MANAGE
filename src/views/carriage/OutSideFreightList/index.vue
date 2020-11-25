@@ -65,10 +65,10 @@
       </van-pull-refresh>
     </div>
     <div v-if="optionsType" class="Bulk">
-      <button @click="cancel()">
+      <button v-preventreclick @click="cancel()">
         取消批量上报
       </button>
-      <button @click="Add_to()">
+      <button v-preventreclick @click="Add_to()">
         批量上报运费
       </button>
     </div>

@@ -317,14 +317,14 @@ export default {
     box-sizing: border-box;
   }
   .bottomBtn {
-    padding: 10px 0;
+    padding: 10px 15px;
     box-sizing: border-box;
     position: fixed;
     bottom: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: calc(100vw - 30px);
+    width: 100%;
     background-color: @body-bg;
   }
   .checkAll {
