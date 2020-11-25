@@ -8,7 +8,7 @@
         title="司机详情"
         left-text="返回"
         left-arrow
-        @click-left="$router.go(-1)"
+        @click-left="goRouter"
       >
         <template #right>
           <div class="doBox">
@@ -292,12 +292,25 @@ export default {
     next()
   },
   methods: {
+    goRouter() {
+      this.$router.push('/driverlist')
+    },
     interviewConfirm() {
       const busiType = this.computedBusi().busiType
       if (busiType === 0) {
-        this.$router.push('/tailoredinterview')
+        this.$router.push({
+          path: '/editTailored',
+          query: {
+            id: this.driverId
+          }
+        })
       } else {
-        this.$router.push('/shareinterview')
+        this.$router.push({
+          path: '/editShare',
+          query: {
+            id: this.driverId
+          }
+        })
       }
     },
     interviewCancel() {

@@ -879,9 +879,15 @@ export default {
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
           Notify({ type: 'success', message: '订单录入成功' });
+          let query = {
+            id: this.driverId
+          }
+          if (params.cooperationModel < 3) {
+            query.canShow = true
+          }
           this.$router.push({
             path: '/driverdetail',
-            query: { id: this.driverId, canShow: true }
+            query: query
           });
           this.$loading(false);
         } else {

@@ -389,12 +389,7 @@ export default {
      *返回按钮
      */
     onClickLeft() {
-      this.$router.push({
-        path: '/driverdetail',
-        query: {
-          id: this.driverId
-        }
-      })
+      this.$router.go(-1)
     },
     lookPic(pic) {
       ImagePreview([pic]);
