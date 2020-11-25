@@ -179,7 +179,79 @@
               :value="item.createDate | DataIsNull"
             ></van-cell>
           </template>
-          <template v-else-if="item.recordFlag.includes('掉线记录')">
+          <template v-else-if="item.recordFlag === '创建历史试跑'">
+            <!-- 创建历史试跑 -->
+            <van-cell
+              title="创建人"
+              :value="item.dealIdMessage | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="创建时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="配送时间："
+              :value="deliveryDate(item) | DataIsNull"
+            ></van-cell>
+          </template>
+          <template v-else-if="item.recordFlag.includes('系统掉线记录')">
+            <!-- 掉线 -->
+            <van-cell
+              title="操作人："
+              :value="item.dealIdMessage | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="操作时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="掉线原因："
+              :value="item.droppedReasonName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="其他原因："
+              value="无"
+            ></van-cell>
+          </template>
+          <template v-else-if="item.recordFlag.includes('试跑掉线记录')">
+            <!-- 掉线 -->
+            <van-cell
+              title="操作人："
+              :value="item.dealIdMessage | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="操作时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="掉线原因："
+              :value="item.droppedReasonName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="其他原因："
+              :value="item.otherReason | DataIsNull"
+            ></van-cell>
+          </template>
+          <template v-else-if="item.recordFlag.includes('稳定在跑掉线记录')">
+            <!-- 掉线 -->
+            <van-cell
+              title="操作人："
+              :value="item.dealIdMessage | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="操作时间："
+              :value="item.createDate | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="掉线原因："
+              :value="item.droppedReasonName | DataIsNull"
+            ></van-cell>
+            <van-cell
+              title="其他原因："
+              :value="item.otherReason | DataIsNull"
+            ></van-cell>
+          </template>
+          <template v-else-if="item.recordFlag.includes('跟车掉线记录')">
             <!-- 掉线 -->
             <van-cell
               title="操作人："
@@ -226,6 +298,10 @@
               title="岗前叮嘱："
               :value="item.preJobAdvice | DataIsNull"
             ></van-cell>
+            <van-cell
+              title="配送时间："
+              :value="deliveryDate(item) | DataIsNull"
+            ></van-cell>
           </template>
         </van-collapse-item>
       </div>
@@ -235,6 +311,7 @@
 
 <script>
 import dayjs from 'dayjs'
+import { parseTime } from '@/utils'
 export default {
   name: 'DetailsItem',
   props: {
@@ -311,6 +388,17 @@ export default {
     }
   },
   methods: {
+    // 配送时间
+    deliveryDate(item) {
+      let str = ''
+      if (item.deliveryStartDate) {
+        str = `${parseTime(item.deliveryStartDate, '{y}-{m}-{d}')}`
+      }
+      if (item.deliveryEndDate) {
+        str += ` - ${parseTime(item.deliveryEndDate, '{y}-{m}-{d}')}`
+      }
+      return str
+    },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
       return dayjs(date).format(format)

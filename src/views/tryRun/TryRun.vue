@@ -8,20 +8,16 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div
-            v-permission="['/v2/runtest/export']"
-            class="checkStyle navBarTit"
-            style="margin-right: 10px"
-            @click="onTryRunExport"
-          >
-            导出
-          </div>
-          <div
-            v-permission="['/v2/runtest/creatIntentionRun']"
-            class="navBarTit checkStyle"
-            @click="onCreateRun"
-          >
-            创建试跑
+            <div
+                    v-permission="['/v2/runtest/export']"
+                    class="checkStyle navBarTit"
+                    style="margin-right: 10px"
+                    @click="onTryRunExport"
+            >
+                导出
+            </div>
+          <div :class="{open: showOp, 'right-btn': true}" class="rWith navBarTit" @click="showOp=true">
+            操作
           </div>
         </template>
       </van-nav-bar>
@@ -46,7 +42,7 @@
         >
           <template #title>
             {{ item.title }}
-            <div v-if="item.name === form.status" class="van-info">
+            <div v-if="item.total" class="van-info">
               {{ item.total }}
             </div>
           </template>
@@ -64,7 +60,11 @@
           error-text="请求失败，点击重新加载"
           @load="onLoad"
         >
-          <ListItem v-for="(item, index) in lists" :key="index" :item="item" />
+          <ListItem
+            v-for="(item, index) in lists"
+            :key="index"
+            :item="item"
+          />
         </van-list>
       </van-pull-refresh>
     </div>
@@ -94,10 +94,7 @@
         label="客户"
         placeholder="请输入客户名称/编号"
         :rules="[
-          {
-            validator: validatorValue,
-            message: '请输入6位及以上数字或2位及以上非纯数字'
-          }
+          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
         ]"
       />
       <van-field
@@ -136,10 +133,7 @@
         label="司机"
         placeholder="请输入司机姓名/手机号"
         :rules="[
-          {
-            validator: validatorValue,
-            message: '请输入6位及以上数字或2位及以上非纯数字'
-          }
+          { validator: validatorValue, message: '请输入6位及以上数字或2位及以上非纯数字' }
         ]"
       />
       <van-field
@@ -196,6 +190,14 @@
         @confirm="onConfirmPickerCity"
       />
     </van-popup>
+
+    <van-action-sheet
+      v-model="showOp"
+      :actions="actionsOp | isPermission"
+      cancel-text="取消"
+      close-on-click-action
+      @select="onSelect"
+    />
     <van-dialog
       v-if="isShowExport"
       v-model="isShowExport"
@@ -230,6 +232,7 @@ export default {
   },
   data() {
     return {
+      showOp: false,
       scrollTop: 0,
       showSuggest: true,
       tabArrs: [
@@ -239,7 +242,7 @@ export default {
           name: ''
         },
         {
-          title: '待试跑',
+          title: '试跑意向',
           total: 0,
           name: 100
         },
@@ -272,6 +275,18 @@ export default {
           title: '稳定掉线',
           total: 0,
           name: 700
+        }
+      ],
+      actionsOp: [
+        {
+          name: '创建历史试跑',
+          value: 1,
+          pUrl: ['/v2/runtest/makeUpHistoryData']
+        },
+        {
+          name: '创建试跑意向',
+          value: 2,
+          pUrl: ['/v2/runtest/creatIntentionRun']
         }
       ],
       // lists
@@ -369,6 +384,10 @@ export default {
             data.data.dropped_reason.push({
               dictLabel: '数据迁移掉线',
               dictValue: '6'
+            })
+            data.data.dropped_reason.push({
+              dictLabel: '创建历史试跑',
+              dictValue: '7'
             })
             this.carList = data.data.Intentional_compartment;
             this.whyList = data.data.dropped_reason;
@@ -498,6 +517,18 @@ export default {
       this.form[this.pickerKey] = value.code;
       this.showPickerCity = false;
     },
+    onSelect(item) {
+      let activeIndex = item.value;
+      this.showOp = false
+      //  创建历史试跑
+      setTimeout(() => {
+        if (activeIndex === 1) {
+          this.$router.push('/create-history-run');
+        } else if (activeIndex === 2) { // 创建试跑
+          this.$router.push('/create-run');
+        }
+      }, 350)
+    },
     /**
      * 显示picker
      */
@@ -531,12 +562,7 @@ export default {
     onClickLeft() {
       this.$router.go(-1);
     },
-    /**
-     * 创建试跑
-     */
-    onCreateRun() {
-      this.$router.push('/create-run');
-    },
+
     // 状态切换
     async handleTabChange(tab) {
       this.lists = [];
@@ -642,6 +668,31 @@ export default {
   display: flex;
   flex-direction: column;
   background: @body-bg;
+  .rWith {
+    width: auto;
+    white-space: nowrap;
+  }
+  .right-btn {
+      position: relative;
+      padding-right: 5px;
+      &.open {
+        &::after {
+          margin-top: -1px;
+          transform: rotate(135deg);
+        }
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -4px;
+        margin-top: -5px;
+        border: 3px solid;
+        border-color: transparent transparent @white @white;
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
+    }
   .top {
     margin-bottom: 5px;
     background-color: @body-bg;
@@ -652,6 +703,9 @@ export default {
   }
   .navBarTit {
     color: @white;
+  }
+  .mR5 {
+    margin-right: 5px;
   }
   .search {
     position: relative;
@@ -706,3 +760,4 @@ export default {
   opacity: 1;
 }
 </style>
+
