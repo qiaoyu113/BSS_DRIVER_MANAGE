@@ -277,17 +277,19 @@ export default {
   },
   mounted() {
     let id = this.$route.query.id;
-    let canShow = this.$route.query.canShow;
     this.driverId = id;
     this.getDetail(id);
     this.getOrderLabel(id);
-    if (canShow) {
-      this.showDio = true
-    }
   },
-  beforeRouteLeave(to, from, next) {
-    if (from.query.canShow) {
-      delete from.query.canShow
+  beforeRouteEnter(to, from, next) {
+    if (['/resetOrder', '/createOrder'].includes(from.path)) {
+      if (to.query.canShow === true) {
+        next(vm => {
+          // 通过 `vm` 访问组件实例
+          vm.showDio = true
+        })
+        return false
+      }
     }
     next()
   },

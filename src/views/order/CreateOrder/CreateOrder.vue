@@ -885,7 +885,7 @@ export default {
           if (params.cooperationModel < 3) {
             query.canShow = true
           }
-          this.$router.push({
+          this.$router.replace({
             path: '/driverdetail',
             query: query
           });
