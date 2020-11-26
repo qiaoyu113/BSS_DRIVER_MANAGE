@@ -2,7 +2,7 @@
   <div class="CreateRun">
     <div class="top">
       <van-nav-bar
-        :title="title"
+        :title="step === '0' ? '创建试跑意向':'确认试跑状态'"
         left-text="返回"
         left-arrow
         @click-left="onClickLeft"
@@ -33,7 +33,7 @@
             2
           </div>
           <div class="tit">
-            创建试跑
+            确认试跑状态
           </div>
         </div>
       </div>
