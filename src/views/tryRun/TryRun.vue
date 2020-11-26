@@ -201,6 +201,7 @@
       v-model="isShowExport"
       class="export-dialog"
       show-cancel-button
+      confirm-button-text="导出"
       @confirm="tryRunExportSure"
     >
       <p>
