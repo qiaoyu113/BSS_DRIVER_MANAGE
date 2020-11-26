@@ -203,6 +203,7 @@
       v-model="isShowExport"
       class="export-dialog"
       show-cancel-button
+      confirm-button-text="导出"
       @confirm="tryRunExportSure"
     >
       <p>
@@ -619,15 +620,15 @@ export default {
     },
     // 点击导出
     onTryRunExport() {
-      let isNull = false
-      for (const key in this.form) {
-        if (this.form.hasOwnProperty(key)) {
-          if (this.form[key] || this.form[key] === 0) {
-            isNull = true
-            break
-          }
-        }
-      }
+      // let isNull = false
+      // for (const key in this.form) {
+      //   if (this.form.hasOwnProperty(key)) {
+      //     if (this.form[key] || this.form[key] === 0) {
+      //       isNull = true
+      //       break
+      //     }
+      //   }
+      // }
       if (this.allTotal === 0) {
         this.$toast({
           message: '没有可以导出的数据',
@@ -635,14 +636,16 @@ export default {
         })
         return
       }
-      if (!isNull) {
-        this.showPopup = true
-        setTimeout(() => {
-          this.$toast.fail('请选择筛选条件')
-        })
-      } else {
-        this.isShowExport = !this.isShowExport
-      }
+      this.isShowExport = !this.isShowExport
+
+      // if (!isNull) {
+      //   this.showPopup = true
+      //   setTimeout(() => {
+      //     this.$toast.fail('请选择筛选条件')
+      //   })
+      // } else {
+      //   this.isShowExport = !this.isShowExport
+      // }
     },
     // 试跑导出
     async tryRunExportSure() {

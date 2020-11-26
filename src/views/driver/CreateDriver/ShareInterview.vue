@@ -224,29 +224,32 @@
           :rules="[{ required: true, message: '请选择' }]"
           @changelabel="changeLabel"
         /> -->
-        <van-field
-          name="intentWorkDuration"
-          label="意向工作时间段:"
-          required
-          :rules="[{ validator: isNotNull, message: '请选择' }]"
-        >
-          <template #input>
-            <van-checkbox-group
-              v-model="formData.intentWorkDuration"
-              direction="horizontal"
-            >
-              <van-checkbox :name="1">
-                上午
-              </van-checkbox>
-              <van-checkbox :name="2">
-                下午
-              </van-checkbox>
-              <van-checkbox :name="3">
-                晚上
-              </van-checkbox>
-            </van-checkbox-group>
-          </template>
-        </van-field>
+        <div>
+          <van-field
+            name="intentWorkDuration"
+            label="意向工作时间段:"
+            :rules="[{ validator: isNotNull, message: '请选择' }]"
+          >
+            <template #input>
+              <div>
+                <van-checkbox-group
+                  v-model="formData.intentWorkDuration"
+                  direction="horizontal"
+                >
+                  <van-checkbox :name="1">
+                    上午
+                  </van-checkbox>
+                  <van-checkbox :name="2">
+                    下午
+                  </van-checkbox>
+                  <van-checkbox :name="3">
+                    晚上
+                  </van-checkbox>
+                </van-checkbox-group>
+              </div>
+            </template>
+          </van-field>
+        </div>
         <selftPicker
           :props="keyValue"
           picker-key="heavyLifting"

@@ -11,7 +11,7 @@
         v-for="(item, inx) in exportList"
         :key="inx"
         :data-value="item.value"
-        :class="item.value == active ? 'active' : ''"
+        :class="active.includes(item.value) ? 'active' : ''"
       >
         {{ item.name }}
       </div>
@@ -42,7 +42,7 @@ export default {
   name: 'DriverExport',
   data() {
     return {
-      active: this.$route.params.menu[0].value || 1,
+      active: [this.$route.params.menu[0].value || '1'],
       isSuccessdriver: false,
       isSuccessOrder: false,
       exportList: this.$route.params.menu,
@@ -58,12 +58,8 @@ export default {
       return window.location.origin.replace('h5', 'web')
     },
     disableCss() {
-      if (this.active === '1' && this.isSuccessdriver) {
-        return 'van-button--disabled'
-      } else if (this.active === '2' && this.isSuccessOrder) {
-        return 'van-button--disabled'
-      }
-      return ''
+      if (!Array.isArray(this.active)) return ''
+      return this.active.length > 0 ? '' : 'van-button--disabled'
     }
   },
   created() {
@@ -75,19 +71,33 @@ export default {
     },
     selectExprot(e) {
       if (!e.target.dataset.value) return
-      this.active = e.target.dataset.value
+      const inx = this.active.indexOf(e.target.dataset.value)
+      if (inx !== -1) {
+        this.active.splice(inx, 1)
+      } else {
+        if (e.target.dataset.value === '1' && this.isSuccessdriver || e.target.dataset.value === '2' && this.isSuccessOrder) {
+          this.$toast.fail('当前下载任务已存在!')
+        } else {
+          this.active.push(e.target.dataset.value)
+        }
+      }
+      // this.active = e.target.dataset.value
     },
     isRouteRefresh() {
       if (typeof this.$route.params.allTotal === 'undefined') { this.onClickLeft() }
     },
     diriveExport() {
-      if (this.active === '1' && this.isSuccessdriver || this.active === '2' && this.isSuccessOrder) {
+      if (Array.isArray(this.active) && this.active.length === 0) {
+        this.$toast.fail('当前未选中导出信息类型，无法导出！')
+      }
+      if (this.active.includes('1') && this.isSuccessdriver || this.active.includes('2') && this.isSuccessOrder) {
         this.$toast.fail('当前下载任务已存在!')
       }
       if (this.isOneClick) return
-      if (this.active === '1' && !this.isSuccessdriver) {
+      if (this.active.includes('1') && !this.isSuccessdriver) {
         this.driverExportSure()
-      } else if (this.active === '2' && !this.isSuccessOrder) {
+      }
+      if (this.active.includes('2') && !this.isSuccessOrder) {
         this.orderExportSure()
       }
     },
@@ -99,27 +109,30 @@ export default {
         if (data.success) {
           this.$toast.success('导出成功')
           this.isSuccessdriver = true
+          const inx = this.active.indexOf('1')
+          this.active.splice(inx, 1)
         } else {
           this.$toast.fail('导出失败')
           this.isSuccessdriver = false
         }
       } catch (error) {
         this.isSuccessdriver = false
-        return error
       } finally {
         this.isOneClick = false
         this.$loading(false)
+        this.$toast.clear()
       }
     },
     async orderExportSure() {
       try {
         this.isOneClick = true
         this.$loading(true)
-
         const { data } = await orderExport(this.queryInfo)
         if (data.success) {
           this.$toast.success('导出成功')
           this.isSuccessOrder = true
+          const inx = this.active.indexOf('2')
+          this.active.splice(inx, 1)
         } else {
           this.$toast.fail('导出失败')
           this.isSuccessOrder = false
@@ -129,6 +142,7 @@ export default {
       } finally {
         this.isOneClick = false
         this.$loading(false)
+        this.$toast.clear()
       }
     }
   }
