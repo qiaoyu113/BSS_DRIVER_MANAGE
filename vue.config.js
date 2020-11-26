@@ -56,13 +56,6 @@ module.exports = {
           '/api/mock': '/mock'
         }
       },
-      // '/api/waybill_center': {
-      //   target: 'http://192.168.0.188:10104',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '/api/waybill_center': ''
-      //   }
-      // },
       '/api': {
         // target: `http://localhost:${mockServerPort}/mock-api/v1`,
         target: IS_PRODUCTION ? cdnDomian : 'https://szjw-bss-h5.m1.yunniao.cn',
