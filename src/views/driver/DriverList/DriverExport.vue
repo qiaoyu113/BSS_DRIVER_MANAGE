@@ -23,6 +23,7 @@
       <p>
         点击导出后，请在web端：<a
           class="blue"
+          target="_blank"
           :href="passURL"
         >szjw-bss-web.yunniao.cn</a>&nbsp;右上角下载工具中下载！
       </p>
@@ -76,12 +77,14 @@ export default {
         this.active.splice(inx, 1)
       } else {
         if (e.target.dataset.value === '1' && this.isSuccessdriver || e.target.dataset.value === '2' && this.isSuccessOrder) {
-          this.$toast.fail('当前下载任务已存在!')
+          this.$toast({
+            message: '当前下载任务已存在!',
+            position: 'bottom'
+          })
         } else {
           this.active.push(e.target.dataset.value)
         }
       }
-      // this.active = e.target.dataset.value
     },
     isRouteRefresh() {
       if (typeof this.$route.params.allTotal === 'undefined') { this.onClickLeft() }
@@ -91,7 +94,10 @@ export default {
         this.$toast.fail('当前未选中导出信息类型，无法导出！')
       }
       if (this.active.includes('1') && this.isSuccessdriver || this.active.includes('2') && this.isSuccessOrder) {
-        this.$toast.fail('当前下载任务已存在!')
+        this.$toast({
+          message: '当前下载任务已存在!',
+          position: 'bottom'
+        })
       }
       if (this.isOneClick) return
       if (this.active.includes('1') && !this.isSuccessdriver) {
