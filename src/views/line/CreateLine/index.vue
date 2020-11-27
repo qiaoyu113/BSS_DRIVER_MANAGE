@@ -28,7 +28,7 @@
     </template>
 
     <StepOne v-show="step === 1" :is-stable="isStable" type="create" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" :is-stable="isStable" :min-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date()" type="create" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepTwo v-show="step === 2" :is-stable="isStable" :max-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date(2125, 12, 31)" type="create" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
     <StepThree v-show="step === 3" :is-stable="isStable" type="create" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
@@ -94,7 +94,8 @@ export default {
         goodsWeight: '', // 货物重量
         carry: '', // 是否需要搬运
         labelType: '', // 线路肥瘦标签
-        dutyRemark: '' // 其他上岗要求
+        dutyRemark: '', // 其他上岗要求
+        sellPoint: '' // 亮点
       },
       showModal: false,
       isProject: false, // 是否从项目过来的
@@ -173,6 +174,7 @@ export default {
       this.stepThreeForm.cargoNum = obj.cargoNum
       this.stepThreeForm.carry = obj.carry
       this.stepThreeForm.dutyRemark = obj.dutyRemark
+      this.stepThreeForm.sellPoint = obj.sellPoint
     },
     // 发布线路
     handleSubmit() {
@@ -329,6 +331,7 @@ export default {
           this.stepThreeForm.cargoNum = obj.cargoNum
           this.stepThreeForm.carry = obj.carry
           this.stepThreeForm.dutyRemark = obj.dutyRemark
+          this.stepThreeForm.sellPoint = obj.sellPoint
         } else {
           this.$toast.fail(res.errorMsg)
         }
