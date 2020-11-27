@@ -5,7 +5,7 @@ export default [
     component: resolve => require(['@/views/line/List'], resolve),
     meta: {
       title: '线路管理',
-      keepAlive: false
+      keepAlive: true
     }
   },
   {
@@ -77,7 +77,8 @@ export default [
     component: resolve => require(['@/views/line/Search'], resolve),
     meta: {
       title: '搜索线路',
-      keepAlive: false
+      keepAlive: true,
+      search: true
     }
   }
 ]
