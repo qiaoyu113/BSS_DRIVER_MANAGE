@@ -1,7 +1,11 @@
 <template>
   <div :class="checked ? 'DriverList padd' : 'DriverList'">
     <van-sticky :offset-top="0">
-      <DriverTitle :actions="menuActive" @screen="startScreen" @changeManager="changeManager" />
+      <DriverTitle
+        :actions="filterPermission"
+        @screen="startScreen"
+        @changeManager="changeManager"
+      />
       <van-tabs
         v-model="active"
         sticky
@@ -262,7 +266,8 @@ export default {
       },
       scrollTop: 0,
       allTotal: 0,
-      menuActive: [{ name: '更换加盟经理', value: 0 }, { name: '导出', value: 1 }],
+      menuActive: [{ name: '更换加盟经理', pUrl: ['/v2/driver/updateGmByDriverId'], value: 0 },
+        { name: '导出', pUrl: ['/v2/driver/export', '/v2/order/driver/export'], value: 1 }],
       exportBtn: [{
         name: '司机信息',
         value: '1',
@@ -289,7 +294,11 @@ export default {
           this.checkedList = [];
         }
       }
+    },
+    filterPermission() {
+      return isPermission(this.menuActive)
     }
+
   },
   // 回来后还原
   beforeRouteEnter(to, from, next) {
@@ -318,7 +327,7 @@ export default {
     }
   },
   created() {
-    this.filterPermission()
+    // this.filterPermission()
   },
 
   methods: {
@@ -518,17 +527,17 @@ export default {
       if (this.allTotal >= 3000) { return this.$toast.fail('当前导出数据超过3000条！') }
       this.$router.replace({
         name: 'driverExport',
-        params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, menu: this.exportBtn }
+        params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, menu: isPermission(this.exportBtn) }
       })
     },
     // 筛选数据权限
-    filterPermission() {
-      // 定义导出菜单权限
-      this.exportBtn = isPermission(this.exportBtn) || []
-      if (this.exportBtn.length === 0) {
-        this.menuActive.splice(1, 1)
-      }
-    },
+    // filterPermission() {
+    //   // 定义导出菜单权限
+    //   this.exportBtn = isPermission(this.exportBtn) || []
+    //   if (this.exportBtn.length === 0) {
+    //     this.menuActive.splice(1, 1)
+    //   }
+    // },
     /**
      * picker 选择
      */
