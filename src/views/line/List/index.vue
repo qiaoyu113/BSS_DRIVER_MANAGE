@@ -529,6 +529,8 @@ export default {
         driverWorkTime: '',
         date: []
       }
+      this.checkedStrList = []
+      this.checkedList = []
     },
     // 模糊搜索
     async handleSearchChange(value) {
