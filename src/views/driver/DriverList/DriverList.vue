@@ -1,7 +1,7 @@
 <template>
   <div :class="checked ? 'DriverList padd' : 'DriverList'">
     <van-sticky :offset-top="0">
-      <DriverTitle @screen="startScreen" @changeManager="changeManager" />
+      <DriverTitle :actions="menuActive" @screen="startScreen" @changeManager="changeManager" />
       <van-tabs
         v-model="active"
         sticky
@@ -261,7 +261,17 @@ export default {
         size: 10
       },
       scrollTop: 0,
-      allTotal: 0
+      allTotal: 0,
+      menuActive: [{ name: '更换加盟经理', value: 0 }, { name: '导出', value: 1 }],
+      exportBtn: [{
+        name: '司机信息',
+        value: '1',
+        pUrl: ['/v2/driver/export']
+      }, {
+        name: '订单信息',
+        value: '2',
+        pUrl: ['/v2/order/driver/export']
+      }]
     };
   },
   computed: {
@@ -307,6 +317,10 @@ export default {
       this.formText.gmId = ''
     }
   },
+  created() {
+    this.filterPermission()
+  },
+
   methods: {
     // 联动请求加盟经理
     getGmId() {
@@ -429,7 +443,7 @@ export default {
         this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
         if (this.ruleForm.startDate && this.ruleForm.endDate) {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
-          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
         }
         let { data: res } = await getDriverList(params)
         if (res.success) {
@@ -496,29 +510,24 @@ export default {
       }
     },
     exportDrive() {
-      const menu = this.filterPermission() || []
-      if (menu.length === 0) {
-        this.$toast.fail('当前无导出权限!')
-        return
-      }
+      // const menu = this.filterPermission() || []
+      // if (menu.length === 0) {
+      //   this.$toast.fail('当前无导出权限!')
+      //   return
+      // }
+      if (this.allTotal >= 3000) { return this.$toast.fail('当前导出数据超过3000条！') }
       this.$router.replace({
         name: 'driverExport',
-        params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, active: this.active, menu }
+        params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, menu: this.exportBtn }
       })
     },
     // 筛选数据权限
     filterPermission() {
       // 定义导出菜单权限
-      const value = [{
-        name: '司机信息',
-        value: '1',
-        pUrl: ['/v2/driver/export']
-      }, {
-        name: '订单信息',
-        value: '2',
-        pUrl: ['/v2/order/driver/export']
-      }]
-      return isPermission(value)
+      this.exportBtn = isPermission(this.exportBtn) || []
+      if (this.exportBtn.length === 0) {
+        this.menuActive.splice(1, 1)
+      }
     },
     /**
      * picker 选择

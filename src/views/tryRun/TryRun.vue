@@ -211,7 +211,7 @@
       </p>
       <p>
         提示:请在三足金乌web端
-        <a :href="passURL" class="blue">szjw-bss-web.yunniao.cn</a>
+        <a :href="passURL" target="_blank" class="blue">szjw-bss-web.yunniao.cn</a>
         右上角下载工具中下载！
       </p>
     </van-dialog>
@@ -342,7 +342,7 @@ export default {
       return this.$route.meta.title;
     },
     passURL() {
-      if (!process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === 'development') {
         return 'https://szjw-bss-web.m1.yunniao.cn/'
       }
       return window.location.origin.replace('h5', 'web')

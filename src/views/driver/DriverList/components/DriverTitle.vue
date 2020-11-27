@@ -88,13 +88,18 @@ export default {
     showChange: {
       type: Boolean,
       default: true
+    },
+    actions: {
+      type: Array,
+      default: () => []
     }
+
   },
   data() {
     return {
       showCreate: false,
-      showActionSheet: false,
-      actions: [{ name: '更换加盟经理', value: 0 }, { name: '导出', value: 1 }]
+      showActionSheet: false
+      // actions: [{ name: '更换加盟经理', value: 0 }, { name: '导出', value: 1 }]
     };
   },
   computed: {
