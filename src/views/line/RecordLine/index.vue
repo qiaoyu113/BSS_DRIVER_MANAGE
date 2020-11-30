@@ -190,6 +190,10 @@ export default {
      *提交
      */
     async onSubmit(values) {
+      if (this.form.warehouseLoadingPictures.length === 0 && this.form.otherPictures.length === 0) {
+        this.$toast.fail('请上传至少一张图片')
+        return
+      }
       try {
         this.$loading(true)
         let params = {
