@@ -47,10 +47,6 @@ export default {
     minDate: {
       type: Date,
       default: () => new Date()
-    },
-    maxDate: {
-      type: Date,
-      default: () => new Date(2125, 12, 31)
     }
   },
   data() {
@@ -70,11 +66,6 @@ export default {
     minDate(val) {
       if (val) {
         this.minTime = val
-      }
-    },
-    maxDate(val) {
-      if (val) {
-        this.maxTime = val
       }
     }
   },

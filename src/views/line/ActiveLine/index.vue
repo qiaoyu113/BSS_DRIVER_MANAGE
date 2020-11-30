@@ -4,7 +4,7 @@
       <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
     </van-sticky>
     <StepOne v-show="step === 1" type="active" :form="stepOneForm" @stepTwo="step =2" />
-    <StepTwo v-show="step === 2" type="active" :max-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date(2125, 12, 31)" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
+    <StepTwo v-show="step === 2" type="active" :min-date="stepOneForm.waitDirveValidity ? new Date(stepOneForm.waitDirveValidity) : new Date()" :form="stepTwoForm" @stepThree="step=3" @step-one="step=1" />
     <StepThree v-show="step === 3" type="active" :form="stepThreeForm" @step-two="step=2" @submit="handleSubmit" />
   </div>
 </template>
@@ -72,8 +72,7 @@ export default {
         carry: '', // 是否需要搬运
         dutyRemark: '', // 其他上岗要求
         lineId: '',
-        labelType: '', // 线路肥瘦标签
-        sellPoint: '' // 亮点
+        labelType: '' // 线路肥瘦标签
       },
       lineInfo: {
         warehouseCity: '',
@@ -275,8 +274,7 @@ export default {
               carry: result.carry,
               dutyRemark: result.dutyRemark,
               lineId: result.lineId,
-              labelType: result.labelType,
-              sellPoint: result.sellPoint // 亮点
+              labelType: result.labelType
             }
           }
 

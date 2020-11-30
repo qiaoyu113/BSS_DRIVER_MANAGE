@@ -179,6 +179,9 @@ export default {
 </style>
 
 <style scoped>
+  .lineSearchContainer >>> .van-hairline--top::after {
+    border-color: #649CEE;
+  }
   .lineSearchContainer >>> .van-search__content {
     display: flex;
     flex-direction: column-reverse;

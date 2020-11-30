@@ -69,8 +69,6 @@
         <van-field label="线路紧急程度" label-width="120" readonly :value="form.lineUrgentName | DataIsNull" :border="false" colon />
         <van-field label="适配性" label-width="120" readonly :value="form.lineAdapterName | DataIsNull" :border="false" colon />
         <van-field label="线路肥瘦标签" label-width="120" readonly :value="form.labelTypeName | DataIsNull" :border="false" colon />
-        <van-field label="是否为爆款" label-width="120" readonly :value="form.isHotName | DataIsNull" :border="false" colon />
-        <van-field label="线路亮点" label-width="120" type="textarea" autosize readonly :value="sellPoint | DataIsNull" :border="false" colon />
       </van-collapse-item>
       <van-collapse-item title="现场信息" name="7">
         <ImagePreview label="库房装货图片:" :image-arrs="fileForm.warehouseLoadingPictures" />
@@ -96,7 +94,6 @@ import ImagePreview from './components/ImagePreview'
 import VideoPreview from './components/VideoPreview'
 import { Dialog, ActionSheet } from 'vant';
 import dayjs from 'dayjs'
-import { getDictData } from '@/api/common'
 import { getLineDetail, undercarriage, judgeMeetConditions } from '@/api/line'
 import { addCach } from '@/utils/mixins.js'
 export default {
@@ -114,17 +111,10 @@ export default {
       fileForm: {},
       lineId: '',
       show: false,
-      actions: [],
-      sellPointColumns: []
+      actions: []
     }
   },
   computed: {
-    sellPoint() {
-      const list = (this.form.sellPoint || '').split(',').map(item => Number(item))
-      return this.sellPointColumns.filter(item => list.includes(item.value))
-        .map(item => item.label)
-        .join('，')
-    },
     deliveryTime() {
       return dayjs(this.form.deliveryStartDate).format('YYYY/MM/DD') + '-' + dayjs(this.form.deliveryEndDate).format('YYYY/MM/DD')
     },
@@ -167,35 +157,11 @@ export default {
   },
   mounted() {
     this.lineId = this.$route.query.lineId
-    this.init()
     if (this.lineId) {
       this.getLineDetail()
     }
   },
   methods: {
-    // 初始化数据
-    async init() {
-      this.sellPointColumns = await this.getDictData('selling_points')
-    },
-    // 从数据字典获取数据
-    async getDictData(dictType) {
-      try {
-        let params = {
-          dictType
-        }
-        let { data: res } = await getDictData(params)
-        if (res.success) {
-          return res.data.map(item => ({
-            label: item.dictLabel,
-            value: +item.dictValue
-          }))
-        } else {
-          this.$fail(res.errorMsg)
-        }
-      } catch (err) {
-        console.log(`get dict data fail:${err}`)
-      }
-    },
     // YYYY-MM-DD dddd HH:mm:ss
     timeFormat(date, format) {
       return dayjs(date).format(format)

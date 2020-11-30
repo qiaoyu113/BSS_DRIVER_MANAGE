@@ -14,10 +14,14 @@
         :form="form"
         :columns="lineUrgentColumns"
         value="label"
-        :is-computed="form['lineUrgent']!=='' && lineUrgentColumns.length > 0"
+        :is-computed="form['lineUrgent']!=='' && lineAdapterColumns.length > 0"
+        required
         label-width="100"
         label="线路紧急程度"
         placeholder="请选择"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
       />
       <selftPicker
         picker-key="lineAdapter"
@@ -25,66 +29,18 @@
         :columns="lineAdapterColumns"
         value="label"
         :is-computed="form['lineAdapter']!==''&&lineAdapterColumns.length > 0"
+        required
         label-width="100"
         label="适配性"
         placeholder="请选择"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
       />
-      <selftPicker
-        picker-key="isHot"
-        :form="form"
-        :columns="hotColum"
-        value="label"
-        :is-computed="form['isHot']!==''&&hotColum.length > 0"
-        label-width="100"
-        label="是否为爆款"
-        placeholder="请选择"
-        required
-        :rules="[{ required: true, message: '请选择'}]"
-      />
-      <van-field
-        :key="form.isHot"
-        :value="checkedStrList.map(item => item.label).join('，')"
-        label-width="100"
-        colon
-        readonly
-        clickable
-        :required="false"
-        label="线路亮点"
-        placeholder="请选择"
-        autosize
-        type="textarea"
-        :rules="[{ required: false, message: '请选择'}]"
-        @click="showModal = true"
-      >
-      </van-field>
       <van-button type="primary" block class="btn">
         提交
       </van-button>
     </van-form>
-
-    <!-- 选择亮点 -->
-    <van-popup v-model="showModal" position="bottom" :style="{ height: '40%' }">
-      <div class="van-picker__toolbar">
-        <button type="button" class="van-picker__cancel" @click="showModal = false">
-          取消
-        </button>
-        <button type="button" class="van-picker__confirm" @click="checked">
-          确认
-        </button>
-      </div>
-      <div class="list">
-        <van-checkbox-group v-model="checkedList" direction="horizontal">
-          <van-checkbox
-            v-for="(item, index) in sellPointColumns"
-            :key="index"
-            :name="item.value"
-            class="margin-bottom-xs"
-          >
-            {{ item.label }}
-          </van-checkbox>
-        </van-checkbox-group>
-      </div>
-    </van-popup>
   </div>
 </template>
 
@@ -98,28 +54,11 @@ export default {
   },
   data() {
     return {
-      showModal: false,
-      checkedList: [],
-      checkedStrList: [],
       form: {
         lineAdapter: '',
-        lineUrgent: '',
-        isHot: '',
-        sellPoint: ''
+        lineUrgent: ''
       },
-      sellPointRequired: false,
       lineId: '',
-      hotColum: [
-        {
-          label: '是',
-          value: 1
-        },
-        {
-          label: '否',
-          value: 0
-        }
-      ], // 是否爆款
-      sellPointColumns: [], // 卖点
       lineUrgentColumns: [], // 线路紧急程度数组
       lineAdapterColumns: [] // 适配性数组
     }
@@ -129,13 +68,6 @@ export default {
     this.init()
   },
   methods: {
-    /**
-     *复选框
-     */
-    checked() {
-      this.checkedStrList = this.sellPointColumns.filter(item => this.checkedList.includes(item.value))
-      this.showModal = false
-    },
     /**
      *返回按钮
      */
@@ -152,8 +84,6 @@ export default {
         let params = {
           lineAdapter: this.form.lineAdapter,
           lineUrgent: this.form.lineUrgent,
-          isHot: this.form.isHot,
-          sellPoint: this.checkedList.join(','),
           lineId: this.lineId
         }
         let { data: res } = await tagging(params)
@@ -169,7 +99,7 @@ export default {
       } finally {
         this.$loading(false)
       }
-      // console.log('submit', values);
+      console.log('submit', values);
     },
 
     /**
@@ -182,17 +112,6 @@ export default {
     async init() {
       this.lineUrgentColumns = await this.getDictData('line_urgent')
       this.lineAdapterColumns = await this.getDictData('line_adapter')
-      this.sellPointColumns = await this.getDictData('selling_points')
-      this.hotColum = [
-        {
-          label: '是',
-          value: 1
-        },
-        {
-          label: '否',
-          value: 0
-        }
-      ]
       this.getLineDetail()
     },
     // 获取线路详情
@@ -207,12 +126,8 @@ export default {
           let result = res.data
           this.form = {
             lineAdapter: result.lineAdapter,
-            lineUrgent: result.lineUrgent,
-            isHot: result.isHot,
-            sellPoint: result.sellPoint
+            lineUrgent: result.lineUrgent
           }
-          this.checkedList = result.sellPoint.split(',').filter(item => item).map(item => +item)
-          this.checkedStrList = this.sellPointColumns.filter(item => this.checkedList.includes(item.value))
         } else {
           this.$fail(res.errorMsg)
         }
@@ -259,10 +174,6 @@ export default {
   .btn {
     margin:100px 15px 0px;
     width: 345px;
-  }
-  .list{
-    padding: 10px 16px 0;
-    font-size: 14px;
   }
 }
 
