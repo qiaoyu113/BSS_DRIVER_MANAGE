@@ -18,8 +18,8 @@
           :after-read="afterRead"
           :max-count="6"
           :before-delete="handleDeleteFile"
-          :max-size="5 * 1024 * 1024"
-          @oversize="onOversize('5M')"
+          :max-size="10 * 1024 * 1024"
+          @oversize="onOversize('10M')"
         />
       </van-field>
       <van-field label="其他图片" colon>
@@ -30,8 +30,8 @@
           :after-read="afterRead"
           :max-count="6"
           :before-delete="handleDeleteFile"
-          :max-size="5 * 1024 * 1024"
-          @oversize="onOversize('5M')"
+          :max-size="10 * 1024 * 1024"
+          @oversize="onOversize('10M')"
         />
       </van-field>
       <van-field label="装货视频" colon class="video">
