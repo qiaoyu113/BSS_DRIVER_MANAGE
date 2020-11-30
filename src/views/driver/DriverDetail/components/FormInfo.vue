@@ -95,7 +95,7 @@
             <van-field
               label="意向工作时间段"
               colon
-              :value="type.intentWorkDurationName"
+              :value="type.intentWorkDuration|operatingHours"
               readonly
             />
             <van-field
@@ -153,6 +153,7 @@
               readonly
             />
             <van-field
+              v-if="type.hasCar === true"
               label="是否新能源"
               colon
               :value="isBoolean(type.isNewEnergy)"
@@ -250,7 +251,7 @@
             />
             <van-field
               label="意向工作时间段"
-              :value="type.intentWorkDurationName"
+              :value="type.intentWorkDuration|operatingHours"
               readonly
               colon
             />
@@ -402,6 +403,26 @@
 
 <script>
 export default {
+  filters: {
+    operatingHours(str = '') {
+      console.log(str, '------')
+      if (str === null) { return '' }
+      str = String(str).split(',')
+      let workHours = []
+      str.forEach(item => {
+        if (item === '1') {
+          workHours.push('上午')
+        } else if (item === '2') {
+          workHours.push('下午')
+        } else if (item === '3') {
+          workHours.push('晚上')
+        } else if (item === '4') {
+          workHours.push('上午', '下午', '晚上')
+        }
+      })
+      return workHours.join(',')
+    }
+  },
   props: {
     obj: {
       type: Object,
@@ -411,6 +432,27 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    // operatingHours(str = '') {
+    //   console.log(str, '------')
+    //   // str = this.obj.interviewInfoVOList[0].intentWorkDuration
+    //   console.log(this.obj, 'dashjkdhajkdhkajhdjka')
+    //   if (str === null) { return '' }
+    //   str = String(str).split(',')
+    //   let workHours = []
+    //   str.forEach(item => {
+    //     if (item === '1') {
+    //       workHours.push('上午')
+    //     } else if (item === '2') {
+    //       workHours.push('下午')
+    //     } else if (item === '3') {
+    //       workHours.push('晚上')
+    //     }
+    //   })
+    //   return workHours.join(',')
+    // }
+  },
+
   methods: {
     isBoolean(value) {
       if ((typeof value) === 'boolean') {

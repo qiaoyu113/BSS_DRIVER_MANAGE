@@ -64,19 +64,14 @@
           type="primary"
           native-type="button"
           class="sub-btn"
-          @click="showActionSheet = true"
+          @click="() => {
+            $refs.submitForm.submit();
+          }"
         >
-          更多操作
+          提交
         </van-button>
       </div>
     </van-form>
-    <van-action-sheet
-      v-model="showActionSheet"
-      :actions="actions"
-      cancel-text="取消"
-      close-on-click-action
-      @select="onSelect"
-    />
     <!-- Suggest -->
     <van-popup
       v-model="showModal"
@@ -91,7 +86,12 @@
         placeholder="请输入线路名称/编号"
       >
         <template #action>
-          <div @click="onSearch">
+          <div
+            @click="() => {
+              linePage.page = 1
+              onSearch()
+            }"
+          >
             搜索
           </div>
         </template>
@@ -101,48 +101,72 @@
           v-if="lineList.length > 0"
           v-model="form.lineId"
         >
-          <div
-            v-for="(item, index) in lineList"
-            :key="index"
-            class="list-item"
-            @click="onSelectLine(item)"
+          <van-list
+            v-model="lineLoadingMore"
+            :finished="lineFinished"
+            :error.sync="lineError"
+            :immediate-check="false"
+            finished-text="没有更多了"
+            error-text="请求失败，点击重新加载"
+            @load="() => {
+              linePage.page++
+              getLineList()
+            }"
           >
-            <div class="title flex align-center">
-              <div class="title-tag flex align-center justify-center">
-                {{ item.labelTypeName }}
+            <div
+              v-for="(item, index) in lineList"
+              :key="index"
+              class="list-item"
+              @click="onSelectLine(item)"
+            >
+              <div class="title flex align-center">
+                <div class="title-tag flex align-center justify-center">
+                  {{ item.labelTypeName }}
+                </div>
+                <h3 class="van-ellipsis">
+                  {{ item.lineName }}（{{ item.lineId }}）
+                </h3>
+                <van-icon name="arrow" class="margin-right-xs" />
+                <van-radio checked-color="#3ACB8D" :name="item.lineId" />
               </div>
-              <h3 class="van-ellipsis">
-                {{ item.lineName }}（{{ item.lineId }}）
-              </h3>
-              <van-icon name="arrow" class="margin-right-xs" />
-              <van-radio checked-color="#3ACB8D" :name="item.lineId" />
+              <div class="line-details">
+                <div class="flex flex-wrap">
+                  <div>上岗时间：</div>
+                  <div class="flex-sub">
+                    {{ item.driverWorkTime |parseTime('{y}-{m}-{d}') }}
+                  </div>
+                </div>
+                <div class="flex flex-wrap">
+                  <div>配送区域：</div>
+                  <div class="flex-sub">
+                    {{ item.provinceAreaName + item.cityAreaName + item.countyAreaName + item.districtArea }}
+                  </div>
+                </div>
+                <div class="flex flex-wrap">
+                  <div>里程时间：</div>
+                  <div class="flex-sub">
+                    {{ item.distance + 'km/' +item.timeDiff }}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="line-details">
-              <div class="flex flex-wrap">
-                <div>上岗时间：</div>
-                <div class="flex-sub">
-                  {{ item.driverWorkTime |parseTime('{y}-{m}-{d}') }}
-                </div>
-              </div>
-              <div class="flex flex-wrap">
-                <div>配送区域：</div>
-                <div class="flex-sub">
-                  {{ item.provinceAreaName + item.cityAreaName + item.countyAreaName + item.districtArea }}
-                </div>
-              </div>
-              <div class="flex flex-wrap">
-                <div>里程时间：</div>
-                <div class="flex-sub">
-                  {{ item.distance + 'km/' +item.timeDiff }}
-                </div>
-              </div>
-            </div>
-          </div>
+          </van-list>
         </van-radio-group>
         <div v-else class="noData">
           <img src="@/assets/search.png">
           <div class="text">
-            抱歉,未找到相关数据!
+            <h4 class="tip">
+              提示:未找到相关数据
+            </h4>
+            <p class="tip">
+              1、线路必须在线路列表存在，且状态是：已上架
+            </p>
+            <p class="tip">
+              2、线路必须存在，且线路有余额
+            </p>
+            <p class="tip">
+              3、如果线路已开跑/开跑下架，需要补历史的出车单，在试跑在跑列表，右上角操作：创建历史试跑
+            </p>
           </div>
         </div>
       </div>
@@ -167,42 +191,68 @@
         show-action
       >
         <template #action>
-          <div @click="onSearch">
+          <div
+            @click="() => {
+              driverPage.page = 1
+              onSearch()
+            }"
+          >
             搜索
           </div>
         </template>
       </van-search>
       <div class="list">
         <van-radio-group v-if="driverList.length > 0" v-model="form.driverId">
-          <div
-            v-for="(item, index) in driverList"
-            :key="index"
-            class="list-item"
-            @click="onSelectDriver(item)"
+          <van-list
+            v-model="driverLoadingMore"
+            :finished="driverFinished"
+            :error.sync="driverError"
+            :immediate-check="false"
+            finished-text="没有更多了"
+            error-text="请求失败，点击重新加载"
+            @load="() => {
+              driverPage.page++
+              getDriver()
+            }"
           >
-            <div class="title flex align-center">
-              <div class="title-tag flex align-center justify-center">
-                {{ item.busiTypeName }}
+            <div
+              v-for="(item, index) in driverList"
+              :key="index"
+              class="list-item"
+              @click="onSelectDriver(item)"
+            >
+              <div class="title flex align-center">
+                <div class="title-tag flex align-center justify-center">
+                  {{ item.busiTypeName }}
+                </div>
+                <h3 class="van-ellipsis">
+                  {{ item.name }}/{{ item.phone }}
+                </h3>
+                <van-radio checked-color="#3ACB8D" :name="item.driverId" />
               </div>
-              <h3 class="van-ellipsis">
-                {{ item.name }}/{{ item.phone }}
-              </h3>
-              <van-radio checked-color="#3ACB8D" :name="item.driverId" />
-            </div>
-            <div class="line-details">
-              <div class="flex flex-wrap">
-                <div>车型/车牌号：</div>
-                <div class="flex-sub">
-                  {{ item.carTypeName }}{{ item.plateNo ? '/' + item.plateNo : '' }}
+              <div class="line-details">
+                <div class="flex flex-wrap">
+                  <div>车型/车牌号：</div>
+                  <div class="flex-sub">
+                    {{ item.carTypeName }}{{ item.plateNo ? '/' + item.plateNo : '' }}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </van-list>
         </van-radio-group>
         <div v-else class="noData">
           <img src="@/assets/search.png">
           <div class="text">
-            抱歉,未找到相关数据!
+            <h4 class="tip">
+              提示:未找到相关数据
+            </h4>
+            <p class="tip">
+              1、司机必须在司机列表存在，且状态是：已成交、已上岗、已终止服务
+            </p>
+            <p class="tip">
+              2、司机的业务线（共享/专车），需要和线路的肥瘦标签匹配（共享不能上肥线）
+            </p>
           </div>
         </div>
       </div>
@@ -226,7 +276,6 @@ export default {
     return {
       showModal: false,
       showModalDriver: false,
-      showActionSheet: false,
       list: [],
       form: {
         operateFlag: 'creatIntentionRun', // 创建试跑意向
@@ -247,38 +296,41 @@ export default {
       driverRadio: '',
       driverList: [],
       driverDetail: {},
-      actions: [
-        { name: '提交', value: '1' },
-        { name: '提交并创建试跑', value: '2' }
-      ],
-      actionVal: ''
+      actionVal: '',
+      driverLoadingMore: false,
+      driverFinished: false,
+      driverError: false,
+      driverPage: {
+        page: 1,
+        limit: 100
+      },
+      lineLoadingMore: false,
+      lineFinished: false,
+      lineError: false,
+      linePage: {
+        page: 1,
+        limit: 100
+      }
     };
   },
   methods: {
     validatorValue,
     /**
-     * 点击选则提交类型
-     */
-    onSelect(item) {
-      this.actionVal = item.value;
-      this.$refs.submitForm.submit();
-    },
-    /**
      * 点击提交
      */
     async onSubmit() {
-      if (this.actionVal !== '1') {
-        // 进入创建试跑
-        this.$router.replace({
-          path: '/create-run',
-          query: {
-            step: '1',
-            lineId: this.form.lineId,
-            driverId: this.form.driverId
-          }
-        })
-        return;
-      }
+      // if (this.actionVal !== '1') {
+      //   // 进入创建试跑
+      //   this.$router.replace({
+      //     path: '/create-run',
+      //     query: {
+      //       step: '1',
+      //       lineId: this.form.lineId,
+      //       driverId: this.form.driverId
+      //     }
+      //   })
+      //   return;
+      // }
       try {
         this.$loading(true);
         let { data: res } = await CreateLntentionRun({
@@ -289,11 +341,7 @@ export default {
         if (res.success) {
           this.$toast.success('创建试跑意向成功！');
           setTimeout(() => {
-            if (this.actionVal === '1') { // 1提交 2提交并创建试跑
-            // 返回试跑列表
-              // this.$router.replace('/try-run')
-              this.$router.go(-1);
-            }
+            this.$router.go(-1);
           }, delay);
         } else {
           this.$toast.fail(res.errorMsg)
@@ -334,14 +382,33 @@ export default {
         this.$loading(true);
         let { data: res } = await GetLine({
           key: this.lineValue,
-          select: true
+          select: true,
+          page: this.linePage.page,
+          limit: this.linePage.limit
         });
         if (res.success) {
-          this.lineList = res.data;
+          if (this.linePage.page === 1) {
+            this.lineFinished = false
+            let len = this.lineList.length
+            if (len > 0) {
+              this.lineList.splice(0, len)
+            }
+            setTimeout(() => {
+              this.lineList = res.data || []
+            }, 20)
+          } else {
+            this.lineList = this.lineList.concat(res.data || []);
+          }
+          this.lineLoadingMore = false
+          if (res.data.length !== this.linePage.limit) {
+            this.lineFinished = true
+          }
         } else {
+          this.lineLoadingMore = true
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
+        this.lineLoadingMore = true
         console.log(`${err}`)
       } finally {
         this.$loading(false);
@@ -357,20 +424,39 @@ export default {
         this.$loading(true);
         const postData = {
           // busiType: this.lineDetail.busiType,
-          workCity: this.lineDetail.city,
+          // workCity: this.lineDetail.city,
           key: this.driverValue,
-          statuss: [3, 4]
+          statuss: [3, 4, 5],
+          page: this.driverPage.page,
+          limit: this.driverPage.limit
         }
         if (this.lineDetail.busiType !== 1 && this.lineDetail.busiType !== 9) {
           postData.busiType = this.lineDetail.busiType
         }
         let { data: res } = await GetDriverList(postData);
         if (res.success) {
-          this.driverList = res.data;
+          if (this.driverPage.page === 1) {
+            this.driverFinished = false
+            let len = this.driverList.length
+            if (len > 0) {
+              this.driverList.splice(0, len)
+            }
+            setTimeout(() => {
+              this.driverList = res.data || []
+            }, 20)
+          } else {
+            this.driverList = this.driverList.concat(res.data || []);
+          }
+          this.driverLoadingMore = false
+          if (res.data.length !== this.driverPage.limit) {
+            this.driverFinished = true
+          }
         } else {
+          this.driverError = false
           this.$toast.fail(res.errorMsg);
         }
       } catch (err) {
+        this.driverError = false
         console.log(`${err}`)
       } finally {
         this.$loading(false);
@@ -494,6 +580,11 @@ export default {
         height: 74px;
       }
     }
+  }
+  .tip {
+    margin:0px;
+    font-size:14px;
+    color:#666;
   }
 }
 </style>

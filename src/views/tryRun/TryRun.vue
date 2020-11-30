@@ -8,8 +8,16 @@
         @click-left="onClickLeft"
       >
         <template #right>
-          <div v-permission="['/v2/runtest/creatIntentionRun']" class="navBarTit" @click="onCreateRun">
-            创建试跑
+          <div
+            v-permission="['/v2/runtest/export']"
+            class="checkStyle navBarTit"
+            style="margin-right: 10px"
+            @click="onTryRunExport"
+          >
+            导出
+          </div>
+          <div :class="{open: showOp, 'right-btn': true}" class="rWith navBarTit" @click="showOp=true">
+            操作
           </div>
         </template>
       </van-nav-bar>
@@ -34,7 +42,7 @@
         >
           <template #title>
             {{ item.title }}
-            <div v-if="item.name === form.status" class="van-info">
+            <div v-if="item.total" class="van-info">
               {{ item.total }}
             </div>
           </template>
@@ -182,12 +190,37 @@
         @confirm="onConfirmPickerCity"
       />
     </van-popup>
+
+    <van-action-sheet
+      v-model="showOp"
+      :actions="actionsOp | isPermission"
+      cancel-text="取消"
+      close-on-click-action
+      @select="onSelect"
+    />
+    <van-dialog
+      v-if="isShowExport"
+      v-model="isShowExport"
+      class="export-dialog"
+      show-cancel-button
+      confirm-button-text="导出"
+      @confirm="tryRunExportSure"
+    >
+      <p>
+        您已经选择<span class="blue">{{ allTotal }}</span>条数据
+      </p>
+      <p>
+        提示:请在三足金乌web端
+        <a :href="passURL" target="_blank" class="blue">szjw-bss-web.yunniao.cn</a>
+        右上角下载工具中下载！
+      </p>
+    </van-dialog>
   </div>
 </template>
 
 <script>
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
-import { GetRunTestInfoList } from '@/api/tryrun';
+import { GetRunTestInfoList, tryRunExport } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
 import { parseTime, HandlePages } from '@/utils';
@@ -200,6 +233,7 @@ export default {
   },
   data() {
     return {
+      showOp: false,
       scrollTop: 0,
       showSuggest: true,
       tabArrs: [
@@ -209,7 +243,7 @@ export default {
           name: ''
         },
         {
-          title: '待试跑',
+          title: '试跑意向',
           total: 0,
           name: 100
         },
@@ -242,6 +276,18 @@ export default {
           title: '稳定掉线',
           total: 0,
           name: 700
+        }
+      ],
+      actionsOp: [
+        {
+          name: '创建历史试跑',
+          value: 1,
+          pUrl: ['/v2/runtest/makeUpHistoryData']
+        },
+        {
+          name: '创建试跑意向',
+          value: 2,
+          pUrl: ['/v2/runtest/creatIntentionRun']
         }
       ],
       // lists
@@ -285,12 +331,21 @@ export default {
       columns: [],
       carList: [], // 配送车型
       whyList: [], // 掉线原因
-      cityList: [] // 掉线原因
+      cityList: [], // 掉线原因
+      isShowExport: false,
+      allTotal: 0
+
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    passURL() {
+      if (process.env.NODE_ENV === 'development') {
+        return 'https://szjw-bss-web.m1.yunniao.cn/'
+      }
+      return window.location.origin.replace('h5', 'web')
     }
   },
   activated() {
@@ -330,6 +385,10 @@ export default {
             data.data.dropped_reason.push({
               dictLabel: '数据迁移掉线',
               dictValue: '6'
+            })
+            data.data.dropped_reason.push({
+              dictLabel: '创建历史试跑',
+              dictValue: '7'
             })
             this.carList = data.data.Intentional_compartment;
             this.whyList = data.data.dropped_reason;
@@ -459,6 +518,18 @@ export default {
       this.form[this.pickerKey] = value.code;
       this.showPickerCity = false;
     },
+    onSelect(item) {
+      let activeIndex = item.value;
+      this.showOp = false
+      //  创建历史试跑
+      setTimeout(() => {
+        if (activeIndex === 1) {
+          this.$router.push('/create-history-run');
+        } else if (activeIndex === 2) { // 创建试跑
+          this.$router.push('/create-run');
+        }
+      }, 350)
+    },
     /**
      * 显示picker
      */
@@ -492,12 +563,7 @@ export default {
     onClickLeft() {
       this.$router.go(-1);
     },
-    /**
-     * 创建试跑
-     */
-    onCreateRun() {
-      this.$router.push('/create-run');
-    },
+
     // 状态切换
     async handleTabChange(tab) {
       this.lists = [];
@@ -533,6 +599,7 @@ export default {
               item.total = 0;
             }
           });
+          this.allTotal = res.page.total
           return result;
         } else {
           this.page.current--;
@@ -550,6 +617,33 @@ export default {
         this.finished = true;
         console.log(`get list fail:${err}`);
       }
+    },
+    // 点击导出
+    onTryRunExport() {
+      if (this.allTotal === 0) {
+        this.$toast({
+          message: '没有可以导出的数据',
+          position: 'bottom'
+        })
+        return
+      }
+      this.isShowExport = !this.isShowExport
+    },
+    // 试跑导出
+    async tryRunExportSure() {
+      try {
+        this.$loading(true)
+        const { data } = await tryRunExport(this.form)
+        if (data.success) {
+          this.$toast.success('导出成功')
+        } else {
+          this.$toast.fail('导出失败')
+        }
+      } catch (error) {
+        return error
+      } finally {
+        this.$loading(false)
+      }
     }
   }
 };
@@ -559,6 +653,31 @@ export default {
   display: flex;
   flex-direction: column;
   background: @body-bg;
+  .rWith {
+    width: auto;
+    white-space: nowrap;
+  }
+  .right-btn {
+      position: relative;
+      padding-right: 5px;
+      &.open {
+        &::after {
+          margin-top: -1px;
+          transform: rotate(135deg);
+        }
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -4px;
+        margin-top: -5px;
+        border: 3px solid;
+        border-color: transparent transparent @white @white;
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
+    }
   .top {
     margin-bottom: 5px;
     background-color: @body-bg;
@@ -569,6 +688,9 @@ export default {
   }
   .navBarTit {
     color: @white;
+  }
+  .mR5 {
+    margin-right: 5px;
   }
   .search {
     position: relative;
@@ -600,5 +722,27 @@ export default {
       height: 74px;
     }
   }
+  .export-dialog {
+    font-size: 16px;
+    padding: 25px 30px 0 30px;
+    width: 70%;
+  }
+}
+.blue {
+  color: #6e9ee8;
+}
+.checkStyle:active {
+  opacity: 0.7 !important;
 }
 </style>
+<style lang="less" scoped>
+/deep/.van-dialog__footer {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/deep/ .van-nav-bar__right:active {
+  opacity: 1;
+}
+</style>
+

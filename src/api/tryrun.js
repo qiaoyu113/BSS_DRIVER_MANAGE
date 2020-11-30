@@ -13,7 +13,7 @@ export function CreateLntentionRun(data) {
 // 选择司机
 export function GetDriverList(data) {
   return request({
-    url: `${prefix}/carrier_center/v2/driver/getDriverListWhitOutAuth`,
+    url: `${prefix}/carrier_center/v2/driver/getDriverNoAndNameAndSoOnList`,
     // url: '/mock/103/v2/driver/getDriverList',
     method: 'post',
     data
@@ -98,5 +98,35 @@ export function GetLineDetail(params) {
     // url: '/mock/32/v2/line/lineInfo/detail',
     method: 'get',
     params
+  })
+}
+
+// 创建历史试跑
+export function CreateHistoryLntentionRun(data) {
+  return request({
+    url: `${prefix}/waybill/v2/runtest//makeUpHistoryData`,
+    method: 'post',
+    data,
+    timeout: 16000
+  })
+}
+
+// 创建历史试跑-线路查询
+export function GetLineByCreateHistoryTryRun(data) {
+  return request({
+    url: `${prefix}/line_center/v2/line/lineInfo/historyRunTestFuzzyCheck`,
+    method: 'post',
+    data
+  })
+}
+
+//
+
+export function tryRunExport(data) {
+  return request({
+    url: '/waybill_center/v2/runtest/export',
+    // url: '/mock/32/v2/line/lineInfo/detail',
+    method: 'post',
+    data
   })
 }

@@ -26,6 +26,19 @@
           :rules="[{ required: true, message: '请填写司机姓名' }]"
           @focus="copyData('name')"
         />
+        <van-field
+          id="dirverPhone"
+          v-model.trim="formData.phone"
+          name="phonePatternIshas"
+          label="司机手机号"
+          type="tel"
+          colon
+          clearable
+          required
+          placeholder="请输入"
+          :rules="[{ required: true, message: '请输入司机手机号！' },{pattern:phonePattern, message: '手机号码格式错误，请重新输入！'},{validator:phonePatternIshas, message: '该手机号已占用！'}]"
+          @focus="copyData('phone')"
+        />
         <selftPicker
           :props="keyValue"
           picker-key="inviteType"
@@ -89,18 +102,7 @@
           maxlength="10"
           colon
         />
-        <van-field
-          v-model.trim="formData.phone"
-          name="phonePatternIshas"
-          label="司机手机号"
-          type="tel"
-          colon
-          clearable
-          required
-          placeholder="请输入"
-          :rules="[{ required: true, message: '请输入司机手机号！' },{pattern:phonePattern, message: '手机号码格式错误，请重新输入！'},{validator:phonePatternIshas, message: '该手机号已占用！'}]"
-          @focus="copyData('phone')"
-        />
+
         <van-field
           v-model.number="formData.age"
           name="age"
@@ -171,7 +173,31 @@
           ]"
           @changelabel="changeLabel"
         />
-        <selftPicker
+        <van-field
+          name="intentWorkDuration"
+          label="意向工作时间段:"
+          required
+          colon
+          :rules="[{ validator: isNotNull, message: '请选择' }]"
+        >
+          <template #input>
+            <van-checkbox-group
+              v-model="formData.intentWorkDuration"
+              direction="horizontal"
+            >
+              <van-checkbox :name="1">
+                上午
+              </van-checkbox>
+              <van-checkbox :name="2">
+                下午
+              </van-checkbox>
+              <van-checkbox :name="3">
+                晚上
+              </van-checkbox>
+            </van-checkbox-group>
+          </template>
+        </van-field>
+        <!-- <selftPicker
           :props="keyValue"
           picker-key="intentWorkDuration"
           :form="formData"
@@ -185,7 +211,7 @@
             { required: true, message: '请选择' },
           ]"
           @changelabel="changeLabel"
-        />
+        /> -->
         <van-field
           v-model="formData.originIncomeAvg"
           v-only-number="{min: 0, max: 25000, precision: 0}"
@@ -345,6 +371,7 @@
 
         <selftPicker
           v-if="formData.hasCar === true"
+          key="currentCarType"
           :props="keyValue"
           picker-key="currentCarType"
           :form="formData"
@@ -362,6 +389,7 @@
 
         <selftPicker
           v-if="formData.hasCar === false"
+          key="intentDrivingCarType"
           :props="keyValue"
           picker-key="intentDrivingCarType"
           :form="formData"
@@ -605,7 +633,7 @@ export default {
         age: '',
         intentDeliveryMode: '',
         intentCargoType: '',
-        intentWorkDuration: '',
+        intentWorkDuration: [],
         originIncomeAvg: '',
         expIncomeAvg: '',
         householdType: '',
@@ -790,6 +818,13 @@ export default {
                 } else {
                   this.errMsg = data.data.msg;
                   Toast.fail(this.errMsg);
+                  setTimeout(() => {
+                    try {
+                      document.querySelector('#dirverPhone').parentElement.nextElementSibling.textContent = data.data.msg
+                    } catch (error) {
+                      return error
+                    }
+                  })
                   resolve(false);
                 }
               } else {
@@ -806,6 +841,13 @@ export default {
                 this.errMsg = '';
               } else {
                 resolve(false);
+                setTimeout(() => {
+                  try {
+                    document.querySelector('#dirverPhone').parentElement.nextElementSibling.textContent = data.data.msg
+                  } catch (error) {
+                    return error
+                  }
+                })
                 this.errMsg = data.data.msg;
               }
             } else {
@@ -966,6 +1008,9 @@ export default {
         if (res.success) {
           this.phone = res.data.phone;
           this.areaShow(res);
+          var str = String(res.data.intentWorkDuration)
+          res.data.intentWorkDuration = str.split(',').map(item => { return Number(item) })
+          this.formData.intentWorkDuration = res.data.intentWorkDuration
           if (res.data.isChange !== null) {
             this.Changed = false;
             this.editForm = {
@@ -1023,6 +1068,7 @@ export default {
     },
     async editTailored() {
       let params = { ...this.formData };
+      params.intentWorkDuration = params.intentWorkDuration.join(',')
       params.liveProvince = this.area.liveaddress[0]; // 居住地址
       params.liveCity = this.area.liveaddress[1];
       params.liveCounty = this.area.liveaddress[2];
@@ -1052,6 +1098,7 @@ export default {
     },
     async buildTailore() {
       let params = { ...this.formData };
+      params.intentWorkDuration = params.intentWorkDuration.join(',')
       params.liveProvince = this.area.liveaddress[0]; // 居住地址
       params.liveCity = this.area.liveaddress[1];
       params.liveCounty = this.area.liveaddress[2];
@@ -1110,6 +1157,10 @@ export default {
         return true;
       }
       return false;
+    },
+    // 验证工作时间
+    isNotNull(val) {
+      return Array.isArray(val) && Boolean(val.length)
     }
   }
 };

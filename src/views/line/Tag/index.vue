@@ -41,6 +41,30 @@
         提交
       </van-button>
     </van-form>
+
+    <!-- 选择亮点 -->
+    <van-popup v-model="showModal" position="bottom">
+      <div class="van-picker__toolbar">
+        <button type="button" class="van-picker__cancel" @click="showModal = false">
+          取消
+        </button>
+        <button type="button" class="van-picker__confirm" @click="checked">
+          确认
+        </button>
+      </div>
+      <div class="list">
+        <van-checkbox-group v-model="checkedList" direction="horizontal">
+          <van-checkbox
+            v-for="(item, index) in sellPointColumns"
+            :key="index"
+            :name="item.value"
+            class="margin-bottom-xs chenckItem"
+          >
+            {{ item.label }}
+          </van-checkbox>
+        </van-checkbox-group>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -174,6 +198,14 @@ export default {
   .btn {
     margin:100px 15px 0px;
     width: 345px;
+  }
+  .list{
+    padding: 10px 16px 20px;
+    font-size: 14px;
+    .chenckItem{
+      margin-right: 0;
+      width: 33.333333%;
+    }
   }
 }
 

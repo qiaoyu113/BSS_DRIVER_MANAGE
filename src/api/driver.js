@@ -189,3 +189,14 @@ export function GetcreateQrCodeFrontUrl() {
   })
 }
 
+// 司机信息导出
+// http://szjw-application-carrier-center.m2.yunniao.cn/v2/driver/export
+// http://szjw-application-carrier-center.m2.yunniao.cn/v2/driver/export
+export function driverExport(data) {
+  return request({
+    // url: '/mock/112/v2/driver/applet/createQrCodeFront',
+    url: `${transportPrefix}/v2/driver/export`,
+    method: 'post',
+    data
+  })
+}

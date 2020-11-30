@@ -75,6 +75,14 @@ export default [
     meta: {
       title: '操作记录'
     }
+  },
+  {
+    path: '/driverExport',
+    name: 'driverExport',
+    component: resolve => require(['@/views/driver/DriverList/DriverExport'], resolve),
+    meta: {
+      title: '导出'
+    }
   }
 ]
 

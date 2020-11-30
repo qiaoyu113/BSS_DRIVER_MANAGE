@@ -1,9 +1,8 @@
 <template>
   <div :class="checked ? 'DriverList padd' : 'DriverList'">
-    <van-sticky
-      :offset-top="0"
-    >
+    <van-sticky :offset-top="0">
       <DriverTitle
+        :actions="filterPermission"
         @screen="startScreen"
         @changeManager="changeManager"
       />
@@ -15,21 +14,16 @@
         line-height="2"
         @change="handleTabChange"
       >
-        <van-tab
-          v-for="(item,index) in tabType"
-          :key="index"
-        >
+        <van-tab v-for="(item, index) in tabType" :key="index">
           <template #title>
-            {{ item.type }}<div class="van-info">
+            {{ item.type }}
+            <div class="van-info">
               {{ item.num }}
             </div>
           </template>
         </van-tab>
       </van-tabs>
-      <div
-        v-if="checked"
-        class="checkAll"
-      >
+      <div v-if="checked" class="checkAll">
         <van-checkbox
           v-model="checkall"
           class="checked"
@@ -42,10 +36,7 @@
     </van-sticky>
 
     <div class="list">
-      <van-pull-refresh
-        v-model="refreshing"
-        @refresh="onLoad(true)"
-      >
+      <van-pull-refresh v-model="refreshing" @refresh="onLoad(true)">
         <van-list
           v-model="loading"
           :finished="finished"
@@ -141,11 +132,7 @@
     />
 
     <!-- picker -->
-    <van-popup
-      v-model="showPicker"
-      round
-      position="bottom"
-    >
+    <van-popup v-model="showPicker" round position="bottom">
       <van-picker
         show-toolbar
         value-key="name"
@@ -156,17 +143,18 @@
     </van-popup>
 
     <!-- 选择加盟经理弹窗 -->
-    <changeManager :status="changeManagerStatus" @closePop="closeManagerPop" @changeOver="changeOver" />
+    <changeManager
+      :status="changeManagerStatus"
+      @closePop="closeManagerPop"
+      @changeOver="changeOver"
+    />
 
-    <div
-      v-if="checked"
-      class="bottomBtn"
-    >
+    <div v-if="checked" class="bottomBtn">
       <van-button
         color="#2F448A"
         plain
         native-type="button"
-        style="width:38%"
+        style="width: 38%"
         @click="cancelManager"
       >
         取消
@@ -174,7 +162,7 @@
       <van-button
         native-type="button"
         type="primary"
-        style="width:61%"
+        style="width: 61%"
         @click="confirmManager"
       >
         选择加盟经理
@@ -191,6 +179,7 @@ import changeManager from './components/ChangeManager'
 import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getDriverList } from '@/api/driver.js'
 import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList } from '@/api/common'
+import { isPermission } from '@/filters';
 export default {
   name: 'DriverList',
   components: {
@@ -275,7 +264,19 @@ export default {
         current: 0,
         size: 10
       },
-      scrollTop: 0
+      scrollTop: 0,
+      allTotal: 0,
+      menuActive: [{ name: '更换加盟经理', pUrl: ['/v2/driver/updateGmByDriverId'], value: 0 },
+        { name: '导出', pUrl: ['/v2/driver/export', '/v2/order/driver/export'], value: 1 }],
+      exportBtn: [{
+        name: '司机信息',
+        value: '1',
+        pUrl: ['/v2/driver/export']
+      }, {
+        name: '订单信息',
+        value: '2',
+        pUrl: ['/v2/order/driver/export']
+      }]
     };
   },
   computed: {
@@ -293,7 +294,11 @@ export default {
           this.checkedList = [];
         }
       }
+    },
+    filterPermission() {
+      return isPermission(this.menuActive)
     }
+
   },
   // 回来后还原
   beforeRouteEnter(to, from, next) {
@@ -321,6 +326,10 @@ export default {
       this.formText.gmId = ''
     }
   },
+  created() {
+    // this.filterPermission()
+  },
+
   methods: {
     // 联动请求加盟经理
     getGmId() {
@@ -443,7 +452,7 @@ export default {
         this.ruleForm.orderStatus && (params.orderStatus = this.ruleForm.orderStatus)
         if (this.ruleForm.startDate && this.ruleForm.endDate) {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
-          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime() + 86400000)
+          this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
         }
         let { data: res } = await getDriverList(params)
         if (res.success) {
@@ -462,6 +471,7 @@ export default {
               item.num = ''
             }
           })
+          this.allTotal = res.page.total
           return result
         } else {
           this.loading = false;
@@ -502,8 +512,32 @@ export default {
      * 更换加盟经理
      */
     changeManager(val) {
-      this.checked = val.show;
+      if (val.value === 0) {
+        this.checked = val.show;
+      } else if (val.value === 1) {
+        this.exportDrive()
+      }
     },
+    exportDrive() {
+      // const menu = this.filterPermission() || []
+      // if (menu.length === 0) {
+      //   this.$toast.fail('当前无导出权限!')
+      //   return
+      // }
+      if (this.allTotal >= 3000) { return this.$toast.fail('当前导出数据超过3000条！') }
+      this.$router.replace({
+        name: 'driverExport',
+        params: { rlueFrom: this.ruleForm, allTotal: this.allTotal, menu: isPermission(this.exportBtn) }
+      })
+    },
+    // 筛选数据权限
+    // filterPermission() {
+    //   // 定义导出菜单权限
+    //   this.exportBtn = isPermission(this.exportBtn) || []
+    //   if (this.exportBtn.length === 0) {
+    //     this.menuActive.splice(1, 1)
+    //   }
+    // },
     /**
      * picker 选择
      */

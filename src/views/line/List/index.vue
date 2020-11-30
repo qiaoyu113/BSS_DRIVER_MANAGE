@@ -192,6 +192,30 @@
       @finish="handleValueClick"
       @closed="showModal=false"
     />
+
+    <!-- 选择亮点 -->
+    <van-popup v-model="showModalChecked" position="bottom">
+      <div class="van-picker__toolbar">
+        <button type="button" class="van-picker__cancel" @click="showModalChecked = false">
+          取消
+        </button>
+        <button type="button" class="van-picker__confirm" @click="checked">
+          确认
+        </button>
+      </div>
+      <div class="list">
+        <van-checkbox-group v-model="checkedList" direction="horizontal">
+          <van-checkbox
+            v-for="(item, index) in sellPointColumns"
+            :key="index"
+            :name="item.value"
+            class="margin-bottom-xs chenckItem"
+          >
+            {{ item.label }}
+          </van-checkbox>
+        </van-checkbox-group>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -636,6 +660,14 @@ export default {
 <style lang='scss' scoped>
 .lineListContainer {
   background:#f9f9f9;
+  .list{
+    padding: 10px 16px 20px;
+    font-size: 14px;
+    .chenckItem{
+      margin-right: 0;
+      width: 33.333333%;
+    }
+  }
   .headerRight {
     display: flex;
     flex-direction: row;
