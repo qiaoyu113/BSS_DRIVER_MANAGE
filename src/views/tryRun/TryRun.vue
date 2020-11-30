@@ -8,6 +8,14 @@
         @click-left="onClickLeft"
       >
         <template #right>
+          <div
+            v-permission="['/v2/runtest/export']"
+            class="checkStyle navBarTit"
+            style="margin-right: 10px"
+            @click="onTryRunExport"
+          >
+            导出
+          </div>
           <div :class="{open: showOp, 'right-btn': true}" class="rWith navBarTit" @click="showOp=true">
             操作
           </div>
@@ -190,12 +198,29 @@
       close-on-click-action
       @select="onSelect"
     />
+    <van-dialog
+      v-if="isShowExport"
+      v-model="isShowExport"
+      class="export-dialog"
+      show-cancel-button
+      confirm-button-text="导出"
+      @confirm="tryRunExportSure"
+    >
+      <p>
+        您已经选择<span class="blue">{{ allTotal }}</span>条数据
+      </p>
+      <p>
+        提示:请在三足金乌web端
+        <a :href="passURL" target="_blank" class="blue">szjw-bss-web.yunniao.cn</a>
+        右上角下载工具中下载！
+      </p>
+    </van-dialog>
   </div>
 </template>
 
 <script>
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
-import { GetRunTestInfoList } from '@/api/tryrun';
+import { GetRunTestInfoList, tryRunExport } from '@/api/tryrun';
 import SelfPopup from '@/components/SelfPopup';
 import ListItem from './components/ListItem';
 import { parseTime, HandlePages } from '@/utils';
@@ -306,12 +331,21 @@ export default {
       columns: [],
       carList: [], // 配送车型
       whyList: [], // 掉线原因
-      cityList: [] // 掉线原因
+      cityList: [], // 掉线原因
+      isShowExport: false,
+      allTotal: 0
+
     };
   },
   computed: {
     title() {
       return this.$route.meta.title;
+    },
+    passURL() {
+      if (process.env.NODE_ENV === 'development') {
+        return 'https://szjw-bss-web.m1.yunniao.cn/'
+      }
+      return window.location.origin.replace('h5', 'web')
     }
   },
   activated() {
@@ -565,6 +599,7 @@ export default {
               item.total = 0;
             }
           });
+          this.allTotal = res.page.total
           return result;
         } else {
           this.page.current--;
@@ -581,6 +616,33 @@ export default {
         this.refreshing = false;
         this.finished = true;
         console.log(`get list fail:${err}`);
+      }
+    },
+    // 点击导出
+    onTryRunExport() {
+      if (this.allTotal === 0) {
+        this.$toast({
+          message: '没有可以导出的数据',
+          position: 'bottom'
+        })
+        return
+      }
+      this.isShowExport = !this.isShowExport
+    },
+    // 试跑导出
+    async tryRunExportSure() {
+      try {
+        this.$loading(true)
+        const { data } = await tryRunExport(this.form)
+        if (data.success) {
+          this.$toast.success('导出成功')
+        } else {
+          this.$toast.fail('导出失败')
+        }
+      } catch (error) {
+        return error
+      } finally {
+        this.$loading(false)
       }
     }
   }
@@ -660,6 +722,27 @@ export default {
       height: 74px;
     }
   }
+  .export-dialog {
+    font-size: 16px;
+    padding: 25px 30px 0 30px;
+    width: 70%;
+  }
+}
+.blue {
+  color: #6e9ee8;
+}
+.checkStyle:active {
+  opacity: 0.7 !important;
+}
+</style>
+<style lang="less" scoped>
+/deep/.van-dialog__footer {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/deep/ .van-nav-bar__right:active {
+  opacity: 1;
 }
 </style>
 

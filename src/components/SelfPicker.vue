@@ -44,7 +44,7 @@ export default {
       default: 'text'
     },
     isComputed: {
-      type: Boolean,
+      type: [Boolean, String, Number],
       default: false
     },
     border: {
