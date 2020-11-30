@@ -134,7 +134,7 @@
       3/3
     </div>
     <!-- 选择亮点 -->
-    <van-popup v-model="showModalChecked" position="bottom" :style="{ height: '40%' }">
+    <van-popup v-model="showModalChecked" position="bottom">
       <div class="van-picker__toolbar">
         <button type="button" class="van-picker__cancel" @click="showModalChecked = false">
           取消
@@ -149,7 +149,7 @@
             v-for="(item, index) in sellPointColumns"
             :key="index"
             :name="item.value"
-            class="margin-bottom-xs"
+            class="margin-bottom-xs chenckItem"
           >
             {{ item.label }}
           </van-checkbox>
@@ -291,8 +291,12 @@ export default {
 .StepThireeContainer {
   position: relative;
   .list{
-    padding: 10px 16px 0;
+    padding: 10px 16px 20px;
     font-size: 14px;
+    .chenckItem{
+      margin-right: 0;
+      width: 33.333333%;
+    }
   }
   .title {
     margin: 0px;

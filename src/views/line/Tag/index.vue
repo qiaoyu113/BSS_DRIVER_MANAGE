@@ -63,7 +63,7 @@
     </van-form>
 
     <!-- 选择亮点 -->
-    <van-popup v-model="showModal" position="bottom" :style="{ height: '40%' }">
+    <van-popup v-model="showModal" position="bottom">
       <div class="van-picker__toolbar">
         <button type="button" class="van-picker__cancel" @click="showModal = false">
           取消
@@ -78,7 +78,7 @@
             v-for="(item, index) in sellPointColumns"
             :key="index"
             :name="item.value"
-            class="margin-bottom-xs"
+            class="margin-bottom-xs chenckItem"
           >
             {{ item.label }}
           </van-checkbox>
@@ -261,8 +261,12 @@ export default {
     width: 345px;
   }
   .list{
-    padding: 10px 16px 0;
+    padding: 10px 16px 20px;
     font-size: 14px;
+    .chenckItem{
+      margin-right: 0;
+      width: 33.333333%;
+    }
   }
 }
 
