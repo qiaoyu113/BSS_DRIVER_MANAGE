@@ -740,6 +740,9 @@ export default {
           this.areaShow(res);
           var str = String(res.data.intentWorkDuration)
           res.data.intentWorkDuration = str.split(',').map(item => { return Number(item) })
+          if (res.data.intentWorkDuration.includes(4)) {
+            res.data.intentWorkDuration = [1, 2, 3]
+          }
           this.formData.intentWorkDuration = res.data.intentWorkDuration
           if (res.data.isChange !== null) {
             this.Changed = false;
