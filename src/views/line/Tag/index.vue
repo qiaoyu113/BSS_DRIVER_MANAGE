@@ -14,10 +14,14 @@
         :form="form"
         :columns="lineUrgentColumns"
         value="label"
-        :is-computed="form['lineUrgent']!=='' && lineUrgentColumns.length > 0"
+        :is-computed="form['lineUrgent']!=='' && lineAdapterColumns.length > 0"
+        required
         label-width="100"
         label="线路紧急程度"
         placeholder="请选择"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
       />
       <selftPicker
         picker-key="lineAdapter"
@@ -25,9 +29,13 @@
         :columns="lineAdapterColumns"
         value="label"
         :is-computed="form['lineAdapter']!==''&&lineAdapterColumns.length > 0"
+        required
         label-width="100"
         label="适配性"
         placeholder="请选择"
+        :rules="[
+          { required: true, message: '请选择' },
+        ]"
       />
       <selftPicker
         picker-key="isHot"
@@ -98,28 +106,11 @@ export default {
   },
   data() {
     return {
-      showModal: false,
-      checkedList: [],
-      checkedStrList: [],
       form: {
         lineAdapter: '',
-        lineUrgent: '',
-        isHot: '',
-        sellPoint: ''
+        lineUrgent: ''
       },
-      sellPointRequired: false,
       lineId: '',
-      hotColum: [
-        {
-          label: '是',
-          value: 1
-        },
-        {
-          label: '否',
-          value: 0
-        }
-      ], // 是否爆款
-      sellPointColumns: [], // 卖点
       lineUrgentColumns: [], // 线路紧急程度数组
       lineAdapterColumns: [] // 适配性数组
     }
@@ -129,13 +120,6 @@ export default {
     this.init()
   },
   methods: {
-    /**
-     *复选框
-     */
-    checked() {
-      this.checkedStrList = this.sellPointColumns.filter(item => this.checkedList.includes(item.value))
-      this.showModal = false
-    },
     /**
      *返回按钮
      */
@@ -152,8 +136,6 @@ export default {
         let params = {
           lineAdapter: this.form.lineAdapter,
           lineUrgent: this.form.lineUrgent,
-          isHot: this.form.isHot,
-          sellPoint: this.checkedList.join(','),
           lineId: this.lineId
         }
         let { data: res } = await tagging(params)
@@ -169,7 +151,7 @@ export default {
       } finally {
         this.$loading(false)
       }
-      // console.log('submit', values);
+      console.log('submit', values);
     },
 
     /**
@@ -182,17 +164,6 @@ export default {
     async init() {
       this.lineUrgentColumns = await this.getDictData('line_urgent')
       this.lineAdapterColumns = await this.getDictData('line_adapter')
-      this.sellPointColumns = await this.getDictData('selling_points')
-      this.hotColum = [
-        {
-          label: '是',
-          value: 1
-        },
-        {
-          label: '否',
-          value: 0
-        }
-      ]
       this.getLineDetail()
     },
     // 获取线路详情
@@ -207,12 +178,8 @@ export default {
           let result = res.data
           this.form = {
             lineAdapter: result.lineAdapter,
-            lineUrgent: result.lineUrgent,
-            isHot: result.isHot,
-            sellPoint: result.sellPoint
+            lineUrgent: result.lineUrgent
           }
-          this.checkedList = result.sellPoint.split(',').filter(item => item).map(item => +item)
-          this.checkedStrList = this.sellPointColumns.filter(item => this.checkedList.includes(item.value))
         } else {
           this.$fail(res.errorMsg)
         }

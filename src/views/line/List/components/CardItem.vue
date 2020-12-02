@@ -26,15 +26,7 @@
     <p class="text van-ellipsis">
       每日配送趟数:{{ obj.dayNum | DataIsNull }}
     </p>
-    <p class="text van-ellipsis">
-      线路亮点:{{ obj.sellPointName | DataIsNull }}
-    </p>
     <div class="car">
-      <template v-if="obj.isHot ===1">
-        <van-tag type="primary" color="#EFF5FE" text-color="#649CEE" class="tag">
-          爆款
-        </van-tag>
-      </template>
       <van-tag type="primary" color="#EFF5FE" text-color="#649CEE">
         {{ obj.labelTypeName | DataIsNull }}
       </van-tag>
@@ -102,7 +94,6 @@ export default {
 
 <style lang='scss' scoped>
 .CardItemcontainer {
-  position: relative;
   margin-top:5px;
   padding: 0px 15px;
   box-sizing: border-box;
@@ -116,9 +107,7 @@ export default {
     font-weight: bold;
   }
   .status {
-    position: absolute;
-    right: 15px;
-    top: 40px;
+    margin-bottom: 10px;
   }
   .text {
     margin-top:0px;

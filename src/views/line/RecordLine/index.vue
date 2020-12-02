@@ -131,14 +131,9 @@ export default {
             ...{
               warehouseLoadingPictures: result.warehouseLoadingPictures,
               otherPictures: result.otherPictures,
-              loadingVideo: result.loadingVideo && [result.loadingVideo] || [],
+              loadingVideo: result.loadingVideo && result.loadingVideo.split('') || [],
               informationDescription: result.informationDescription
             }
-          }
-          if (result.loadingVideo) {
-            this.showForm.loadingVideo.push({
-              content: result.loadingVideo
-            })
           }
           this.createDate = result.createDate
           this.showFile(result)
@@ -170,14 +165,12 @@ export default {
           isImage: true
         }))
       }
-      if (val.loadingVideo) {
+      if (val.loadingVideo && val.loadingVideo.length > 0) {
         this.isUpdate = true
-
-        this.showForm.loadingVideo = [{
-          url: val.loadingVideo,
-          content: val.loadingVideo
-        }]
-        this.videoUrl = this.showForm.loadingVideo[0].url
+        this.showForm.loadingVideo = val.loadingVideo.map(item => ({
+          url: item
+        }))
+        this.videoUrl = this.showForm.loadingVideo[0]
       }
     },
     /**
@@ -277,7 +270,6 @@ export default {
     // 预览视频
     handleVideoPreview() {
       this.videoUrl = this.showForm.loadingVideo[0].content
-
       this.show = true
     },
     // 文件最大限制
