@@ -1010,6 +1010,10 @@ export default {
           this.areaShow(res);
           var str = String(res.data.intentWorkDuration)
           res.data.intentWorkDuration = str.split(',').map(item => { return Number(item) })
+          const inxs = res.data.intentWorkDuration.indexOf(0)
+          if (inxs !== -1) {
+            res.data.intentWorkDuration.splice(inxs, 1)
+          }
           if (res.data.intentWorkDuration.includes(4)) {
             res.data.intentWorkDuration = [1, 2, 3]
           }
