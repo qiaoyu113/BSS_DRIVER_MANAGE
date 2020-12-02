@@ -59,12 +59,14 @@ import CardItem from '../List/components/CardItem'
 import { getLineSearch } from '@/api/line'
 import { Dialog } from 'vant';
 export default {
+  name: 'LineSearch',
   components: {
     [Dialog.Component.name]: Dialog.Component,
     CardItem
   },
   data() {
     return {
+      scrollTop: 0,
       keyWord: '', // 关键字
       lists: [], // 查询出来的数据
       historyItems: [], // 历史搜索
@@ -73,6 +75,26 @@ export default {
   },
   mounted() {
     this.getHistoryFromDisk()
+  },
+  activated() {
+    this.$bus.$on('update', (msg) => {
+      if (msg) {
+        this.lists = [];
+        this.scrollTop = 0;
+        this.onLoad(true)
+      }
+    });
+  },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.lineSearchContainer').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.lineSearchContainer').scrollTop
+    next()
   },
   methods: {
     getHistoryFromDisk() {
@@ -215,9 +237,6 @@ export default {
 </style>
 
 <style scoped>
-  .lineSearchContainer >>> .van-hairline--top::after {
-    border-color: #649CEE;
-  }
   .lineSearchContainer >>> .van-search__content {
     display: flex;
     flex-direction: column-reverse;
