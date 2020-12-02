@@ -8,7 +8,7 @@
         title="司机详情"
         left-text="返回"
         left-arrow
-        @click-left="$router.go(-1)"
+        @click-left="goRouter"
       >
         <template #right>
           <div class="doBox">
@@ -80,7 +80,7 @@
             title-class="cell-title"
             value-class="cell-value"
             title="创建时间："
-            :value="timeFormat(detailInfo.createDate,'YYYY-MM-DD')"
+            :value="timeFormat(detailInfo.createDate,'YYYY-MM-DD HH:mm:ss')"
           />
         </div>
       </div>
@@ -182,6 +182,18 @@
       @cancel="showDothing = false"
       @select="onSelectDothing"
     />
+
+    <van-dialog v-model="showDio">
+      <div class="DioAlert">
+        <span>购车/租车订单暂不支持电子合同，<br>请签约纸质合同！</span>
+      </div>
+    </van-dialog>
+
+    <van-dialog v-model="interviewDio" show-cancel-button confirm-button-text="立即填写" cancel-button-text="稍后再说" @confirm="interviewConfirm" @cancel="interviewCancel">
+      <div class="DioAlert">
+        <span>{{ `该司机未填写${computedBusi().busiTypeName}面试！请点击右上角“操作—编辑${computedBusi().busiTypeName}面试”按钮或点击下方“立即填写”按钮填写${computedBusi().busiTypeName}面试信息后再录入订单！` }}</span>
+      </div>
+    </van-dialog>
   </div>
 </template>
 <script>
@@ -237,7 +249,9 @@ export default {
       orderInfoList: [],
       lineList: [],
       contractList: [],
-      recentOrder: {}
+      recentOrder: {},
+      showDio: false,
+      interviewDio: false
     };
   },
   computed: {
@@ -267,7 +281,55 @@ export default {
     this.getDetail(id);
     this.getOrderLabel(id);
   },
+  beforeRouteEnter(to, from, next) {
+    if (['/resetOrder', '/createOrder'].includes(from.path)) {
+      if (to.query.canShow === true) {
+        next(vm => {
+          // 通过 `vm` 访问组件实例
+          vm.showDio = true
+        })
+        return false
+      }
+    }
+    next()
+  },
   methods: {
+    goRouter() {
+      this.$router.push('/driverlist')
+    },
+    interviewConfirm() {
+      const busiType = this.computedBusi().busiType
+      if (busiType === 0) {
+        this.$router.push({
+          path: '/editTailored',
+          query: {
+            id: this.driverId
+          }
+        })
+      } else {
+        this.$router.push({
+          path: '/editShare',
+          query: {
+            id: this.driverId
+          }
+        })
+      }
+    },
+    interviewCancel() {
+      this.interviewDio = false
+    },
+    computedBusi() {
+      const busiType = this.detailInfo.busiType
+      const busiTypeArray = this.detailInfo.interviewInfoVOList || []
+      let hasBusi = busiTypeArray.some(ele => {
+        return ele.busiType === busiType
+      })
+      return {
+        status: hasBusi,
+        busiTypeName: busiType === 0 ? '专车' : '共享',
+        busiType: busiType
+      }
+    },
     removeEmpty(arr, type) {
       let text = (arr.map(item => {
         if (item) {
@@ -387,17 +449,22 @@ export default {
     onSelectOrder(item) {
       this.showOrder = false;
       if (item.url === '/createOrder') {
-        this.$router.push({
-          path: item.url,
-          query: {
-            id: this.driverId,
-            driverName: this.detailInfo.name,
-            driverPhone: this.detailInfo.phone,
-            workCityName: this.detailInfo.workCityName,
-            workCity: this.detailInfo.workCity,
-            busiType: this.detailInfo.busiType
-          }
-        });
+        const computedBusi = this.computedBusi()
+        if (!computedBusi.status) {
+          this.interviewDio = true
+        } else {
+          this.$router.push({
+            path: item.url,
+            query: {
+              id: this.driverId,
+              driverName: this.detailInfo.name,
+              driverPhone: this.detailInfo.phone,
+              workCityName: this.detailInfo.workCityName,
+              workCity: this.detailInfo.workCity,
+              busiType: this.detailInfo.busiType
+            }
+          });
+        }
       } else if (item.url === '/resetOrder') {
         this.$router.push({
           path: item.url,
@@ -589,6 +656,11 @@ export default {
 <style lang="less" scoped>
 @import "../DriverList/components/DriverItem.less";
 .DriverDetail {
+  .DioAlert{
+    padding: 20px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
   .checkStyle:active{
     opacity: .7;
   }

@@ -416,7 +416,7 @@ export default {
     generaTimelist() {
       this.timeBucket = []
       let arrs = []
-      for (let i = 0; i < 23; i++) {
+      for (let i = 0; i < 24; i++) {
         let hour = ''
         if (i < 10) {
           hour = `0${i}`

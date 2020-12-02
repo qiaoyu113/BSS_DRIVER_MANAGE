@@ -94,6 +94,7 @@
             </van-col>
             <van-col span="11" offset="2">
               <van-button
+                v-preventreclick
                 block
                 type="primary"
                 native-type="button"

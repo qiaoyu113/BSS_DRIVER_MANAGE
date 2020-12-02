@@ -60,6 +60,7 @@
       </van-cell-group>
       <div class="btn-container">
         <van-button
+          v-preventreclick
           block
           type="primary"
           native-type="button"

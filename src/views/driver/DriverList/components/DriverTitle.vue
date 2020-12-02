@@ -1,12 +1,7 @@
 <template>
   <div class="DriverTitle">
     <van-sticky :offset-top="0">
-      <van-nav-bar
-        :title="title"
-        left-text="返回"
-        left-arrow
-        @click-left="$router.go(-1)"
-      >
+      <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="goIndex">
         <template v-if="showChange" #right>
           <div
             v-permission="[
@@ -109,6 +104,9 @@ export default {
   },
   mounted() { },
   methods: {
+    goIndex() {
+      this.$router.push('/')
+    },
     screenOut() {
       this.$emit('screen', { show: true })
     },

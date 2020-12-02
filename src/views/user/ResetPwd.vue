@@ -91,6 +91,7 @@
       </div>
       <div class="submit-btn">
         <van-button
+          v-preventreclick
           block
           :disabled="isDisabld"
           type="info"

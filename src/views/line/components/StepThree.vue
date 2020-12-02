@@ -112,7 +112,7 @@
         <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-two')">
           返回上一步
         </van-button>
-        <van-button type="primary" block>
+        <van-button v-preventreclick type="primary" block>
           提交
         </van-button>
       </div>

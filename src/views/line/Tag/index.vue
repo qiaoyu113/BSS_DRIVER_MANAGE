@@ -37,7 +37,35 @@
           { required: true, message: '请选择' },
         ]"
       />
-      <van-button type="primary" block class="btn">
+      <selftPicker
+        picker-key="isHot"
+        :form="form"
+        :columns="hotColum"
+        value="label"
+        :is-computed="form['isHot']!==''&&hotColum.length > 0"
+        label-width="100"
+        label="是否为爆款"
+        placeholder="请选择"
+        required
+        :rules="[{ required: true, message: '请选择'}]"
+      />
+      <van-field
+        :key="form.isHot"
+        :value="checkedStrList.map(item => item.label).join('，')"
+        label-width="100"
+        colon
+        readonly
+        clickable
+        :required="false"
+        label="线路亮点"
+        placeholder="请选择"
+        autosize
+        type="textarea"
+        :rules="[{ required: false, message: '请选择'}]"
+        @click="showModal = true"
+      >
+      </van-field>
+      <van-button v-preventreclick type="primary" block class="btn">
         提交
       </van-button>
     </van-form>

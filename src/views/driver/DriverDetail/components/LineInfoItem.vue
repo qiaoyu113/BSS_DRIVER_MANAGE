@@ -45,7 +45,7 @@
           title-class="cell-title"
           value-class="cell-value"
           title="创建时间："
-          :value="timeFormat(obj.createDate,'YYYY-MM-DD')"
+          :value="timeFormat(obj.createDate,'YYYY-MM-DD HH:mm:ss')"
         />
       </div>
       <div v-permission="['/v2/line/lineInfo/detail']" class="detailBtn">

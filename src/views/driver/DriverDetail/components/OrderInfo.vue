@@ -72,7 +72,7 @@
       <van-field
         label="支付时间"
         colon
-        :value="timeFormat(obj.updateDate,'YYYY-MM-DD')"
+        :value="timeFormat(obj.updateDate,'YYYY-MM-DD HH:mm:ss')"
         readonly
       />
     </van-cell-group>
