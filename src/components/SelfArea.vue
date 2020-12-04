@@ -15,14 +15,13 @@
         :columns-placeholder="['请选择', '请选择', '请选择']"
         @confirm="onConfirm"
         @cancel="showPicker = false"
-        @change="handleAreaChange"
       />
     </van-popup>
   </div>
 </template>
 
 <script>
-import { GetCityByCode } from '@/api/common'
+import { GetAllAreaCode } from '@/api/common'
 export default {
   props: {
     form: {
@@ -58,9 +57,7 @@ export default {
       label: '',
       columns: [],
       areaList: {
-        province_list: {},
-        city_list: {},
-        county_list: {}
+
       },
       isEcho: true // 是否回显
     }
@@ -89,15 +86,17 @@ export default {
   },
   methods: {
     async init() {
-      let provinceLists = await this.loadCityByCode(['100000'])
-      this.areaList.province_list = provinceLists
+      try {
+        let { data: res } = await GetAllAreaCode()
+        this.areaList = res
+      } catch (err) {
+        console.log(`get all area code fail:${err}`)
+      } finally {
+        //
+      }
     },
     // 获取label
     async getLable() {
-      let result = await this.loadCityByCode(['100000', this.form[this.pickerKey][0]])
-      this.areaList.city_list = result
-      let result1 = await this.loadCityByCode(['100000', this.form[this.pickerKey][0], this.form[this.pickerKey][1]])
-      this.areaList.county_list = result1
       this.label = `${this.form[this.props.provinceAreaName]}/${this.form[this.props.cityAreaName]}/${this.form[this.props.countyAreaName]}`
     },
     // 打开picker
@@ -112,40 +111,6 @@ export default {
       this.label = label.join('/')
       this.showPicker = false
       this.isEcho = false
-    },
-    // 三级联动变化
-    async handleAreaChange(vm, item, index) {
-      let params = ['100000']
-      if (index === 0) {
-        params.push(item[0].code)
-        let result = await this.loadCityByCode(params)
-        this.areaList.city_list = result
-      } else if (index === 1) {
-        params.push(item[0].code)
-        params.push(item[1].code)
-        let result = await this.loadCityByCode(params)
-        this.areaList.county_list = result
-      }
-    },
-    // 获取省、市、县
-    async loadCityByCode(params) {
-      try {
-        let { data: res } = await GetCityByCode(params)
-        if (res.success) {
-          let codeObj = {}
-          for (let i = 0; i < res.data.length; i++) {
-            let item = res.data[i]
-            // 排除七只鸟的-99全区域
-            if (this.form[this.pickerKey] && this.form[this.pickerKey].length > 2 && +this.form[this.pickerKey][2] === -99) {
-              this.form[this.pickerKey].pop()
-            }
-            codeObj[item.code] = item.name
-          }
-          return codeObj
-        }
-      } catch (err) {
-        console.log(`load city by code fail:${err}`)
-      }
     }
   }
 }

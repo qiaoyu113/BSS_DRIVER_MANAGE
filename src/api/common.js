@@ -174,3 +174,11 @@ export const GetGmGroup = (params) =>
     method: 'get',
     params
   })
+
+// 获取全量省市县
+export const GetAllAreaCode = () =>
+  request({
+    url: '/json/code.json',
+    method: 'get'
+  })
+
