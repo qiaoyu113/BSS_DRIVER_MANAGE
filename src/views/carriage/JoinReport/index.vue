@@ -164,7 +164,7 @@ export default {
         this.reportMoneyBatchByGM(wayBillIds, wayBillPrices)
       }
       if (noBillIds.length) {
-        this.noCarBatchByGM(wayBillIds)
+        this.noCarBatchByGM(noBillIds)
       }
       if (!wayBillIds.length && !noBillIds.length) {
         this.$toast.fail('暂无上报数据')
