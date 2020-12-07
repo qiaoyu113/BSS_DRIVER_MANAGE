@@ -119,6 +119,13 @@
         placeholder="请选择"
         @click="dateShow = true"
       />
+      <van-field
+        v-model="formText.dealDate"
+        readonly
+        label="成交时间"
+        placeholder="请选择"
+        @click="dateClinch = true"
+      />
     </SelfPopup>
 
     <!-- :show-confirm="false" -->
@@ -129,6 +136,14 @@
       :max-date="maxTime"
       :allow-same-day="true"
       @confirm="onConfirm"
+    />
+    <van-calendar
+      v-model="dateClinch"
+      type="range"
+      :min-date="minTime"
+      :max-date="maxTime"
+      :allow-same-day="true"
+      @confirm="onConfirm1"
     />
 
     <!-- picker -->
@@ -230,6 +245,7 @@ export default {
       minDate: new Date(+new Date() - 86400000 * 365),
       maxDate: new Date(+new Date() + 86400000 * 365),
       dateShow: false,
+      dateClinch: false,
       active: 0,
       formText: {
         workCity: '',
@@ -238,7 +254,8 @@ export default {
         gmId: '',
         carType: '',
         orderStatus: '',
-        dateArr: ''
+        dateArr: '',
+        dealDate: ''
       },
       ruleForm: {
         workCity: '',
@@ -248,6 +265,8 @@ export default {
         status: '',
         startDate: '',
         endDate: '',
+        dealStartDate: '',
+        dealEndDate: '',
         orderStatus: ''
       },
       tabType: [
@@ -454,6 +473,10 @@ export default {
           this.ruleForm.startDate && (params.startDate = new Date(this.ruleForm.startDate).getTime())
           this.ruleForm.endDate && (params.endDate = new Date(this.ruleForm.endDate).getTime())
         }
+        if (this.ruleForm.dealStartDate && this.ruleForm.dealEndDate) {
+          this.ruleForm.dealStartDate && (params.dealStartDate = new Date(this.ruleForm.dealStartDate).getTime())
+          this.ruleForm.dealEndDate && (params.dealEndDate = new Date(this.ruleForm.dealEndDate).getTime())
+        }
         let { data: res } = await getDriverList(params)
         if (res.success) {
           HandlePages(res.page)
@@ -581,6 +604,15 @@ export default {
       this.formText.dateArr = `${startDate} - ${endDate}`;
       this.ruleForm.startDate = new Date(start).setHours(0, 0, 0);
       this.ruleForm.endDate = new Date(end).setHours(23, 59, 59);
+    },
+    onConfirm1(date) {
+      const [start, end] = date;
+      this.dateClinch = false;
+      let dealStartDate = parseTime(start, '{y}-{m}-{d}');
+      let dealEndDate = parseTime(end, '{y}-{m}-{d}');
+      this.formText.dealDate = `${dealStartDate} - ${dealEndDate}`;
+      this.ruleForm.dealStartDate = new Date(start).setHours(0, 0, 0);
+      this.ruleForm.dealEndDate = new Date(end).setHours(23, 59, 59);
     },
     closeManagerPop(val) {
       this.changeManagerStatus = val.status
