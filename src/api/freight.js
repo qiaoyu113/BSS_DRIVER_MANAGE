@@ -33,7 +33,6 @@ export function getGmInfoListByKeyWord(data) {
   })
 }
 export function wayBillAmountDetail(data, params) {
-  console.log(params)
   return request({
     url: `${waybill}/v2/waybill/shipping/wayBillAmountDetail?isLine=` + params, // 批量上报/确认运费回显
     method: 'post',
