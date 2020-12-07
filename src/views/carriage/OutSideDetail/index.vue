@@ -191,7 +191,7 @@ export default {
     },
     async wayBillAmountDetail(id) { // 确认运费回显
       try {
-        let { data: res } = await wayBillAmountDetail([id])
+        let { data: res } = await wayBillAmountDetail([id], 'isLine')
         if (res.success) {
           this.show = true;
           this.arrstr = res.data
