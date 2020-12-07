@@ -200,3 +200,13 @@ export function driverExport(data) {
     data
   })
 }
+
+// 司机合同下载
+export function driverContract(params) {
+  return request({
+    // url: '/mock/112/v2/driver/applet/createQrCodeFront',
+    url: '/business_center/v2/contract/downloadContract',
+    method: 'get',
+    params
+  })
+}

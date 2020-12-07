@@ -32,9 +32,9 @@ export function getGmInfoListByKeyWord(data) {
     data
   })
 }
-export function wayBillAmountDetail(data) {
+export function wayBillAmountDetail(data, params) {
   return request({
-    url: `${waybill}/v2/waybill/shipping/wayBillAmountDetail`, // 批量上报/确认运费回显
+    url: `${waybill}/v2/waybill/shipping/wayBillAmountDetail?isLine=` + params, // 批量上报/确认运费回显
     method: 'post',
     data
   })
