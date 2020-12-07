@@ -149,7 +149,9 @@ export default {
             }
           })
         } else {
-          noBillIds.push(item.wayBillAmountId)
+          item.list.forEach((i) => {
+            noBillIds.push(i.wayBillAmountId)
+          })
         }
       })
       if (wayBillIds.length) {
