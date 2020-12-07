@@ -8,7 +8,7 @@
     </p>
     <div class="textBox">
       <p class="text ellipsis">
-        上岗经理:{{ obj.dutyManagerName | DataIsNull }} +'/'+ {{ obj.dutyManagerPhone | DataIsNull }}
+        上岗经理:{{ obj.dutyManagerName | DataIsNull }} / {{ obj.dutyManagerPhone | DataIsNull }}
       </p>
       <p class="text ellipsis">
         出车单数:{{ obj.wayBillNum+'个' }}
