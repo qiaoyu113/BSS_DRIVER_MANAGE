@@ -405,7 +405,6 @@
 export default {
   filters: {
     operatingHours(str = '') {
-      console.log(str, '------')
       if (str === null) { return '' }
       str = String(str).split(',')
       let workHours = []
