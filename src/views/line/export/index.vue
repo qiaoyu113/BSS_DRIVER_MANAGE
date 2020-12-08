@@ -37,7 +37,13 @@
   </div>
 </template>
 <script>
+import { exportLineList } from '@/api/line'
+import { exportProjectList } from '@/api/project'
+import { Toast } from 'vant'
 export default {
+  components: {
+    [Toast.name]: Toast
+  },
   data() {
     return {
       allTatol: this.$route.params.allTotal,
@@ -45,13 +51,15 @@ export default {
       exportSuccess: false
     }
   },
-  created() {
+  mounted() {
     this.isRouteRefresh()
   },
   methods: {
+    // 返回
     onClickLeft() {
       this.$router.go(-1)
     },
+    // 复制链接
     copyAddress() {
       const input = document.querySelector('#inputRef')
       input.select()
@@ -61,23 +69,52 @@ export default {
         position: 'bottom'
       })
     },
-    exportSure() {
+    // 导出按钮
+    async exportSure() {
       const purl = this.$route.params.purl
       if (purl === 'line') {
-        this.lineManagement()
+        await this.lineManagement()
       } else if (purl === 'project') {
-        this.projectManagement()
+        await this.projectManagement()
       }
+      this.exportSuccess = true
     },
     isRouteRefresh() {
-      if (typeof this.$route.params.allTotal === 'undefined') { this.onClickLeft() }
+      if (typeof this.$route.params.allTotal === 'undefined') {
+        this.onClickLeft()
+      }
     },
+    // 线路导出
     async lineManagement() {
-      console.log(1)
-      //
+      try {
+        let params = this.$route.params.queCryondition
+        let { data: res } = await exportLineList(params)
+        if (res.success) {
+          Toast.success('导出成功');
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`export line fail:${err}`)
+      } finally {
+        //
+      }
     },
+    // 项目导出
     async projectManagement() {
-      console.log(2)
+      try {
+        let params = this.$route.params.queCryondition
+        let { data: res } = await exportProjectList(params)
+        if (res.success) {
+          Toast.success('导出成功');
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`export line fail:${err}`)
+      } finally {
+        //
+      }
     }
 
   }

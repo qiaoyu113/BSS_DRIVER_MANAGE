@@ -2,7 +2,18 @@
   <div class="projectListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="项目管理" left-text="返回" right-text="导出" left-arrow @click-left="onClickLeft" @click-right="onClickNavRight" />
+      <van-nav-bar title="项目管理" left-text="返回" left-arrow @click-left="onClickLeft">
+        <template #right>
+          <div
+            v-permission="['/v2/line/project/projectExport']"
+            class="headerRight checkStyle"
+            style="margin-right:8px"
+            @click="onClickNavRight"
+          >
+            导出
+          </div>
+        </template>
+      </van-nav-bar>
       <!-- 搜索 -->
       <van-search v-permission="['/v2/line/project/queryProjectQueryList']" show-action placeholder="项目名称/项目编号/项目联系人手机号搜索" readonly @click="handleSearchClick">
         <template #action>
@@ -459,6 +470,8 @@ export default {
           params.endDate = new Date(this.form.date[1]).getTime()
         }
         this.queCryondition = params
+        delete this.queCryondition.page
+        delete this.queCryondition.limit
         let { data: res } = await getProjectList(params)
         if (res.success) {
           HandlePages(res.page)

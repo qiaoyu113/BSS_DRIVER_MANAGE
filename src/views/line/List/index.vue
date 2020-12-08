@@ -4,7 +4,12 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="线路管理" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
-          <div class="headerRight checkStyle" style="margin-right:8px" @click="lineExpoet">
+          <div
+            v-permission="['/v2/line/lineInfo/lineExport']"
+            class="headerRight checkStyle"
+            style="margin-right:8px"
+            @click="lineExpoet"
+          >
             导出
           </div>
           <div v-permission="['/v2/line/lineInfo/createStableLine','/v2/line/lineInfo/createTemporaryLine']" class="headerRight" @click="showPickerFn('selectLine')">
@@ -681,6 +686,8 @@ export default {
           params.endDate = new Date(this.form.date[1]).getTime()
         }
         this.queCryondition = params
+        delete this.queCryondition.page
+        delete this.queCryondition.limit
         let { data: res } = await getLineList(params)
         if (res.success) {
           HandlePages(res.page)
