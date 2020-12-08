@@ -2,7 +2,18 @@
   <div class="projectListContainer">
     <!-- navbar -->
     <van-sticky :offset-top="0">
-      <van-nav-bar title="项目管理" left-text="返回" left-arrow @click-left="onClickLeft" />
+      <van-nav-bar title="项目管理" left-text="返回" left-arrow @click-left="onClickLeft">
+        <template #right>
+          <div
+            v-permission="['/v2/line/project/projectExport']"
+            class="headerRight checkStyle"
+            style="margin-right:8px"
+            @click="onClickNavRight"
+          >
+            导出
+          </div>
+        </template>
+      </van-nav-bar>
       <!-- 搜索 -->
       <van-search v-permission="['/v2/line/project/queryProjectQueryList']" show-action placeholder="项目名称/项目编号/项目联系人手机号搜索" readonly @click="handleSearchClick">
         <template #action>
@@ -228,7 +239,9 @@ export default {
         current: 0,
         size: 10
       },
-      minDate1: new Date(2000, 0, 1)
+      minDate1: new Date(2000, 0, 1),
+      allTotal: 0,
+      queCryondition: {}
     }
   },
   // 回来后还原
@@ -411,6 +424,15 @@ export default {
       }
       this.showPicker = false;
     },
+    // 导出功能
+    onClickNavRight() {
+      if (this.allTotal >= 3000) return this.$toast.fail('最多可导出3000条数据，请重新筛选。')
+      this.$router.push({ name: 'ExportLine', params: {
+        purl: 'project',
+        allTotal: this.allTotal,
+        queCryondition: this.queCryondition
+      }})
+    },
     // 获取外线销售和上岗经理
     async getSpecifiedRoleList(params) {
       try {
@@ -447,6 +469,9 @@ export default {
           this.form.date[1].setHours(23, 59, 59)
           params.endDate = new Date(this.form.date[1]).getTime()
         }
+        this.queCryondition = params
+        delete this.queCryondition.page
+        delete this.queCryondition.limit
         let { data: res } = await getProjectList(params)
         if (res.success) {
           HandlePages(res.page)
@@ -464,6 +489,7 @@ export default {
               item.num = 0
             }
           })
+          this.allTotal = res.page.total
           return result
         } else {
           this.loading = false;
