@@ -4,6 +4,9 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="线路管理" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
+          <div class="headerRight checkStyle" style="margin-right:8px" @click="lineExpoet">
+            导出
+          </div>
           <div v-permission="['/v2/line/lineInfo/createStableLine','/v2/line/lineInfo/createTemporaryLine']" class="headerRight" @click="showPickerFn('selectLine')">
             新建
             <van-icon name="add-o" />
@@ -392,7 +395,9 @@ export default {
         current: 0,
         size: 10
       },
-      minDate1: new Date(2000, 0, 1)
+      minDate1: new Date(2000, 0, 1),
+      allTotal: 0,
+      queCryondition: {}
     }
   },
   computed: {
@@ -675,6 +680,7 @@ export default {
           this.form.date[1].setHours(23, 59, 59)
           params.endDate = new Date(this.form.date[1]).getTime()
         }
+        this.queCryondition = params
         let { data: res } = await getLineList(params)
         if (res.success) {
           HandlePages(res.page)
@@ -693,6 +699,7 @@ export default {
               item.num = 0
             }
           })
+          this.allTotal = res.page.total
           return result
         } else {
           this.loading = false;
@@ -728,6 +735,14 @@ export default {
       } catch (err) {
         console.log(`get dict data fail:${err}`)
       }
+    },
+    lineExpoet() {
+      if (this.allTotal >= 3000) return this.$toast.fail('最多可导出3000条数据，请重新筛选。')
+      this.$router.push({ name: 'ExportLine', params: {
+        purl: 'line',
+        allTotal: this.allTotal,
+        queCryondition: this.queCryondition
+      }})
     }
   }
 }
@@ -770,13 +785,19 @@ export default {
     height:5px;
     width:100%;
   }
+  .checkStyle:active {
+  opacity: 0.7 !important;
+}
 }
 
 </style>
 
-<style scoped>
+<style  scoped>
   .ListContainer >>> .van-tab__text {
     font-size: 13px;
     color: #3C4353;
   }
+  .lineListContainer /deep/ .van-nav-bar__right:active {
+  opacity: 1;
+}
 </style>
