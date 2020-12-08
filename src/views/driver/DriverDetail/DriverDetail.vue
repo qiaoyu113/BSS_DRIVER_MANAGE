@@ -375,7 +375,7 @@ export default {
       }
 
       // 审核不通过
-      const noAudit = this.orderInfoList.some(ele => ele.status === 20)
+      const noAudit = this.orderInfoList.some(ele => ele.status === 25)
       if (noAudit) {
         this.$toast('该司机已存在待重新提交订单，不能再次创建')
         return
