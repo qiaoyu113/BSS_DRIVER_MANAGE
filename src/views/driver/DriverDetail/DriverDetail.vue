@@ -359,21 +359,21 @@ export default {
       // 已成交
       const dealOver = this.orderInfoList.some(ele => ele.status === 30)
       if (dealOver) {
-        this.$toast('该司机已存在已成交订单，不能再次创建')
+        this.$toast('该司机已存在已成交订单，不能再次录入')
         return
       }
 
       // 待审核
       const waitAudit = this.orderInfoList.some(ele => ele.status === 20)
       if (waitAudit) {
-        this.$toast('该司机已存在待审核订单，不能再次创建')
+        this.$toast('该司机已存在待审核订单，不能再次录入')
         return
       }
 
       // 审核不通过
       const noAudit = this.orderInfoList.some(ele => ele.status === 25)
       if (noAudit) {
-        this.$toast('该司机已存在待重新提交订单，不能再次创建')
+        this.$toast('该司机已存在待重新提交订单，不能再次录入')
         return
       }
     },
