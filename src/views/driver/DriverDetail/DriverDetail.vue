@@ -16,10 +16,6 @@
               <span
                 class="orderBtn"
               >录入订单</span>
-              <van-icon
-                name="arrow-down"
-                size="12"
-              />
             </div>
           </div>
           <div
@@ -566,7 +562,6 @@ export default {
     color: #ffffff;
     letter-spacing: 0;
     text-align: center;
-    margin-right: 3px;
   }
   .checkStyle:active{
     opacity: .7;
