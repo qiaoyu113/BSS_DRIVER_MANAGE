@@ -84,6 +84,15 @@
         :min-date="minDate"
         @click="showPickerFn('date')"
       />
+      <van-field
+        label-width="100"
+        :value="pickerNames['lineSaleId']"
+        readonly
+        clickable
+        label="外线销售"
+        placeholder="请选择"
+        @click="handleShowModal1('lineSaleId')"
+      />
     </SelfPopup>
     <!-- 选择日期 -->
     <van-calendar
@@ -122,6 +131,7 @@ import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch.vue'
 import { getClientList } from '@/api/client'
 import { getOpenCitys, getDictData } from '@/api/common'
+import { GetSpecifiedRoleList } from '@/api/common'
 import { HandlePages } from '@/utils/index'
 export default {
   name: 'Client',
@@ -161,6 +171,7 @@ export default {
         city: '', // 城市
         customerType: '', // 客户类型
         classification: '', // 客户属性
+        lineSaleId: '', // 外线销售
         date: []
       },
       options: [], // 开通城市列表
@@ -173,6 +184,7 @@ export default {
         city: '',
         customerType: '',
         classification: '',
+        lineSaleId: '',
         date: ''
       },
       pickerKey: '', // 显示picker的key
@@ -276,22 +288,24 @@ export default {
         city: '',
         customerType: '',
         classification: '',
+        lineSaleId: '',
         date: ''
       }
       this.form = {
         city: '',
         customerType: '',
         classification: '',
+        lineSaleId: '',
         date: []
       }
     },
     // 模糊搜索
-    handleSearchChange(value) {
-      let params = {
-        keyword: value
-      }
-      this.getOpenCityList(params)
-    },
+    // handleSearchChange(value) {
+    //   let params = {
+    //     keyword: value
+    //   }
+    //   this.getOpenCityList(params)
+    // },
     /**
      *点击模糊查询框某一项
      */
@@ -304,6 +318,38 @@ export default {
       this.modalKey = key
       if (key === 'city') {
         this.getOpenCityList()
+      }
+      this.showModal = true
+    },
+    // 模糊搜索
+    handleSearchChange(value) {
+      let params = {
+        keyword: value
+      }
+      this.getOpenCityList(params)
+      if (this.modalKey === 'dutyManagerId') {
+        let params = {
+          keyword: value,
+          roleTypes: [3],
+          uri: '/v2/line/project/dutyManagerList'
+        }
+        this.getSpecifiedRoleList(params)
+      } else if (this.modalKey === 'lineSaleId') {
+        let params = {
+          keyword: value,
+          roleTypes: [2],
+          uri: '/v2/line/project/lineSaleList'
+        }
+        this.getSpecifiedRoleList(params)
+      }
+    },
+    // 打开外线销售模糊查询框
+    handleShowModal1(key) {
+      this.modalKey = key
+      if (key === 'lineSaleId') {
+        this.getSpecifiedRoleList({ roleTypes: [2], uri: '/v2/line/project/lineSaleList' })
+      } else if (key === 'dutyManagerId') {
+        this.getSpecifiedRoleList({ roleTypes: [3], uri: '/v2/line/project/dutyManagerList' })
       }
       this.showModal = true
     },
@@ -354,6 +400,22 @@ export default {
         console.log(`get open city list fail:${err}`)
       }
     },
+    // 获取外线销售
+    async getSpecifiedRoleList(params) {
+      try {
+        let { data: res } = await GetSpecifiedRoleList(params)
+        if (res.success) {
+          this.options = res.data.map(item => ({
+            label: item.name,
+            value: item.id
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get list fail:${err}`)
+      }
+    },
     // 获取列表
     async getLists(isInit) {
       try {
@@ -366,6 +428,7 @@ export default {
         this.form.customerType && (params.customerType = this.form.customerType)
         this.form.classification && (params.classification = this.form.classification)
         this.form.customerState && (params.customerState = this.form.customerState)
+        this.form.lineSaleId && (params.lineSaleId = this.form.lineSaleId)
         if (this.form.date && this.form.date.length > 1) {
           this.form.date[0].setHours(0, 0, 0)
           params.startDate = new Date(this.form.date[0]).getTime()
