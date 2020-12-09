@@ -338,7 +338,7 @@ export default {
         let params = {
           keyword: value,
           roleTypes: [2],
-          uri: '/v2/line/project/lineSaleList'
+          uri: '/v2/line/customer/lineSaleList'
         }
         this.getSpecifiedRoleList(params)
       }
