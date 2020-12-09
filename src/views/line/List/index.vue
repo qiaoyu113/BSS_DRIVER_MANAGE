@@ -686,8 +686,6 @@ export default {
           params.endDate = new Date(this.form.date[1]).getTime()
         }
         this.queCryondition = params
-        delete this.queCryondition.page
-        delete this.queCryondition.limit
         let { data: res } = await getLineList(params)
         if (res.success) {
           HandlePages(res.page)
