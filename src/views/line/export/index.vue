@@ -88,6 +88,8 @@ export default {
     async lineManagement() {
       try {
         let params = this.$route.params.queCryondition
+        delete params.page
+        delete params.limit
         let { data: res } = await exportLineList(params)
         if (res.success) {
           Toast.success('导出成功');
@@ -104,6 +106,8 @@ export default {
     async projectManagement() {
       try {
         let params = this.$route.params.queCryondition
+        delete params.page
+        delete params.limit
         let { data: res } = await exportProjectList(params)
         if (res.success) {
           Toast.success('导出成功');
