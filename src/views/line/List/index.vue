@@ -4,6 +4,14 @@
     <van-sticky :offset-top="0">
       <van-nav-bar title="线路管理" left-text="返回" left-arrow @click-left="onClickLeft">
         <template #right>
+          <div
+            v-permission="['/v2/line/lineInfo/lineExport']"
+            class="headerRight checkStyle"
+            style="margin-right:8px"
+            @click="lineExpoet"
+          >
+            导出
+          </div>
           <div v-permission="['/v2/line/lineInfo/createStableLine','/v2/line/lineInfo/createTemporaryLine']" class="headerRight" @click="showPickerFn('selectLine')">
             新建
             <van-icon name="add-o" />
@@ -93,6 +101,28 @@
         label="是否为城配线"
         placeholder="请选择"
         @click="showPickerFn('lineType')"
+      />
+      <van-field
+        label-width="100"
+        :value="pickerNames['isHot']"
+        readonly
+        clickable
+        label="是否为爆款"
+        placeholder="请选择"
+        @click="showPickerFn('isHot')"
+      />
+      <!-- 线路亮点 -->
+      <van-field
+        :value="checkedStrList.map(item => item.label).join('，')"
+        label-width="100"
+        colon
+        readonly
+        clickable
+        label="线路亮点"
+        placeholder="请选择"
+        autosize
+        type="textarea"
+        @click="showModalChecked = true"
       />
       <van-field
         label-width="100"
@@ -192,6 +222,30 @@
       @finish="handleValueClick"
       @closed="showModal=false"
     />
+
+    <!-- 选择亮点 -->
+    <van-popup v-model="showModalChecked" position="bottom">
+      <div class="van-picker__toolbar">
+        <button type="button" class="van-picker__cancel" @click="showModalChecked = false">
+          取消
+        </button>
+        <button type="button" class="van-picker__confirm" @click="checked">
+          确认
+        </button>
+      </div>
+      <div class="list">
+        <van-checkbox-group v-model="checkedList" direction="horizontal">
+          <van-checkbox
+            v-for="(item, index) in sellPointColumns"
+            :key="index"
+            :name="item.value"
+            class="margin-bottom-xs chenckItem"
+          >
+            {{ item.label }}
+          </van-checkbox>
+        </van-checkbox-group>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -200,7 +254,7 @@ import CardItem from './components/CardItem'
 import SelfPopup from '@/components/SelfPopup';
 import Suggest from '@/components/SuggestSearch'
 import { getLineList } from '@/api/line'
-import { GetSpecifiedRoleList, getDictDataByKeyword } from '@/api/common'
+import { GetSpecifiedRoleList, getDictDataByKeyword, getDictData } from '@/api/common'
 import { HandlePages } from '@/utils/index'
 export default {
   name: 'LineList',
@@ -211,6 +265,12 @@ export default {
   },
   data() {
     return {
+      // 亮点
+      checkedStrList: [],
+      showModalChecked: false,
+      checkedList: [],
+      sellPointColumns: [], // 卖点
+
       scrollTop: 0,
       show: false, // 打开查询抽屉
       refreshing: false, // 下拉刷新
@@ -263,6 +323,7 @@ export default {
         lineType: '',
         waitDirveValidity: '',
         driverWorkTime: '',
+        isHot: '',
         date: []
       },
       busiTypeArr: [
@@ -305,6 +366,16 @@ export default {
           value: 2
         }
       ],
+      hotArr: [
+        {
+          label: '是',
+          value: 1
+        },
+        {
+          label: '否',
+          value: 0
+        }
+      ],
       showModal: false,
       showCalendar: false,
       options: [],
@@ -329,26 +400,11 @@ export default {
         current: 0,
         size: 10
       },
-      minDate1: new Date(2000, 0, 1)
+      minDate1: new Date(2000, 0, 1),
+      allTotal: 0,
+      queCryondition: {}
     }
   },
-  // 回来后还原
-  // beforeRouteEnter(to, from, next) {
-  //   if (from.path === '/lineDetail') {
-  //     to.meta.keepAlive = true
-  //     next(vm => {
-  //       document.querySelector('.lineListContainer').scrollTop = vm.scrollTop
-  //     })
-  //   } else {
-  //     to.meta.keepAlive = false
-  //     next()
-  //   }
-  // },
-  // // 离开前保存高度
-  // beforeRouteLeave(to, from, next) {
-  //   this.scrollTop = document.querySelector('.lineListContainer').scrollTop
-  //   next()
-  // },
   computed: {
     minDate() {
       if (this.form.r) {
@@ -363,7 +419,56 @@ export default {
       return this.timeLists.includes(this.pickerKey)
     }
   },
+  activated() {
+    this.$bus.$on('update', (msg) => {
+      if (msg) {
+        this.lists = [];
+        this.scrollTop = 0;
+        this.onLoad(true)
+      }
+    });
+  },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      // 删除搜索页面缓存
+      vm.$store.dispatch('cached-views/delView', { name: 'LineSearch' })
+      document.querySelector('.lineListContainer').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.lineListContainer').scrollTop
+    next()
+  },
+  async mounted() {
+    this.sellPointColumns = await this.getDictData('selling_points')
+  },
   methods: {
+    // 选择亮点
+    checked() {
+      this.checkedStrList = this.sellPointColumns.filter(item => this.checkedList.includes(item.value))
+      this.showModalChecked = false
+    },
+    // 从数据字典获取数据
+    async getDictData(dictType) {
+      try {
+        let params = {
+          dictType
+        }
+        let { data: res } = await getDictData(params)
+        if (res.success) {
+          return res.data.map(item => ({
+            label: item.dictLabel,
+            value: +item.dictValue
+          }))
+        } else {
+          this.$fail(res.errorMsg)
+        }
+      } catch (err) {
+        console.log(`get dict data fail:${err}`)
+      }
+    },
     // 状态切换
     handleTabChange() {
       this.loading = true
@@ -434,6 +539,8 @@ export default {
         driverWorkTime: '',
         date: []
       }
+      this.checkedStrList = []
+      this.checkedList = []
     },
     // 模糊搜索
     async handleSearchChange(value) {
@@ -518,6 +625,8 @@ export default {
         this.columns.push(...this.lineCategoryArr);
       } else if (key === 'lineType') {
         this.columns.push(...this.lineTypeArr);
+      } else if (key === 'isHot') {
+        this.columns.push(...this.hotArr)
       }
       this.showPicker = true;
     },
@@ -558,6 +667,7 @@ export default {
           page: this.page.current,
           limit: this.page.size
         }
+        this.form.isHot !== '' && (params.isHot = this.form.isHot)
         this.form.lineState && (params.lineState = this.form.lineState)
         this.form.busiType !== '' && (params.busiType = this.form.busiType)
         this.form.lineBalance && (params.lineBalance = this.form.lineBalance)
@@ -568,12 +678,14 @@ export default {
         this.form.dutyManagerId && (params.dutyManagerId = this.form.dutyManagerId)
         this.form.lineSaleId && (params.lineSaleId = this.form.lineSaleId)
         this.form.driverWorkTime && (params.driverWorkTime = new Date(this.form.driverWorkTime).getTime())
+        this.checkedList.length > 0 && (params.sellPoint = this.checkedList.join(','))
         if (this.form.date && this.form.date.length > 1) {
           this.form.date[0].setHours(0, 0, 0)
           params.startDate = new Date(this.form.date[0]).getTime()
           this.form.date[1].setHours(23, 59, 59)
           params.endDate = new Date(this.form.date[1]).getTime()
         }
+        this.queCryondition = params
         let { data: res } = await getLineList(params)
         if (res.success) {
           HandlePages(res.page)
@@ -592,6 +704,7 @@ export default {
               item.num = 0
             }
           })
+          this.allTotal = res.page.total
           return result
         } else {
           this.loading = false;
@@ -627,6 +740,14 @@ export default {
       } catch (err) {
         console.log(`get dict data fail:${err}`)
       }
+    },
+    lineExpoet() {
+      if (this.allTotal >= 3000) return this.$toast.fail('最多可导出3000条数据，请重新筛选。')
+      this.$router.push({ name: 'ExportLine', params: {
+        purl: 'line',
+        allTotal: this.allTotal,
+        queCryondition: this.queCryondition
+      }})
     }
   }
 }
@@ -636,6 +757,14 @@ export default {
 <style lang='scss' scoped>
 .lineListContainer {
   background:#f9f9f9;
+  .list{
+    padding: 10px 16px 20px;
+    font-size: 14px;
+    .chenckItem{
+      margin-right: 0;
+      width: 33.333333%;
+    }
+  }
   .headerRight {
     display: flex;
     flex-direction: row;
@@ -661,13 +790,19 @@ export default {
     height:5px;
     width:100%;
   }
+  .checkStyle:active {
+  opacity: 0.7 !important;
+}
 }
 
 </style>
 
-<style scoped>
+<style  scoped>
   .ListContainer >>> .van-tab__text {
     font-size: 13px;
     color: #3C4353;
   }
+  .lineListContainer /deep/ .van-nav-bar__right:active {
+  opacity: 1;
+}
 </style>

@@ -8,18 +8,14 @@
         title="司机详情"
         left-text="返回"
         left-arrow
-        @click-left="$router.go(-1)"
+        @click-left="goRouter"
       >
         <template #right>
           <div class="doBox">
-            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']" class="checkStyle" @click="showOrder = true">
+            <div v-permission="['/v2/order/createOrUpdateOrder', '/v2/order/auditOrderNoPass' ,'/v2/order/abort', '/v2/order/getOrderDetialByDriverId']" class="checkStyle" @click="createOrders">
               <span
                 class="orderBtn"
-              >最新订单</span>
-              <van-icon
-                name="arrow-down"
-                size="12"
-              />
+              >录入订单</span>
             </div>
           </div>
           <div
@@ -80,7 +76,7 @@
             title-class="cell-title"
             value-class="cell-value"
             title="创建时间："
-            :value="timeFormat(detailInfo.createDate,'YYYY-MM-DD')"
+            :value="timeFormat(detailInfo.createDate,'YYYY-MM-DD HH:mm:ss')"
           />
         </div>
       </div>
@@ -167,14 +163,6 @@
     </van-tabs>
 
     <van-action-sheet
-      v-model="showOrder"
-      :actions="doOrder | isPermission"
-      cancel-text="取消"
-      close-on-click-action
-      @cancel="showOrder = false"
-      @select="onSelectOrder"
-    />
-    <van-action-sheet
       v-model="showDothing"
       :actions="doMore | isPermission"
       cancel-text="取消"
@@ -182,6 +170,18 @@
       @cancel="showDothing = false"
       @select="onSelectDothing"
     />
+
+    <van-dialog v-model="showDio">
+      <div class="DioAlert">
+        <span>购车/租车订单暂不支持电子合同，<br>请签约纸质合同！</span>
+      </div>
+    </van-dialog>
+
+    <van-dialog v-model="interviewDio" show-cancel-button confirm-button-text="立即填写" cancel-button-text="稍后再说" @confirm="interviewConfirm" @cancel="interviewCancel">
+      <div class="DioAlert">
+        <span>{{ `该司机未填写${computedBusi().busiTypeName}面试！请点击右上角“操作—编辑${computedBusi().busiTypeName}面试”按钮或点击下方“立即填写”按钮填写${computedBusi().busiTypeName}面试信息后再录入订单！` }}</span>
+      </div>
+    </van-dialog>
   </div>
 </template>
 <script>
@@ -198,11 +198,10 @@ import TagInfo from './components/TagInfo';
 import LineInfoItem from './components/LineInfoItem';
 import ContractInfoItem from './components/ContractInfoItem';
 import OrderInfo from './components/OrderInfo';
-import { driverDetail, selectLabel, signDeal, signOut } from '@/api/driver.js';
+import { driverDetail, selectLabel } from '@/api/driver.js';
 import dayjs from 'dayjs';
 import { contractList, orderAbort, getOrderList } from '@/api/order.js';
 import { getLingMessageByDriverId } from '@/api/driver.js';
-import { Dialog } from 'vant';
 import { addCach } from '@/utils/mixins.js'
 export default {
   name: 'DriverDetail',
@@ -229,7 +228,6 @@ export default {
         { type: '合同信息', code: 3 },
         { type: '线路信息', code: 4 }
       ],
-      showOrder: false,
       showDothing: false,
       driverId: '',
       detailInfo: {},
@@ -237,7 +235,8 @@ export default {
       orderInfoList: [],
       lineList: [],
       contractList: [],
-      recentOrder: {}
+      showDio: false,
+      interviewDio: false
     };
   },
   computed: {
@@ -247,6 +246,7 @@ export default {
     doOrder() {
       return this.orderList();
     },
+    // 录入订单 判断逻辑
     isStep() {
       if (this.orderInfoList.length === 0) {
         return true;
@@ -267,7 +267,55 @@ export default {
     this.getDetail(id);
     this.getOrderLabel(id);
   },
+  beforeRouteEnter(to, from, next) {
+    if (['/resetOrder', '/createOrder'].includes(from.path)) {
+      if (to.query.canShow === true) {
+        next(vm => {
+          // 通过 `vm` 访问组件实例
+          vm.showDio = true
+        })
+        return false
+      }
+    }
+    next()
+  },
   methods: {
+    goRouter() {
+      this.$router.push('/driverlist')
+    },
+    interviewConfirm() {
+      const busiType = this.computedBusi().busiType
+      if (busiType === 0) {
+        this.$router.push({
+          path: '/editTailored',
+          query: {
+            id: this.driverId
+          }
+        })
+      } else {
+        this.$router.push({
+          path: '/editShare',
+          query: {
+            id: this.driverId
+          }
+        })
+      }
+    },
+    interviewCancel() {
+      this.interviewDio = false
+    },
+    computedBusi() {
+      const busiType = this.detailInfo.busiType
+      const busiTypeArray = this.detailInfo.interviewInfoVOList || []
+      let hasBusi = busiTypeArray.some(ele => {
+        return ele.busiType === busiType
+      })
+      return {
+        status: hasBusi,
+        busiTypeName: busiType === 0 ? '专车' : '共享',
+        busiType: busiType
+      }
+    },
     removeEmpty(arr, type) {
       let text = (arr.map(item => {
         if (item) {
@@ -286,52 +334,48 @@ export default {
     timeFormat(date, format) {
       return dayjs(date).format(format);
     },
-    orderList() {
-      let arr = [];
-      const createOrder = {
-        name: '录入订单',
-        url: '/createOrder',
-        pUrl: ['/v2/order/createOrUpdateOrder']
-      };
-
-      const orderAudit = {
-        name: '审核',
-        url: '/orderAudit',
-        pUrl: ['/v2/order/auditOrderNoPass']
-      };
-
-      const resetOrder = {
-        name: '重新提交',
-        url: '/resetOrder',
-        pUrl: ['/v2/order/resubmit']
-      };
-
-      const orderDetail = {
-        name: '详情',
-        url: '/orderDetail',
-        pUrl: ['/v2/order/getOrderDetialByDriverId']
-      };
-      const orderStop = {
-        name: '终止',
-        url: 'stop',
-        pUrl: ['/v2/order/abort']
-      };
+    createOrders() {
+      // 已面试  已终止服务
       if (this.isStep) {
-        arr.push(createOrder);
+        const computedBusi = this.computedBusi()
+        if (!computedBusi.status) {
+          this.interviewDio = true
+          return
+        } else {
+          return this.$router.push({
+            path: '/createOrder',
+            query: {
+              id: this.driverId,
+              driverName: this.detailInfo.name,
+              driverPhone: this.detailInfo.phone,
+              workCityName: this.detailInfo.workCityName,
+              workCity: this.detailInfo.workCity,
+              busiType: this.detailInfo.busiType
+            }
+          });
+        }
       }
-      if (this.recentOrder.status === 20) {
-        arr.push(orderDetail);
-        arr.push(orderAudit);
+
+      // 已成交
+      const dealOver = this.orderInfoList.some(ele => ele.status === 30)
+      if (dealOver) {
+        this.$toast('该司机已存在已成交订单，不能再次录入')
+        return
       }
-      if (this.recentOrder.status === 25) {
-        arr.push(orderDetail);
-        arr.push(resetOrder);
+
+      // 待审核
+      const waitAudit = this.orderInfoList.some(ele => ele.status === 20)
+      if (waitAudit) {
+        this.$toast('该司机已存在待审核订单，不能再次录入')
+        return
       }
-      if (this.recentOrder.status === 30) {
-        arr.push(orderDetail);
-        arr.push(orderStop);
+
+      // 审核不通过
+      const noAudit = this.orderInfoList.some(ele => ele.status === 25)
+      if (noAudit) {
+        this.$toast('该司机已存在待重新提交订单，不能再次录入')
+        return
       }
-      return arr;
     },
     arrList() {
       let arr = [];
@@ -350,8 +394,6 @@ export default {
         url: '/editShare',
         pUrl: ['/v2/driver/edit/interview']
       };
-      // const signOut = { name: '标记退出', pUrl: ['/v2/driver/signOut'] };
-      // const signDeal = { name: '标记成交', pUrl: ['/v2/driver/signDeal'] };
       if (
         this.detailInfo.status === 1 ||
         this.detailInfo.status === 2 ||
@@ -366,7 +408,6 @@ export default {
         return arr;
       } else if (this.detailInfo.status === 3) {
         arr.push(tagView);
-        // arr.push(signOut);
         if (this.detailInfo.busiType === 0) {
           arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
@@ -375,7 +416,6 @@ export default {
         return arr;
       } else if (this.detailInfo.status === 5) {
         arr.push(tagView);
-        // arr.push(signDeal);
         if (this.detailInfo.busiType === 0) {
           arr.push(editTailored);
         } else if (this.detailInfo.busiType === 1) {
@@ -384,91 +424,9 @@ export default {
         return arr;
       }
     },
-    onSelectOrder(item) {
-      this.showOrder = false;
-      if (item.url === '/createOrder') {
-        this.$router.push({
-          path: item.url,
-          query: {
-            id: this.driverId,
-            driverName: this.detailInfo.name,
-            driverPhone: this.detailInfo.phone,
-            workCityName: this.detailInfo.workCityName,
-            workCity: this.detailInfo.workCity,
-            busiType: this.detailInfo.busiType
-          }
-        });
-      } else if (item.url === '/resetOrder') {
-        this.$router.push({
-          path: item.url,
-          query: {
-            id: this.driverId,
-            driverName: this.detailInfo.name,
-            driverPhone: this.detailInfo.phone,
-            workCityName: this.detailInfo.workCityName,
-            workCity: this.detailInfo.workCity,
-            orderId: this.detailInfo.orderId
-          }
-        });
-      } else if (item.url === 'stop') {
-        let params = {
-          driverId: this.driverId,
-          orderId: this.detailInfo.orderId,
-          status: this.detailInfo.orderStatus,
-          goodsAmount: this.detailInfo.goodsAmount,
-          operateFlag: 'abort'
-        };
-        Dialog.confirm({
-          title: '是否终止该订单?',
-          message: '终止订单后，司机签署合同将会作废'
-        }).then(() => {
-          this.stopOrder(params);
-        })
-      } else {
-        this.$router.push({ path: item.url, query: { id: this.driverId }});
-      }
-    },
     onSelectDothing(item) {
       this.showDothing = false;
-      if (item.name === '标记退出') {
-        // this.outSign(this.driverId);
-        return
-      } else if (item.name === '标记成交') {
-        // this.dealSign(this.driverId);
-        return
-      } else {
-        this.$router.push({ path: item.url, query: { id: this.driverId }});
-      }
-    },
-    async outSign(id) {
-      try {
-        this.$loading(true);
-        let { data: res } = await signOut({ driverId: id });
-        if (res.success) {
-          Notify({ type: 'success', message: '标记退出成功' });
-        } else {
-          this.$toast.fail(res.errorMsg);
-        }
-      } catch (err) {
-        console.log(`fail:${err}`);
-      } finally {
-        this.$loading(false);
-      }
-    },
-    async dealSign(id) {
-      try {
-        this.$loading(true);
-        let { data: res } = await signDeal({ driverId: id });
-        if (res.success) {
-          Notify({ type: 'success', message: '标记成交成功' });
-        } else {
-          this.$toast.fail(res.errorMsg);
-        }
-      } catch (err) {
-        console.log(`fail:${err}`);
-      } finally {
-        this.$loading(false);
-      }
+      this.$router.push({ path: item.url, query: { id: this.driverId }});
     },
     changeTab(name, title) {
       let id = this.driverId;
@@ -553,9 +511,6 @@ export default {
         let { data: res } = await getOrderList(params);
         if (res.success) {
           this.orderInfoList = res.data || [];
-          if (res.data !== null) {
-            this.recentOrder = res.data[0];
-          }
           this.$loading(false);
         } else {
           this.$toast.fail(res.errorMsg);
@@ -589,6 +544,11 @@ export default {
 <style lang="less" scoped>
 @import "../DriverList/components/DriverItem.less";
 .DriverDetail {
+  .DioAlert{
+    padding: 20px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
   .checkStyle:active{
     opacity: .7;
   }
@@ -602,7 +562,6 @@ export default {
     color: #ffffff;
     letter-spacing: 0;
     text-align: center;
-    margin-right: 3px;
   }
   .checkStyle:active{
     opacity: .7;

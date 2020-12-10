@@ -3,6 +3,7 @@
     <!-- nav-bar -->
     <DriverTitle
       :show-change="checkCan"
+      :actions="filterPermission"
       @screen="startScreen"
       @changeManager="changeManager"
     />
@@ -121,6 +122,8 @@ import DriverTitle from '../DriverList/components/DriverTitle';
 import CardItem from '../DriverList/components/ListItem';
 import changeManager from '../DriverList/components/ChangeManager'
 import { Notify, Dialog } from 'vant';
+import { isPermission } from '@/filters';
+
 export default {
   components: {
     CardItem,
@@ -135,7 +138,19 @@ export default {
       historyItems: [],
       options: [],
       checkedList: [],
-      checked: false
+      checked: false,
+      allTotal: 0,
+      menuActive: [{ name: '更换加盟经理', pUrl: ['/v2/driver/updateGmByDriverId'], value: 0 },
+        { name: '导出', pUrl: ['/v2/driver/export', '/v2/order/driver/export'], value: 1 }],
+      exportBtn: [{
+        name: '司机信息',
+        value: '1',
+        pUrl: ['/v2/driver/export']
+      }, {
+        name: '订单信息',
+        value: '2',
+        pUrl: ['/v2/order/driver/export']
+      }]
     };
   },
   computed: {
@@ -160,6 +175,9 @@ export default {
     },
     checkCan() {
       return this.lists.length > 0;
+    },
+    filterPermission() {
+      return isPermission(this.menuActive)
     }
   },
   mounted() {
@@ -201,7 +219,23 @@ export default {
      * 更换加盟经理
      */
     changeManager(val) {
-      this.checked = val.show;
+      if (val.value === 0) {
+        this.checked = val.show;
+      } else if (val.value === 1) {
+        this.exportDrive()
+      }
+    },
+    exportDrive() {
+      if (this.allTotal >= 3000) { return this.$toast.fail('当前导出数据超过3000条！') }
+      let params = {
+        page: 1,
+        limit: 9999
+      }
+      params.key = this.keyWord
+      this.$router.replace({
+        name: 'driverExport',
+        params: { rlueFrom: params, allTotal: this.allTotal, menu: isPermission(this.exportBtn) }
+      })
     },
     /**
      * 取消选择加盟经理
@@ -273,6 +307,7 @@ export default {
         let { data: res } = await getDriverList(params);
         if (res.success) {
           this.lists = res.data
+          this.allTotal = res.page.total
           if (keyword) {
             this.setHistory(keyword)
           }
@@ -317,14 +352,14 @@ export default {
     box-sizing: border-box;
   }
   .bottomBtn {
-    padding: 10px 0;
+    padding: 10px 15px;
     box-sizing: border-box;
     position: fixed;
     bottom: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: calc(100vw - 30px);
+    width: 100%;
     background-color: @body-bg;
   }
   .checkAll {

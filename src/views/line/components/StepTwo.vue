@@ -8,13 +8,13 @@
         label-width="130"
         picker-key="driverWorkTime"
         :min-date="minDate"
+        :max-date="maxDate"
         :is-computed="form['driverWorkTime']!==''"
         :form="form"
         name="driverWorkTimeValidator"
         required
         :rules="[
-          { required: true, message: '请选择司机上岗时间！' },
-          { validator:driverWorkTimeValidator,message: '司机上岗时间应该大于上架截止日期！' }
+          { required: true, message: '请选择司机上岗时间！' }
         ]"
         label="司机上岗时间"
         placeholder="点击选择日期"
@@ -236,6 +236,10 @@ export default {
     minDate: {
       type: [Date],
       default: () => new Date()
+    },
+    maxDate: {
+      type: [Date],
+      default: () => new Date(2125, 12, 31)
     }
   },
   data() {
@@ -416,7 +420,7 @@ export default {
     generaTimelist() {
       this.timeBucket = []
       let arrs = []
-      for (let i = 0; i < 23; i++) {
+      for (let i = 0; i < 24; i++) {
         let hour = ''
         if (i < 10) {
           hour = `0${i}`

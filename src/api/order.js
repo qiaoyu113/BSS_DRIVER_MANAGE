@@ -185,3 +185,13 @@ export function GetPriceAndDescribeByTypeAndCityAndSupplierAndCarTypeAndModel(da
     data
   })
 }
+
+// 订单导出
+
+export function orderExport(data) {
+  return request({
+    url: `${prefix}/v2/order/driver/export`,
+    method: 'post',
+    data
+  })
+}

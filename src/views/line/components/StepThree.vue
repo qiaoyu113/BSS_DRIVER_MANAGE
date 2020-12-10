@@ -108,11 +108,24 @@
           { required: true, message: '请选择线路肥瘦标签！' },
         ]"
       />
+      <!-- 线路亮点 -->
+      <van-field
+        :value="checkedStrList.map(item => item.label).join('，')"
+        label-width="100"
+        colon
+        readonly
+        clickable
+        label="线路亮点"
+        placeholder="请选择"
+        autosize
+        type="textarea"
+        @click="showModalChecked = true"
+      />
       <div class="btn">
         <van-button type="default" block class="lastStep" native-type="button" @click="$emit('step-two')">
           返回上一步
         </van-button>
-        <van-button type="primary" block>
+        <van-button v-preventreclick type="primary" block>
           提交
         </van-button>
       </div>
@@ -120,6 +133,29 @@
     <div class="cycle">
       3/3
     </div>
+    <!-- 选择亮点 -->
+    <van-popup v-model="showModalChecked" position="bottom">
+      <div class="van-picker__toolbar">
+        <button type="button" class="van-picker__cancel" @click="showModalChecked = false">
+          取消
+        </button>
+        <button type="button" class="van-picker__confirm" @click="checked">
+          确认
+        </button>
+      </div>
+      <div class="list">
+        <van-checkbox-group v-model="checkedList" direction="horizontal">
+          <van-checkbox
+            v-for="(item, index) in sellPointColumns"
+            :key="index"
+            :name="item.value"
+            class="margin-bottom-xs chenckItem"
+          >
+            {{ item.label }}
+          </van-checkbox>
+        </van-checkbox-group>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -158,23 +194,50 @@ export default {
         }
       ],
       // 线路肥瘦标签
-      labelTypeArr: []
+      labelTypeArr: [],
+      // 亮点
+      checkedStrList: [],
+      showModalChecked: false,
+      checkedList: [],
+      sellPointColumns: [] // 卖点
+    }
+  },
+  watch: {
+    form() {
+      this.setCheck()
     }
   },
   mounted() {
     this.init()
   },
   methods: {
+    setCheck() {
+      if (this.form.sellPoint && this.sellPointColumns.length > 0) {
+        // 赋值操作
+        this.checkedStrList = this.sellPointColumns.filter((item) => {
+          return this.form.sellPoint.split(',').map((item) => +item).includes(item.value)
+        })
+        this.checkedList = this.checkedStrList.map((item) => item.value)
+      }
+    },
+    // 选择亮点
+    checked() {
+      this.checkedStrList = this.sellPointColumns.filter(item => this.checkedList.includes(item.value))
+      this.showModalChecked = false
+    },
     async init() {
       try {
         let requestArr = [
           this.getDictData('type_of_goods'),
-          this.getDictData('line_label')
+          this.getDictData('line_label'),
+          this.getDictData('selling_points')
         ]
         let res = await Promise.all(requestArr)
         if (res && res.length === requestArr.length) {
           this.cargoTypeArr = res[0]
           this.labelTypeArr = res[1]
+          this.sellPointColumns = res[2]
+          this.setCheck()
         }
       } catch (err) {
         console.log(`get dict fail:${err}`)
@@ -182,6 +245,7 @@ export default {
     },
     // 提交
     onSubmit(values) {
+      this.form.sellPoint = this.checkedList.join(',')
       this.$emit('submit')
     },
     numValidator(val) {
@@ -226,6 +290,14 @@ export default {
 <style lang='scss' scoped>
 .StepThireeContainer {
   position: relative;
+  .list{
+    padding: 10px 16px 20px;
+    font-size: 14px;
+    .chenckItem{
+      margin-right: 0;
+      width: 33.333333%;
+    }
+  }
   .title {
     margin: 0px;
     padding: 10px 0px 12.5px 15px;

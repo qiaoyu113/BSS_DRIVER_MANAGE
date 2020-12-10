@@ -19,7 +19,7 @@
           <van-button block plain type="primary" size="normal" native-type="button" @click="onReset">
             重置
           </van-button>
-          <van-button block type="primary" size="normal" native-type="submit">
+          <van-button v-preventreclick block type="primary" size="normal" native-type="submit">
             查询
           </van-button>
         </div>

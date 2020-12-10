@@ -94,6 +94,7 @@
             </van-col>
             <van-col span="11" offset="2">
               <van-button
+                v-preventreclick
                 block
                 type="primary"
                 native-type="button"
@@ -333,7 +334,7 @@ export default {
       driverList: [],
       actionVal: '',
       endMaxDate: new Date(),
-      startMinDate: new Date('2020-9-1'),
+      startMinDate: new Date('2020/9/1'),
       driverLoadingMore: false,
       driverFinished: false,
       driverError: false,

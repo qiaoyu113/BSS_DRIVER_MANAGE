@@ -18,8 +18,8 @@
           :after-read="afterRead"
           :max-count="6"
           :before-delete="handleDeleteFile"
-          :max-size="5 * 1024 * 1024"
-          @oversize="onOversize('5M')"
+          :max-size="10 * 1024 * 1024"
+          @oversize="onOversize('10M')"
         />
       </van-field>
       <van-field label="其他图片" colon>
@@ -30,8 +30,8 @@
           :after-read="afterRead"
           :max-count="6"
           :before-delete="handleDeleteFile"
-          :max-size="5 * 1024 * 1024"
-          @oversize="onOversize('5M')"
+          :max-size="10 * 1024 * 1024"
+          @oversize="onOversize('10M')"
         />
       </van-field>
       <van-field label="装货视频" colon class="video">
@@ -68,7 +68,7 @@
         show-word-limit
         class="textarea"
       />
-      <van-button type="primary" block class="btn">
+      <van-button v-preventreclick type="primary" block class="btn">
         提交
       </van-button>
     </van-form>
@@ -131,9 +131,14 @@ export default {
             ...{
               warehouseLoadingPictures: result.warehouseLoadingPictures,
               otherPictures: result.otherPictures,
-              loadingVideo: result.loadingVideo && result.loadingVideo.split('') || [],
+              loadingVideo: result.loadingVideo && [result.loadingVideo] || [],
               informationDescription: result.informationDescription
             }
+          }
+          if (result.loadingVideo) {
+            this.showForm.loadingVideo.push({
+              content: result.loadingVideo
+            })
           }
           this.createDate = result.createDate
           this.showFile(result)
@@ -165,12 +170,14 @@ export default {
           isImage: true
         }))
       }
-      if (val.loadingVideo && val.loadingVideo.length > 0) {
+      if (val.loadingVideo) {
         this.isUpdate = true
-        this.showForm.loadingVideo = val.loadingVideo.map(item => ({
-          url: item
-        }))
-        this.videoUrl = this.showForm.loadingVideo[0]
+
+        this.showForm.loadingVideo = [{
+          url: val.loadingVideo,
+          content: val.loadingVideo
+        }]
+        this.videoUrl = this.showForm.loadingVideo[0].url
       }
     },
     /**
@@ -183,6 +190,10 @@ export default {
      *提交
      */
     async onSubmit(values) {
+      if (this.form.warehouseLoadingPictures.length === 0 && this.form.otherPictures.length === 0) {
+        this.$toast.fail('请上传至少一张图片')
+        return
+      }
       try {
         this.$loading(true)
         let params = {
@@ -266,6 +277,7 @@ export default {
     // 预览视频
     handleVideoPreview() {
       this.videoUrl = this.showForm.loadingVideo[0].content
+
       this.show = true
     },
     // 文件最大限制
