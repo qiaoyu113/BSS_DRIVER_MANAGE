@@ -527,6 +527,7 @@ import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import SelftPicker from '@/components/SelfPicker';
 import SelfArea from '@/components/SelfArea';
 import { delay } from '@/utils/index.js';
+import { addCach } from '@/utils/mixins.js'
 export default {
   name: 'TailoredInterview',
   components: {
@@ -540,6 +541,7 @@ export default {
     SelftPicker,
     SelfArea
   },
+  mixins: [addCach],
   data() {
     return {
       errMsg: '',
@@ -1040,6 +1042,7 @@ export default {
       }
       let { data: res } = await editInterview(params);
       if (res.success) {
+        this.$bus.$emit('update', '1')
         Notify({ type: 'success', message: '编辑面试成功' });
         setTimeout(() => {
           this.$loading(false);

@@ -366,6 +366,7 @@
 import { Dialog } from 'vant';
 import { phoneRegExp } from '@/utils/index';
 import { validatorNum } from '@/utils/validate';
+import { addCach } from '@/utils/mixins.js'
 import { Toast, Cell, Form, Popup, RadioGroup, Radio, Notify } from 'vant';
 import { GetDictionaryList, getOpenCitys } from '@/api/common';
 import SelfArea from '@/components/SelfArea';
@@ -389,6 +390,7 @@ export default {
     SelftPicker,
     SelfArea
   },
+  mixins: [addCach],
   data() {
     return {
       errMsg: '',
@@ -735,6 +737,7 @@ export default {
       }
       let { data: res } = await editInterview(params);
       if (res.success) {
+        this.$bus.$emit('update', '1')
         Notify({ type: 'success', message: '编辑面试成功' });
         setTimeout(() => {
           this.$loading(false);

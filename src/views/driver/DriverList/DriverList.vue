@@ -295,17 +295,6 @@ export default {
       }
     }
   },
-  // 回来后还原
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      document.querySelector('.list').parentNode.scrollTop = vm.scrollTop
-    })
-  },
-  // 离开前保存高度
-  beforeRouteLeave(to, from, next) {
-    this.scrollTop = document.querySelector('.list').parentNode.scrollTop
-    next()
-  },
   watch: {
     active(val) {
       this.checkedList = [];
@@ -320,6 +309,26 @@ export default {
       this.ruleForm.gmId = ''
       this.formText.gmId = ''
     }
+  },
+  activated() {
+    this.$bus.$on('update', (msg) => {
+      if (msg) {
+        this.lists = [];
+        this.scrollTop = 0;
+        this.onLoad(true)
+      }
+    });
+  },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.list').parentNode.scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.list').parentNode.scrollTop
+    next()
   },
   methods: {
     // 联动请求加盟经理
