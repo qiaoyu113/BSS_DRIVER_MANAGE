@@ -113,6 +113,7 @@
       </p>
       <div class="btn-container">
         <van-button
+          v-permission="['/v2/runtest/followCar','/v2/runtest/tryRun']"
           block
           type="primary"
           native-type="button"
@@ -125,7 +126,7 @@
     </van-form>
     <van-action-sheet
       v-model="showActionSheet"
-      :actions="actions"
+      :actions="actions | isPermission"
       cancel-text="取消"
       close-on-click-action
       @select="onSelect"
@@ -217,8 +218,8 @@ export default {
       },
       columns: [],
       actions: [
-        { name: '确认跟车', value: 'followCar' },
-        { name: '确认试跑', value: 'tryRun' }
+        { name: '确认跟车', value: 'followCar', pUrl: ['/v2/runtest/followCar'] },
+        { name: '确认试跑', value: 'tryRun', pUrl: ['/v2/runtest/tryRun'] }
       ],
       actionVal: '',
       endMaxDate: new Date(),
@@ -249,7 +250,7 @@ export default {
     this.form.status = this.$route.query.status
     if (this.to) {
       this.actions = [
-        { name: '确认试跑', value: 'switchTryRun' }
+        { name: '确认试跑', value: 'switchTryRun', pUrl: ['/v2/runtest/tryRun'] }
       ]
     }
     this.getPersonInfo();
