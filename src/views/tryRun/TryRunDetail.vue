@@ -8,7 +8,7 @@
         @click-left="onClickLeft"
       >
         <template v-if="actions.length > 0" #right>
-          <div v-permission="['/v2/runtest/creatIntentionRun', '/v2/runtest/switchTryRun' ,'/v2/runtest/switchDropped']" class="navBarTit" @click="onClickRight">
+          <div v-permission="['/v2/runtest/confirmRunTest', '/v2/runtest/switchTryRun' ,'/v2/runtest/switchDropped']" class="navBarTit" @click="onClickRight">
             操作
           </div>
         </template>
@@ -25,7 +25,7 @@
     </div>
     <van-action-sheet
       v-model="show"
-      :actions="actions"
+      :actions="actions | isPermission"
       cancel-text="取消"
       close-on-click-action
       @select="onSelect"
@@ -142,19 +142,19 @@ export default {
       switch (status) {
         case 100:
           this.actions = [
-            { name: '确认试跑状态', index: 0, disabled: this.permission('/v2/runtest/creatIntentionRun') }
+            { name: '确认试跑状态', index: 0, pUrl: ['/v2/runtest/confirmRunTest'] }
           ]
           break;
         case 300:
           this.actions = [
-            { name: '转试跑', index: 1, disabled: this.permission('/v2/runtest/switchTryRun') },
-            { name: '转掉线', index: 2, disabled: this.permission('/v2/runtest/switchDropped') }
+            { name: '转试跑', index: 1, pUrl: ['/v2/runtest/switchTryRun'] },
+            { name: '转掉线', index: 2, pUrl: ['/v2/runtest/switchDropped'] }
           ]
           break;
         case 200:
         case 500:
           this.actions = [
-            { name: '转掉线', index: 2, disabled: this.permission('/v2/runtest/switchDropped') }
+            { name: '转掉线', index: 2, pUrl: ['/v2/runtest/switchDropped'] }
           ]
           break;
         default:
