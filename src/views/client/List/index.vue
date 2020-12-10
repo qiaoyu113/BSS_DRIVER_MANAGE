@@ -347,7 +347,7 @@ export default {
     handleShowModal1(key) {
       this.modalKey = key
       if (key === 'lineSaleId') {
-        this.getSpecifiedRoleList({ roleTypes: [2], uri: '/v2/line/project/lineSaleList' })
+        this.getSpecifiedRoleList({ roleTypes: [2], uri: '/v2/line/customer/lineSaleList' })
       } else if (key === 'dutyManagerId') {
         this.getSpecifiedRoleList({ roleTypes: [3], uri: '/v2/line/project/dutyManagerList' })
       }
