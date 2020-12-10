@@ -98,4 +98,19 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+
+    <!--fundebug-->
+    <script type="text/javascript">
+      if(window.location.host === 'szjw-bss-h5.yunniao.cn'){
+        // fundebug
+        loadScript("https://js.fundebug.cn/fundebug.2.0.0.min.js", "c3e1376410ea835aec52482ae33b73a209bece8c959216669fda0845b6d8cf60")
+      }
+      function loadScript(url, apikey) {
+          var script = document.createElement("script");
+          script.type = "text/javascript";
+          script.src = url;
+          script.setAttribute("apikey", apikey);
+          document.body.appendChild(script);
+      }
+      </script>
 </html>
