@@ -199,6 +199,7 @@ export default {
         this.formData.gmId !== '' && (params.gmId = this.formData.gmId)
         let { data: res } = await updateGmByDriverId(params);
         if (res.success) {
+          this.$bus.$emit('update', '1')
           this.managerStatus = false;
           this.$loading(false)
           if (res.data.flag) {

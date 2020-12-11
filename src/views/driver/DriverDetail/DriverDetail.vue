@@ -271,7 +271,6 @@ export default {
     if (['/resetOrder', '/createOrder'].includes(from.path)) {
       if (to.query.canShow === true) {
         next(vm => {
-          // 通过 `vm` 访问组件实例
           vm.showDio = true
         })
         return false

@@ -1,11 +1,11 @@
 export default [
   {
     path: '/clue',
-    name: 'clue',
+    name: 'Clue',
     component: resolve => require(['@/views/clue/Clue'], resolve),
     meta: {
-      title: '线索管理'
-      // keepAlive: true
+      title: '线索管理',
+      keepAlive: true
     }
   },
   {
@@ -22,7 +22,6 @@ export default [
     component: resolve => require(['@/views/clue/ClueDetail'], resolve),
     meta: {
       title: '线索详情'
-      // auth: true,
     }
   },
   {
@@ -31,7 +30,6 @@ export default [
     component: resolve => require(['@/views/clue/ClueEdit'], resolve),
     meta: {
       title: '线索编辑'
-      // auth: true,
     }
   }
 ]

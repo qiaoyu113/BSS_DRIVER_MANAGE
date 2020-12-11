@@ -108,10 +108,11 @@ import FormInfo from './components/FormInfo';
 // import LineInfoItem from './components/LineInfoItem';
 // import ContractInfoItem from './components/ContractInfoItem';
 // import OrderInfo from './components/OrderInfo';
+import { addCach } from '@/utils/mixins.js'
 import { clueInfo } from '@/api/clue.js';
 import dayjs from 'dayjs'
 export default {
-  name: 'ClueDetail',
+  name: 'Cluedetail',
   components: {
     [DropdownMenu.name]: DropdownMenu,
     [DropdownItem.name]: DropdownItem,
@@ -124,6 +125,7 @@ export default {
     // OrderInfo,
     // ContractInfoItem
   },
+  mixins: [addCach],
   data() {
     return {
       active: 0,

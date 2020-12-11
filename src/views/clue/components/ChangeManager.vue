@@ -296,6 +296,7 @@ export default {
         }
         let { data: res } = await updateGmByClueId(params);
         if (res.success) {
+          this.$bus.$emit('update', '1')
           this.managerStatus = false;
           this.$loading(false)
           if (res.data.flag) {

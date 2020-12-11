@@ -408,6 +408,7 @@ export default {
         };
         let { data: res } = await auditOrderNoPass(params);
         if (res.success) {
+          this.$bus.$emit('update', '1')
           // 成功通知
           if (type === 'auditNotPass') {
             Notify({ type: 'warning', message: '已驳回' });

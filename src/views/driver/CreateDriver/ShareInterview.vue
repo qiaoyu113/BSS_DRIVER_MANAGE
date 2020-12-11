@@ -864,6 +864,7 @@ export default {
       }
       let { data: res } = await shareInterview(params);
       if (res.success) {
+        this.$bus.$emit('update', '1')
         Notify({ type: 'success', message: '新建面试成功' });
         setTimeout(() => {
           this.$loading(false);

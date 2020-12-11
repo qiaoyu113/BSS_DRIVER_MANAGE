@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { addCach } from '@/utils/mixins.js'
 import StepOne from '../components/StepOne'
 import StepTwo from '../components/StepTwo'
 import StepThree from '../components/StepThree'
@@ -43,6 +44,7 @@ import { getProjectSearch, getProjectDetail } from '@/api/project'
 import { Dialog } from 'vant';
 import { delay } from '@/utils'
 export default {
+  name: 'CreateLine',
   components: {
     StepOne,
     StepTwo,
@@ -50,6 +52,7 @@ export default {
     Suggest,
     [Dialog.Component.name]: Dialog.Component
   },
+  mixins: [addCach],
 
   data() {
     return {
@@ -258,6 +261,7 @@ export default {
     },
     // 发布成功
     createSuc() {
+      this.$bus.$emit('update', '1')
       this.$toast.success('操作成功')
       setTimeout(() => {
         let path = '/line'

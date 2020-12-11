@@ -244,17 +244,6 @@ export default {
       queCryondition: {}
     }
   },
-  // 回来后还原
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      document.querySelector('.projectListContainer').scrollTop = vm.scrollTop
-    })
-  },
-  // 离开前保存高度
-  beforeRouteLeave(to, from, next) {
-    this.scrollTop = document.querySelector('.projectListContainer').scrollTop
-    next()
-  },
   computed: {
     minDate() {
       if (this.form.r) {
@@ -265,6 +254,26 @@ export default {
     isDateRange() {
       return this.dateLists.includes(this.pickerKey)
     }
+  },
+  activated() {
+    this.$bus.$on('update', (msg) => {
+      if (msg) {
+        this.lists = [];
+        this.scrollTop = 0;
+        this.onLoad(true)
+      }
+    });
+  },
+  // 回来后还原
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      document.querySelector('.projectListContainer').scrollTop = vm.scrollTop
+    })
+  },
+  // 离开前保存高度
+  beforeRouteLeave(to, from, next) {
+    this.scrollTop = document.querySelector('.projectListContainer').scrollTop
+    next()
   },
   mounted() {
     this.getConsigneeTypeList()

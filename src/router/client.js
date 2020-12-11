@@ -4,8 +4,8 @@ export default [
     name: 'Client',
     component: resolve => require(['@/views/client/List'], resolve),
     meta: {
-      title: '客户管理',
-      keepAlive: false
+      title: '客户管理'
+      // keepAlive: true
     }
   },
   {

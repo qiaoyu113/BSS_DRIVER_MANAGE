@@ -222,7 +222,7 @@ import { Toast, Cell, Form, Tab, Notify } from 'vant';
 import { getClueList } from '@/api/clue.js'
 import { GetDictionaryList, getCurrentLowerOfficeCityData, GetSpecifiedRoleList, GetGmGroup } from '@/api/common'
 export default {
-  name: 'ClueList',
+  name: 'Clue',
   components: {
     [Toast.name]: Toast,
     [Cell.name]: Cell,
@@ -398,6 +398,15 @@ export default {
   beforeRouteLeave(to, from, next) {
     this.scrollTop = document.querySelector('.list').scrollTop
     next()
+  },
+  activated() {
+    this.$bus.$on('update', (msg) => {
+      if (msg) {
+        this.lists = [];
+        this.scrollTop = 0;
+        this.onLoad(true)
+      }
+    });
   },
   methods: {
     // 联动请求加盟小组

@@ -94,11 +94,13 @@ import SelftPicker from '@/components/SelfPicker';
 import { Notify } from 'vant';
 import { getOpenCitys, getDictData } from '@/api/common.js';
 import { clueInfo, clueEdit } from '@/api/clue.js';
+import { addCach } from '@/utils/mixins.js'
 export default {
-  name: 'ClueEdit',
+  name: 'Clueedit',
   components: {
     SelftPicker
   },
+  mixins: [addCach],
   data() {
     return {
       keyValue: {
@@ -159,6 +161,7 @@ export default {
         params.clueId = this.clueId
         let { data: res } = await clueEdit(params);
         if (res.success) {
+          this.$bus.$emit('update', '1')
           Notify({ type: 'success', message: '线索编辑成功' });
           this.$router.go(-1)
         } else {

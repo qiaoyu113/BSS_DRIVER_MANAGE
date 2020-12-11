@@ -878,6 +878,7 @@ export default {
         params.operateFlag = this.operateFlag;
         let { data: res } = await createOrUpdateOrder(params);
         if (res.success) {
+          this.$bus.$emit('update', '1')
           Notify({ type: 'success', message: '订单录入成功' });
           let query = {
             id: this.driverId
