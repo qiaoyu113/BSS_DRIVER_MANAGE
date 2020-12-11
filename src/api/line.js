@@ -181,3 +181,12 @@ export function getPictureDetail(params) {
   })
 }
 
+// 导出线路列表
+export function exportLineList(data) {
+  return request({
+    url: `${prefix}/v2/line/lineInfo/lineExport`,
+    method: 'post',
+    data
+  })
+}
+

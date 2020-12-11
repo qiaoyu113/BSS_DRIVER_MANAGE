@@ -26,4 +26,12 @@ export function getProjectSearch(data) {
     data
   })
 }
+// 导出项目列表
+export function exportProjectList(data) {
+  return request({
+    url: `${prefix}/v2/line/project/projectExport`,
+    method: 'post',
+    data
+  })
+}
 

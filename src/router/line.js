@@ -80,6 +80,15 @@ export default [
       keepAlive: true,
       search: true
     }
+  },
+  {
+    path: '/exportLine',
+    name: 'ExportLine',
+    component: resolve => require(['@/views/line/export'], resolve),
+    meta: {
+      title: '导出',
+      keepAlive: false
+    }
   }
 ]
 
