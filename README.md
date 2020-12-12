@@ -70,10 +70,13 @@ npm run dist / yarn run dist
 
   
 ## D2环境
-[D2环境](http://firmiana-open-api-d2.yunniao.cn)
+[D2环境](http://szjw-bss-h5-m2.yunniao.cn/)
 
 ## M1环境
-[M1环境](http://firmiana-wechat.m1.yunniao.cn)
+[M1环境](http://szjw-bss-h5-m1.yunniao.cn/)
+
+## 生产环境
+[生产环境](http://szjw-bss-h5.yunniao.cn)
 
 ## 代码规范
 
